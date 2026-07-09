@@ -1,0 +1,7 @@
+{
+  "pom_unit": "in",
+  "template_version": "fixed16-2026-07-09",
+  "rule_version": "offline-vision-rules-v3",
+  "anchor_version": "anchors-2026-07-09",
+  "suggestions_version": "sizeL-suggestions-v1"
+}

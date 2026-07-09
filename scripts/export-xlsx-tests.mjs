@@ -1,0 +1,326 @@
+#!/usr/bin/env node
+// End-to-end verification of the Export Excel (.xlsx) measurement spec.
+// Boots the app in headless Chrome, seeds a fixture project (image + Size L
+// specs) via the debug API, builds the workbook with a frozen date through
+// window.__braAutoModeDebug.exportSpecXlsxBase64, then unzips the bytes in
+// Node (STORE method — mirror of the writer in src/render/export-xlsx.js)
+// and asserts: all workbook parts present, header labels exact, alpha and
+// depth grade math matches Grading rules.md, TOL/中文 written as text, the
+// embedded PNG is valid, and two identical exports are byte-identical.
+import { spawn } from 'node:child_process';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getFreePort, startStaticServer } from './static-server.mjs';
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const appDir = path.resolve(scriptDir, '..');
+const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+
+let server, chrome, userDataDir;
+const cleanupTasks = [];
+let failures = 0;
+
+const FROZEN_DATE = '2026-07-08T10:00:00';
+
+// 18-column grid: A..D labels, then the 14-size run.
+const SIZE_COLS = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', 'M2', 'L2', 'XL2', '2XL2', '3XL2', '5XL2'];
+const COL_OF = Object.fromEntries(SIZE_COLS.map((label, i) => [label, 'EFGHIJKLMNOPQR'[i]]));
+const rowOfPom = (pom) => 3 + Number(pom); // POM 1 → row 4 … POM 16 → row 19
+
+async function main() {
+  const started = await startStaticServer(appDir);
+  server = started.server;
+  const baseUrl = started.baseUrl;
+  cleanupTasks.push(() => new Promise((r) => server.close(r)));
+
+  const cdpPort = await getFreePort();
+  userDataDir = await mkdtemp(path.join(tmpdir(), 'export-xlsx-'));
+  cleanupTasks.push(() => rm(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }).catch(() => {}));
+
+  chrome = spawn(CHROME, [
+    '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
+    `--remote-debugging-port=${cdpPort}`,
+    `--user-data-dir=${userDataDir}`,
+    `${baseUrl}/index.html?smoke=${Date.now()}`,
+  ]);
+  cleanupTasks.push(() => new Promise((r) => { chrome.once('exit', r); chrome.kill('SIGTERM'); }));
+  await waitForCdp(cdpPort);
+
+  const session = await openCdpSession(cdpPort);
+  await session.waitFor(`document.querySelectorAll('#specBody tr').length > 0`, 8000);
+
+  // Fixture: one image (so the sketch embeds), Size L specs exercising each
+  // grading family — band (1), direct 0.25-stepper (5), cup width with an
+  // explicit Size L2 (10), held strap (14). POMs with no explicit spec now
+  // fall back to their Tier-0 library suggestion (so POM 11 grades from its
+  // corpus median); only POMs 15/16 (no library data) stay blank.
+  const seeded = await session.eval(`(async () => {
+    const api = window.__braAutoModeDebug;
+    if (!api || typeof api.exportSpecXlsxBase64 !== 'function') return { ok: false, reason: 'no export hook' };
+    await api.loadProject({
+      format: 'bra-sketch-project',
+      version: 1,
+      savedAt: '2026-07-08T00:00:00.000Z',
+      state: {
+        annotations: [],
+        images: [{
+          id: 1,
+          dataURL: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+          x: 0, y: 0, width: 200, height: 150, locked: false,
+        }],
+        eraseStrokes: [], brushSize: 24, showLabels: true,
+        calibration: { unitsPerPx: null, unit: 'in' },
+        nextSequence: 1, idCounter: 2,
+        drawStyle: 'solid', drawColor: 'red', arrowType: 'double', lineWidth: 2.5,
+        zoom: 1, panX: 0, panY: 0,
+        styleId: 'TestStyle',
+        pomSpecs: {
+          '1':  { sizeL: '27.5', tol: '± 1/2' },
+          '5':  { sizeL: '7.5', tol: '± 1/8', zh: '前中高测试' },
+          '10': { sizeL: '5', sizeL2: '5.6', tol: '± 1/4' },
+          '14': { sizeL: '14', tol: '± 1/4' },
+        },
+        gradeRules: {},
+        depthRules: {},
+      },
+    });
+    const a = await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)});
+    const b = await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)});
+    return { ok: true, a, b };
+  })()`);
+  check(seeded.ok, 'fixture seeded and workbook built', seeded.reason);
+  if (!seeded.ok) throw new Error('cannot continue without a workbook');
+
+  check(seeded.a === seeded.b, 'determinism: two exports with a frozen date are byte-identical');
+
+  const zipBytes = Buffer.from(seeded.a, 'base64');
+  const entries = unzipStore(zipBytes);
+
+  // --- Parts present ---
+  for (const name of [
+    '[Content_Types].xml', '_rels/.rels', 'xl/workbook.xml', 'xl/_rels/workbook.xml.rels',
+    'xl/styles.xml', 'xl/worksheets/sheet1.xml', 'xl/worksheets/_rels/sheet1.xml.rels',
+    'xl/drawings/drawing1.xml', 'xl/drawings/_rels/drawing1.xml.rels', 'xl/media/image1.png',
+  ]) {
+    check(!!entries[name], `part present: ${name}`);
+  }
+
+  const png = entries['xl/media/image1.png'];
+  check(png && png.length > 8
+    && png[0] === 0x89 && png[1] === 0x50 && png[2] === 0x4E && png[3] === 0x47,
+    'embedded image1.png has a valid PNG header');
+
+  const sheet = entries['xl/worksheets/sheet1.xml'].toString('utf-8');
+
+  // --- Header row exact, in order ---
+  const headerLabels = ['POM', 'Description - English', 'Description - Chinese', 'TOL'].concat(SIZE_COLS);
+  const row3 = sheet.match(/<row r="3"[^>]*>([\s\S]*?)<\/row>/)?.[1] || '';
+  const gotHeaders = [...row3.matchAll(/<t xml:space="preserve">([^<]*)<\/t>/g)].map(m => m[1]);
+  check(JSON.stringify(gotHeaders) === JSON.stringify(headerLabels),
+    'header row is exactly POM…5XL2 in order', 'got: ' + gotHeaders.join(' | '));
+
+  // --- Title + style/date band ---
+  check(inlineText(sheet, 'A1') === 'Measurement Spec', 'A1 title band');
+  check(inlineText(sheet, 'A2') === 'TestStyle - 08.Jul.26', 'A2 styleId + frozen date', 'got: ' + inlineText(sheet, 'A2'));
+
+  // --- POM 5 (direct 0.25-stepper): alpha from L, depth from derived L2 ---
+  const r5 = rowOfPom(5);
+  checkNum(sheet, 'E' + r5, 7.0, 'POM 5 S = protoL − 0.5');
+  checkNum(sheet, 'G' + r5, 7.5, 'POM 5 L = protoL');
+  checkNum(sheet, 'L' + r5, 8.5, 'POM 5 5XL = protoL + 1.0');
+  checkNum(sheet, COL_OF.L2 + r5, 7.75, 'POM 5 L2 = protoL + 0.25 offset');
+  checkNum(sheet, COL_OF.XL2 + r5, 8.0, 'POM 5 XL2 = protoL2 + 0.25');
+  checkNum(sheet, COL_OF['3XL2'] + r5, 8.375, 'POM 5 3XL2 = protoL2 + 0.625 (depth taper, not alpha copy)');
+  check(inlineText(sheet, 'D' + r5) === '± 1/8', 'POM 5 TOL written verbatim as text');
+  check(inlineText(sheet, 'C' + r5) === '前中高测试', 'POM 5 中文 override in Chinese column');
+  check(inlineText(sheet, 'B' + r5).length > 0, 'POM 5 English description non-empty (built-in fallback)');
+
+  // --- POM 1 (band): irregular alpha deltas; depth run equals alpha (offset 0) ---
+  const r1 = rowOfPom(1);
+  checkNum(sheet, 'E' + r1, 25.75, 'POM 1 S = protoL − 1.75');
+  checkNum(sheet, 'I' + r1, 29.5, 'POM 1 2XL = protoL + 2.0');
+  checkNum(sheet, COL_OF.M2 + r1, 26.5, 'POM 1 M2 = M (band L2 = L)');
+  checkNum(sheet, COL_OF['5XL2'] + r1, 32.75, 'POM 1 5XL2 = protoL + 5.25');
+
+  // --- POM 10 (cup width): explicit Size L2 wins over derivation ---
+  const r10 = rowOfPom(10);
+  checkNum(sheet, 'G' + r10, 5, 'POM 10 L = protoL');
+  checkNum(sheet, COL_OF.L2 + r10, 5.6, 'POM 10 L2 = explicit Size L2 input');
+  checkNum(sheet, COL_OF.XL2 + r10, 6.1, 'POM 10 XL2 = explicit L2 + 0.5');
+  checkNum(sheet, COL_OF['2XL2'] + r10, 7.1, 'POM 10 2XL2 = explicit L2 + 1.5');
+
+  // --- POM 14 (held strap): flat across all 14 columns ---
+  const r14 = rowOfPom(14);
+  for (const label of ['S', 'L', '5XL', 'M2', 'L2', '5XL2']) {
+    checkNum(sheet, COL_OF[label] + r14, 14, `POM 14 ${label} held at 14`);
+  }
+
+  // --- POM 16 (front apex): no library data and no line → every size cell blank ---
+  const r16 = rowOfPom(16);
+  check(cellNumber(sheet, 'E' + r16) === null && cellNumber(sheet, COL_OF['5XL2'] + r16) === null,
+    'POM 16 (no library value, no line) has blank size cells');
+
+  // --- POM 11 (no TD spec): now grades from its Tier-0 library suggestion ---
+  const r11 = rowOfPom(11);
+  check(cellNumber(sheet, 'G' + r11) != null && cellNumber(sheet, COL_OF['5XL2'] + r11) != null,
+    'POM 11 (no TD Size L) grades from its library suggestion');
+
+  // --- 16 POM rows, numbered 1..16 in the POM column ---
+  for (let pom = 1; pom <= 16; pom += 1) {
+    const v = cellNumber(sheet, 'A' + rowOfPom(pom));
+    check(v === pom, `POM column row ${rowOfPom(pom)} = ${pom}`, 'got: ' + v);
+  }
+
+  await session.close();
+  if (failures > 0) {
+    console.error(`FAIL  export-xlsx-tests: ${failures} assertion(s) failed`);
+    process.exitCode = 1;
+  } else {
+    console.log('PASS  export-xlsx-tests');
+  }
+}
+
+// ---- assertions ----
+
+function check(cond, label, detail) {
+  if (cond) {
+    console.log('  ok  ' + label);
+  } else {
+    failures += 1;
+    console.error('  FAIL ' + label + (detail ? ' — ' + detail : ''));
+  }
+}
+
+function checkNum(sheet, ref, expected, label) {
+  const v = cellNumber(sheet, ref);
+  check(v != null && Math.abs(v - expected) < 1e-9, label + ` [${ref}=${expected}]`, 'got: ' + v);
+}
+
+// ---- sheet xml helpers ----
+
+function cellXml(sheet, ref) {
+  // Match the opening tag first: [^>]* cannot cross '>', so a self-closing
+  // blank cell ("<c .../>") never bleeds into the next cell's content.
+  const open = sheet.match(new RegExp('<c r="' + ref + '"[^>]*>'));
+  if (!open) return null;
+  if (open[0].endsWith('/>')) return open[0];
+  const rest = sheet.slice(open.index + open[0].length);
+  return open[0] + rest.slice(0, rest.indexOf('</c>')) + '</c>';
+}
+
+function cellNumber(sheet, ref) {
+  const xml = cellXml(sheet, ref);
+  const m = xml && xml.match(/<v>([^<]*)<\/v>/);
+  return m ? Number(m[1]) : null;
+}
+
+function inlineText(sheet, ref) {
+  const xml = cellXml(sheet, ref);
+  const m = xml && xml.match(/<t xml:space="preserve">([^<]*)<\/t>/);
+  return m ? m[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'") : '';
+}
+
+// ---- minimal STORE-method unzip (read side of zipStore) ----
+
+function unzipStore(buf) {
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= 0; i -= 1) {
+    if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('no EOCD — not a ZIP');
+  const count = buf.readUInt16LE(eocd + 10);
+  let p = buf.readUInt32LE(eocd + 16);
+  const entries = {};
+  for (let n = 0; n < count; n += 1) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) break;
+    const method = buf.readUInt16LE(p + 10);
+    const compSize = buf.readUInt32LE(p + 20);
+    const nameLen = buf.readUInt16LE(p + 28);
+    const extraLen = buf.readUInt16LE(p + 30);
+    const commentLen = buf.readUInt16LE(p + 32);
+    const localOffset = buf.readUInt32LE(p + 42);
+    const name = buf.toString('utf-8', p + 46, p + 46 + nameLen);
+    if (method !== 0) throw new Error('expected STORE method for ' + name);
+    const lNameLen = buf.readUInt16LE(localOffset + 26);
+    const lExtraLen = buf.readUInt16LE(localOffset + 28);
+    const start = localOffset + 30 + lNameLen + lExtraLen;
+    entries[name] = buf.subarray(start, start + compSize);
+    p += 46 + nameLen + extraLen + commentLen;
+  }
+  return entries;
+}
+
+// ---- CDP plumbing (mirrors scripts/autosave-check.mjs) ----
+
+async function openCdpSession(port) {
+  let targets;
+  for (let i = 0; i < 60; i += 1) {
+    try {
+      targets = await fetchJson(`http://127.0.0.1:${port}/json`);
+      const t = targets.find((x) => x.type === 'page' && x.webSocketDebuggerUrl);
+      if (t) return connectToTarget(t.webSocketDebuggerUrl);
+    } catch (_) {}
+    await sleep(80);
+  }
+  throw new Error('no page target available on CDP port ' + port);
+}
+
+async function connectToTarget(wsUrl) {
+  const ws = new WebSocket(wsUrl);
+  await new Promise((resolve, reject) => {
+    ws.addEventListener('open', resolve, { once: true });
+    ws.addEventListener('error', reject, { once: true });
+  });
+  let id = 0;
+  const pending = new Map();
+  ws.addEventListener('message', (event) => {
+    const msg = JSON.parse(String(event.data));
+    if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg); pending.delete(msg.id); }
+  });
+  const cdp = (method, params) => new Promise((resolve, reject) => {
+    const reqId = ++id;
+    pending.set(reqId, (m) => m.error ? reject(new Error(m.error.message)) : resolve(m.result));
+    ws.send(JSON.stringify({ id: reqId, method, params }));
+  });
+  const evalJs = async (expression) => {
+    const res = await cdp('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+    if (res.exceptionDetails) throw new Error(res.exceptionDetails.text || 'eval failed');
+    return res.result.value;
+  };
+  const waitFor = async (expression, timeoutMs) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      try { if (await evalJs(expression)) return; } catch (_) {}
+      await sleep(80);
+    }
+    throw new Error('waitFor timeout: ' + expression);
+  };
+  return { eval: evalJs, waitFor, close: () => ws.close() };
+}
+
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+async function waitForCdp(port) {
+  for (let i = 0; i < 80; i += 1) {
+    try { await fetchJson(`http://127.0.0.1:${port}/json/version`); return; } catch (_) {}
+    await sleep(80);
+  }
+  throw new Error('CDP did not come up');
+}
+async function fetchJson(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`fetch ${url} ${res.status}`);
+  return await res.json();
+}
+
+try {
+  await main();
+} catch (err) {
+  if (process.exitCode == null) process.exitCode = 1;
+  console.error('FAIL  export-xlsx-tests: ' + (err && err.message ? err.message : err));
+} finally {
+  for (const task of cleanupTasks.reverse()) {
+    try { await task(); } catch (_) {}
+  }
+}

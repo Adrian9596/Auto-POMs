@@ -1,0 +1,51 @@
+{
+  "_README": "Per-image semantic expectations for scripts/pom-contract-tests.mjs. Each entry is OPTIONAL. Fields left null disable that expectation. Fill in by visual inspection of demo/<name> — the TD should mark which seams are visible. Universal cross-POM invariants run on every image regardless; this file only narrows down DRAWABLE/REVIEW_ONLY decisions.",
+  "demo1.jpg": {
+    "viewRoles": ["front_outer"],
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": false,
+    "expect": null
+  },
+  "demo2.jpg": {
+    "viewRoles": null,
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": null,
+    "expect": null
+  },
+  "demo3.jpg": {
+    "viewRoles": null,
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": null,
+    "expect": null
+  },
+  "demo4.jpg": {
+    "viewRoles": null,
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": null,
+    "expect": null
+  },
+  "demo5.jpg": {
+    "viewRoles": null,
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": null,
+    "expect": null
+  },
+  "1.jpg": {
+    "viewRoles": null,
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": null,
+    "expect": null
+  }
+}
