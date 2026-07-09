@@ -1,0 +1,35 @@
+{
+  "name": "bra-auto-measure",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-app.mjs",
+    "generate-suggestions": "node scripts/generate-sizeL-suggestions.mjs",
+    "suggestions-tests": "node scripts/suggestions-tests.mjs",
+    "demo": "node scripts/demo-detection.mjs",
+    "serve": "node scripts/serve.mjs",
+    "check": "node scripts/check.mjs",
+    "smoke": "node scripts/auto-mode-smoke.mjs",
+    "autosave-check": "node scripts/autosave-check.mjs",
+    "export-xlsx": "node scripts/export-xlsx-tests.mjs",
+    "export-hidden": "node scripts/export-hidden-tests.mjs",
+    "golden": "node scripts/golden-tests.mjs",
+    "accuracy": "node scripts/accuracy-tests.mjs",
+    "learning-tests": "node scripts/learning-tests.mjs",
+    "meaning-tests": "node scripts/meaning-tests.mjs",
+    "evidence-tests": "node scripts/evidence-tests.mjs",
+    "pipeline-tests": "node scripts/pipeline-tests.mjs",
+    "junction-tests": "node scripts/junction-tests.mjs",
+    "pom6-limitations": "node scripts/pom6-limitations.mjs",
+    "pom7-limitations": "node scripts/pom7-limitations.mjs",
+    "pom14-limitations": "node scripts/pom14-limitations.mjs",
+    "viewrole-limitations": "node scripts/viewrole-limitations.mjs",
+    "detection-limitations": "npm run pom6-limitations && npm run pom7-limitations && npm run pom14-limitations && npm run viewrole-limitations",
+    "contract": "node scripts/pom-contract-tests.mjs",
+    "invariants": "node scripts/invariant-tests.mjs"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^52.16.0",
+    "@slidev/theme-seriph": "^0.25.0"
+  }
+}
