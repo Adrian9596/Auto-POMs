@@ -46,6 +46,16 @@ const expectations = existsSync(expectationsPath)
   ? JSON.parse(readFileSync(expectationsPath, 'utf8'))
   : {};
 
+// Rule JSON is the source of truth for the anchor→POM contract (Engineering
+// Workflow Phase 7): the P7.* assertions audit captured rows against these
+// files, not against copies of their values.
+const pomTemplateRules = JSON.parse(readFileSync(path.join(appDir, 'auto_mode_rules', 'pom-template.json'), 'utf8'));
+const ruleVersions = JSON.parse(readFileSync(path.join(appDir, 'auto_mode_rules', 'version.json'), 'utf8'));
+const requiredAnchorsForPom = (pom) => {
+  const entry = (pomTemplateRules.rows || []).find(r => String(r.id) === String(pom));
+  return entry && Array.isArray(entry.requiredAnchors) ? entry.requiredAnchors : [];
+};
+
 const images = readdirSync(path.join(appDir, 'demo'))
   .filter(f => /\.(jpe?g|png|webp)$/i.test(f))
   .filter(f => !args.only || f.includes(args.only))
@@ -151,7 +161,7 @@ const CLA_EXPECT = {
       end: { x: clamp01n(b.x + 0.04), y: b.y },
     };
   },
-  '14': exactPair('apex-left', 'strap-bottom'),
+  '14': exactPair('strap-top', 'strap-bottom'),
   '15': (c) => {
     if (!has(c, 'back-strap-left', 'back-strap-right')) return null;
     const L = a(c, 'back-strap-left'); const R = a(c, 'back-strap-right');
@@ -178,7 +188,7 @@ const CLA_NAMES = {
   '11': 'POM 11 line sits on side-top → side-bottom',
   '12': 'POM 12 line sits on back-top → back-bottom',
   '13': 'POM 13 line sits on back-panel anchors (or back-top/bottom + 0.04 x fallback)',
-  '14': 'POM 14 curve endpoints sit on apex-left → strap-bottom',
+  '14': 'POM 14 curve endpoints sit on strap-top → strap-bottom',
   '15': 'POM 15 line sits on back-strap-left, end forced horizontal (back-strap-right.x at back-strap-left.y)',
   '16': 'POM 16 line sits on apex-left, end forced horizontal (apex-right.x at apex-left.y)',
 };
@@ -418,8 +428,13 @@ const ASSERTIONS = [
       const vis = c.cupModel.visibility;
       // A directly-read front cup (real apex + real cup-bottom) is full
       // confidence: source 'cupModel', NOT reviewRequired, tier not 'low',
-      // POM 9 DRAWABLE — even with no front_inner cutaway.
-      if (vis === 'direct') {
+      // POM 9 DRAWABLE — even with no front_inner cutaway. Exception: when
+      // the model's inner edge is UNSUPPORTED (its width row crosses an open
+      // neckline V and the gore-inset endpoint floats in blank background —
+      // front-closure styles whose apex fires on the strap top), the QA layer
+      // deliberately refuses the cupModel path and review IS warranted; that
+      // case is judged by the weak branch below.
+      if (vis === 'direct' && c.cupModel.innerEdgeSupported !== false) {
         const ok = top.source === 'cupModel'
           && top.reviewRequired === false
           && top.confidence !== 'low'
@@ -443,16 +458,16 @@ const ASSERTIONS = [
     },
   },
 
-  // --- POM 14: shoulder strap length, front cup join → back strap end -------
-  // POM 14 is the curved strap length: front cup/strap joining seam
-  // (apex-left) to the end of the shoulder strap at the back (strap-bottom).
+  // --- POM 14: shoulder strap length, front strap seam → back strap end -----
+  // POM 14 is the curved strap length: front strap upper joining seam
+  // (strap-top) to the end of the shoulder strap at the back (strap-bottom).
   {
-    id: 'C14.front-to-back-anchors', name: 'POM 14 uses front cup/strap join and back strap end',
-    require: (c) => has(c, 'apex-left', 'strap-bottom'),
+    id: 'C14.front-to-back-anchors', name: 'POM 14 uses front strap upper join and back strap end',
+    require: (c) => has(c, 'strap-top', 'strap-bottom'),
     test: (c) => {
-      const startRole = a(c, 'apex-left').viewRole;
+      const startRole = a(c, 'strap-top').viewRole;
       const endRole = a(c, 'strap-bottom').viewRole;
-      return { ok: startRole === 'front_outer' && endRole === 'back', msg: `apex-left=${startRole} strap-bottom=${endRole}` };
+      return { ok: startRole === 'front_outer' && endRole === 'back', msg: `strap-top=${startRole} strap-bottom=${endRole}` };
     },
   },
   {
@@ -464,27 +479,27 @@ const ASSERTIONS = [
     },
   },
   {
-    id: 'C14.source-front-join-back-end', name: 'POM 14 sources front cup/strap join and back panel join',
-    require: (c) => has(c, 'apex-left', 'strap-bottom'),
+    id: 'C14.source-front-join-back-end', name: 'POM 14 sources front strap seam and back panel join',
+    require: (c) => has(c, 'strap-top', 'strap-bottom'),
     test: (c) => {
-      const st = a(c, 'apex-left').source;
+      const st = a(c, 'strap-top').source;
       const sb = a(c, 'strap-bottom').source;
-      const okT = st === 'apexJoin' || st === 'ratio';
+      const okT = st === 'frontStrapSeam' || st === 'ratio';
       const okB = sb === 'backPanelJoin' || sb === 'ratio';
-      return { ok: okT && okB, msg: `apex-left=${st} strap-bottom=${sb}` };
+      return { ok: okT && okB, msg: `strap-top=${st} strap-bottom=${sb}` };
     },
   },
   {
     id: 'C14.never-high', name: 'POM 14 draft and back end remain low/reviewRequired (always-verify POM)',
-    require: (c) => has(c, 'apex-left', 'strap-bottom'),
+    require: (c) => has(c, 'strap-top', 'strap-bottom'),
     test: (c) => {
-      const T = a(c, 'apex-left');
+      const T = a(c, 'strap-top');
       const B = a(c, 'strap-bottom');
       const p = c.poms && c.poms['14'];
       const ok = !!p && p.confidence === 'low' && B.confidence !== 'high' && B.reviewRequired;
       return {
         ok,
-        msg: `pom14=${p && p.confidence} apex-left=${T.confidence}/rr=${T.reviewRequired} strap-bottom=${B.confidence}/rr=${B.reviewRequired}`,
+        msg: `pom14=${p && p.confidence} strap-top=${T.confidence}/rr=${T.reviewRequired} strap-bottom=${B.confidence}/rr=${B.reviewRequired}`,
       };
     },
   },
@@ -500,7 +515,7 @@ const ASSERTIONS = [
       const noBackEnd = !a(c, 'strap-bottom');
       return {
         ok: (!p || p.drawability === 'REVIEW_ONLY') && noBackEnd,
-        msg: `pom14=${p && p.drawability} apexLeft=${!!a(c, 'apex-left')} strapBottom=${!!a(c, 'strap-bottom')}`,
+        msg: `pom14=${p && p.drawability} strapTop=${!!a(c, 'strap-top')} strapBottom=${!!a(c, 'strap-bottom')}`,
       };
     },
   },
@@ -556,6 +571,164 @@ const ASSERTIONS = [
       const sR = c.apexJoin.right ? c.apexJoin.right.source : null;
       const ok = sL !== 'strap-ring' && sR !== 'strap-ring';
       return { ok, msg: `apexJoin.left.source=${sL} apexJoin.right.source=${sR}` };
+    },
+  },
+
+  // --- P6: landmark QA layer (Engineering Workflow Phase 6) ------------------
+  // The detection must carry a first-class landmark layer, and the seeded
+  // anchors must agree with it — a weak landmark can never become a confident
+  // anchor through table drift between the two.
+  {
+    id: 'P6.layer-present', name: 'detection.landmarkQa covers every anchor-schema kind',
+    test: (c) => {
+      const lq = c.landmarkQa;
+      if (!lq || !lq.byKind) return { ok: false, msg: 'landmarkQa missing from detection' };
+      const missingEntries = Object.keys(c.anchors).filter(k => !lq.byKind[k]);
+      const ok = missingEntries.length === 0 && lq.summary && lq.summary.total >= Object.keys(lq.byKind).length;
+      return { ok, msg: `kinds=${Object.keys(lq.byKind).length} uncovered=[${missingEntries.join(',')}]` };
+    },
+  },
+  {
+    id: 'P6.anchor-consistency', name: 'seeded anchors carry the landmark QA verdicts (tier/source/review)',
+    require: (c) => !!(c.landmarkQa && c.landmarkQa.byKind),
+    test: (c) => {
+      const lq = c.landmarkQa.byKind;
+      const bad = [];
+      for (const [kind, anc] of Object.entries(c.anchors)) {
+        const q = lq[kind];
+        if (!q) continue; // P6.layer-present already fails on this
+        if (anc.confidence !== q.confidence) bad.push(`${kind}: tier ${anc.confidence}!=${q.confidence}`);
+        if (anc.source !== q.source) bad.push(`${kind}: source ${anc.source}!=${q.source}`);
+        if (anc.reviewRequired !== q.reviewRequired) bad.push(`${kind}: rr ${anc.reviewRequired}!=${q.reviewRequired}`);
+        const expectedClass = anc.calibrated ? 'learned' : q.sourceClass;
+        if (anc.landmarkSourceClass !== expectedClass) bad.push(`${kind}: class ${anc.landmarkSourceClass}!=${expectedClass}`);
+      }
+      return { ok: bad.length === 0, msg: bad.length ? bad.slice(0, 4).join('; ') : 'all seeded anchors agree with landmarkQa' };
+    },
+  },
+  {
+    id: 'P6.presence-consistency', name: 'landmark `missing` ⇔ anchor not seeded (both directions)',
+    require: (c) => !!(c.landmarkQa && c.landmarkQa.byKind),
+    test: (c) => {
+      const bad = [];
+      for (const [kind, q] of Object.entries(c.landmarkQa.byKind)) {
+        const seeded = !!c.anchors[kind];
+        if (q.sourceClass === 'missing' && seeded) bad.push(`${kind}: classified missing but seeded`);
+        if (q.sourceClass !== 'missing' && !seeded) bad.push(`${kind}: classified ${q.sourceClass} but not seeded`);
+      }
+      return { ok: bad.length === 0, msg: bad.length ? bad.join('; ') : 'presence agrees for all kinds' };
+    },
+  },
+  {
+    id: 'P6.source-class-enum', name: 'landmark source classes stay in the Phase 6 vocabulary',
+    require: (c) => !!(c.landmarkQa && c.landmarkQa.byKind),
+    test: (c) => {
+      const allowed = new Set(['detected', 'derived', 'projected', 'missing']);
+      const bad = Object.values(c.landmarkQa.byKind)
+        .filter(q => !allowed.has(q.sourceClass))
+        .map(q => `${q.kind}=${q.sourceClass}`);
+      const badAnchor = Object.entries(c.anchors)
+        .filter(([, a]) => a.landmarkSourceClass && !allowed.has(a.landmarkSourceClass) && a.landmarkSourceClass !== 'learned')
+        .map(([k, a]) => `${k}=${a.landmarkSourceClass}`);
+      return { ok: bad.length === 0 && badAnchor.length === 0, msg: [...bad, ...badAnchor].join('; ') || 'all classes valid' };
+    },
+  },
+  {
+    id: 'P6.weak-never-confident', name: 'no low-tier or projected landmark escapes reviewRequired',
+    require: (c) => !!(c.landmarkQa && c.landmarkQa.byKind),
+    test: (c) => {
+      const bad = Object.values(c.landmarkQa.byKind)
+        .filter(q => q.present && (q.confidence === 'low' || q.sourceClass === 'projected') && !q.reviewRequired)
+        .map(q => q.kind);
+      return { ok: bad.length === 0, msg: bad.length ? `escaped review: ${bad.join(',')}` : 'all weak landmarks flagged' };
+    },
+  },
+  {
+    id: 'P6.pom14-always-verify', name: 'POM 14 strap landmarks stay always-verify with a QA note',
+    require: (c) => !!(c.landmarkQa && c.landmarkQa.byKind),
+    test: (c) => {
+      const T = c.landmarkQa.byKind['strap-top'];
+      const B = c.landmarkQa.byKind['strap-bottom'];
+      const noted = (q) => !!(q && Array.isArray(q.notes) && q.notes.some(n => n.indexOf('POM 14') === 0 || n.indexOf('missing') === 0));
+      const ok = !!T && !!B && T.reviewRequired === true && B.reviewRequired === true && noted(T) && noted(B);
+      return { ok, msg: `strap-top rr=${T && T.reviewRequired} strap-bottom rr=${B && B.reviewRequired}` };
+    },
+  },
+
+  // --- P7: anchor→POM contract stabilization (Engineering Workflow Phase 7) --
+  // The boundary must stay auditable: anchors normalized [0,1], rows stamped
+  // with the rule-JSON versions, and every REVIEW_ONLY row explaining itself
+  // with accurate missing-anchor lists and landmark-QA notes.
+  {
+    id: 'P7.anchors-normalized', name: 'every anchor sits inside normalized [0,1]',
+    test: (c) => {
+      const bad = Object.entries(c.anchors)
+        .filter(([, a]) => !(a.x >= 0 && a.x <= 1 && a.y >= 0 && a.y <= 1))
+        .map(([k, a]) => `${k}(${a.x.toFixed(3)},${a.y.toFixed(3)})`);
+      return { ok: bad.length === 0, msg: bad.join('; ') || `all ${Object.keys(c.anchors).length} anchors in range` };
+    },
+  },
+  {
+    id: 'P7.rule-versions-stamped', name: 'draft rows carry the rule-JSON template/rule versions',
+    test: (c) => {
+      const bad = Object.entries(c.poms)
+        .filter(([, p]) => p.templateVersion !== ruleVersions.template_version
+          || p.ruleVersion !== ruleVersions.rule_version)
+        .map(([pom, p]) => `POM ${pom}: ${p.templateVersion}/${p.ruleVersion}`);
+      return {
+        ok: bad.length === 0,
+        msg: bad.length ? bad.slice(0, 3).join('; ') : `all rows ${ruleVersions.template_version} / ${ruleVersions.rule_version}`,
+      };
+    },
+  },
+  {
+    id: 'P7.review-only-explains', name: 'every REVIEW_ONLY row carries a non-empty uncertainty',
+    test: (c) => {
+      const bad = Object.entries(c.poms)
+        .filter(([, p]) => p.drawability === 'REVIEW_ONLY' && !(typeof p.uncertainty === 'string' && p.uncertainty.length))
+        .map(([pom]) => `POM ${pom}`);
+      return { ok: bad.length === 0, msg: bad.join('; ') || 'all review-only rows explain themselves' };
+    },
+  },
+  {
+    id: 'P7.missing-anchors-accurate', name: 'missingAnchors matches reality and the template contract',
+    test: (c) => {
+      const bad = [];
+      for (const [pom, p] of Object.entries(c.poms)) {
+        const required = requiredAnchorsForPom(pom);
+        const actuallyMissing = required.filter(k => !c.anchors[k]);
+        // A required anchor genuinely absent ⇒ row demoted AND listed.
+        if (actuallyMissing.length) {
+          if (p.drawability !== 'REVIEW_ONLY') bad.push(`POM ${pom}: required ${actuallyMissing.join(',')} missing but drawability=${p.drawability}`);
+          for (const k of actuallyMissing) {
+            if (!p.missingAnchors || p.missingAnchors.indexOf(k) < 0) bad.push(`POM ${pom}: missing ${k} not listed in missingAnchors`);
+          }
+        }
+        // Every listed kind must be genuinely missing and template-declared.
+        for (const k of (p.missingAnchors || [])) {
+          if (c.anchors[k]) bad.push(`POM ${pom}: missingAnchors lists ${k} but it was seeded`);
+          if (required.indexOf(k) < 0) bad.push(`POM ${pom}: missingAnchors lists ${k} which is not a requiredAnchor`);
+        }
+      }
+      return { ok: bad.length === 0, msg: bad.length ? bad.slice(0, 4).join('; ') : 'missing-anchor lists accurate' };
+    },
+  },
+  {
+    id: 'P7.review-notes-from-qa', name: 'guard-demoted rows carry landmark-QA review notes',
+    require: (c) => !!(c.landmarkQa && c.landmarkQa.byKind),
+    test: (c) => {
+      const bad = [];
+      for (const [pom, p] of Object.entries(c.poms)) {
+        if (p.drawability !== 'REVIEW_ONLY' || !p.missingAnchors || !p.missingAnchors.length) continue;
+        const qaHasNotes = p.missingAnchors.some(k => {
+          const q = c.landmarkQa.byKind[k];
+          return q && Array.isArray(q.notes) && q.notes.length;
+        });
+        if (qaHasNotes && !(p.reviewNotes && p.reviewNotes.length)) {
+          bad.push(`POM ${pom}: QA has notes for ${p.missingAnchors.join(',')} but reviewNotes is empty`);
+        }
+      }
+      return { ok: bad.length === 0, msg: bad.join('; ') || 'review notes propagate from landmark QA' };
     },
   },
 
@@ -680,6 +853,11 @@ function captureExpr(imagePath) {
         poms[pom] = {
           drawability: d.drawability || null,
           confidence: d.confidence || null,
+          uncertainty: d.uncertainty || null,
+          missingAnchors: Array.isArray(d.missingAnchors) ? d.missingAnchors : null,
+          reviewNotes: Array.isArray(d.reviewNotes) ? d.reviewNotes : null,
+          templateVersion: d.templateVersion || null,
+          ruleVersion: d.ruleVersion || null,
         };
       }
       const anchors = {};
@@ -691,6 +869,8 @@ function captureExpr(imagePath) {
           source: a.source || null,
           reviewRequired: !!a.reviewRequired,
           cupModelId: a.cupModelId || null,
+          landmarkSourceClass: a.landmarkSourceClass || null,
+          calibrated: !!a.calibrated,
         };
       }
       // Draft line geometry for every POM, mapped from board space back to
@@ -719,10 +899,14 @@ function captureExpr(imagePath) {
           side: det.cupModel.side,
           viewRole: det.cupModel.viewRole,
           visibility: det.cupModel.visibility,
+          innerEdgeSupported: det.cupModel.innerEdgeSupported !== false,
           id: det.cupModel.id || null,
         } : null,
         seamEvidence: det.seamEvidence || null,
         apexJoin: det.apexJoin || null,
+        landmarkQa: det.landmarkQa
+          ? { byKind: det.landmarkQa.byKind, summary: det.landmarkQa.summary }
+          : null,
         axisX: typeof det.axisX === 'number' ? det.axisX : null,
         bandY: typeof det.bandY === 'number' ? det.bandY : null,
         chestY: typeof det.chestY === 'number' ? det.chestY : null,

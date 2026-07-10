@@ -150,6 +150,7 @@
     const sideBot    = at('side-bottom');
     const apexL      = at('apex-left');
     const apexR      = at('apex-right');
+    const strapTop   = at('strap-top');
     const strapBot   = at('strap-bottom');
     const backTop    = at('back-top');
     const backBot    = at('back-bottom');
@@ -257,22 +258,26 @@
     const ic9controls = { c1: ic9c1, c2: ic9c2 };
     const ic10controls = { c1: ic10c1, c2: ic10c2 };
 
-    // POM 14 is strap LENGTH: front cup/shoulder-strap join → back strap end.
+    // POM 14 is strap LENGTH: front strap upper joining seam → back strap end.
     // This necessarily crosses the front/back sketch gap on a flat tech-pack
     // page, so draw it as a curve that travels over the shoulder instead of a
     // straight line inside the back view.
-    const strapLengthStart = apexL;
+    const strapLengthStart = strapTop;
     const strapLengthEnd = strapBot;
     const strapLengthDX = Math.abs(strapLengthEnd.x - strapLengthStart.x);
     const strapLengthDY = Math.abs(strapLengthEnd.y - strapLengthStart.y);
     const strapLengthApexY = Math.min(strapLengthStart.y, strapLengthEnd.y);
     const strapLengthArc = Math.max(strapLengthDX * 0.32, strapLengthDY * 0.65 + 0.08);
+    // NOTE: lerp() in this file is a POINT lerp — passing scalars returns
+    // {x: NaN, y: NaN}, which clamp01 silently coerced to 0 and pinned both
+    // curve handles to the left image edge. Interpolate the x scalars inline.
+    const lerpNum = (a, b, t) => a + (b - a) * t;
     const strap14c1 = {
-      x: clamp01(lerp(strapLengthStart.x, strapLengthEnd.x, 0.35)),
+      x: clamp01(lerpNum(strapLengthStart.x, strapLengthEnd.x, 0.35)),
       y: strapLengthApexY - strapLengthArc,
     };
     const strap14c2 = {
-      x: clamp01(lerp(strapLengthStart.x, strapLengthEnd.x, 0.72)),
+      x: clamp01(lerpNum(strapLengthStart.x, strapLengthEnd.x, 0.72)),
       y: strapLengthApexY - strapLengthArc * 0.72,
     };
 
@@ -517,7 +522,7 @@
         reason: hasBackPanel ? 'Back panel height from the detected back view.' : 'Back panel height (offset from back center).' },
 
       // POM 14 — shoulder strap length:
-      // front cup/strap joining seam → end of the shoulder strap at the back.
+      // front strap upper joining seam → end of the shoulder strap at the back.
       // The only contractually-low POM (always verify by hand); front-only
       // sketches have no back strap end, so the missing-anchor guard below
       // demotes it to REVIEW_ONLY.
@@ -525,8 +530,8 @@
         viewRole: effectivePomViewRole('14'),
         start: strapLengthStart, end: strapLengthEnd, control1: strap14c1, control2: strap14c2,
         drawability: 'DRAWABLE', confidence: 'low',
-        proposedStartLandmark: 'cup/strap join', proposedEndLandmark: 'back strap end',
-        reason: 'Shoulder strap length from the front cup/strap join to the back strap end.' },
+        proposedStartLandmark: 'front strap upper join', proposedEndLandmark: 'back strap end',
+        reason: 'Shoulder strap length from the front strap upper joining seam to the back strap end.' },
 
       // POM 15 — back strap distance
       pom15Row,
@@ -541,6 +546,30 @@
         reason: 'Front apex-to-apex distance.' },
     ];
 
+    // Review-note plumbing (Engineering Workflow Phase 7, item 4). When a POM
+    // cannot be drawn, the row must say WHICH anchors are missing and WHY, in
+    // TD language. The "why" comes from the Phase 6 landmark QA layer
+    // (detection.landmarkQa) — e.g. "missing seam: bottom-cup cradle seam not
+    // found". Display names come from the anchor schema. Both fields are
+    // additive: drawability / confidence / geometry decisions are unchanged.
+    const qaByKind = (det && det.landmarkQa && det.landmarkQa.byKind) || null;
+    const anchorNameByKind = Object.create(null);
+    for (const schema of ANCHOR_SCHEMA) anchorNameByKind[schema.kind] = schema.name || schema.kind;
+    // QA notes for the given kinds (only kinds that are missing or flagged for
+    // review contribute — a healthy anchor has nothing to explain), deduped.
+    const reviewNotesForKinds = (kinds) => {
+      if (!qaByKind) return [];
+      const notes = [];
+      for (const kind of kinds) {
+        const q = qaByKind[kind];
+        if (!q || (q.present && !q.reviewRequired)) continue;
+        for (const note of (q.notes || [])) {
+          if (notes.indexOf(note) < 0) notes.push(note);
+        }
+      }
+      return notes;
+    };
+
     // Missing-anchor guard: any row whose POM declares a required anchor that
     // wasn't seeded must NOT ship as a confident drawn line — route it to
     // REVIEW_ONLY so the TD places it deliberately instead of having to spot
@@ -553,13 +582,21 @@
     for (const row of rows) {
       const tpl = POM_TEMPLATE[String(row.pom)];
       const required = (tpl && Array.isArray(tpl.requiredAnchors)) ? tpl.requiredAnchors : [];
-      if (required.every(kind => !!a[kind])) continue;
+      const missing = required.filter(kind => !a[kind]);
+      if (!missing.length) continue;
       row.drawability = 'REVIEW_ONLY';
       row.confidence = 'low';
       row.start = null; row.end = null;
       row.control1 = null; row.control2 = null;
+      // Phase 7: name the missing anchors explicitly so the TD (and the
+      // contract suite) can audit the demotion without re-running detection.
+      row.missingAnchors = missing.slice();
+      const missingNames = missing
+        .map(kind => anchorNameByKind[kind] || kind)
+        .join(', ');
       row.uncertainty = (row.uncertainty ? row.uncertainty + ' ' : '')
-        + 'A required anchor was not detected, so this line cannot be auto-placed.';
+        + 'A required anchor was not detected, so this line cannot be auto-placed.'
+        + ' Missing: ' + missingNames + '.';
     }
 
     // P5: a straight row whose endpoints coincide (zero measurable length)
@@ -619,12 +656,27 @@
     // 9/10 whose cupModel was hidden/absent — P3). validate-fixture requires
     // REVIEW_ONLY rows to carry null geometry, and a stale line must never be
     // drawn for a row the TD has to place by hand.
+    //
+    // Phase 7, item 4: every REVIEW_ONLY row also gets reviewNotes — the
+    // landmark QA explanations for its missing anchors (guard demotions) or,
+    // for other demotion paths (hidden cup, degenerate geometry), for any of
+    // its required anchors that the QA layer flagged. Empty stays absent: an
+    // uncertainty line with no QA evidence behind it is still valid.
     for (const row of rows) {
       if (row.drawability !== 'REVIEW_ONLY') continue;
       row.start = null; row.end = null;
       row.control1 = null; row.control2 = null;
       if (!row.uncertainty) {
         row.uncertainty = 'No reliable evidence to auto-place this line; the TD should place it.';
+      }
+      if (!row.reviewNotes) {
+        const tpl = POM_TEMPLATE[String(row.pom)];
+        const required = (tpl && Array.isArray(tpl.requiredAnchors)) ? tpl.requiredAnchors : [];
+        const kinds = (row.missingAnchors && row.missingAnchors.length)
+          ? row.missingAnchors
+          : required;
+        const notes = reviewNotesForKinds(kinds);
+        if (notes.length) row.reviewNotes = notes;
       }
     }
 

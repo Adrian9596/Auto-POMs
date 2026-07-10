@@ -1,7 +1,8 @@
 # Documentation Map
 
-This directory holds the project harness and any product contract derived from a
-future user-provided spec.
+This directory holds the Harness operating layer for Bra Auto Measure plus the
+project-specific story packets, decisions, proof matrix, and product notes that
+future agents should inherit.
 
 ## Main Files
 
@@ -30,6 +31,11 @@ future user-provided spec.
 
 ## Current State
 
-Harness v0 exists before implementation. These docs define how the project will
-grow; they do not imply that app code, tests, CI, or deployment automation exist
-yet.
+Bra Auto Measure is an implemented offline browser app. Harness is used here as
+the agent-facing operating layer: classify work before edits, preserve the
+16-POM/offline/determinism contracts, update stories and decisions when behavior
+changes, and prove changes with the suites in `TESTING.md`.
+
+The local Rust Harness CLI binary is currently absent in this checkout. Until it
+is restored, use `docs/TEST_MATRIX.md` as the checked-in proof fallback and
+record missing durable rows as harness friction.

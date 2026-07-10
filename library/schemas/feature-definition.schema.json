@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/feature-definition.schema.json",
+  "title": "Feature Definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["feature_id", "record_version", "group", "name_en", "name_zh", "value_type", "allowed_values", "description", "vocabulary_version", "status", "created_at", "retired_at"],
+  "properties": {
+    "feature_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"},
+    "record_version": {"type": "integer", "minimum": 1},
+    "group": {"type": "string", "minLength": 1},
+    "name_en": {"type": "string", "minLength": 1},
+    "name_zh": {"type": ["string", "null"]},
+    "value_type": {"enum": ["enum", "boolean", "number", "string"]},
+    "allowed_values": {"type": "array", "items": {"type": ["string", "number", "boolean"]}, "uniqueItems": true},
+    "description": {"type": "string", "minLength": 1},
+    "vocabulary_version": {"type": "string", "minLength": 1},
+    "status": {"enum": ["active", "retired"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "retired_at": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

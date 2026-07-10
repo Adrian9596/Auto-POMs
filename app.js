@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const BUILTIN_AUTO_MODE_RULE_JSON = {"version":{"pom_unit":"in","template_version":"fixed16-2026-07-09","rule_version":"offline-vision-rules-v3","anchor_version":"anchors-2026-07-09","suggestions_version":"sizeL-suggestions-v1"},"pomTemplate":{"rows":[{"id":"1","name":"1/2 Bottom band - Relax","zh":"下围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"primary","partner":"2","groupName":"1/2 Bottom band","primaryLabel":"Relax","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"2","name":"1/2 Bottom band - Extend","zh":"下围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"secondary","primary":"1"},"expected_confidence_tier":"high"},{"id":"3","name":"1/2 chest - Measure straight","zh":"胸围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"primary","partner":"4","groupName":"1/2 Chest","primaryLabel":"Measure straight","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"4","name":"1/2 chest - Extend","zh":"胸围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"secondary","primary":"3"},"expected_confidence_tier":"high"},{"id":"5","name":"Center front height","zh":"前中高度","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"6","name":"Cradle height at center front","zh":"托架前中高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"7","name":"Cradle height at bottom cup","zh":"托架底杯高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cup-top","cradle-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"8","name":"Cup height at center front","zh":"前中杯高","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cradle-cf-top"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"9","name":"Cup height","zh":"杯高","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-top","inner-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"10","name":"Cup width","zh":"杯宽","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-left","inner-cup-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"11","name":"Side seam length","zh":"侧缝长度","view":"back","refL":null,"requiredAnchors":["side-top","side-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"12","name":"Back center length","zh":"后中高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"13","name":"Back panel height","zh":"后背片高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"optionalAnchors":["back-panel-top","back-panel-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"14","name":"Shoulder strap length","zh":"肩带长度","view":"front_to_back","placementViewRole":"back","refL":null,"requiredAnchors":["apex-left","strap-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"low"},{"id":"15","name":"Back strap distances","zh":"后肩带间距","view":"back","refL":null,"requiredAnchors":["back-strap-left","back-strap-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"16","name":"Front apex distance","zh":"乳点间距","view":"front_outer","refL":null,"requiredAnchors":["apex-left","apex-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"}]},"anchorSchema":{"anchors":[{"kind":"cf-top","name":"CF top","group":"axis","hint":"Top of the center-front, where the cradle meets the chest line."},{"kind":"cf-bottom","name":"CF bottom","group":"axis","hint":"Bottom of the center front, on the underbust band.","derivation":{"method":"drop_to_line","args":["cf-top","band-left","band-right"],"axis":"vertical"}},{"kind":"cradle-cf-top","name":"Cradle CF","group":"axis","hint":"Where the cradle / cup-bottom seam approaches the center front. POM 6 top."},{"kind":"cradle-cup-top","name":"Cradle cup top","group":"axis","hint":"Cradle / cup-bottom seam at the bottom-cup position (POM 7 top)."},{"kind":"cradle-cup-bottom","name":"Cradle cup btm","group":"axis","hint":"Band baseline directly below the bottom-cup cradle point (POM 7 bottom).","derivation":{"method":"drop_to_line","args":["cradle-cup-top","band-left","band-right"],"axis":"vertical"}},{"kind":"band-left","name":"Band L","group":"band","hint":"Leftmost end of the underbust band line."},{"kind":"band-right","name":"Band R","group":"band","hint":"Rightmost end of the underbust band line."},{"kind":"chest-left","name":"Chest L","group":"chest","hint":"Left end of the chest / overbust horizontal line."},{"kind":"chest-right","name":"Chest R","group":"chest","hint":"Right end of the chest / overbust horizontal line."},{"kind":"inner-cup-top","name":"IC top","group":"inner-cup","hint":"Top of the cup (apex) on the front (outer) view — POM 9 start."},{"kind":"inner-cup-bottom","name":"IC btm","group":"inner-cup","hint":"Bottom of the cup on the cup-bottom seam, front (outer) view — POM 9 end."},{"kind":"inner-cup-left","name":"IC L","group":"inner-cup","hint":"Cup width, gore-side edge at mid-height, front (outer) view — POM 10 start."},{"kind":"inner-cup-right","name":"IC R","group":"inner-cup","hint":"Cup width, armhole-side edge at mid-height, front (outer) view — POM 10 end."},{"kind":"side-top","name":"Side top","group":"side","hint":"Top of the side seam at the underarm."},{"kind":"side-bottom","name":"Side btm","group":"side","hint":"Bottom of the side seam at the band."},{"kind":"apex-left","name":"Apex L","group":"apex","hint":"Left shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"apex-right","name":"Apex R","group":"apex","hint":"Right shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"strap-top","name":"Back strap top","group":"strap","hint":"Top of the back shoulder strap, back view."},{"kind":"strap-bottom","name":"Strap btm","group":"strap","hint":"End of the shoulder strap at the back / back-panel join — POM 14 end."},{"kind":"back-top","name":"Back top","group":"back","hint":"Top edge of the back panel."},{"kind":"back-bottom","name":"Back btm","group":"back","hint":"Bottom edge of the back panel."},{"kind":"back-panel-top","name":"Panel top","group":"back","hint":"Upper point for back panel height."},{"kind":"back-panel-bottom","name":"Panel btm","group":"back","hint":"Lower point for back panel height."},{"kind":"back-strap-left","name":"Back strap L","group":"back","hint":"Left point of the back strap distance."},{"kind":"back-strap-right","name":"Back strap R","group":"back","hint":"Right point of the back strap distance."}]},"sizeLSuggestions":{"suggestions_version":"sizeL-suggestions-v1","unit":"in","provenance":{"corpus":"Measurements 2/library/_raw_intake/measurements_size_l.csv","conceptMap":"Measurements 2/library/pom_concepts.csv","tolDefaults":"Measurements 2/library/pom_tol_defaults.csv","sketchRatios":"Measurements 2/library/sketch_ratios.csv","generatedBy":"scripts/generate-sizeL-suggestions.mjs","corpusRows":2950,"styleVersions":225,"droppedRows":26,"note":"Derived from the approved Size-L corpus. Regenerate with the generator; never hand-edit. droppedRows = corpus rows whose concept is not yet canonicalized (raw_* intake phrases)."},"poms":{"1":{"concept":"band_relax","median":14,"min":12.74,"max":14.38,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"2":{"concept":"band_extended","median":19,"min":18,"max":19.25,"tol":"1/2","tolType":"min","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"3":{"concept":"chest_relax","median":17,"min":15.5,"max":17.5,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":198,"confidence":"medium","source":"library"},"4":{"concept":"chest_extended","median":22,"min":20,"max":22.77,"tol":"1/2","tolType":"min","sketchReliable":false,"n":197,"confidence":"medium","source":"library"},"5":{"concept":"cf_height","median":5.5,"min":1.32,"max":6.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":217,"confidence":"medium","source":"library"},"6":{"concept":"cradle_cf","median":2.25,"min":1.31,"max":3,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":163,"confidence":"medium","source":"library"},"7":{"concept":"cradle_under_cup","median":1.75,"min":1.11,"max":2.64,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":173,"confidence":"medium","source":"library"},"8":{"concept":"cup_height_cf","median":3,"min":1.75,"max":4,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":113,"confidence":"low","source":"library"},"9":{"concept":"cup_height","median":8,"min":5.805,"max":9.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":237,"confidence":"medium","source":"library"},"10":{"concept":"cup_width","median":8,"min":6.6,"max":9,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":221,"confidence":"medium","source":"library"},"11":{"concept":"sideseam_length","median":5.5,"min":4.5,"max":6,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":211,"confidence":"medium","source":"library"},"12":{"concept":"cb_height","median":3.75,"min":2,"max":7.24,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":239,"confidence":"medium","source":"library"},"13":{"concept":"back_panel_height","median":7.25,"min":3,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":181,"confidence":"medium","source":"library"},"14":{"concept":"strap_length","median":8,"min":4,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":155,"confidence":"low","source":"library"},"15":{"concept":"back_straps_distance","median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"},"16":{"concept":null,"median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"}}}};
+  const BUILTIN_AUTO_MODE_RULE_JSON = {"version":{"pom_unit":"in","template_version":"fixed16-2026-07-10","rule_version":"offline-vision-rules-v3","anchor_version":"anchors-2026-07-10d","suggestions_version":"sizeL-suggestions-v1"},"pomTemplate":{"rows":[{"id":"1","name":"1/2 Bottom band - Relax","zh":"下围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"primary","partner":"2","groupName":"1/2 Bottom band","primaryLabel":"Relax","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"2","name":"1/2 Bottom band - Extend","zh":"下围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"secondary","primary":"1"},"expected_confidence_tier":"high"},{"id":"3","name":"1/2 chest - Measure straight","zh":"胸围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"primary","partner":"4","groupName":"1/2 Chest","primaryLabel":"Measure straight","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"4","name":"1/2 chest - Extend","zh":"胸围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"secondary","primary":"3"},"expected_confidence_tier":"high"},{"id":"5","name":"Center front height","zh":"前中高度","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"6","name":"Cradle height at center front","zh":"托架前中高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"7","name":"Cradle height at bottom cup","zh":"托架底杯高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cup-top","cradle-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"8","name":"Cup height at center front","zh":"前中杯高","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cradle-cf-top"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"9","name":"Cup height","zh":"杯高","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-top","inner-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"10","name":"Cup width","zh":"杯宽","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-left","inner-cup-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"11","name":"Side seam length","zh":"侧缝长度","view":"back","refL":null,"requiredAnchors":["side-top","side-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"12","name":"Back center length","zh":"后中高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"13","name":"Back panel height","zh":"后背片高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"optionalAnchors":["back-panel-top","back-panel-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"14","name":"Shoulder strap length","zh":"肩带长度","view":"front_to_back","placementViewRole":"back","refL":null,"requiredAnchors":["strap-top","strap-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"low"},{"id":"15","name":"Back strap distances","zh":"后肩带间距","view":"back","refL":null,"requiredAnchors":["back-strap-left","back-strap-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"16","name":"Front apex distance","zh":"乳点间距","view":"front_outer","refL":null,"requiredAnchors":["apex-left","apex-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"}]},"anchorSchema":{"anchors":[{"kind":"cf-top","name":"CF top","group":"axis","hint":"Top of the center-front, where the cradle meets the chest line."},{"kind":"cf-bottom","name":"CF bottom","group":"axis","hint":"Bottom of the center front, on the underbust band.","derivation":{"method":"drop_to_line","args":["cf-top","band-left","band-right"],"axis":"vertical"}},{"kind":"cradle-cf-top","name":"Cradle CF","group":"axis","hint":"Where the cradle / cup-bottom seam approaches the center front. POM 6 top."},{"kind":"cradle-cup-top","name":"Cradle cup top","group":"axis","hint":"Cradle / cup-bottom seam at the bottom-cup position (POM 7 top)."},{"kind":"cradle-cup-bottom","name":"Cradle cup btm","group":"axis","hint":"Band baseline directly below the bottom-cup cradle point (POM 7 bottom).","derivation":{"method":"drop_to_line","args":["cradle-cup-top","band-left","band-right"],"axis":"vertical"}},{"kind":"band-left","name":"Band L","group":"band","hint":"Leftmost end of the underbust band line."},{"kind":"band-right","name":"Band R","group":"band","hint":"Rightmost end of the underbust band line."},{"kind":"chest-left","name":"Chest L","group":"chest","hint":"Left end of the chest / overbust horizontal line."},{"kind":"chest-right","name":"Chest R","group":"chest","hint":"Right end of the chest / overbust horizontal line."},{"kind":"inner-cup-top","name":"IC top","group":"inner-cup","hint":"Top of the cup (apex) on the front (outer) view — POM 9 start."},{"kind":"inner-cup-bottom","name":"IC btm","group":"inner-cup","hint":"Bottom of the cup on the cup-bottom seam, front (outer) view — POM 9 end."},{"kind":"inner-cup-left","name":"IC L","group":"inner-cup","hint":"Cup width, gore-side edge at mid-height, front (outer) view — POM 10 start."},{"kind":"inner-cup-right","name":"IC R","group":"inner-cup","hint":"Cup width, armhole-side edge at mid-height, front (outer) view — POM 10 end."},{"kind":"side-top","name":"Side top","group":"side","hint":"Top of the side seam at the underarm."},{"kind":"side-bottom","name":"Side btm","group":"side","hint":"Bottom of the side seam at the band."},{"kind":"apex-left","name":"Apex L","group":"apex","hint":"Left shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"apex-right","name":"Apex R","group":"apex","hint":"Right shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"strap-top","name":"Front strap join","group":"strap","hint":"Strap join of the right shoulder strap (the strap adjacent to the back view) on the front view: the top seam of the stitched strap section, or where a plain strap attaches to the cup/neckline. Never the strap’s top cut edge — POM 14 start."},{"kind":"strap-bottom","name":"Back strap join","group":"strap","hint":"End of the shoulder strap at the back / back-panel join — POM 14 end."},{"kind":"back-top","name":"Back top","group":"back","hint":"Top edge of the back panel."},{"kind":"back-bottom","name":"Back btm","group":"back","hint":"Bottom edge of the back panel."},{"kind":"back-panel-top","name":"Panel top","group":"back","hint":"Upper point for back panel height."},{"kind":"back-panel-bottom","name":"Panel btm","group":"back","hint":"Lower point for back panel height."},{"kind":"back-strap-left","name":"Back strap L","group":"back","hint":"Left point of the back strap distance."},{"kind":"back-strap-right","name":"Back strap R","group":"back","hint":"Right point of the back strap distance."}]},"sizeLSuggestions":{"suggestions_version":"sizeL-suggestions-v1","unit":"in","provenance":{"corpus":"Measurements 2/library/_raw_intake/measurements_size_l.csv","conceptMap":"Measurements 2/library/pom_concepts.csv","tolDefaults":"Measurements 2/library/pom_tol_defaults.csv","sketchRatios":"Measurements 2/library/sketch_ratios.csv","generatedBy":"scripts/generate-sizeL-suggestions.mjs","corpusRows":2950,"styleVersions":225,"droppedRows":26,"note":"Derived from the approved Size-L corpus. Regenerate with the generator; never hand-edit. droppedRows = corpus rows whose concept is not yet canonicalized (raw_* intake phrases)."},"poms":{"1":{"concept":"band_relax","median":14,"min":12.74,"max":14.38,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"2":{"concept":"band_extended","median":19,"min":18,"max":19.25,"tol":"1/2","tolType":"min","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"3":{"concept":"chest_relax","median":17,"min":15.5,"max":17.5,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":198,"confidence":"medium","source":"library"},"4":{"concept":"chest_extended","median":22,"min":20,"max":22.77,"tol":"1/2","tolType":"min","sketchReliable":false,"n":197,"confidence":"medium","source":"library"},"5":{"concept":"cf_height","median":5.5,"min":1.32,"max":6.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":217,"confidence":"medium","source":"library"},"6":{"concept":"cradle_cf","median":2.25,"min":1.31,"max":3,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":163,"confidence":"medium","source":"library"},"7":{"concept":"cradle_under_cup","median":1.75,"min":1.11,"max":2.64,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":173,"confidence":"medium","source":"library"},"8":{"concept":"cup_height_cf","median":3,"min":1.75,"max":4,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":113,"confidence":"low","source":"library"},"9":{"concept":"cup_height","median":8,"min":5.805,"max":9.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":237,"confidence":"medium","source":"library"},"10":{"concept":"cup_width","median":8,"min":6.6,"max":9,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":221,"confidence":"medium","source":"library"},"11":{"concept":"sideseam_length","median":5.5,"min":4.5,"max":6,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":211,"confidence":"medium","source":"library"},"12":{"concept":"cb_height","median":3.75,"min":2,"max":7.24,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":239,"confidence":"medium","source":"library"},"13":{"concept":"back_panel_height","median":7.25,"min":3,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":181,"confidence":"medium","source":"library"},"14":{"concept":"strap_length","median":8,"min":4,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":155,"confidence":"low","source":"library"},"15":{"concept":"back_straps_distance","median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"},"16":{"concept":null,"median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"}}}};
 
   // ---- src/auto/rules/load-rules.js ----
 // Loads TD-editable Auto Mode rules from auto_mode_rules/*.json.
@@ -347,6 +347,52 @@
   // reference images by id instead of carrying (and re-serializing) base64 copies.
   const imageDataById = new Map();
 
+  // ---- Grade rules v2 container (US-011) ----------------------------------
+  // One persisted object holds every TD grading override:
+  //   steps        — v1 constant-step overrides { [pom]: {step, hold} }
+  //                  (step in the project unit, as the Size Run dialog wrote)
+  //   alpha, depth — per-POM per-size delta overrides { [pom]: {[size]: Δ} },
+  //                  stored in INCHES (unit-independent, converted at use like
+  //                  the built-ins). Written by the Grading dialog (S3).
+  //   depthOffsets — the former state.depthRules { [pom]: {offset} } (project
+  //                  unit), absorbed here so one field persists all grading.
+  function makeEmptyGradeRulesV2() {
+    return { version: 2, steps: {}, alpha: {}, depth: {}, depthOffsets: {} };
+  }
+
+  // Lossless upgrade of persisted grading state to the v2 container.
+  // Accepts: a v2 container (returned normalized), a v1 map of
+  // { [pom]: {step, hold} } entries, or null/garbage (fresh container).
+  // legacyDepthRules is the old separate state.depthRules field from
+  // pre-US-011 files; it folds into depthOffsets.
+  function migrateGradeRulesV2(raw, legacyDepthRules) {
+    const out = makeEmptyGradeRulesV2();
+    if (raw && typeof raw === 'object') {
+      if (raw.version === 2) {
+        for (const k of ['steps', 'alpha', 'depth', 'depthOffsets']) {
+          if (raw[k] && typeof raw[k] === 'object') out[k] = JSON.parse(JSON.stringify(raw[k]));
+        }
+      } else {
+        // v1: version-less map of per-POM {step, hold} overrides.
+        for (const key of Object.keys(raw)) {
+          const e = raw[key];
+          if (e && typeof e === 'object' && ('step' in e || 'hold' in e)) {
+            out.steps[key] = { ...e };
+          }
+        }
+      }
+    }
+    if (legacyDepthRules && typeof legacyDepthRules === 'object') {
+      for (const key of Object.keys(legacyDepthRules)) {
+        const e = legacyDepthRules[key];
+        if (e && typeof e === 'object' && e.offset != null && out.depthOffsets[key] == null) {
+          out.depthOffsets[key] = { ...e };
+        }
+      }
+    }
+    return out;
+  }
+
   const state = {
     tool: 'select',
     drawStyle: 'solid',
@@ -406,17 +452,26 @@
     // history snapshots so undo/redo covers spec edits.
     pomSpecs: {},
 
-    // Per-POM size-grade rules (per-size step increment + hold flag), keyed by
-    // POM label ("1".."16"). The Size Run dialog seeds each POM from the house
-    // default; only TD overrides are stored here. Persisted with the project
-    // and captured in history so undo/redo covers grade edits.
-    gradeRules: {},
+    // Grading overrides, v2 container (US-011): constant-step overrides
+    // (steps, the old v1 shape), per-size delta overrides (alpha/depth, from
+    // the Grading dialog), and L2−L offsets (depthOffsets, the former
+    // state.depthRules). Only TD overrides are stored; built-in defaults live
+    // in export-xlsx.js. Persisted with the project and captured in history
+    // so undo/redo covers grade edits. Old files migrate on load via
+    // migrateGradeRulesV2.
+    gradeRules: makeEmptyGradeRulesV2(),
 
-    // Per-POM depth-run overrides (the L2−L offset that anchors the M2–5XL2
-    // tier in the Excel export), keyed by POM label. Only TD overrides are
-    // stored; the SC defaults live in export-xlsx.js. Persisted with the
-    // project and captured in history, mirroring gradeRules.
-    depthRules: {},
+    // TD-defined POMs beyond the standard 16 (US-011, ADR 0018). Array of
+    // { pom: '17', en, zh, tol }. Numbering continues from 17 per project.
+    // Lives in project state — the 16-POM rule JSON is never touched.
+    // Persisted with the project and captured in history.
+    customPoms: [],
+
+    // Which size columns Export Excel emits: { alpha: [...], depth: [...] }
+    // of SPEC_SIZE_RUN labels. null → all 15 sizes (back-compat default).
+    // Persisted with the project (not in history — an export preference,
+    // not board content).
+    sizeSelection: null,
 
     // Review-time per-POM visibility toggles. When an annotation / draft id
     // is in these lists it is skipped by the canvas renderer and hit-test
@@ -2253,6 +2308,25 @@
         ? '1 bucket is Conflicting — its spread dwarfs its median, so bias is halved when applied.'
         : conflictingCount + ' buckets are Conflicting — spread dwarfs median, so bias is halved when applied.');
     }
+    // Phase 8: corrections by suspected pipeline stage — tells the TD (and
+    // engineers) WHERE the engine loses accuracy, not just how often.
+    const stageCounts = learning.stageCounts || {};
+    const stageLabels = {
+      'anchor-nudge': 'small nudges',
+      'landmark-wrong': 'landmark wrong',
+      'contour-missing': 'contour/seam evidence missing',
+      'geometry-wrong': 'geometry frame weak',
+      'segmentation-weak': 'segmentation weak',
+      unknown: 'no detection context',
+      unattributed: 'recorded before stage tracking',
+    };
+    const stageBits = Object.keys(stageCounts)
+      .filter(k => stageCounts[k] > 0)
+      .sort((x, y) => stageCounts[y] - stageCounts[x])
+      .map(k => (stageLabels[k] || k) + ': ' + stageCounts[k]);
+    if (stageBits.length) {
+      introParts.push('Suspected cause of corrections — ' + stageBits.join(' · ') + '.');
+    }
     intro.textContent = introParts.join(' ');
     section.appendChild(intro);
 
@@ -3325,7 +3399,7 @@
     const key = String(pomKey);
     const house = HOUSE_GRADE_INCHES[key] || { step: 0, hold: false };
     const houseStepUnit = house.step * inchesToUnit(state.calibration.unit);
-    const override = (state.gradeRules && state.gradeRules[key]) || null;
+    const override = (state.gradeRules && state.gradeRules.steps && state.gradeRules.steps[key]) || null;
     if (!override) return { step: houseStepUnit, hold: !!house.hold, overridden: false };
     return {
       step: override.step != null ? Number(override.step) : houseStepUnit,
@@ -3336,8 +3410,10 @@
 
   function setGradeRule(pomKey, patch) {
     const key = String(pomKey);
-    if (!state.gradeRules) state.gradeRules = {};
-    state.gradeRules[key] = Object.assign({}, state.gradeRules[key] || {}, patch);
+    if (!state.gradeRules || state.gradeRules.version !== 2) {
+      state.gradeRules = migrateGradeRulesV2(state.gradeRules, null);
+    }
+    state.gradeRules.steps[key] = Object.assign({}, state.gradeRules.steps[key] || {}, patch);
     pushHistoryIfChanged();
   }
 
@@ -3492,7 +3568,9 @@
     resetBtn.textContent = 'Reset steps';
     resetBtn.title = 'Discard step edits and restore the house-default increments.';
     resetBtn.addEventListener('click', () => {
-      state.gradeRules = {};
+      // Reset only the constant-step overrides this dialog edits; per-size
+      // deltas and depth offsets in the v2 container belong to other UIs.
+      state.gradeRules.steps = {};
       pushHistoryIfChanged();
       renderTable();
       showToast('Grade steps reset to house defaults.');
@@ -3526,6 +3604,140 @@
     dialog.panel.appendChild(footer);
 
     dialog.open();
+  }
+
+  // ---- src/ui/dialogs/export-size-dialog.js ----
+// Export size picker (US-011 S2). Opens from Export Excel: checkboxes for
+// every SPEC_SIZE_RUN column (grouped alpha / depth) with one-click presets.
+// The choice persists in state.sizeSelection (null = all sizes) so the next
+// export starts from the same subset. Source part for app.js — run
+// `npm run build` after editing. Loads before export-xlsx.js; SPEC_SIZE_RUN
+// is referenced at call time only (shared IIFE scope).
+
+  // The size columns Export Excel emits, honouring state.sizeSelection.
+  // null / malformed selection → the full run (back-compat default).
+  function selectedSizeRun() {
+    const sel = state.sizeSelection;
+    if (!sel || typeof sel !== 'object') return SPEC_SIZE_RUN.slice();
+    const alpha = Array.isArray(sel.alpha) ? sel.alpha : [];
+    const depth = Array.isArray(sel.depth) ? sel.depth : [];
+    return SPEC_SIZE_RUN.filter(c => (c.tier === 1 ? alpha : depth).includes(c.label));
+  }
+
+  function openExportSizeDialog(onConfirm) {
+    const dlg = buildDialog({
+      title: 'Export sizes',
+      sub: 'Choose which size columns the Excel spec includes.',
+    });
+
+    const body = document.createElement('div');
+    body.className = 'dialog-body';
+    body.style.cssText = 'display:flex;flex-direction:column;gap:12px;min-width:420px;';
+
+    const current = new Set(selectedSizeRun().map(c => c.label));
+    const boxByLabel = new Map();
+
+    const groupWrap = document.createElement('div');
+    groupWrap.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
+    const makeGroup = (title, tier) => {
+      const wrap = document.createElement('div');
+      const h = document.createElement('div');
+      h.textContent = title;
+      h.style.cssText = 'font-weight:600;font-size:12px;margin-bottom:6px;';
+      wrap.appendChild(h);
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px 14px;';
+      for (const col of SPEC_SIZE_RUN.filter(c => c.tier === tier)) {
+        const label = document.createElement('label');
+        label.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;';
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.checked = current.has(col.label);
+        box.addEventListener('change', updateFooter);
+        boxByLabel.set(col.label, box);
+        label.appendChild(box);
+        label.appendChild(document.createTextNode(col.label));
+        row.appendChild(label);
+      }
+      wrap.appendChild(row);
+      return wrap;
+    };
+    groupWrap.appendChild(makeGroup('Alpha sizes (graded from Size L)', 1));
+    groupWrap.appendChild(makeGroup('Depth sizes (graded from Size L2)', 2));
+    body.appendChild(groupWrap);
+
+    // Presets: one click to the common export shapes.
+    const presets = document.createElement('div');
+    presets.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+    const applyPreset = (predicate) => {
+      for (const col of SPEC_SIZE_RUN) boxByLabel.get(col.label).checked = predicate(col);
+      updateFooter();
+    };
+    const presetDefs = [
+      ['All sizes', () => true],
+      ['Size L only', (c) => c.label === 'L'],
+      ['Alpha only', (c) => c.tier === 1],
+      ['Depth only', (c) => c.tier === 2],
+    ];
+    for (const [name, predicate] of presetDefs) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'picker-btn';
+      btn.textContent = name;
+      btn.addEventListener('click', () => applyPreset(predicate));
+      presets.appendChild(btn);
+    }
+    body.appendChild(presets);
+
+    const hint = document.createElement('div');
+    hint.style.cssText = 'font-size:11px;color:#666;';
+    hint.textContent = 'Formulas stay live for sizes whose base column (L or L2) is included; '
+      + 'otherwise values are exported as plain numbers.';
+    body.appendChild(hint);
+
+    const footer = document.createElement('div');
+    footer.className = 'picker-footer';
+    footer.style.cssText = 'display:flex;gap:8px;align-items:center;';
+    const count = document.createElement('span');
+    count.style.cssText = 'font-size:12px;color:#444;flex:1;';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'picker-btn';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => dlg.close());
+    const okBtn = document.createElement('button');
+    okBtn.type = 'button';
+    okBtn.className = 'picker-btn picker-btn-primary';
+    okBtn.textContent = 'Export';
+    okBtn.addEventListener('click', () => {
+      const chosen = SPEC_SIZE_RUN.filter(c => boxByLabel.get(c.label).checked);
+      if (!chosen.length) return;
+      // null when everything is selected — the back-compat "no preference"
+      // shape old builds also understand (they ignore the field entirely).
+      state.sizeSelection = chosen.length === SPEC_SIZE_RUN.length
+        ? null
+        : {
+          alpha: chosen.filter(c => c.tier === 1).map(c => c.label),
+          depth: chosen.filter(c => c.tier === 2).map(c => c.label),
+        };
+      if (typeof scheduleAutosave === 'function') scheduleAutosave();
+      dlg.close();
+      onConfirm();
+    });
+    footer.appendChild(count);
+    footer.appendChild(cancelBtn);
+    footer.appendChild(okBtn);
+
+    function updateFooter() {
+      const n = SPEC_SIZE_RUN.filter(c => boxByLabel.get(c.label).checked).length;
+      count.textContent = n + ' of ' + SPEC_SIZE_RUN.length + ' sizes selected';
+      okBtn.disabled = n === 0;
+    }
+    updateFooter();
+
+    dlg.panel.appendChild(body);
+    dlg.panel.appendChild(footer);
+    dlg.open();
   }
 
   // ---- src/ui/meaning-popover.js ----
@@ -3881,6 +4093,18 @@
     return a + d;
   }
 
+  // How many POM lines can be toggled at all: drawn annotations plus (in Auto
+  // Mode) outstanding drafts. Template rows with no line drawn yet are not
+  // hideable, so they don't count. Drives whether the visibility control row
+  // renders and whether "Hide all" has anything to act on.
+  function hideablePomCount() {
+    let n = Array.isArray(state.annotations) ? state.annotations.length : 0;
+    if (state.appMode === 'auto' && state.autoMode && Array.isArray(state.autoMode.draftAnnotations)) {
+      n += state.autoMode.draftAnnotations.length;
+    }
+    return n;
+  }
+
   function showAllPoms() {
     let changed = false;
     if (Array.isArray(state.hiddenAnnIds) && state.hiddenAnnIds.length > 0) {
@@ -3890,6 +4114,32 @@
     if (Array.isArray(state.hiddenDraftIds) && state.hiddenDraftIds.length > 0) {
       state.hiddenDraftIds = [];
       changed = true;
+    }
+    if (!changed) return;
+    renderSpecPanel();
+    requestRender();
+  }
+
+  // Inverse of showAllPoms: hide every visible POM line at once so the TD can
+  // clear the sketch and reveal lines one at a time. Mirrors showAllPoms'
+  // ann + draft handling so the two stay symmetric.
+  function hideAllPoms() {
+    let changed = false;
+    if (!Array.isArray(state.hiddenAnnIds)) state.hiddenAnnIds = [];
+    for (const ann of state.annotations) {
+      if (ann && ann.id != null && state.hiddenAnnIds.indexOf(ann.id) === -1) {
+        state.hiddenAnnIds.push(ann.id);
+        changed = true;
+      }
+    }
+    if (state.appMode === 'auto' && state.autoMode && Array.isArray(state.autoMode.draftAnnotations)) {
+      if (!Array.isArray(state.hiddenDraftIds)) state.hiddenDraftIds = [];
+      for (const draft of state.autoMode.draftAnnotations) {
+        if (draft && draft.id != null && state.hiddenDraftIds.indexOf(draft.id) === -1) {
+          state.hiddenDraftIds.push(draft.id);
+          changed = true;
+        }
+      }
     }
     if (!changed) return;
     renderSpecPanel();
@@ -3971,11 +4221,12 @@
     }
     el.specBody.innerHTML = '';
 
-    // Sticky "N hidden — Show all" row: renders only when at least one POM
-    // is hidden. Keeps the reset within one click so the TD can un-isolate
-    // instantly after checking a line's evidence.
-    if (hiddenPomCount() > 0) {
-      el.specBody.appendChild(buildShowAllRow());
+    // Sticky visibility control row: renders whenever there is at least one
+    // hideable line, offering "Hide all" (isolate the sketch) and, once
+    // anything is hidden, "Show all" — each a one-click toggle so the TD can
+    // reveal and re-hide lines while checking evidence.
+    if (hideablePomCount() > 0) {
+      el.specBody.appendChild(buildVisibilityControlRow());
     }
 
     // Auto Mode: render the 16-row draft review section first.
@@ -4250,22 +4501,45 @@
     return td;
   }
 
-  function buildShowAllRow() {
+  // Sticky control row at the top of the panel. Shows "Hide all POMs" while any
+  // line is still visible and "Show all POMs (N hidden)" while any line is
+  // hidden — both together when the sketch is partially hidden.
+  function buildVisibilityControlRow() {
     const tr = document.createElement('tr');
     tr.className = 'spec-show-all-row';
     const td = document.createElement('td');
     td.colSpan = SPEC_COL_COUNT;
-    const count = hiddenPomCount();
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'spec-show-all-btn';
-    btn.textContent = 'Show all POMs (' + count + ' hidden)';
-    btn.title = 'Restore visibility for every hidden POM line on the sketch.';
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showAllPoms();
-    });
-    td.appendChild(btn);
+    const wrap = document.createElement('div');
+    wrap.className = 'spec-vis-actions';
+
+    const hiddenCount = hiddenPomCount();
+    const visibleCount = hideablePomCount() - hiddenCount;
+
+    if (visibleCount > 0) {
+      const hideBtn = document.createElement('button');
+      hideBtn.type = 'button';
+      hideBtn.className = 'spec-hide-all-btn';
+      hideBtn.textContent = 'Hide all POMs';
+      hideBtn.title = 'Hide every POM line on the sketch so you can reveal them one at a time.';
+      hideBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideAllPoms();
+      });
+      wrap.appendChild(hideBtn);
+    }
+    if (hiddenCount > 0) {
+      const showBtn = document.createElement('button');
+      showBtn.type = 'button';
+      showBtn.className = 'spec-show-all-btn';
+      showBtn.textContent = 'Show all POMs (' + hiddenCount + ' hidden)';
+      showBtn.title = 'Restore visibility for every hidden POM line on the sketch.';
+      showBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showAllPoms();
+      });
+      wrap.appendChild(showBtn);
+    }
+    td.appendChild(wrap);
     tr.appendChild(td);
     return tr;
   }
@@ -4540,52 +4814,10 @@
       hidden: isAnnHidden(ann.id),
       onToggle: () => toggleAnnHidden(ann.id),
     });
-    appendAutoMetadataBadges(td, ann);
+    // No metadata badges here (TD request 2026-07-10: the POM-number cell
+    // shows only the number). Confidence/drawability/accepted state remain
+    // visible in the Auto Mode draft-review rows.
     return { td, getValue: () => input.value.trim() };
-  }
-
-  function appendAutoMetadataBadges(td, ann) {
-    if (!isAutoDraft(ann)) return;
-    const stack = document.createElement('div');
-    stack.className = 'spec-meta-stack';
-    if (ann.tdEdited) {
-      const edited = document.createElement('div');
-      edited.className = 'spec-conf edited';
-      edited.textContent = 'edited';
-      edited.title = 'This line was placed by Auto Mode and adjusted manually.';
-      stack.appendChild(edited);
-    }
-    const conf = ann.confidence;
-    if (conf === 'high' || conf === 'medium' || conf === 'low') {
-      const badge = document.createElement('div');
-      badge.className = 'spec-conf ' + conf;
-      badge.textContent = conf;
-      badge.title = 'Auto Mode placement confidence: ' + conf + '.';
-      stack.appendChild(badge);
-    }
-    const drawability = normalizeDrawabilityBadge(ann.drawability);
-    if (drawability) {
-      const badge = document.createElement('div');
-      badge.className = 'spec-conf ' + drawability.className;
-      badge.textContent = drawability.label;
-      badge.title = 'Auto Mode drawability: ' + drawability.title + '.';
-      stack.appendChild(badge);
-    }
-    if (ann.acceptedWithoutEdit) {
-      const accepted = document.createElement('div');
-      accepted.className = 'spec-conf accepted';
-      accepted.textContent = 'accepted';
-      accepted.title = 'Applied without TD geometry edits.';
-      stack.appendChild(accepted);
-    }
-    if (stack.children.length) td.appendChild(stack);
-  }
-
-  function normalizeDrawabilityBadge(drawability) {
-    if (drawability === 'DRAWABLE') return { className: 'drawable', label: 'draw', title: 'drawable' };
-    if (drawability === 'APPROXIMATE') return { className: 'approximate', label: 'approx', title: 'approximate' };
-    if (drawability === 'REVIEW_ONLY') return { className: 'review_only', label: 'review', title: 'review only' };
-    return null;
   }
 
   function labelSortKey(ann) {
@@ -4783,6 +5015,12 @@
     if (draft.confidence) metaBits.push('conf: ' + draft.confidence);
     if (draft.reason) metaBits.push(draft.reason);
     if (draft.uncertainty && isReviewOnlyDraft(draft)) metaBits.push(draft.uncertainty);
+    // Phase 7: the landmark-QA explanations behind a review-only demotion
+    // (missing seam, no back view, inferred cup, …) so the TD sees the "why"
+    // without opening the debug payload.
+    if (isReviewOnlyDraft(draft) && Array.isArray(draft.reviewNotes)) {
+      for (const note of draft.reviewNotes) metaBits.push(note);
+    }
     if (metaBits.length) meta.textContent = metaBits.join(' • ');
     descTd.appendChild(meta);
 
@@ -5243,7 +5481,7 @@
       calibration: clone(state.calibration),
       pomSpecs: clone(state.pomSpecs || {}),
       gradeRules: clone(state.gradeRules || {}),
-      depthRules: clone(state.depthRules || {}),
+      customPoms: clone(state.customPoms || []),
     };
   }
 
@@ -5294,8 +5532,10 @@
     state.idCounter = snapshot.idCounter || inferNextIdCounter();
     state.calibration = snapshot.calibration || { unitsPerPx: null, unit: 'in' };
     state.pomSpecs = clone(snapshot.pomSpecs || {});
-    state.gradeRules = clone(snapshot.gradeRules || {});
-    state.depthRules = clone(snapshot.depthRules || {});
+    // migrate defensively: history is session-only, but a snapshot taken by
+    // pre-US-011 code (or with a legacy depthRules field) must still restore.
+    state.gradeRules = migrateGradeRulesV2(snapshot.gradeRules, snapshot.depthRules);
+    state.customPoms = clone(snapshot.customPoms || []);
     state.editingLabelId = null;
     state.drawSession = null;
     state.eraseSession = null;
@@ -5373,8 +5613,11 @@
         panY: state.panY,
         styleId: state.styleId || '',
         pomSpecs: clone(state.pomSpecs || {}),
+        // v2 container carries steps + per-size deltas + depthOffsets (the
+        // former depthRules field); old files still load via migration.
         gradeRules: clone(state.gradeRules || {}),
-        depthRules: clone(state.depthRules || {}),
+        customPoms: clone(state.customPoms || []),
+        sizeSelection: state.sizeSelection ? clone(state.sizeSelection) : null,
       },
     };
   }
@@ -5568,8 +5811,13 @@
       state.panY = s.panY ?? 0;
       state.styleId = (typeof s.styleId === 'string') ? s.styleId : '';
       state.pomSpecs = (s.pomSpecs && typeof s.pomSpecs === 'object') ? clone(s.pomSpecs) : {};
-      state.gradeRules = (s.gradeRules && typeof s.gradeRules === 'object') ? clone(s.gradeRules) : {};
-      state.depthRules = (s.depthRules && typeof s.depthRules === 'object') ? clone(s.depthRules) : {};
+      // THE single v1→v2 grading migration point: saved files and autosave
+      // restores both funnel through loadProject. Legacy s.depthRules folds
+      // into the v2 container's depthOffsets losslessly.
+      state.gradeRules = migrateGradeRulesV2(s.gradeRules, s.depthRules);
+      state.customPoms = Array.isArray(s.customPoms) ? clone(s.customPoms) : [];
+      state.sizeSelection = (s.sizeSelection && typeof s.sizeSelection === 'object')
+        ? clone(s.sizeSelection) : null;
 
       // Images are in place now, so the Auto status chip can resolve
       // ready/idle correctly for the reopened board.
@@ -9094,6 +9342,38 @@ function getAnnotationsOnImage(image) {
     return path;
   }
 
+  // Phase 4 (contour evidence): shape the raw skeleton feature points from
+  // detectJunctions into a reusable, decision-free topology bundle — points
+  // split by type plus normalized stroke statistics. Pure: same junctionMap in
+  // → same topology out. It lives in the junction module so the endpoint /
+  // junction evidence shaping stays unit-testable alongside detectJunctions
+  // (scripts/junction-tests.mjs), and carries NO garment-level meaning: it is
+  // shape evidence only, never an anchor or a geometry verdict.
+  function buildContourTopology(junctionMap) {
+    const points = junctionMap && Array.isArray(junctionMap.points) ? junctionMap.points : [];
+    const summary = (junctionMap && junctionMap.summary) || {};
+    const junctions = [];
+    const endpoints = [];
+    const corners = [];
+    for (const p of points) {
+      if (p.type === 'junction') junctions.push(p);
+      else if (p.type === 'endpoint') endpoints.push(p);
+      else if (p.type === 'corner') corners.push(p);
+    }
+    const strokeStats = {
+      skeletonPx: summary.skeletonPx || 0,
+      thinningIterations: summary.thinningIterations || 0,
+      prunedSpurs: summary.prunedSpurs || 0,
+      suppressedDense: summary.suppressedDense || 0,
+      featurePoints: points.length,
+      junctionCount: junctions.length,
+      endpointCount: endpoints.length,
+      cornerCount: corners.length,
+      capped: !!summary.capped,
+    };
+    return { junctions, endpoints, corners, strokeStats };
+  }
+
   // Merge points closer than radius. Type priority junction > corner >
   // endpoint (a thick junction often also reads as several corners). Points are
   // processed highest-priority-first, so the survivor is the highest-priority
@@ -9134,6 +9414,382 @@ function getAnnotationsOnImage(image) {
       out.push(p);
     }
     return out;
+  }
+
+  // ---- src/auto/detect/landmark-qa.js ----
+// Landmark QA layer (Engineering Workflow Phase 6). Source part for app.js.
+// Run `npm run build` after editing.
+//
+// A landmark is a technical point with meaning (apex, band-left, cradle-cf-top);
+// an anchor is its normalized, draggable representation on the board. This
+// layer sits between them: it classifies every anchor-schema kind on a finished
+// detection object — where the point came from, how much to trust it, and why —
+// BEFORE anchor placement reads it. seedAnchorsFromDetection consumes these
+// verdicts instead of recomputing its own, so a weak landmark can never become
+// a confident anchor through table drift.
+//
+// The tier / provenance / review predicates here are the exact logic that
+// lived in seed-anchors.js (moved, not changed) — Phase 2-style structural
+// refactor, so anchors, drafts, and golden output are identical.
+//
+// Vocabulary (Engineering Workflow, stage 7):
+//   sourceClass  detected  — direct ink / seam / silhouette evidence
+//                derived   — built from other landmarks (inferred cup model)
+//                projected — extended or guessed (seam projection, ratio seed)
+//                missing   — no seed will be placed; the POM demotes to review
+//   (anchors nudged by the learning loop are re-tagged 'learned' at seed time —
+//   that is an anchor-stage fact, so it lives on the anchor record, not here.)
+//
+// This function only READS the detection object — it never mutates it, places
+// no coordinates, and applies no learning bias.
+
+  // Semantic bra part for a landmark kind (Engineering Workflow Phase 5
+  // vocabulary, consumed by the Phase 8 learning context). This is the
+  // "engine speaks bra construction language" mapping: which named part of
+  // the garment the landmark belongs to. Kind → part is static — a landmark's
+  // meaning does not depend on the sketch.
+  function semanticPartForAnchorKind(kind) {
+    if (!kind) return null;
+    if (kind === 'band-left' || kind === 'band-right') return 'bottomBand';
+    if (kind === 'cf-top' || kind === 'cf-bottom') return 'centerFront';
+    if (kind === 'chest-left' || kind === 'chest-right') return 'cradle';
+    if (kind.indexOf('cradle-') === 0) return 'cradle';
+    if (kind.indexOf('inner-cup-') === 0) return 'frontCup';
+    if (kind === 'apex-left' || kind === 'apex-right') return 'frontCup';
+    if (kind === 'side-top' || kind === 'side-bottom') return 'sideSeam';
+    if (kind === 'strap-top' || kind === 'strap-bottom') return 'strap';
+    if (kind === 'back-strap-left' || kind === 'back-strap-right') return 'strap';
+    if (kind.indexOf('back-') === 0) return 'backPanel';
+    return null;
+  }
+
+  function buildLandmarkQaFromDetection(detection) {
+    if (!detection || !detection.bbox) return null;
+
+    // ---- View resolution (mirrors seedAnchorsFromDetection exactly) ----
+    const views = Array.isArray(detection.views) && detection.views.length
+      ? detection.views
+      : (Array.isArray(detection.viewBoxes) ? detection.viewBoxes : []);
+    const frontIdx = Number.isFinite(detection.frontViewIndex) && detection.frontViewIndex >= 0
+      ? detection.frontViewIndex
+      : (Number.isFinite(detection.primaryViewIndex) ? detection.primaryViewIndex : 0);
+    const frontView = views[frontIdx] || detection.bbox;
+    const frontViewValid = !!(frontView && frontView.width > 0 && frontView.height > 0);
+    const frontInnerView = views.find(v => v && (v.viewRole === 'front_inner' || v.role === 'front_inner')) || null;
+    const hasFrontInnerSeedView = !!(frontInnerView && frontInnerView.width > 0 && frontInnerView.height > 0);
+    let backView = null;
+    if (Number.isFinite(detection.backViewIndex) && detection.backViewIndex >= 0) {
+      backView = views[detection.backViewIndex] || null;
+    } else if (views.length > 1) {
+      const fallback = views
+        .map((view, index) => ({ view, index }))
+        .filter(item => item.index !== frontIdx)
+        .sort((a, b) => (b.view.count || 0) - (a.view.count || 0))[0];
+      backView = fallback ? fallback.view : null;
+    }
+    // Two distinct back-view signals, matching the seed layer exactly: the
+    // conf/provenance tables key on backView PRESENCE (plain truthiness),
+    // while the seed branch that places back-view anchors also requires a
+    // non-degenerate box. Conflating them would flip tiers on a zero-size box.
+    const backViewPresent = !!backView;
+    const backViewValid = !!(backView && backView.width > 0 && backView.height > 0);
+
+    // ---- Evidence handles ----
+    const det = detection.confidence || {};
+    const cupModel = detection.cupModel || null;
+    // innerEdgeSupported === false means the cup model's width row crosses a
+    // void (open neckline V — e.g. a front-closure style whose apex fired on
+    // the strap top) and its inner endpoint is the fabricated gore inset with
+    // no ink anywhere near it. The model must then NOT source the inner-cup
+    // anchors; the seed layer falls down the existing precedence chain
+    // (innerCupTopInk → view ratios → delete). Predicate mirrors
+    // innerCupFromCupModel in seed-anchors.js.
+    const cupModelUsable = !!(cupModel && cupModel.visibility !== 'hidden'
+      && cupModel.innerEdgeSupported !== false
+      && cupModel.topPoint && cupModel.bottomPoint
+      && cupModel.innerEdge && cupModel.outerEdgeNearArmhole);
+    const cupModelInferred = !!(cupModel && cupModel.visibility === 'inferred');
+    const innerCupTopInk = detection.innerCupTop || null;
+    const sideTopRightInk = detection.sideTopRight || null;
+    const backPanelInk = detection.backPanel || null;
+    const backPanelHeightInk = detection.backPanelHeight || null;
+    const cradleCfFromCupSeam = !detection.cradleCfTop && !!detection.cradleCupTop;
+    const geometryReviewRequired = !!detection.geometryReviewRequired;
+    const geometryReasons = detection.geometryFacts && detection.geometryFacts.quality
+      && Array.isArray(detection.geometryFacts.quality.reasons)
+      ? detection.geometryFacts.quality.reasons
+      : [];
+    const seamEv = detection.seamEvidence || null;
+
+    // ---- Cup anchor gate (mirrors the seed layer's cupAnchorGate) ----
+    const willDelete = !!(cupModel && cupModel.visibility === 'hidden'
+      && !innerCupTopInk && !hasFrontInnerSeedView);
+    const cupGate = {
+      cupModelPresent: !!cupModel,
+      cupModelVisibility: cupModel ? cupModel.visibility : null,
+      cupModelInnerEdgeSupported: cupModel ? cupModel.innerEdgeSupported !== false : null,
+      cupModelUsable,
+      innerCupTopInkPresent: !!innerCupTopInk,
+      hasFrontInnerView: hasFrontInnerSeedView,
+      willDelete,
+      pathTaken: willDelete
+        ? 'deleted (POM 9/10 → REVIEW_ONLY)'
+        : (cupModelUsable
+          ? 'cupModel'
+          : (innerCupTopInk
+            ? 'innerCupTopInk fallback'
+            : (hasFrontInnerSeedView ? 'front_inner view ratios' : 'view-box ratio fallback'))),
+      cupModelReason: cupModel ? cupModel.reason : null,
+    };
+    const cupSource = cupGate.pathTaken === 'cupModel'
+      ? (cupModelInferred ? 'cupModelInferred' : 'cupModel')
+      : (cupGate.pathTaken === 'front_inner view ratios'
+        ? 'frontInnerView'
+        : (cupGate.pathTaken === 'innerCupTopInk fallback'
+          ? 'innerCupTopInkFallback'
+          : 'cupRatioFallback'));
+
+    // ---- Confidence tiers (moved verbatim from seed-anchors.js) ----
+    const tier = (score, fallback) => {
+      if (score == null || score <= 0) return fallback;
+      if (score >= 0.5) return 'high';
+      if (score >= 0.2) return 'medium';
+      return 'low';
+    };
+    const cupTier = (score, cm) => {
+      const direct = cm && cm.visibility === 'direct';
+      const t = tier(score, direct ? 'high' : 'medium');
+      return (!direct && t === 'high') ? 'medium' : t;
+    };
+    const confByKind = {
+      'cf-top':            tier(det.axis, 'medium'),
+      'cf-bottom':         tier(det.band, 'high'),
+      'cradle-cf-top':     (cradleCfFromCupSeam || detection.cradleCfTopDipProjected)
+                             ? 'low'
+                             : tier(det.cradleCfTop, 'medium'),
+      'cradle-cup-top':    tier(det.cradleCupTop, 'medium'),
+      'cradle-cup-bottom': tier(det.cradleCupBottom, 'medium'),
+      'band-left':         tier(det.band, 'high'),
+      'band-right':        tier(det.band, 'high'),
+      'chest-left':        tier(det.chest, 'medium'),
+      'chest-right':       tier(det.chest, 'medium'),
+      'inner-cup-top':     (cupModelUsable
+                              ? cupTier((cupModel.contourConfidence || 0) * 0.6 + (cupModel.seamConfidence || 0) * 0.4, cupModel)
+                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : tier(det.chest, 'medium'))),
+      'inner-cup-bottom':  (cupModelUsable
+                              ? cupTier((cupModel.seamConfidence || 0) * 0.7 + (cupModel.contourConfidence || 0) * 0.3, cupModel)
+                              : tier(det.cradle, 'medium')),
+      'inner-cup-left':    (cupModelUsable
+                              ? cupTier((cupModel.contourConfidence || 0) * 0.5 + (cupModel.seamConfidence || 0) * 0.5, cupModel)
+                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : 'medium')),
+      'inner-cup-right':   (cupModelUsable
+                              ? cupTier((cupModel.contourConfidence || 0) * 0.5 + (cupModel.seamConfidence || 0) * 0.5, cupModel)
+                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : 'medium')),
+      'side-top':          sideTopRightInk ? tier(det.sideTopRight, 'medium') : tier(det.sideRight, 'medium'),
+      'side-bottom':       tier(det.sideRight, 'medium'),
+      'apex-left':         tier(det.apexLeft, 'medium'),
+      'apex-right':        tier(det.apexRight, 'medium'),
+      // POM 14 is the only contractually-low POM (always verify by hand); floor
+      // both strap ends to 'low' so reviewRequired is guaranteed (ADR 0012).
+      'strap-top':         'low',
+      'strap-bottom':      'low',
+      'back-top':          tier(det.back, 'low'),
+      'back-bottom':       tier(det.back, 'low'),
+      'back-panel-top':    (backPanelHeightInk || backPanelInk) ? tier(det.backPanel, 'medium') : (backViewPresent ? 'medium' : 'low'),
+      'back-panel-bottom': (backPanelHeightInk || backPanelInk) ? tier(det.backPanel, 'medium') : (backViewPresent ? 'medium' : 'low'),
+      'back-strap-left':   backViewPresent ? 'medium' : 'low',
+      'back-strap-right':  backViewPresent ? 'medium' : 'low',
+    };
+
+    // ---- Fine provenance (moved verbatim from seed-anchors.js) ----
+    const sourceByKind = {
+      'cf-top':            detection.cfTopY != null ? 'ink' : 'ratio',
+      'cf-bottom':         detection.bandY != null ? 'silhouette' : 'ratio',
+      'cradle-cf-top':     cradleCfFromCupSeam
+                             ? 'seamProjected'
+                             : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'),
+      'cradle-cup-top':    'seam',
+      'cradle-cup-bottom': 'seam',
+      'band-left':         detection.bandLeftX != null ? 'ink' : 'silhouette',
+      'band-right':        detection.bandRightX != null ? 'ink' : 'silhouette',
+      'chest-left':        (detection.underbustLeftX != null || detection.chestLeftX != null) ? 'ink' : 'ratio',
+      'chest-right':       (detection.underbustRightX != null || detection.chestRightX != null) ? 'ink' : 'ratio',
+      'inner-cup-top':     cupSource,
+      'inner-cup-bottom':  cupSource,
+      'inner-cup-left':    cupSource,
+      'inner-cup-right':   cupSource,
+      'side-top':          sideTopRightInk ? 'ink' : 'silhouette',
+      'side-bottom':       detection.sideBottomRight ? 'ink' : 'silhouette',
+      'apex-left':         detection.apexLeft ? 'apexJoin' : 'ratio',
+      'apex-right':        detection.apexRight ? 'apexJoin' : 'ratio',
+      'strap-top':         detection.frontStrapStart ? 'frontStrapSeam' : 'ratio',
+      'strap-bottom':      (backPanelHeightInk || backPanelInk) ? 'backPanelJoin' : 'ratio',
+      'back-top':          (detection.back && detection.back.top) ? 'ink' : 'ratio',
+      'back-bottom':       (detection.back && detection.back.bottom) ? 'ink' : 'ratio',
+      'back-panel-top':    (backPanelHeightInk || backPanelInk) ? 'ink' : 'ratio',
+      'back-panel-bottom': (backPanelHeightInk || backPanelInk) ? 'ink' : 'ratio',
+      'back-strap-left':   (detection.backStrapInner && detection.backStrapInner.left)  ? 'ink' : (backViewPresent ? 'silhouette' : 'ratio'),
+      'back-strap-right':  (detection.backStrapInner && detection.backStrapInner.right) ? 'ink' : (backViewPresent ? 'silhouette' : 'ratio'),
+    };
+
+    // ---- Numeric score behind the tier (null when a fallback bucket fired) ----
+    const cupBlend = (a, b) => cupModelUsable
+      ? (cupModel.contourConfidence || 0) * a + (cupModel.seamConfidence || 0) * b
+      : null;
+    const scoreByKind = {
+      'cf-top': det.axis, 'cf-bottom': det.band,
+      'cradle-cf-top': det.cradleCfTop, 'cradle-cup-top': det.cradleCupTop,
+      'cradle-cup-bottom': det.cradleCupBottom,
+      'band-left': det.band, 'band-right': det.band,
+      'chest-left': det.chest, 'chest-right': det.chest,
+      'inner-cup-top': cupBlend(0.6, 0.4),
+      'inner-cup-bottom': cupModelUsable ? (cupModel.seamConfidence || 0) * 0.7 + (cupModel.contourConfidence || 0) * 0.3 : det.cradle,
+      'inner-cup-left': cupBlend(0.5, 0.5), 'inner-cup-right': cupBlend(0.5, 0.5),
+      'side-top': sideTopRightInk ? det.sideTopRight : det.sideRight,
+      'side-bottom': det.sideRight,
+      'apex-left': det.apexLeft, 'apex-right': det.apexRight,
+      'strap-top': det.frontStrapStart, 'strap-bottom': det.backPanel,
+      'back-top': det.back, 'back-bottom': det.back,
+      'back-panel-top': det.backPanel, 'back-panel-bottom': det.backPanel,
+      'back-strap-left': null, 'back-strap-right': null,
+    };
+
+    // ---- Seed presence: will seedAnchorsFromDetection place this kind? ----
+    // Mirrors the seed construction paths, so a `missing` classification here
+    // is exactly the requiredAnchors demotion the drafter will apply.
+    const apexL = detection.apexLeftInner || detection.apexLeft;
+    const apexR = detection.apexRightInner || detection.apexRight;
+    const presentByKind = {};
+    for (const schema of ANCHOR_SCHEMA) presentByKind[schema.kind] = true;
+    presentByKind['cradle-cf-top'] = !!(detection.cradleCfTop || cradleCfFromCupSeam);
+    presentByKind['cradle-cup-top'] = !!(detection.cradleCupTop && detection.cradleCupBottom);
+    presentByKind['cradle-cup-bottom'] = presentByKind['cradle-cup-top'];
+    presentByKind['apex-left'] = !!(frontViewValid && apexL && apexR);
+    presentByKind['apex-right'] = presentByKind['apex-left'];
+    presentByKind['strap-top'] = frontViewValid;
+    presentByKind['back-panel-top'] = backViewValid;
+    presentByKind['back-panel-bottom'] = backViewValid;
+    presentByKind['back-strap-left'] = backViewValid;
+    presentByKind['back-strap-right'] = backViewValid;
+    presentByKind['strap-bottom'] = backViewValid;
+    if (willDelete) {
+      presentByKind['inner-cup-top'] = false;
+      presentByKind['inner-cup-bottom'] = false;
+      presentByKind['inner-cup-left'] = false;
+      presentByKind['inner-cup-right'] = false;
+    }
+
+    // ---- Source class: provenance → Engineering Workflow vocabulary ----
+    const SOURCE_CLASS = {
+      ink: 'detected', seam: 'detected', silhouette: 'detected',
+      apexJoin: 'detected', frontStrapSeam: 'detected', backPanelJoin: 'detected',
+      cupModel: 'detected', frontInnerView: 'detected',
+      innerCupTopInkFallback: 'detected',
+      cupModelInferred: 'derived',
+      seamProjected: 'projected', seamDip: 'projected',
+      ratio: 'projected', cupRatioFallback: 'projected',
+    };
+
+    // ---- Per-kind assembly ----
+    const PROJECTED_SOURCES = ['ratio', 'seamProjected', 'seamDip', 'cupRatioFallback', 'innerCupTopInkFallback'];
+    const byKind = {};
+    const summary = {
+      total: 0, missing: 0, reviewRequired: 0,
+      bySourceClass: { detected: 0, derived: 0, projected: 0, missing: 0 },
+    };
+    for (const schema of ANCHOR_SCHEMA) {
+      const kind = schema.kind;
+      const present = !!presentByKind[kind];
+      const source = sourceByKind[kind] || 'unknown';
+      const confTier = confByKind[kind] || 'medium';
+      const rawScore = scoreByKind[kind];
+      const notes = [];
+
+      // Weakness predicate — identical to the seed layer's reviewRequired.
+      const cupInferredWeakAnchor = source === 'cupModelInferred'
+        && cupModel
+        && (
+          (cupModel.contourConfidence || 0) < 0.5
+          || (kind === 'inner-cup-bottom' && !cupModel.bottomFromSeam && !cupModel.bottomFromInk)
+          || (kind === 'inner-cup-top' && !cupModel.topFromApex)
+        );
+      const reviewRequired = !present
+        || confTier === 'low'
+        || PROJECTED_SOURCES.indexOf(source) >= 0
+        || cupInferredWeakAnchor
+        || (geometryReviewRequired && confTier !== 'high');
+
+      // QA notes in the stage-7 vocabulary: say WHY, not just that it is weak.
+      if (!present) {
+        if (kind === 'cradle-cf-top') {
+          const reason = seamEv && seamEv.cradleCfSeam && seamEv.cradleCfSeam.missingReason;
+          notes.push('missing seam: no CF cradle seam detected' + (reason ? ' (' + reason + ')' : '') + ' — POM 6/8 demote to REVIEW_ONLY.');
+        } else if (kind === 'cradle-cup-top' || kind === 'cradle-cup-bottom') {
+          const reason = seamEv && seamEv.cradleCupSeam && seamEv.cradleCupSeam.missingReason;
+          notes.push('missing seam: bottom-cup cradle seam not found' + (reason ? ' (' + reason + ')' : '') + ' — POM 7 demotes to REVIEW_ONLY.');
+        } else if (kind.indexOf('inner-cup-') === 0) {
+          notes.push('missing: cup model hidden with no fallback evidence — POM 9/10 demote to REVIEW_ONLY.');
+        } else if (kind === 'apex-left' || kind === 'apex-right') {
+          notes.push('missing: apex join not validated on both cups — POM 16 demotes to REVIEW_ONLY.');
+        } else {
+          notes.push('missing: no back view detected — the back-view landmark cannot be placed.');
+        }
+      } else {
+        if (source === 'seamProjected') {
+          notes.push('projected landmark: CF seam missed; extended from the bottom-cup cradle seam to the CF axis — verify the POM 6/8 boundary.');
+        } else if (source === 'seamDip') {
+          notes.push('projected landmark: cradle-cf-top projected from the seam dip — verify against the actual CF seam.');
+        } else if (source === 'ratio' || source === 'cupRatioFallback') {
+          notes.push('projected landmark: no ink signal — seeded from view-box ratio geometry.');
+        } else if (source === 'innerCupTopInkFallback') {
+          notes.push('weak contour: cup model unavailable; legacy ink-top heuristic used for the inner-cup frame.');
+        }
+        if (source === 'cupModelInferred') {
+          notes.push('inferred geometry: cup model built from apex + cradle seam evidence (no front_inner view).');
+          if ((cupModel.contourConfidence || 0) < 0.5) {
+            notes.push('weak contour: cup outline confidence ' + (cupModel.contourConfidence || 0).toFixed(2) + ' — the traced cup arc is unreliable.');
+          }
+          if (kind === 'inner-cup-bottom' && !cupModel.bottomFromSeam && !cupModel.bottomFromInk) {
+            notes.push('inferred geometry: cup bottom is a flat-cradle-row guess (no committed seam or underwire arc).');
+          }
+          if (kind === 'inner-cup-top' && !cupModel.topFromApex) {
+            notes.push('inferred geometry: cup top is not anchored on a validated apex.');
+          }
+        }
+        if (geometryReviewRequired && confTier !== 'high') {
+          notes.push('poor view classification / weak frame: ' + (geometryReasons.join('; ') || 'geometry stage flagged the frame as weak') + '.');
+        }
+        if (kind === 'strap-top' || kind === 'strap-bottom') {
+          notes.push('POM 14 (shoulder-strap length) is contractually always-verify (ADR 0012).');
+        }
+      }
+
+      const sourceClass = present ? (SOURCE_CLASS[source] || 'detected') : 'missing';
+      byKind[kind] = {
+        kind,
+        present,
+        source: present ? source : null,
+        sourceClass,
+        confidence: confTier,
+        score: (typeof rawScore === 'number' && rawScore > 0)
+          ? Math.round(rawScore * 1e4) / 1e4
+          : null,
+        reviewRequired,
+        notes,
+      };
+      summary.total += 1;
+      if (!present) summary.missing += 1;
+      if (reviewRequired) summary.reviewRequired += 1;
+      summary.bySourceClass[sourceClass] += 1;
+    }
+
+    return {
+      version: 1,
+      byKind,
+      summary,
+      cupGate,
+      geometryReviewRequired,
+    };
   }
 
   // ---- src/auto-detection.js ----
@@ -9304,6 +9960,16 @@ function getAnnotationsOnImage(image) {
           (typeof performance !== 'undefined' ? performance.now() : Date.now()) - traceT0
         );
         detection.engine += '+potrace';
+        // Phase 4: normalize the traced outlines into reusable curve candidates
+        // (one shared classification pass) and complete the contour-evidence
+        // summary. Both are the deferred half of extractContours' bundle —
+        // shape evidence only, no geometry decision.
+        detection.curveCandidates = buildContourCurveCandidates(traced, detection);
+        if (detection.contourEvidence) {
+          detection.contourEvidence.traced = true;
+          detection.contourEvidence.contourCount = traced.paths.length;
+          detection.contourEvidence.curveCandidateCount = detection.curveCandidates.length;
+        }
       }
     } catch (err) {
       console.warn('[Auto Mode] Potrace tracing failed:', err);
@@ -9438,6 +10104,118 @@ function getAnnotationsOnImage(image) {
     const real = window.RealOpenCVAPI;
     if (real && typeof real.isReady === 'function' && real.isReady()) return real;
     return window.FreeOpenCVAPI || null;
+  }
+
+  // -------- Segmentation adapter seam (Engineering Workflow Phase 3, item 4) --------
+  //
+  // A single, null-guarded plug point for a future SAM-like segmenter. The
+  // contract mirrors the built-in ink-mask adapters (createInkMaskFromImage):
+  // an adapter receives the source bitmap + options and returns the SAME ink
+  // analysis shape { engine, width, height, total, mask, stats, threshold,
+  // luminanceThreshold, backgroundLum, ... }. When registered it is tried
+  // first in buildInkAnalysisFromImage and, on any failure or bad shape, the
+  // pipeline falls back to OpenCV / legacy exactly as before.
+  //
+  // HARD OFFLINE RULE: an adapter MUST run fully locally. It may wrap a
+  // vendored/WASM model, but it MUST NOT make any network call that carries
+  // sketch or measurement data. Nothing here reaches the network; the default
+  // is null, so the runtime is unchanged until a caller opts in.
+  let externalSegmentationAdapter = null;
+  function registerSegmentationAdapter(fn) {
+    externalSegmentationAdapter = (typeof fn === 'function') ? fn : null;
+    return !!externalSegmentationAdapter;
+  }
+  function clearSegmentationAdapter() { externalSegmentationAdapter = null; }
+  function getSegmentationAdapter() { return externalSegmentationAdapter; }
+
+  // Normalize the many possible ink-mask engine strings into a small, stable
+  // set of backend ids so downstream code / debug summaries never have to
+  // pattern-match version-stamped strings.
+  function classifySegmentationBackend(engine) {
+    const e = String(engine || '');
+    if (/^real-opencv/.test(e)) return 'opencv-real';
+    if (/^free-opencv/.test(e)) return 'opencv-free';
+    if (/^offline-vision-legacy/.test(e)) return 'legacy';
+    if (/^external/.test(e)) return 'external-adapter';
+    if (/^synthetic/.test(e)) return 'synthetic';
+    return e || 'unknown';
+  }
+
+  // Deterministic segmentation-quality score in [0,1], derived only from
+  // signals the segmentation stage already computes. Same mask in → same
+  // number out (no timing, no randomness). Low quality is a review signal,
+  // not a failure: the mask still flows downstream, but callers can flag the
+  // POMs for extra TD scrutiny.
+  //
+  // Sub-scores (each in [0,1]):
+  //   coverage      — ink is a small-but-real fraction of the canvas; near-zero
+  //                   means "found nothing", near-total means "flooded / frame".
+  //   retention     — share of raw ink that survived component cleanup; a clean
+  //                   line drawing keeps almost all of it, a noisy scan loses a
+  //                   lot of speckle.
+  //   fragmentation — few raw components is good; hundreds is speckle / dashes.
+  //   presence      — at least one ink component survived cleanup.
+  // A fail-open ink-cleanup revert halves the score (the mask may carry the
+  // page frame / speckle the filter tried to strip).
+  function computeSegmentationQuality(sig) {
+    const coverage = Number.isFinite(sig.coverage) ? sig.coverage : 0;
+    const retainedInk = Number.isFinite(sig.retainedInk) ? sig.retainedInk : 0;
+    const componentCount = Number.isFinite(sig.componentCount) ? sig.componentCount : 0;
+    const keptComponentCount = Number.isFinite(sig.keptComponentCount) ? sig.keptComponentCount : 0;
+    const inkCleanupReverted = !!sig.inkCleanupReverted;
+
+    const c01 = (v) => Math.max(0, Math.min(1, v));
+    const rampUp = (v, lo, hi) => (hi <= lo ? (v >= hi ? 1 : 0) : c01((v - lo) / (hi - lo)));
+    const rampDown = (v, lo, hi) => (hi <= lo ? (v <= lo ? 1 : 0) : c01((hi - v) / (hi - lo)));
+
+    const coverageScore = Math.min(rampUp(coverage, 0.002, 0.01), rampDown(coverage, 0.35, 0.55));
+    const retentionScore = rampUp(retainedInk, 0.45, 0.85);
+    const fragScore = rampDown(componentCount, 60, 220);
+    const presenceScore = keptComponentCount > 0 ? 1 : 0;
+
+    let quality = c01(
+      0.38 * coverageScore
+      + 0.30 * retentionScore
+      + 0.20 * fragScore
+      + 0.12 * presenceScore
+    );
+    if (inkCleanupReverted) quality = c01(quality * 0.5);
+    quality = Math.round(quality * 1e4) / 1e4;
+
+    const reasons = [];
+    if (coverage < 0.004) reasons.push('very little ink coverage — segmentation may have missed the garment');
+    if (coverage > 0.45) reasons.push('very high ink coverage — segmentation may include the page frame or a fill');
+    if (retainedInk < 0.5 && !inkCleanupReverted) reasons.push('component cleanup discarded a large share of the ink — noisy or fragmented source');
+    if (componentCount > 160) reasons.push('many disconnected components — speckle or dashed line art');
+    if (keptComponentCount === 0 && !inkCleanupReverted) reasons.push('no ink component survived cleanup');
+    if (inkCleanupReverted) reasons.push('ink-cleanup revert fired — the outline may include page edges or speckle');
+
+    const weak = inkCleanupReverted || quality < 0.45;
+    return {
+      quality,
+      weak,
+      reviewRequired: weak,
+      reasons,
+      subScores: {
+        coverage: Math.round(coverageScore * 1e4) / 1e4,
+        retention: Math.round(retentionScore * 1e4) / 1e4,
+        fragmentation: Math.round(fragScore * 1e4) / 1e4,
+        presence: presenceScore,
+      },
+    };
+  }
+
+  // Serializable view of the normalized segmentation-stage result: everything
+  // except the raw mask typed array (the mask travels separately as
+  // detection.inkMask, exposed by dimensions only so a JSON clone can't
+  // explode it into one key per pixel).
+  function serializeSegmentation(seg) {
+    if (!seg) return null;
+    const { mask, ...rest } = seg;
+    return {
+      ...rest,
+      hasMask: !!mask,
+    };
   }
 
   // Detection analysis resolution. Higher = better small-feature accuracy
@@ -9591,13 +10369,35 @@ function getAnnotationsOnImage(image) {
     if (!naturalW || !naturalH) throw new Error('image has zero size');
 
     let cvAnalysis = null;
-    const cv = getCvApi();
     // Record which backend ACTUALLY produced the mask so the components stage
     // can reuse the same one. getCvApi() can flip (real opencv.js finishes
     // compiling) between calls, so we must not re-pick later — see
     // detectSketchFromImage.
     let inkBackend = null;
-    if (cv && typeof cv.createInkMaskFromImage === 'function') {
+
+    // Phase 3 seam: a registered SAM-like segmentation adapter gets first
+    // refusal. Default is null (see registerSegmentationAdapter), so this
+    // branch is skipped entirely in normal offline runs. An adapter mask keeps
+    // the in-house components path (inkBackend stays null) unless the adapter
+    // also exposes connectedComponentsWithStats — same rule as the legacy path.
+    const adapter = getSegmentationAdapter();
+    if (adapter) {
+      try {
+        const adapted = adapter(src, { targetWidth: DETECTION_TARGET_WIDTH, minSize: 32 });
+        if (adapted && adapted.mask && adapted.stats) {
+          cvAnalysis = adapted;
+          if (!cvAnalysis.engine) cvAnalysis.engine = 'external-segmentation-adapter';
+          inkBackend = (typeof adapted.connectedComponentsWithStats === 'function') ? adapted : null;
+        }
+      } catch (err) {
+        console.warn('[Auto Mode] segmentation adapter failed; using built-in detector:', err);
+        cvAnalysis = null;
+        inkBackend = null;
+      }
+    }
+
+    const cv = getCvApi();
+    if (!cvAnalysis && cv && typeof cv.createInkMaskFromImage === 'function') {
       try {
         cvAnalysis = cv.createInkMaskFromImage(src, { targetWidth: DETECTION_TARGET_WIDTH, minSize: 32 });
         if (cvAnalysis && cvAnalysis.mask && cvAnalysis.stats) inkBackend = cv;
@@ -9638,20 +10438,69 @@ function getAnnotationsOnImage(image) {
   // pipeline runnable from Node with a synthetic ink analysis. Per-stage
   // durations are recorded on detection.stageTimingsMs so each stage can be
   // independently timed.
+  // Pure detection pipeline, now composed from four named stage functions:
+  //   segmentSketch    → ink mask + connected-component cleanup
+  //   extractContours  → junction / endpoint topology on the cleaned mask
+  //   analyzeGeometry  → view boxes, symmetry axis, band/chest/cradle rows,
+  //                      side-seam columns (geometry facts in pixel space)
+  //   detectLandmarks  → apex/strap/cup/back landmarks, confidence, and the
+  //                      assembled detection result
+  // The stages thread explicit context objects between them (no shared closure
+  // state beyond the injected stage marker), and the composed output is the
+  // same detection object shape the rest of the app already consumed. This is
+  // a pure structural refactor — see Engineering Workflow Phase 2.
   function detectSketchFromInkAnalysis(cvAnalysis, opts) {
     const cv = (opts && opts.cv) || null;
     const detectionParams = normalizeDetectionParams(opts && opts.params);
     const debugEnabled = !!(opts && opts.debug);
     const stageTimingsMs = {};
-    const _stageNow = (typeof performance !== 'undefined' && performance.now)
+    const mark = makeStageMarker(stageTimingsMs);
+
+    // Stage 2: segmentation (ink mask + connected-component cleanup).
+    const seg = segmentSketch(cvAnalysis, { cv, mark, stageTimingsMs });
+    if (seg.earlyReturn) return seg.earlyReturn;
+
+    // Stage 3: contour / topology extraction (the clean evidence bundle).
+    const contours = extractContours(seg, { mark });
+
+    // Stage 4: geometry analysis (view roles, axis, band/cup rows, seams).
+    // The contour-evidence bundle is threaded in so the geometry stage CAN read
+    // endpoints / curve candidates (Phase 4, item 3); geometry decisions are
+    // unchanged in this phase — it is availability, not forced consumption.
+    const geometry = analyzeGeometry(seg, {
+      detectionParams, mark, stageTimingsMs, contourEvidence: contours,
+    });
+    if (geometry.earlyReturn) return geometry.earlyReturn;
+
+    // Stage 5: landmark construction + confidence + assembly.
+    return detectLandmarks(cvAnalysis, seg, geometry, contours, {
+      detectionParams, debugEnabled, stageTimingsMs, mark,
+    });
+  }
+
+  // Per-stage wall-clock marker. Records the delta (ms, 2dp) since the last
+  // mark under `name` on the shared timings object. Timings are diagnostic
+  // only and inherently non-deterministic — nothing downstream keys on them.
+  function makeStageMarker(timings) {
+    const now = (typeof performance !== 'undefined' && performance.now)
       ? () => performance.now()
       : () => Date.now();
-    let _stageT = _stageNow();
-    const _stageMark = (name) => {
-      const t = _stageNow();
-      stageTimingsMs[name] = Math.max(0, Math.round((t - _stageT) * 100) / 100);
-      _stageT = t;
+    let last = now();
+    return function markStage(name) {
+      const t = now();
+      timings[name] = Math.max(0, Math.round((t - last) * 100) / 100);
+      last = t;
     };
+  }
+
+  // ---- Stage 2: segmentation (ink mask + connected-component cleanup) ----
+  // Input: the ink analysis (mask + stats + thresholds) from
+  // buildInkAnalysisFromImage. Output: the cleaned foreground mask (`dark`),
+  // its stats, the kept components, and the raw fallbacks. Returns
+  // { earlyReturn } when there is not enough ink to proceed.
+  function segmentSketch(cvAnalysis, ctx) {
+    const { cv, stageTimingsMs } = ctx;
+    const _stageMark = ctx.mark;
 
     const w = cvAnalysis.width;
     const h = cvAnalysis.height;
@@ -9662,8 +10511,36 @@ function getAnnotationsOnImage(image) {
     const rawStats = cvAnalysis.stats;
     _stageMark('inkMaskIngest');
 
+    const backend = classifySegmentationBackend(cvAnalysis.engine);
+
     if (rawStats.maxX < 0 || rawStats.maxY < 0 || rawStats.count < 80) {
-      return { coverage: rawStats.count / total, threshold, luminanceThreshold, stageTimingsMs };
+      // Too little ink to segment. Still emit a normalized (weak) segmentation
+      // block so the "no detection" path is measurable rather than opaque.
+      const emptyCoverage = rawStats.count / total;
+      const emptyQuality = computeSegmentationQuality({
+        coverage: emptyCoverage, retainedInk: 0,
+        componentCount: 0, keptComponentCount: 0, inkCleanupReverted: false,
+      });
+      return {
+        earlyReturn: {
+          coverage: emptyCoverage, threshold, luminanceThreshold, stageTimingsMs,
+          segmentation: {
+            backend,
+            engine: cvAnalysis.engine || null,
+            componentsBackend: cv ? 'opencv' : 'inhouse',
+            maskW: w, maskH: h,
+            bbox: null,
+            coverage: Number(emptyCoverage.toFixed(6)),
+            rawCoverage: Number(emptyCoverage.toFixed(6)),
+            retainedInk: 0,
+            componentCount: 0,
+            keptComponentCount: 0,
+            inkCleanupReverted: false,
+            emptyMask: true,
+            ...emptyQuality,
+          },
+        },
+      };
     }
 
     // ---- Stage: connected-component cleanup ----
@@ -9704,10 +10581,70 @@ function getAnnotationsOnImage(image) {
 
     _stageMark('connectedComponents');
 
+    // ---- Normalized segmentation-stage output (Phase 3) ----
+    // One shape for every backend (OpenCV real / free, in-house legacy, or a
+    // registered adapter): the cleaned foreground mask, its bbox, a backend
+    // id, and a deterministic quality score. The mask reference stays here for
+    // in-process consumers; the serializable detection view drops it (the mask
+    // travels as detection.inkMask, by dimensions only).
+    const coverage = globalStats.count / total;
+    const rawCoverage = rawStats.count / total;
+    const retainedInk = rawStats.count > 0 ? globalStats.count / rawStats.count : 0;
+    const componentCount = filtered.componentCount || 0;
+    const keptComponentCount = (filtered.keptComponents || []).length;
+    const segBbox = globalStats.maxX >= 0
+      ? normalizeBounds(statsToBounds(globalStats), w, h)
+      : null;
+    const segQuality = computeSegmentationQuality({
+      coverage, retainedInk, componentCount, keptComponentCount, inkCleanupReverted,
+    });
+    const segmentation = {
+      backend,
+      engine: cvAnalysis.engine || null,
+      componentsBackend: cv ? 'opencv' : 'inhouse',
+      mask: dark,
+      maskW: w,
+      maskH: h,
+      bbox: segBbox,
+      coverage: Number(coverage.toFixed(6)),
+      rawCoverage: Number(rawCoverage.toFixed(6)),
+      retainedInk: Number(retainedInk.toFixed(4)),
+      componentCount,
+      keptComponentCount,
+      inkCleanupReverted,
+      emptyMask: false,
+      ...segQuality,
+    };
+
+    return {
+      w, h, total, threshold, luminanceThreshold,
+      rawDark, rawStats, dark, globalStats, filtered, inkCleanupReverted,
+      segmentation,
+    };
+  }
+
+  // ---- Stage 3: contour / topology extraction (Engineering Workflow Phase 4) ----
+  // Input: the cleaned mask from segmentSketch. Output: a clean CONTOUR-EVIDENCE
+  // bundle — { contours, endpoints, junctions, corners, curves, strokeStats }
+  // (plus the raw junctionMap handle for back-compat). This is deliberately a
+  // bag of SHAPE EVIDENCE, not geometry decisions: nothing here is an anchor or
+  // a garment-level verdict, and downstream stages only READ it. Keeping the
+  // raw contour data separate from technical meaning is the whole point of the
+  // phase (see Engineering Workflow.md §3, "Keep raw contour data separate").
+  //
+  // Two fields are populated lazily by the deferred Potrace edge pass (its
+  // duration is non-deterministic, so it runs at the orchestrator edge, not in
+  // this pure stage): `contours` (traced outlines → detection.contours) and
+  // `curves` (reusable curve candidates → detection.curveCandidates, built by
+  // buildContourCurveCandidates). They are null here by design.
+  // Auxiliary data only — a failure here must never sink the detection.
+  function extractContours(seg, ctx) {
+    const _stageMark = ctx.mark;
+    const { dark, w, h } = seg;
+
     // ---- Stage: junction / endpoint / corner map (Phase 1, plan 2) ----
-    // Skeleton-topology features on the CLEANED mask. Auxiliary data only:
-    // nothing downstream consumes it yet (semantic snap will), so a failure
-    // here must never sink the detection — hence the catch.
+    // Skeleton-topology features on the CLEANED mask. A failure here must never
+    // sink the detection — hence the catch.
     let junctionMap = null;
     try {
       junctionMap = detectJunctions(dark, w, h);
@@ -9718,6 +10655,132 @@ function getAnnotationsOnImage(image) {
       junctionMap = null;
     }
     _stageMark('junctions');
+
+    // Split the raw feature points by type and roll up stroke statistics. The
+    // shaping lives in the junction module (buildContourTopology) so it stays
+    // testable next to detectJunctions.
+    const topology = buildContourTopology(junctionMap);
+
+    return {
+      // Raw traced outlines — filled by the deferred Potrace edge pass.
+      contours: null,
+      // Skeleton topology, split so consumers don't re-filter by type.
+      junctions: topology.junctions,
+      endpoints: topology.endpoints,
+      corners: topology.corners,
+      // Reusable curve candidates — populated from the trace (see
+      // buildContourCurveCandidates) once detection.contours exists.
+      curves: null,
+      // Deterministic skeleton stroke statistics (px, iterations, counts).
+      strokeStats: topology.strokeStats,
+      // Internal handle: detectLandmarks maps this to the unchanged
+      // detection.junctions / detection.junctionSummary contract.
+      junctionMap,
+    };
+  }
+
+  // Phase 4: build a compact, serializable summary of the contour-evidence
+  // bundle for the detection result. Deterministic skeleton-derived counts +
+  // stroke stats; the trace-dependent fields (traced / contourCount /
+  // curveCandidateCount) start empty here and are filled at the Potrace edge.
+  function buildContourEvidenceSummary(contourEvidence) {
+    const ce = contourEvidence || {};
+    const stroke = ce.strokeStats || null;
+    return {
+      junctionCount: Array.isArray(ce.junctions) ? ce.junctions.length : 0,
+      endpointCount: Array.isArray(ce.endpoints) ? ce.endpoints.length : 0,
+      cornerCount: Array.isArray(ce.corners) ? ce.corners.length : 0,
+      strokeStats: stroke ? { ...stroke } : null,
+      // Raw traced outlines are optional shape evidence attached at the edge.
+      traced: false,
+      contourCount: null,
+      curveCandidateCount: 0,
+    };
+  }
+
+  // Phase 4: normalize traced contour paths into a reusable curve-candidate
+  // list. One classification pass shared by every downstream consumer (cup
+  // inner seam, gore bottom, and future geometry/landmark curve reads) instead
+  // of each re-scanning contours.paths ad hoc. Pure SHAPE evidence: bbox +
+  // orientation + span flags + a back-reference to the source path index (full
+  // samples remain available via samplePathPoints on demand, so this list stays
+  // lean on the session-only detection object). No garment meaning is baked in.
+  function buildContourCurveCandidates(traced, detection) {
+    if (!traced || !Array.isArray(traced.paths)) return [];
+    const axisX = detection && detection.axisX != null ? detection.axisX : null;
+    const round6 = (v) => Math.round(v * 1e6) / 1e6;
+    const out = [];
+    for (let i = 0; i < traced.paths.length; i += 1) {
+      const p = traced.paths[i];
+      const b = p && p.bbox;
+      if (!b) continue;
+      const width = b.width, height = b.height;
+      const orientation = width >= height * 1.6 ? 'horizontal'
+        : height >= width * 1.6 ? 'vertical'
+        : 'arc';
+      const minX = b.x, maxX = b.x + width;
+      const spansAxisX = axisX != null && minX < axisX && maxX > axisX;
+      out.push({
+        id: i,
+        pathIndex: i,
+        bbox: { x: round6(b.x), y: round6(b.y), width: round6(width), height: round6(height) },
+        orientation,
+        lengthNorm: round6(Math.hypot(width, height)),
+        spansAxisX,
+        center: { x: round6(minX + width / 2), y: round6(b.y + height / 2) },
+        segmentCount: Array.isArray(p.segments) ? p.segments.length : 0,
+      });
+    }
+    return out;
+  }
+
+  // Phase 5: build the explicit VIEW-REGION facts. View classification is a
+  // GEOMETRY decision (role + confidence per detected garment component) that is
+  // produced here, in the geometry stage, BEFORE any anchor is placed — the seed
+  // layer only READS these roles, it never re-derives them. Surfacing the
+  // regions as a first-class list (with role, confidence, primary flag, and both
+  // pixel + normalized bbox) makes that separation visible instead of implicit.
+  // Pure restructuring of values classifySketchViewRoles already computed — no
+  // numeric change to any role or bbox.
+  function buildGeometryViewRegions(viewBoxesPx, viewClassification, primaryViewIndex, w, h) {
+    const round3 = (v) => (Number.isFinite(v) ? Math.round(v * 1e3) / 1e3 : null);
+    return (viewBoxesPx || []).map((box, index) => {
+      const role = (viewClassification.roles && viewClassification.roles[index]) || 'unknown';
+      const score = (viewClassification.scores && viewClassification.scores[index]) || null;
+      const norm = normalizeBounds(box, w, h);
+      return {
+        index,
+        role,
+        viewRole: role,
+        isPrimary: index === primaryViewIndex,
+        roleConfidence: score && score.roleConfidence != null ? round3(score.roleConfidence) : null,
+        centroidX: score ? round3(score.centroidX) : null,
+        widthRatio: score ? round3(score.widthRatio) : null,
+        bboxPx: { minX: box.minX, minY: box.minY, maxX: box.maxX, maxY: box.maxY, count: box.count || 0 },
+        bboxNorm: { x: norm.x, y: norm.y, width: norm.width, height: norm.height },
+      };
+    });
+  }
+
+  // ---- Stage 4: geometry analysis ----
+  // Input: the segmentation stage output (cleaned + raw masks, stats,
+  // components). Output: geometry facts in pixel space — view boxes and their
+  // roles, the symmetry axis, band/chest/cradle/underbust rows, and the
+  // side-seam columns. Still not the final POM decision. Returns
+  // { earlyReturn } when the primary view has too little ink.
+  function analyzeGeometry(seg, ctx) {
+    const { detectionParams, stageTimingsMs } = ctx;
+    const _stageMark = ctx.mark;
+    // Phase 4: the contour-evidence bundle (endpoints / curve candidates /
+    // stroke stats) is available here via ctx.contourEvidence so geometry can
+    // read shape evidence without re-deriving it. Geometry decisions do not
+    // consume it yet — wiring that in is Phase 5 — so output stays identical.
+    const contourEvidence = ctx.contourEvidence || null;
+    void contourEvidence;
+    const {
+      dark, rawDark, w, h, total, globalStats, filtered,
+      threshold, luminanceThreshold,
+    } = seg;
 
     // ---- Stage: view-box grouping + role classification ----
     let viewBoxesPx = detectSketchViewBoxes(filtered.keptComponents, globalStats, w, h);
@@ -9750,7 +10813,12 @@ function getAnnotationsOnImage(image) {
     let maxY = localStats.maxY;
 
     if (maxX < 0 || maxY < 0 || darkCount < 80) {
-      return { coverage: globalStats.count / total, threshold, luminanceThreshold, stageTimingsMs };
+      return {
+        earlyReturn: {
+          coverage: globalStats.count / total, threshold, luminanceThreshold, stageTimingsMs,
+          segmentation: seg.segmentation ? serializeSegmentation(seg.segmentation) : null,
+        },
+      };
     }
     _stageMark('viewBoxes');
 
@@ -9939,6 +11007,108 @@ function getAnnotationsOnImage(image) {
 
     _stageMark('verticalFeatures');
 
+    // ---- Explicit geometry facts (Engineering Workflow Phase 5, items 1-2) ----
+    // Make the frame geometry a first-class, self-describing output: center
+    // axis, band line, the horizontal construction rows, the side-seam columns,
+    // and the classified view regions — each in BOTH image-pixel and normalized
+    // [0,1] space. This is a pure surfacing of values already computed above; no
+    // detected coordinate changes, so anchors (and golden) are untouched. The
+    // semantic-part facts (cup / strap / seam / back-panel candidates) and the
+    // geometry-quality/review verdict are completed in the landmark stage, where
+    // those parts exist — see detectLandmarks, which extends this same object.
+    const sigConfLocal = (peak, floor) => clamp01((peak - floor) / Math.max(1, floor * 2));
+    const geometryFacts = {
+      space: 'image-pixel + normalized[0,1]',
+      bbox: { ...bbox },
+      bboxPx: { minX, minY, maxX, maxY, width: bboxW, height: bboxH },
+      symmetryAxis: {
+        xPx: Math.round(axisXpx),
+        xNorm: axisX,
+        symmetry,
+        confidence: clamp01(symmetry),
+      },
+      bandLine: {
+        yPx: bandEdgeRow >= 0 ? bandEdgeRow : null,
+        yNorm: bandY,
+        zoneRowPx: bandRow,
+        strength: bandStrength,
+        confidence: sigConfLocal(bandStrength, rowNoiseFloor),
+      },
+      horizontalLines: {
+        chest: chestY != null ? { yPx: chestRow, yNorm: chestY, strength: chestStrength } : null,
+        cradle: cradleY != null ? { yPx: cradleRow, yNorm: cradleY, strength: cradleStrength } : null,
+        underbust: underbustY != null
+          ? { yPx: underbustRow, yNorm: underbustY, runPx: underbustRunPx } : null,
+      },
+      sideSeamColumns: {
+        left: sideLeftX != null
+          ? { xPx: sideLeftCol, xNorm: sideLeftX, strength: sideLeftStrength } : null,
+        right: sideRightX != null
+          ? { xPx: sideRightCol, xNorm: sideRightX, strength: sideRightStrength } : null,
+      },
+      viewRegions: buildGeometryViewRegions(viewBoxesPx, viewClassification, primaryViewIndex, w, h),
+      viewClassification: {
+        primaryViewIndex,
+        frontOuterIndex: viewClassification.frontOuterIndex,
+        frontInnerIndex: viewClassification.frontInnerIndex,
+        backIndex: viewClassification.backIndex,
+        reviewRequired: !!viewClassification.reviewRequired,
+      },
+    };
+
+    return {
+      dark, rawDark, w, h, total, filtered, globalStats,
+      threshold, luminanceThreshold,
+      viewBoxesPx, viewClassification, primaryViewIndex, darkCount,
+      minX, minY, maxX, maxY, bbox, bboxW, bboxH,
+      axisXpx, axisX, symmetry, axisPx,
+      rowNoiseFloor, colNoiseFloor,
+      bandStart, bandRow, bandStrength, bandPreferred, bandEdgeRow, bandY,
+      chestRow, chestStrength, chestY,
+      peakSep, cradleRow, cradleStrength, cradleY,
+      underbustRow, underbustStrength, minRowSpan, underbustRunPx, underbustY,
+      medianRow, medianCol, innerLo, innerHi, axisGuard,
+      sideLeftCol, sideLeftStrength, sideLeftX,
+      sideRightCol, sideRightStrength, sideRightX,
+      geometryFacts,
+    };
+  }
+
+  // ---- Stage 5: landmark construction (+ confidence + assembly) ----
+  // Input: segmentation output, geometry facts, and the contour/topology map.
+  // Output: the assembled detection result the rest of the app consumes —
+  // apex/strap/inner-cup/side/back landmarks, the cup model, per-feature
+  // confidence, overall quality, seam evidence, view metadata, and (when
+  // requested) the layered CV-debug payload. Landmarks carry technical
+  // meaning; normalization to anchors happens later in the anchor seed layer.
+  function detectLandmarks(cvAnalysis, seg, geometry, contours, ctx) {
+    const { detectionParams, debugEnabled, stageTimingsMs } = ctx;
+    const _stageMark = ctx.mark;
+    const { rawStats, inkCleanupReverted, segmentation } = seg;
+    // Contour-evidence bundle (Phase 4). junctionMap keeps the unchanged
+    // detection.junctions / junctionSummary contract; endpoints / corners /
+    // strokeStats are the reusable shape evidence, exposed additively.
+    const { junctionMap } = contours;
+    const contourEndpoints = contours.endpoints || [];
+    const contourCorners = contours.corners || [];
+    const contourStrokeStats = contours.strokeStats || null;
+    const {
+      dark, rawDark, w, h, total, filtered, globalStats,
+      threshold, luminanceThreshold,
+      viewBoxesPx, viewClassification, primaryViewIndex, darkCount,
+      minX, minY, maxX, maxY, bbox, bboxW, bboxH,
+      axisXpx, axisX, symmetry, axisPx,
+      rowNoiseFloor, colNoiseFloor,
+      bandStart, bandRow, bandStrength, bandPreferred, bandEdgeRow, bandY,
+      chestRow, chestStrength, chestY,
+      peakSep, cradleRow, cradleStrength, cradleY,
+      underbustRow, underbustStrength, minRowSpan, underbustRunPx, underbustY,
+      medianRow, medianCol, innerLo, innerHi, axisGuard,
+      sideLeftCol, sideLeftStrength, sideLeftX,
+      sideRightCol, sideRightStrength, sideRightX,
+      geometryFacts,
+    } = geometry;
+
     // ---- Stage: apex + strap landmarks ----
     const bounds = { minX, minY, maxX, maxY };
     const apexLeftCandidate = findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, -1);
@@ -9957,7 +11127,22 @@ function getAnnotationsOnImage(image) {
     const apexRightInner = (apexRightInfo && apexRightInfo.innerEdgeX != null)
       ? { x: apexRightInfo.innerEdgeX, y: apexRightInfo.point.y }
       : apexRight;
+    // Outer-edge apex points (POM 14's fallback strap join sits on the OUTER
+    // edge of the cup/strap join — ADR 0017, TD correction 2026-07-10).
+    const apexLeftOuter = (apexLeftInfo && apexLeftInfo.outerEdgeX != null)
+      ? { x: apexLeftInfo.outerEdgeX, y: apexLeftInfo.point.y }
+      : apexLeft;
+    const apexRightOuter = (apexRightInfo && apexRightInfo.outerEdgeX != null)
+      ? { x: apexRightInfo.outerEdgeX, y: apexRightInfo.point.y }
+      : apexRight;
     const strapInfo = findStrapLandmarksFromInk(dark, w, h, bounds, axisPx, chestRow);
+    // POM 14 starts at the upper joining seam of the stitched section of the
+    // FRONT RIGHT shoulder strap (TD-corrected, ADR 0016: the strap adjacent
+    // to the back view, so the drawn curve follows one continuous strap over
+    // the shoulder). This is a separate semantic landmark from strapInfo.top
+    // (the topmost strap ink) and from the back strap/panel join.
+    const frontStrapStartInfo = findFrontStrapStartFromInk(
+      dark, w, h, bounds, apexRightInfo || apexLeftInfo, chestRow);
 
     _stageMark('apexStrap');
 
@@ -10251,7 +11436,97 @@ function getAnnotationsOnImage(image) {
         } else if (cradleCfTopBandInkRatio < 0.02) {
           cradleCfTopReject = 'no baseline ink under CF axis to project POM 6 endpoint';
         } else {
-          cradleCfTop = { x: axisXpx / w, y: cradleRow / h };
+          // Direct accept — but on a front-closure style (zip/hook placket at
+          // CF) the ink that satisfied the axis-window test is the PLACKET's
+          // own vertical structure, which inks the axis zone at EVERY row, so
+          // (axis, cradleRow) can sit below the real cup-seam ↔ CF junction
+          // (TD correction 2026-07-10, zip-front sketch: POM 6 starts where
+          // the cradle seam MEETS the placket, not at the flat cradle row).
+          // Detect a placket — near-continuous vertical ink columns
+          // bracketing the axis — and snap y UP to the topmost row where
+          // seam ink adjoins the placket from BOTH sides. Classic gores have
+          // no such columns and keep the flat-cradle-row behavior unchanged.
+          let cfSeamRow = cradleRow;
+          {
+            const xz = Math.max(4, Math.round(bboxW * 0.06));
+            const vTop = Math.max(0, cradleRow - Math.round(bboxH * 0.15));
+            const vBot = Math.min(h - 1, bandRow - 2);
+            let placketL = -1, placketR = -1;
+            if (vBot > vTop + 4) {
+              for (let x = Math.max(0, axisPx - xz); x <= Math.min(w - 1, axisPx + xz); x += 1) {
+                let inked = 0;
+                for (let y = vTop; y <= vBot; y += 1) {
+                  if (rawDark[y * w + x]) inked += 1;
+                }
+                // ≥ 0.85: a placket edge is a continuous drawn LINE. A dotted
+                // mesh-gore fill also stacks ink in a column but stays well
+                // under this bar, and must not be mistaken for a placket.
+                if (inked / (vBot - vTop + 1) >= 0.85) {
+                  if (x <= axisPx && (placketL < 0 || x < placketL)) placketL = x;
+                  if (x >= axisPx && x > placketR) placketR = x;
+                }
+              }
+            }
+            // A real placket (zip/hook/button stand) has WIDTH. A single CF
+            // seam line under the gore also reads as a continuous vertical
+            // column but is 1-3 px wide — snapping along it would drag POM 6
+            // up the gore's converging lace edges (TD-annotated fixture
+            // "need TD correction.png" pins the start at the gore bottom).
+            const minPlacketW = Math.max(6, Math.round(w * 0.015));
+            if (placketL >= 0 && placketR - placketL >= minPlacketW) {
+              // Adjacency gap in IMAGE-width terms, not bbox terms: the ink
+              // bbox spans BOTH views on two-view sketches, so a bbox-relative
+              // gap balloons to ~10px and lets scattered lace-texture dots
+              // "adjoin" the placket (same failure class as the B4 seam-pad
+              // fix). 0.4% of the analysis width ≈ a real seam-to-placket
+              // touch distance.
+              const gmax = Math.max(2, Math.round(w * 0.004));
+              const jTop = Math.max(0, cradleRow - Math.round(bboxH * 0.12));
+              // Two adjacency strengths. FINDING the junction (scanning up
+              // from the cradle row) accepts any real ink touch (≥2 px) — a
+              // thin dashed cup seam crosses the placket edge with only a
+              // couple of pixels per row pair. EXTENDING upward to the seam's
+              // top line demands a solid run (≥4 px): sparse lace-texture
+              // dots peak at 2-3 and would otherwise form stepping stones
+              // that walk the junction up a decorative lace edge.
+              const strip = gmax + 4;
+              const adjoins = (y, x0, x1, minHits) => {
+                let hits = 0;
+                for (let y2 = y; y2 <= Math.min(h - 1, y + 1); y2 += 1) {
+                  for (let x = Math.max(0, x0); x <= Math.min(w - 1, x1); x += 1) {
+                    if (rawDark[y2 * w + x]) hits += 1;
+                  }
+                }
+                return hits >= minHits;
+              };
+              const adjoinsBoth = (y, minHits) => adjoins(y, placketL - strip, placketL - 1, minHits)
+                && adjoins(y, placketR + 1, placketR + strip, minHits);
+              // Scan UP from the cradle row and take the FIRST adjoining seam
+              // block — the cradle seam is the structure nearest the cradle
+              // row. Taking the topmost adjoining row in the window instead
+              // would snap to an unrelated upper junction (a lace neckline
+              // edge also adjoins the placket on some styles). Then extend to
+              // the seam's TOP ink line: the seam is drawn as paired/dashed
+              // stitch lines that adjoin at slightly different rows, so hop
+              // small non-adjoining gaps (≤ hop rows, relative to the latest
+              // top) — but never far enough to leave the seam block for a
+              // distant structure. The TD arrow tip sits on the upper line.
+              const hop = Math.max(3, Math.round(bboxH * 0.03));
+              for (let y = cradleRow - 2; y >= jTop; y -= 1) {
+                if (adjoinsBoth(y, 2)) {
+                  let top = y;
+                  let probe = y - 1;
+                  while (probe >= jTop && (top - probe) <= hop) {
+                    if (adjoinsBoth(probe, 4)) top = probe;
+                    probe -= 1;
+                  }
+                  cfSeamRow = top;
+                  break;
+                }
+              }
+            }
+          }
+          cradleCfTop = { x: axisXpx / w, y: cfSeamRow / h };
         }
       }
     }
@@ -10737,6 +12012,7 @@ function getAnnotationsOnImage(image) {
       apexLeft: apexLeftInfo ? apexLeftInfo.confidence : 0,
       apexRight: apexRightInfo ? apexRightInfo.confidence : 0,
       strap: strapInfo ? strapInfo.confidence : 0,
+      frontStrapStart: frontStrapStartInfo ? frontStrapStartInfo.confidence : 0,
       back: backInfo ? backInfo.confidence : 0,
       innerCupTop: innerCupTopInfo ? innerCupTopInfo.confidence : 0,
       sideTopLeft: sideTopLeftInfo ? sideTopLeftInfo.confidence : 0,
@@ -10769,6 +12045,8 @@ function getAnnotationsOnImage(image) {
       apexRight,
       apexLeftInner,
       apexRightInner,
+      apexLeftOuter,
+      apexRightOuter,
       apexMissingReason: apexPair ? null : 'No reliable strap-cup joining seam / highest cup point was detected.',
       // Front-view ink endpoints — see "Front-view ink endpoints" pass above.
       chestLeftX,
@@ -10801,6 +12079,7 @@ function getAnnotationsOnImage(image) {
       cradleCupMissingReason: cradleCupReject,
       strapTop: strapInfo ? strapInfo.top : null,
       strapBottom: strapInfo ? strapInfo.bottom : null,
+      frontStrapStart: frontStrapStartInfo ? frontStrapStartInfo.point : null,
       back: backInfo,
       backFeatures,
       // Cup model — shared backbone for POM 9 (height) and POM 10 (width).
@@ -10823,8 +12102,20 @@ function getAnnotationsOnImage(image) {
       // Junction / endpoint / corner map (Phase 1, plan 2). Normalized
       // coords; consumed by the semantic-snap engine (Phase 4) and the
       // __braDebug.junctions overlay. Empty array when the pass failed.
+      // NOTE: detection.junctions is the FULL feature-point list (junctions +
+      // endpoints + corners) — the junction-tests / pipeline-tests contract.
       junctions: junctionMap ? junctionMap.points : [],
       junctionSummary: junctionMap ? junctionMap.summary : null,
+      // Contour evidence bundle (Engineering Workflow Phase 4). Raw SHAPE
+      // evidence kept SEPARATE from the geometry / landmark decisions above:
+      // type-split feature points, deterministic stroke stats, and a compact
+      // serializable summary. Additive — the junctions / junctionSummary
+      // contract above is unchanged. The trace-dependent parts (contours,
+      // curveCandidates) are attached later at the Potrace edge.
+      endpoints: contourEndpoints,
+      corners: contourCorners,
+      strokeStats: contourStrokeStats,
+      contourEvidence: buildContourEvidenceSummary(contours),
       coverage: globalStats.count / total,
       primaryCoverage: darkCount / total,
       sampleWidth: w,
@@ -10835,6 +12126,17 @@ function getAnnotationsOnImage(image) {
       detectionParams,
       componentCount: filtered.componentCount,
       keptComponentCount: filtered.keptComponents.length,
+      // Normalized segmentation-stage result (Phase 3): one shape across
+      // OpenCV / legacy / adapter backends, with a deterministic quality score.
+      // Metadata only — the mask itself is exposed separately as inkMask.
+      segmentation: serializeSegmentation(segmentation),
+      // Top-level mirrors so downstream review logic can read the segmentation
+      // verdict without reaching into the block. segmentationReviewRequired is
+      // the weak-segmentation review signal (Phase 3, item 3).
+      segmentationBackend: segmentation ? segmentation.backend : null,
+      segmentationQuality: segmentation ? segmentation.quality : null,
+      segmentationWeak: segmentation ? !!segmentation.weak : false,
+      segmentationReviewRequired: segmentation ? !!segmentation.reviewRequired : false,
       views: viewBoxesPx.map((box, index) => {
         const role = viewClassification.roles[index] || 'unknown';
         const score = viewClassification.scores[index] || null;
@@ -10938,6 +12240,106 @@ function getAnnotationsOnImage(image) {
       const botY = cupModel.bottomPoint ? Math.round(cupModel.bottomPoint.y * 1000) : 0;
       cupModel.id = sidePart + ':' + vis + ':' + topY + ':' + botY;
     }
+
+    // ---- Complete the geometry facts with the semantic-part candidates ----
+    // (Engineering Workflow Phase 5, items 2-3.) The frame facts (axis, band,
+    // rows, side seams, view regions) were built in analyzeGeometry; here we add
+    // the cup / strap / seam / back-panel candidate geometry (already computed
+    // above as the cup model, apex/strap landmarks, seam evidence, and back-view
+    // features) plus an explicit geometry-quality verdict. All values are copies
+    // of numbers computed above — nothing is re-detected, so anchors and golden
+    // are unchanged. The quality.reviewRequired flag is the geometry stage's own
+    // "do we trust the frame?" signal; it is fed into the landmark/anchor review
+    // decision (see seedAnchorsFromDetection) so weak geometry raises TD review
+    // instead of faking certainty.
+    if (geometryFacts) {
+      geometryFacts.cupGeometry = cupModel ? {
+        id: cupModel.id || null,
+        side: cupModel.side,
+        viewRole: cupModel.viewRole || null,
+        visibility: cupModel.visibility || null,
+        topPoint: cupModel.topPoint || null,
+        bottomPoint: cupModel.bottomPoint || null,
+        innerEdge: cupModel.innerEdge || null,
+        outerEdgeNearArmhole: cupModel.outerEdgeNearArmhole || null,
+        centerPoint: cupModel.centerPoint || null,
+        contourConfidence: cupModel.contourConfidence != null ? cupModel.contourConfidence : null,
+        seamConfidence: cupModel.seamConfidence != null ? cupModel.seamConfidence : null,
+      } : null;
+      geometryFacts.strapGeometry = {
+        top: strapInfo ? strapInfo.top : null,
+        bottom: strapInfo ? strapInfo.bottom : null,
+        confidence: strapInfo ? strapInfo.confidence : 0,
+        frontStart: frontStrapStartInfo ? frontStrapStartInfo.point : null,
+        frontStartConfidence: frontStrapStartInfo ? frontStrapStartInfo.confidence : 0,
+        apexLeft: apexLeft || null,
+        apexRight: apexRight || null,
+        apexPairValidated: !!apexPair,
+      };
+      geometryFacts.seamGeometry = {
+        cradleCfTop: cradleCfTop || null,
+        cradleCfDipProjected: !!cradleCfTopDipProjected,
+        cradleCupTop: cradleCupTop || null,
+        cradleCupBottom: cradleCupBottom || null,
+        cradleCupSide: cradleCupSide || 0,
+        upperCupCfSeamPresent: cfTopY != null,
+      };
+      geometryFacts.backPanelGeometry = {
+        present: backViewIndex >= 0,
+        viewIndex: backViewIndex,
+        panelTop: backPanelInfo && backPanelInfo.top ? backPanelInfo.top : null,
+        panelBottom: backPanelInfo && backPanelInfo.bottom ? backPanelInfo.bottom : null,
+        panelHeightConfidence: backPanelHeightInfo
+          ? backPanelHeightInfo.confidence
+          : (backPanelInfo ? backPanelInfo.confidence : 0),
+        strapTop: backStrapTopInfo ? backStrapTopInfo.point : null,
+        sideTop: backSideTopInfo ? backSideTopInfo.point : null,
+        sideBottom: backSideBottomInfo ? backSideBottomInfo.point : null,
+      };
+      // Geometry-quality verdict. Deterministic mix of the axis/band frame
+      // priors and the view-classification confidence. reviewRequired fires only
+      // when the geometry is genuinely weak (ambiguous view roles, or a frame
+      // prior near the floor) — on a cleanly detected sketch every term is
+      // strong, so the flag is false and no well-detected landmark is disturbed.
+      const geomAxisConf = clamp01(symmetry);
+      const geomBandConf = baselineConfidence;
+      const roleRegions = (geometryFacts.viewRegions || [])
+        .filter(r => r.role && r.role !== 'unknown' && r.roleConfidence != null);
+      const viewConfidence = roleRegions.length
+        ? clamp01(roleRegions.reduce((s, r) => s + r.roleConfidence, 0) / roleRegions.length)
+        : (geometryFacts.viewRegions && geometryFacts.viewRegions.length ? 0.35 : 0);
+      const geometryOverall = clamp01(
+        0.45 * geomAxisConf + 0.30 * geomBandConf + 0.25 * viewConfidence
+      );
+      const geometryReasons = [];
+      if (viewClassification.reviewRequired) geometryReasons.push('view roles are ambiguous — confirm which region is front/back/inner');
+      if (geomAxisConf < 0.15) geometryReasons.push('weak symmetry axis — the center-front prior is unreliable');
+      if (geomBandConf < 0.15) geometryReasons.push('weak band line — the baseline prior is unreliable');
+      const geometryReviewRequired = !!viewClassification.reviewRequired
+        || geomAxisConf < 0.15
+        || geomBandConf < 0.15;
+      geometryFacts.quality = {
+        axisConfidence: Number(geomAxisConf.toFixed(4)),
+        baselineConfidence: Number(geomBandConf.toFixed(4)),
+        viewConfidence: Number(viewConfidence.toFixed(4)),
+        overall: Number(geometryOverall.toFixed(4)),
+        reviewRequired: geometryReviewRequired,
+        reasons: geometryReasons,
+      };
+      detectionResult.geometryFacts = geometryFacts;
+      detectionResult.geometryReviewRequired = geometryReviewRequired;
+    }
+
+    // ---- Landmark QA layer (Engineering Workflow Phase 6) ----
+    // Classify every anchor-schema kind — source class (detected / derived /
+    // projected / missing), confidence tier, review verdict, and QA notes —
+    // BEFORE anchor placement. Read-only over the assembled result; the seed
+    // layer recomputes it at seed time (the detection object can be mutated
+    // between runs) and consumes the same verdicts, so this attach is the
+    // stage-level record, not a second decision path.
+    detectionResult.landmarkQa = buildLandmarkQaFromDetection(detectionResult);
+    _stageMark('landmarkQa');
+
     // CV Debug snapshot — intermediate detector state in pixel coords.
     // Mirrors the locals used to pick anchors so the TD can answer "why did
     // the detector choose this row/column?" without sprinkling console.logs.
@@ -11119,6 +12521,7 @@ function getAnnotationsOnImage(image) {
                 innerEdgeSource: cupModel.diagnostics.innerEdgeSource || null,
                 innerEdgeX: safeNum(cupModel.diagnostics.innerEdgeX, 4),
                 outerEdgeX: safeNum(cupModel.diagnostics.outerEdgeX, 4),
+                innerEdgeSupported: cupModel.diagnostics.innerEdgeSupported !== false,
               }
             : null,
         } : null,
@@ -11142,6 +12545,9 @@ function getAnnotationsOnImage(image) {
         } : null,
         confidence: { ...detectionResult.confidence },
         quality: safeNum(detectionResult.quality, 4),
+        // Normalized segmentation-stage verdict (Phase 3): backend, coverage,
+        // deterministic quality, and the weak-segmentation review signal.
+        segmentation: detectionResult.segmentation,
         stageTimingsMs,
         // Layer-by-layer view of the POM 6 / 7 / 8 decision pipeline per
         // rule.md. Each layer summarises the evidence that feeds into the
@@ -11172,7 +12578,9 @@ function getAnnotationsOnImage(image) {
               ? 'Ink cleanup was reverted (very faint/dashed sketch or a heavy scan frame) — the outline may include page edges or speckle; verify the detected shape and all POMs.'
               : ((axisConfidence < 0.4 || baselineConfidence < 0.4)
                 ? 'Low axis or baseline confidence — treat POM 6/7/8 with caution.'
-                : null),
+                : ((segmentation && segmentation.weak)
+                  ? 'Weak segmentation (low mask quality) — the detected ink may be noisy or incomplete; verify all POMs.'
+                  : null)),
             // D7: raw boolean so the spec-panel / drafter can react
             // specifically to a fail-open ink-cleanup revert if desired.
             inkCleanupReverted: inkCleanupReverted,
@@ -12059,6 +13467,9 @@ function getAnnotationsOnImage(image) {
             // inner-edge across the cup/front-strap joining seams, so the left
             // cup uses the run's right edge and the right cup its left edge.
             innerX: side < 0 ? runEnd : startX,
+            // Outer edge (nearer the side seam) — POM 14's strap join anchor
+            // sits on the OUTER edge of the join (ADR 0017, TD correction).
+            outerX: side < 0 ? startX : runEnd,
             y,
             support,
             verticalSpan,
@@ -12077,6 +13488,7 @@ function getAnnotationsOnImage(image) {
     return {
       point: { x: best.x / w, y: best.y / h },
       innerEdgeX: best.innerX / w,
+      outerEdgeX: best.outerX / w,
       confidence,
       support: {
         count: best.support,
@@ -12102,6 +13514,83 @@ function getAnnotationsOnImage(image) {
 
   // (Removed dead findCupApexFromInk: never referenced — the live pipeline
   // uses findCupStrapJoinFromInk / buildCupModel for apex detection.)
+
+  // Front shoulder-strap start for POM 14. The TD measurement starts at the
+  // upper joining seam of the stitched/elastic front strap section (the first
+  // clear cross-strap seam above the cup), not at the cup/strap apex and not
+  // at the topmost silhouette ink. Search a narrow column around the validated
+  // left cup/strap join and choose the highest substantial horizontal run.
+  // apexInfo is the cup/strap join the strap rises from — the RIGHT join on a
+  // standard two-view sheet (ADR 0016), falling back to the left join when the
+  // right one wasn't validated.
+  function findFrontStrapStartFromInk(dark, w, h, bounds, apexInfo, chestRow) {
+    if (!apexInfo || !apexInfo.point) return null;
+    const bboxW = bounds.maxX - bounds.minX + 1;
+    const bboxH = bounds.maxY - bounds.minY + 1;
+    const cx = Math.round(apexInfo.point.x * w);
+    const apexY = Math.round(apexInfo.point.y * h);
+    const y1 = Math.max(bounds.minY + Math.round(bboxH * 0.025), 1);
+    const y2 = Math.min(
+      apexY - Math.max(3, Math.round(bboxH * 0.035)),
+      chestRow > 0 ? chestRow - 2 : bounds.maxY);
+    const halfWindow = Math.max(6, Math.round(bboxW * 0.055));
+    const x1 = Math.max(bounds.minX, cx - halfWindow);
+    const x2 = Math.min(bounds.maxX, cx + halfWindow);
+    const minRun = Math.max(4, Math.round(bboxW * 0.014));
+    const maxRun = Math.max(minRun + 2, Math.round(bboxW * 0.11));
+    if (y2 <= y1 || x2 <= x1) return null;
+
+    let best = null;
+    for (let y = y1; y <= y2; y += 1) {
+      const base = y * w;
+      let runStart = -1;
+      for (let x = x1; x <= x2 + 1; x += 1) {
+        const on = x <= x2 && !!dark[base + x];
+        if (on && runStart < 0) runStart = x;
+        if (on) continue;
+        if (runStart < 0) continue;
+        const runEnd = x - 1;
+        const runWidth = runEnd - runStart + 1;
+        const runCenter = (runStart + runEnd) / 2;
+        runStart = -1;
+        if (runWidth < minRun || runWidth > maxRun) continue;
+        if (Math.abs(runCenter - cx) > halfWindow * 0.62) continue;
+
+        // A joining seam is supported by strap ink immediately below it.
+        // This rejects an isolated crop/silhouette cap at the top of the view.
+        let belowSupport = 0;
+        const supportDepth = Math.max(4, Math.round(bboxH * 0.025));
+        for (let yy = y + 1; yy <= Math.min(y2, y + supportDepth); yy += 1) {
+          const b = yy * w;
+          for (let xx = Math.max(x1, Math.round(runCenter - minRun));
+            xx <= Math.min(x2, Math.round(runCenter + minRun)); xx += 1) {
+            if (dark[b + xx]) belowSupport += 1;
+          }
+        }
+        if (belowSupport < supportDepth * 2) continue;
+
+        // Prefer the LOWEST valid seam — the joining seam at the top of the
+        // stitched (zigzag) section sits nearest the cup join; the zigzag ink
+        // itself only yields sub-minRun runs so it can't win. Preferring the
+        // topmost run (pre-ADR-0016) landed on the strap cap / top of the
+        // elastic stripes, which the TD flagged as too high. Width/support
+        // break ties between adjacent antialiased rows of the same seam.
+        const score = runWidth + Math.min(minRun * 2, belowSupport / Math.max(1, supportDepth));
+        if (!best || y > best.y + 2 || (Math.abs(y - best.y) <= 2 && score > best.score)) {
+          best = { x: runCenter, y, runWidth, belowSupport, score };
+        }
+      }
+    }
+    if (!best) return null;
+    const confidence = clamp01(0.28
+      + Math.min(0.36, best.runWidth / Math.max(1, minRun * 2) * 0.22)
+      + Math.min(0.28, best.belowSupport / Math.max(1, bboxH * 0.08)));
+    return {
+      point: { x: best.x / w, y: best.y / h },
+      confidence,
+      support: { runWidth: best.runWidth, belowSupport: best.belowSupport },
+    };
+  }
 
   function findStrapLandmarksFromInk(dark, w, h, bounds, axisPx, chestRow) {
     const bboxW = bounds.maxX - bounds.minX + 1;
@@ -12923,6 +14412,35 @@ function getAnnotationsOnImage(image) {
     const innerEdge = { x: clamp01(innerEdgeXpx / w), y: centerY };
     diagnostics.innerEdgeSilhouettePx = innerSilPx;
     diagnostics.innerEdgeExtendedToSeam = innerSilPx != null && innerEdgeXpx !== goreInsetXpx;
+    // Ink support for the inner endpoint. The gore inset is a FABRICATED
+    // fallback — legitimate only when the point lies inside the garment. On
+    // front-closure styles whose apex fires on the strap top, the width row
+    // crosses the OPEN neckline V and the inset point floats in blank
+    // background. Consumers (landmark-qa cupModelUsable, seed
+    // innerCupFromCupModel) treat innerEdgeSupported === false as "cup model
+    // not usable for anchors" so the seed falls down the existing precedence
+    // chain (innerCupTopInk → view ratios → delete) instead.
+    // "Inside the garment" test: faint fills (lace texture) don't register in
+    // the dark mask, so ink-proximity alone can't tell garment interior from
+    // the neckline opening. But every garment-interior point has the
+    // neckline/top edge line somewhere ABOVE it, while a point in the open
+    // neckline V sees nothing but background all the way to the ink-bbox top.
+    let innerEdgeSupported = innerSilPx != null;
+    if (!innerEdgeSupported && dark) {
+      const rowPx = Math.min(h - 1, Math.max(0, Math.round(centerY * h)));
+      const cLo = Math.max(minX, innerEdgeXpx - 2);
+      const cHi = Math.min(maxX, innerEdgeXpx + 2);
+      scan: for (let y = rowPx - 1; y >= Math.max(0, bounds.minY); y -= 1) {
+        const rowBase = y * w;
+        for (let x = cLo; x <= cHi; x += 1) {
+          if (dark[rowBase + x]) { innerEdgeSupported = true; break scan; }
+        }
+      }
+    }
+    diagnostics.innerEdgeSupported = innerEdgeSupported;
+    if (!innerEdgeSupported && typeof console !== 'undefined' && console.warn) {
+      console.warn('[Auto Mode] cupModel inner edge unsupported (width row crosses a void) → cup model not usable for POM 9/10 anchors');
+    }
 
     // Outer endpoint = the cup's OUTER edge near the armhole. Prefer the traced
     // outer ink edge when it is a valid outer boundary (on the side-seam side of
@@ -12930,7 +14448,12 @@ function getAnnotationsOnImage(image) {
     // column. Invariant B4 keeps it ≥0.3% off the side seam.
     const outerInsetPx = Math.max(2, Math.round(bboxW * 0.02));
     const outerFallbackXpx = side < 0 ? sideColPx + outerInsetPx : sideColPx - outerInsetPx;
-    const seamPadPx = Math.max(2, Math.round(bboxW * 0.004));
+    // Size the seam pad in IMAGE-width terms as well (0.4% of w): invariant B4
+    // measures the seam gap as a fraction of the full image (>0.3%), and a
+    // purely bbox-relative pad bottoms out at 2px on multi-view sketches whose
+    // ink bbox is a small fraction of the frame — landing the outer endpoint
+    // inside the B4 floor (same failure class as the B3 gore inset above).
+    const seamPadPx = Math.max(2, Math.round(bboxW * 0.004), Math.ceil(w * 0.004));
     const outerInkValid = inkWidthUsable
       && (side < 0 ? inkWidth.outerX < cupCenterX : inkWidth.outerX > cupCenterX);
     // POM 10 must span the full cup — CF gore → outer side seam. The traced ink
@@ -12990,6 +14513,7 @@ function getAnnotationsOnImage(image) {
     return {
       side, viewRole, visibility,
       topPoint, bottomPoint, innerEdge, outerEdgeNearArmhole, centerPoint,
+      innerEdgeSupported,
       contourConfidence, seamConfidence, texturePenalty,
       sideReason, visibilityReason,
       topFromApex, bottomFromSeam, bottomFromInk, bottomEvidence,
@@ -13664,15 +15188,27 @@ function getAnnotationsOnImage(image) {
 
     const det = detection.confidence || {};
 
+    // Landmark QA layer (Engineering Workflow Phase 6): the per-landmark
+    // verdicts — source class, confidence tier, reviewRequired, QA notes —
+    // that this seed layer consumes below instead of recomputing its own
+    // tables. Computed HERE (not reused from detection time) because the
+    // detection object can be mutated between seedings (e.g. the front_inner
+    // branch backfills detection.innerCupTop), and it must run BEFORE that
+    // mutation so its evidence reads match this seeding pass. Re-attached so
+    // debug consumers always see the verdicts the current anchors came from.
+    const landmarkQa = buildLandmarkQaFromDetection(detection);
+    if (landmarkQa) detection.landmarkQa = landmarkQa;
+    const qaByKind = (landmarkQa && landmarkQa.byKind) || {};
+
     // Inner cup sits on the side with the stronger local cup signal. Default
     // to the left cup because the bundled reference sketch shows it clearly.
     const icSide = (det.apexRight || 0) > (det.apexLeft || 0) + 0.08 ? +1 : -1;
     const icX    = ax + icSide * halfW * 0.12;
     const icHalf = halfW * 0.18;
     // POM 14 (shoulder-strap length) is a curved front-to-back strap path:
-    // apex-left = front cup/strap join, strap-bottom = back strap end. The back
-    // end seeds only inside the back-view branch below; a front-only sketch has
-    // no back end, so POM 14 → REVIEW_ONLY.
+    // strap-top = upper joining seam of the front left strap; strap-bottom =
+    // back strap/panel join. The back end seeds only inside the back-view branch
+    // below; a front-only sketch has no back end, so POM 14 → REVIEW_ONLY.
 
     // POM 6 rescue: when the direct CF-seam detector missed (no cradleCfTop)
     // but the bottom-cup cradle seam WAS found (cradleCupTop — the POM 7 top),
@@ -13778,9 +15314,6 @@ function getAnnotationsOnImage(image) {
     // (e.g. apex + cradle-cup both missing) AND the front_inner view branch
     // below isn't used either.
     const cupModel = detection.cupModel || null;
-    const cupModelUsable = !!(cupModel && cupModel.visibility !== 'hidden'
-      && cupModel.topPoint && cupModel.bottomPoint
-      && cupModel.innerEdge && cupModel.outerEdgeNearArmhole);
     const innerCupTopInk = detection.innerCupTop || null;
     const sideTopRightInk = detection.sideTopRight || null;
     const sideTopLeftInk  = detection.sideTopLeft  || null;
@@ -13794,7 +15327,13 @@ function getAnnotationsOnImage(image) {
     // regardless of which cup side the model picked. Single source of truth for
     // both the frontView and frontInnerView branches below.
     const innerCupFromCupModel = (cm) => {
+      // innerEdgeSupported === false: the model's width row crosses a void
+      // (open neckline V) and the inner endpoint is a fabricated gore inset
+      // with no ink near it — fall down the precedence chain instead of
+      // anchoring POM 9/10 in blank space. Mirrors cupModelUsable in
+      // landmark-qa.js (the authoritative gate predicate).
       if (!(cm && cm.visibility !== 'hidden'
+            && cm.innerEdgeSupported !== false
             && cm.topPoint && cm.bottomPoint
             && cm.innerEdge && cm.outerEdgeNearArmhole)) {
         return null;
@@ -13986,18 +15525,27 @@ function getAnnotationsOnImage(image) {
         useIcLeft = frontCupPts.left;
         useIcRight = frontCupPts.right;
       } else if (innerCupTopInk) {
-        // Legacy fallback — cupModel could not be built but ink suggests a cup
-        // top. Anchor POM 9 on the detected ink top (x shared top→bottom so the
-        // height reads vertical, bottom on the detected cradle row) and derive
-        // POM 10 width from the CF axis + side seam on the ink-top's cup side.
+        // Legacy fallback — the cupModel could not be built (or its inner edge
+        // is unsupported) but ink suggests a cup top. Anchor POM 9 on the
+        // detected ink top (x shared top→bottom so the height reads vertical,
+        // bottom on the detected cradle row) and derive POM 10 width from the
+        // CF axis + side seam. The cup SIDE honors the cupModel's pick when a
+        // model exists — invariants B1/B2 judge the anchors against
+        // cupModel.side, and the ink top often sits ON the gore (≈ the axis),
+        // making its own left/right tie-break arbitrary. The shared POM 9
+        // column is clamped into the POM 10 span so A5/B1 hold even when the
+        // gore-top ink lands a hair past the axis.
         const inkX = clamp01(innerCupTopInk.x);
-        const cupIsLeft = inkX <= axSafe;
+        const cupIsLeft = (cupModel && (cupModel.side === -1 || cupModel.side === 1))
+          ? cupModel.side < 0
+          : inkX <= axSafe;
         const widthY = clamp01(innerCupTopInk.y + Math.max(0.05, (band - innerCupTopInk.y) * 0.45));
         const w = landmarkInnerCupWidth(cupIsLeft, widthY);
-        useIcTop = { x: inkX, y: clamp01(innerCupTopInk.y) };
+        const colX = Math.min(Math.max(inkX, w.left.x), w.right.x);
+        useIcTop = { x: colX, y: clamp01(innerCupTopInk.y) };
         useIcLeft  = w.left;
         useIcRight = w.right;
-        useIcBottomFromCup = { x: inkX, y: clamp01(cradle) };
+        useIcBottomFromCup = { x: colX, y: clamp01(cradle) };
       } else {
         // Pure fallback — no cupModel and no ink top. Still avoid fixed view
         // ratios: estimate the cup from detected landmarks (CF axis, side
@@ -14032,6 +15580,22 @@ function getAnnotationsOnImage(image) {
       const useApexR = apexRsrc
         ? { x: clamp01(apexRsrc.x), y: clamp01(apexRsrc.y) }
         : null;
+      // Front endpoint of POM 14 (ADR 0016/0017): the strap JOIN on the RIGHT
+      // shoulder strap — the strap adjacent to the back view, so the drawn
+      // curve follows one continuous strap. With a stitched strap section the
+      // join is that section's top seam (frontStrapStart); on plain straps
+      // there is no such seam, and the join is where the strap attaches to the
+      // cup/neckline — the validated cup/strap join, on its OUTER edge (the
+      // apex-inner variant belongs to POM 16). Never the strap's top cut edge
+      // (TD corrections 2026-07-10: "front strap join, not front strap top";
+      // "outer edge of front strap join, not inner edge").
+      const strapJoin = detection.apexRightOuter || detection.apexLeftOuter
+        || (useApexR || useApexL);
+      const useFrontStrapTop = detection.frontStrapStart
+        ? { x: clamp01(detection.frontStrapStart.x), y: clamp01(detection.frontStrapStart.y) }
+        : (strapJoin
+          ? { x: clamp01(strapJoin.x), y: clamp01(strapJoin.y) }
+          : inView(f, 0.80, 0.18));
       // CF-bottom: bandY is the highest-confidence horizontal signal in the
       // pipeline. Prefer (axisX, bandY) over the view-box fraction so POMs 5
       // and 6 land on the actual band ink.
@@ -14063,7 +15627,9 @@ function getAnnotationsOnImage(image) {
         'inner-cup-right': useIcRight,
         'side-top':        useSideTop,
         'side-bottom':     useSideBot,
+        'strap-top':       useFrontStrapTop,
       };
+      roleByKind['strap-top'] = 'front_outer';
       if (useApexL && useApexR) {
         seeds['apex-left'] = useApexL;
         seeds['apex-right'] = useApexR;
@@ -14144,27 +15710,13 @@ function getAnnotationsOnImage(image) {
     // legacy innerCupTopInk fires we keep them too — that's a heuristic but
     // it carries some structure information, and the existing flow has shown
     // it usable on a number of sketches.
-    const hasFrontInnerSeedView = !!(frontInnerView && frontInnerView.width > 0 && frontInnerView.height > 0);
-    const anchorGateWillDelete = !!(cupModel && cupModel.visibility === 'hidden' && !innerCupTopInk && !hasFrontInnerSeedView);
     // Anchor-gate diagnostic — which source path POM 9/10 ended up using.
-    // Surfaced via detection.debug.cupAnchorGate so debug consumers (rule.md
-    // 'why was this row demoted?' question) can see the gate decision without
-    // re-running detection.
-    const cupAnchorGate = {
-      cupModelPresent: !!cupModel,
-      cupModelVisibility: cupModel ? cupModel.visibility : null,
-      cupModelUsable,
-      innerCupTopInkPresent: !!innerCupTopInk,
-      hasFrontInnerView: hasFrontInnerSeedView,
-      pathTaken: anchorGateWillDelete
-        ? 'deleted (POM 9/10 → REVIEW_ONLY)'
-        : (cupModelUsable
-          ? 'cupModel'
-          : (innerCupTopInk
-            ? 'innerCupTopInk fallback'
-            : (hasFrontInnerSeedView ? 'front_inner view ratios' : 'view-box ratio fallback'))),
-      cupModelReason: cupModel ? cupModel.reason : null,
-    };
+    // Computed by the landmark QA layer (single source of truth for the gate
+    // predicate); surfaced via detection.debug.cupAnchorGate so debug
+    // consumers (rule.md 'why was this row demoted?' question) can see the
+    // gate decision without re-running detection.
+    const cupAnchorGate = landmarkQa ? landmarkQa.cupGate : null;
+    const anchorGateWillDelete = !!(cupAnchorGate && cupAnchorGate.willDelete);
     if (detection && detection.debug && typeof detection.debug === 'object') {
       detection.debug.cupAnchorGate = cupAnchorGate;
     }
@@ -14242,12 +15794,8 @@ function getAnnotationsOnImage(image) {
         : (backPanelInk && backPanelInk.bottom
           ? { x: clamp01(backPanelInk.bottom.x), y: clamp01(backPanelInk.bottom.y) }
           : inView(b, 0.232, 0.985));
-      // Back strap helper landmarks. POM 14 uses strap-bottom as the back end;
-      // its front start is apex-left, the cup/strap join. strap-top still marks
-      // the top of the back strap for review/debugging.
-      const useBackStrapTop = detection.backStrapTop
-        ? { x: clamp01(detection.backStrapTop.x), y: clamp01(detection.backStrapTop.y) }
-        : inView(b, 0.187, 0.405);
+      // POM 14's back endpoint is the strap/panel join. strap-top is seeded in
+      // the front-view branch and must not be overwritten with back-view ink.
       const useBackStrapBottom = { x: usePanelTop.x, y: usePanelTop.y };
       // POM 11 side seam: follow the back panel's outer outline with ink.
       // side-top is the topmost edge ink; side-bottom follows that seam DOWN to
@@ -14274,178 +15822,35 @@ function getAnnotationsOnImage(image) {
         'back-panel-bottom': usePanelBot,
         'back-strap-left':   { x: clamp01(bStrapL.x), y: clamp01(bStrapL.y) },
         'back-strap-right':  { x: clamp01(bStrapR.x), y: clamp01(bStrapR.y) },
-        'strap-top':         useBackStrapTop,
         'strap-bottom':      useBackStrapBottom,
       };
-      // Back strap helper anchors live on the back view.
-      roleByKind['strap-top'] = 'back';
+      // Only the ending strap anchor lives on the back view.
       roleByKind['strap-bottom'] = 'back';
     }
 
-    // Anchor confidence flows from the underlying detection signal — strong
-    // peaks → 'high', weak peaks → 'medium', geometry-only fallbacks → 'low'.
-    // Old hardcoded buckets remain as the default when the new fields aren't
-    // present (back-compat for any caller that synthesizes a detection).
-    const tier = (score, fallback) => {
-      if (score == null || score <= 0) return fallback;
-      if (score >= 0.5) return 'high';
-      if (score >= 0.2) return 'medium';
-      return 'low';
-    };
-    // Inner-cup anchors: score-based tier, but an *inferred* cupModel (no
-    // front_inner view — cup built from apex + cradle-cup seam) can never claim
-    // 'high'. Capped at 'medium' so the TD isn't shown a confident green dot for
-    // a seam we only inferred, even when the contour/seam blend scores well
-    // (a high score is confidence in the trace, not proof the view was seen).
-    // A 'direct' cupModel keeps the full score-based tier. The plain `tier`
-    // fallback can't express this: it only fires when score <= 0, so a strong
-    // score bypasses the visibility ceiling entirely.
-    const cupTier = (score, cm) => {
-      const direct = cm && cm.visibility === 'direct';
-      const t = tier(score, direct ? 'high' : 'medium');
-      return (!direct && t === 'high') ? 'medium' : t;
-    };
-    const confByKind = {
-      'cf-top':            tier(det.axis, 'medium'),
-      'cf-bottom':         tier(det.band, 'high'),
-      'cradle-cf-top':     (cradleCfFromCupSeam || detection.cradleCfTopDipProjected)
-                             ? 'low'
-                             : tier(det.cradleCfTop, 'medium'),
-      'cradle-cup-top':    tier(det.cradleCupTop, 'medium'),
-      'cradle-cup-bottom': tier(det.cradleCupBottom, 'medium'),
-      'band-left':         tier(det.band, 'high'),
-      'band-right':        tier(det.band, 'high'),
-      'chest-left':        tier(det.chest, 'medium'),
-      'chest-right':       tier(det.chest, 'medium'),
-      // Inner-cup anchors: 'high' when the cupModel has direct visibility
-      // (front_inner view fired), 'medium' when inferred from apex + seam,
-      // 'low' on legacy heuristic fallback. The tier function returns the
-      // first non-null bucket — we feed it a score derived from cupModel
-      // confidences so all four anchors agree on the same tier.
-      'inner-cup-top':     (cupModelUsable
-                              ? cupTier((cupModel.contourConfidence || 0) * 0.6 + (cupModel.seamConfidence || 0) * 0.4, cupModel)
-                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : tier(det.chest, 'medium'))),
-      'inner-cup-bottom':  (cupModelUsable
-                              ? cupTier((cupModel.seamConfidence || 0) * 0.7 + (cupModel.contourConfidence || 0) * 0.3, cupModel)
-                              : tier(det.cradle, 'medium')),
-      'inner-cup-left':    (cupModelUsable
-                              ? cupTier((cupModel.contourConfidence || 0) * 0.5 + (cupModel.seamConfidence || 0) * 0.5, cupModel)
-                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : 'medium')),
-      'inner-cup-right':   (cupModelUsable
-                              ? cupTier((cupModel.contourConfidence || 0) * 0.5 + (cupModel.seamConfidence || 0) * 0.5, cupModel)
-                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : 'medium')),
-      'side-top':          sideTopRightInk ? tier(det.sideTopRight, 'medium') : tier(det.sideRight, 'medium'),
-      'side-bottom':       tier(det.sideRight, 'medium'),
-      'apex-left':         tier(det.apexLeft, 'medium'),
-      'apex-right':        tier(det.apexRight, 'medium'),
-      // POM 14 is the only contractually-low POM (always verify by hand); floor
-      // both strap ends to 'low' so reviewRequired is guaranteed (ADR 0012).
-      'strap-top':         'low',
-      'strap-bottom':      'low',
-      'back-top':          tier(det.back, 'low'),
-      'back-bottom':       tier(det.back, 'low'),
-      'back-panel-top':    (backPanelHeightInk || backPanelInk) ? tier(det.backPanel, 'medium') : (backView ? 'medium' : 'low'),
-      'back-panel-bottom': (backPanelHeightInk || backPanelInk) ? tier(det.backPanel, 'medium') : (backView ? 'medium' : 'low'),
-      'back-strap-left':   backView ? 'medium' : 'low',
-      'back-strap-right':  backView ? 'medium' : 'low',
-    };
-
-    // Per-anchor provenance. 'seam' = direct seam ink (POM 6/7/8 endpoints
-    // that pass rule.md L3 evidence). 'silhouette' = mask-derived (axis,
-    // band, chest, side seam). 'cupModel' / 'frontInnerView' /
-    // 'innerCupTopInkFallback' / 'cupRatioFallback' = which inner-cup path
-    // ran (mirrors cupAnchorGate.pathTaken). 'apexJoin' = strap-cup join
-    // seam (POM 16, never strap-ring hardware). 'ratio' = view-box ratio
-    // fallback. Tests assert 'apex-*' source !== 'strap-ring' and
-    // 'inner-cup-*' carries the cup-model path used.
-    const cupPath = cupAnchorGate.pathTaken;
-    // Cup-model anchors that came from 'inferred' visibility (no front_inner
-    // view; cup built from apex + cradle-cup seam) carry lower confidence
-    // than 'direct'. Distinguish the two so contract tests can assert
-    // "POM 9/10 fell back to front_outer" with reviewRequired=true.
-    const cupModelInferred = cupModel && cupModel.visibility === 'inferred';
-    const cupSource = cupPath === 'cupModel'
-      ? (cupModelInferred ? 'cupModelInferred' : 'cupModel')
-      : (cupPath === 'front_inner view ratios'
-        ? 'frontInnerView'
-        : (cupPath === 'innerCupTopInk fallback'
-          ? 'innerCupTopInkFallback'
-          : 'cupRatioFallback'));
-    const sourceByKind = {
-      'cf-top':            detection.cfTopY != null ? 'ink' : 'ratio',
-      'cf-bottom':         detection.bandY != null ? 'silhouette' : 'ratio',
-      'cradle-cf-top':     cradleCfFromCupSeam
-                             ? 'seamProjected'
-                             : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'),
-      'cradle-cup-top':    'seam',
-      'cradle-cup-bottom': 'seam',
-      'band-left':         detection.bandLeftX != null ? 'ink' : 'silhouette',
-      'band-right':        detection.bandRightX != null ? 'ink' : 'silhouette',
-      'chest-left':        (detection.underbustLeftX != null || detection.chestLeftX != null) ? 'ink' : 'ratio',
-      'chest-right':       (detection.underbustRightX != null || detection.chestRightX != null) ? 'ink' : 'ratio',
-      'inner-cup-top':     cupSource,
-      'inner-cup-bottom':  cupSource,
-      'inner-cup-left':    cupSource,
-      'inner-cup-right':   cupSource,
-      'side-top':          sideTopRightInk ? 'ink' : 'silhouette',
-      'side-bottom':       detection.sideBottomRight ? 'ink' : 'silhouette',
-      'apex-left':         detection.apexLeft ? 'apexJoin' : 'ratio',
-      'apex-right':        detection.apexRight ? 'apexJoin' : 'ratio',
-      'strap-top':         detection.backStrapTop ? 'backStrapInk' : 'ratio',
-      'strap-bottom':      (backPanelHeightInk || backPanelInk) ? 'backPanelJoin' : 'ratio',
-      'back-top':          (detection.back && detection.back.top) ? 'ink' : 'ratio',
-      'back-bottom':       (detection.back && detection.back.bottom) ? 'ink' : 'ratio',
-      'back-panel-top':    (backPanelHeightInk || backPanelInk) ? 'ink' : 'ratio',
-      'back-panel-bottom': (backPanelHeightInk || backPanelInk) ? 'ink' : 'ratio',
-      'back-strap-left':   (detection.backStrapInner && detection.backStrapInner.left)  ? 'ink' : (backView ? 'silhouette' : 'ratio'),
-      'back-strap-right':  (detection.backStrapInner && detection.backStrapInner.right) ? 'ink' : (backView ? 'silhouette' : 'ratio'),
-    };
-    // reviewRequired = the seed is ratio-only OR confidence tier is 'low'.
-    // The drafter still respects requiredAnchors for hard-gating; this flag
-    // lets the spec panel (and contract tests) mark a drawn line as needing
-    // a second look without forcing REVIEW_ONLY.
+    // Anchor confidence, provenance, and reviewRequired come from the landmark
+    // QA layer (Engineering Workflow Phase 6 — see buildLandmarkQaFromDetection
+    // in src/auto/detect/landmark-qa.js, where the tier / provenance / review
+    // predicates live with their full rationale). The seed layer places
+    // coordinates; the QA layer says how much to trust each landmark and why.
+    // The verdicts are the exact tables that used to live here, so anchors,
+    // drafts, and golden output are unchanged.
     const cupId = (detection.cupModel && detection.cupModel.id) || null;
 
     const list = [];
     for (const schema of ANCHOR_SCHEMA) {
       const seed = seeds[schema.kind];
       if (!seed) continue;
-      const source = sourceByKind[schema.kind] || 'unknown';
-      const confTier = confByKind[schema.kind] || 'medium';
-      // reviewRequired = the seed is ratio-only OR confidence tier is 'low' OR a
-      // genuinely-inferred cup anchor is weak (below). The drafter still respects
-      // requiredAnchors for hard-gating; this flag lets the spec panel (and contract
-      // tests) mark a drawn line as needing a second look without forcing
-      // REVIEW_ONLY. A DIRECT cup (source 'cupModel' — real apex + real cup-bottom,
-      // or a front_inner cutaway) is trusted at full confidence per the 2026-07-09
-      // TD correction; it is no longer down-flagged by a blunt contour+seam
-      // threshold (that reintroduced the "penalize a well-drawn front cup" churn).
-      // A genuinely INFERRED cup (endpoints placeable but one is only extrapolated
-      // — a flat-cradle bottom or a missing apex) is not blanket-flagged. Instead
-      // each inner-cup anchor is judged on the structure it actually rests on,
-      // so a strong apex + high-contour cup keeps its correct top / left /
-      // right trusted (POM 9 start, POM 10 width) and only the anchor whose
-      // evidence is genuinely missing is flagged:
-      //   - contour poorly traced (no validated apex) → all inner-cup anchors,
-      //   - no real cup bottom → inner-cup-bottom only (POM 9 end). The bottom
-      //     is real when POM 7 committed a seam (bottomFromSeam) OR a coherent
-      //     underwire arc was traced from the ink (bottomFromInk); a bare
-      //     flat-cradle-row guess still flags for review.
-      //   - top not anchored on a real apex → inner-cup-top only (POM 9 start).
-      const cupInferredWeakAnchor = source === 'cupModelInferred'
-        && cupModel
-        && (
-          (cupModel.contourConfidence || 0) < 0.5
-          || (schema.kind === 'inner-cup-bottom' && !cupModel.bottomFromSeam && !cupModel.bottomFromInk)
-          || (schema.kind === 'inner-cup-top' && !cupModel.topFromApex)
-        );
-      const reviewRequired = confTier === 'low'
-        || source === 'ratio'
-        || source === 'seamProjected'
-        || source === 'seamDip'
-        || source === 'cupRatioFallback'
-        || source === 'innerCupTopInkFallback'
-        || cupInferredWeakAnchor;
+      const qaEntry = qaByKind[schema.kind] || null;
+      const source = qaEntry && qaEntry.source ? qaEntry.source : 'unknown';
+      const confTier = qaEntry ? qaEntry.confidence : 'medium';
+      // reviewRequired is the QA layer's weak-landmark verdict: ratio-only or
+      // projected seeds, 'low' tiers, genuinely-inferred weak cup anchors, and
+      // non-'high' anchors on a weak geometry frame. The drafter still
+      // respects requiredAnchors for hard-gating; this flag lets the spec
+      // panel (and contract tests) mark a drawn line as needing a second look
+      // without forcing REVIEW_ONLY.
+      const reviewRequired = qaEntry ? !!qaEntry.reviewRequired : false;
       const record = {
         id: createUniqueAnnotationId(),
         kind: schema.kind,
@@ -14460,6 +15865,16 @@ function getAnnotationsOnImage(image) {
         source,
         reviewRequired,
       };
+      // Phase 6 provenance carried onto the anchor record: the landmark
+      // source class (detected / derived / projected — 'learned' is applied
+      // below when the learning loop moves the seed) and the QA notes that
+      // explain any weakness in TD language.
+      if (qaEntry) {
+        record.landmarkSourceClass = qaEntry.sourceClass;
+        if (Array.isArray(qaEntry.notes) && qaEntry.notes.length) {
+          record.qaNotes = qaEntry.notes.slice();
+        }
+      }
       // Attach the shared cupModel id to inner-cup-* anchors so contract
       // tests can prove POM 9 and POM 10 read from the SAME cup model.
       if (cupId && schema.kind.indexOf('inner-cup-') === 0) {
@@ -14476,7 +15891,20 @@ function getAnnotationsOnImage(image) {
     // computed against the unbiased prediction, never against an already-
     // biased one (which would compound the error and make the median drift).
     if (options && options.skipLearning) return list;
-    return applyLearningBiasToAnchors(list);
+    const biased = applyLearningBiasToAnchors(list);
+    // Phase 6: an anchor the learning loop actually moved is 'learned' — the
+    // seed position is no longer purely the detector's landmark. The fine
+    // `source` provenance is untouched (it still says which detector path
+    // produced the seed); only the source CLASS is re-tagged.
+    for (const anchor of biased) {
+      if (anchor && anchor.calibrated && anchor.landmarkSourceClass) {
+        anchor.landmarkSourceClass = 'learned';
+        anchor.qaNotes = (anchor.qaNotes || []).concat(
+          'learned: seed nudged by the median residual of past TD corrections.'
+        );
+      }
+    }
+    return biased;
   }
 
   function clamp01(v) { return Math.max(0, Math.min(1, Number(v) || 0)); }
@@ -14491,7 +15919,8 @@ function getAnnotationsOnImage(image) {
   function defaultViewRoleForAnchorKind(kind) {
     if (/^back-|^back$/.test(kind)) return 'back';
     if (kind === 'side-top' || kind === 'side-bottom') return 'back';
-    if (kind === 'strap-top' || kind === 'strap-bottom') return 'back';
+    if (kind === 'strap-bottom') return 'back';
+    if (kind === 'strap-top') return 'front_outer';
     if (kind.indexOf('inner-cup-') === 0) return 'front_outer';
     return 'front_outer';
   }
@@ -15046,6 +16475,7 @@ function getAnnotationsOnImage(image) {
     const sideBot    = at('side-bottom');
     const apexL      = at('apex-left');
     const apexR      = at('apex-right');
+    const strapTop   = at('strap-top');
     const strapBot   = at('strap-bottom');
     const backTop    = at('back-top');
     const backBot    = at('back-bottom');
@@ -15153,22 +16583,26 @@ function getAnnotationsOnImage(image) {
     const ic9controls = { c1: ic9c1, c2: ic9c2 };
     const ic10controls = { c1: ic10c1, c2: ic10c2 };
 
-    // POM 14 is strap LENGTH: front cup/shoulder-strap join → back strap end.
+    // POM 14 is strap LENGTH: front strap upper joining seam → back strap end.
     // This necessarily crosses the front/back sketch gap on a flat tech-pack
     // page, so draw it as a curve that travels over the shoulder instead of a
     // straight line inside the back view.
-    const strapLengthStart = apexL;
+    const strapLengthStart = strapTop;
     const strapLengthEnd = strapBot;
     const strapLengthDX = Math.abs(strapLengthEnd.x - strapLengthStart.x);
     const strapLengthDY = Math.abs(strapLengthEnd.y - strapLengthStart.y);
     const strapLengthApexY = Math.min(strapLengthStart.y, strapLengthEnd.y);
     const strapLengthArc = Math.max(strapLengthDX * 0.32, strapLengthDY * 0.65 + 0.08);
+    // NOTE: lerp() in this file is a POINT lerp — passing scalars returns
+    // {x: NaN, y: NaN}, which clamp01 silently coerced to 0 and pinned both
+    // curve handles to the left image edge. Interpolate the x scalars inline.
+    const lerpNum = (a, b, t) => a + (b - a) * t;
     const strap14c1 = {
-      x: clamp01(lerp(strapLengthStart.x, strapLengthEnd.x, 0.35)),
+      x: clamp01(lerpNum(strapLengthStart.x, strapLengthEnd.x, 0.35)),
       y: strapLengthApexY - strapLengthArc,
     };
     const strap14c2 = {
-      x: clamp01(lerp(strapLengthStart.x, strapLengthEnd.x, 0.72)),
+      x: clamp01(lerpNum(strapLengthStart.x, strapLengthEnd.x, 0.72)),
       y: strapLengthApexY - strapLengthArc * 0.72,
     };
 
@@ -15413,7 +16847,7 @@ function getAnnotationsOnImage(image) {
         reason: hasBackPanel ? 'Back panel height from the detected back view.' : 'Back panel height (offset from back center).' },
 
       // POM 14 — shoulder strap length:
-      // front cup/strap joining seam → end of the shoulder strap at the back.
+      // front strap upper joining seam → end of the shoulder strap at the back.
       // The only contractually-low POM (always verify by hand); front-only
       // sketches have no back strap end, so the missing-anchor guard below
       // demotes it to REVIEW_ONLY.
@@ -15421,8 +16855,8 @@ function getAnnotationsOnImage(image) {
         viewRole: effectivePomViewRole('14'),
         start: strapLengthStart, end: strapLengthEnd, control1: strap14c1, control2: strap14c2,
         drawability: 'DRAWABLE', confidence: 'low',
-        proposedStartLandmark: 'cup/strap join', proposedEndLandmark: 'back strap end',
-        reason: 'Shoulder strap length from the front cup/strap join to the back strap end.' },
+        proposedStartLandmark: 'front strap upper join', proposedEndLandmark: 'back strap end',
+        reason: 'Shoulder strap length from the front strap upper joining seam to the back strap end.' },
 
       // POM 15 — back strap distance
       pom15Row,
@@ -15437,6 +16871,30 @@ function getAnnotationsOnImage(image) {
         reason: 'Front apex-to-apex distance.' },
     ];
 
+    // Review-note plumbing (Engineering Workflow Phase 7, item 4). When a POM
+    // cannot be drawn, the row must say WHICH anchors are missing and WHY, in
+    // TD language. The "why" comes from the Phase 6 landmark QA layer
+    // (detection.landmarkQa) — e.g. "missing seam: bottom-cup cradle seam not
+    // found". Display names come from the anchor schema. Both fields are
+    // additive: drawability / confidence / geometry decisions are unchanged.
+    const qaByKind = (det && det.landmarkQa && det.landmarkQa.byKind) || null;
+    const anchorNameByKind = Object.create(null);
+    for (const schema of ANCHOR_SCHEMA) anchorNameByKind[schema.kind] = schema.name || schema.kind;
+    // QA notes for the given kinds (only kinds that are missing or flagged for
+    // review contribute — a healthy anchor has nothing to explain), deduped.
+    const reviewNotesForKinds = (kinds) => {
+      if (!qaByKind) return [];
+      const notes = [];
+      for (const kind of kinds) {
+        const q = qaByKind[kind];
+        if (!q || (q.present && !q.reviewRequired)) continue;
+        for (const note of (q.notes || [])) {
+          if (notes.indexOf(note) < 0) notes.push(note);
+        }
+      }
+      return notes;
+    };
+
     // Missing-anchor guard: any row whose POM declares a required anchor that
     // wasn't seeded must NOT ship as a confident drawn line — route it to
     // REVIEW_ONLY so the TD places it deliberately instead of having to spot
@@ -15449,13 +16907,21 @@ function getAnnotationsOnImage(image) {
     for (const row of rows) {
       const tpl = POM_TEMPLATE[String(row.pom)];
       const required = (tpl && Array.isArray(tpl.requiredAnchors)) ? tpl.requiredAnchors : [];
-      if (required.every(kind => !!a[kind])) continue;
+      const missing = required.filter(kind => !a[kind]);
+      if (!missing.length) continue;
       row.drawability = 'REVIEW_ONLY';
       row.confidence = 'low';
       row.start = null; row.end = null;
       row.control1 = null; row.control2 = null;
+      // Phase 7: name the missing anchors explicitly so the TD (and the
+      // contract suite) can audit the demotion without re-running detection.
+      row.missingAnchors = missing.slice();
+      const missingNames = missing
+        .map(kind => anchorNameByKind[kind] || kind)
+        .join(', ');
       row.uncertainty = (row.uncertainty ? row.uncertainty + ' ' : '')
-        + 'A required anchor was not detected, so this line cannot be auto-placed.';
+        + 'A required anchor was not detected, so this line cannot be auto-placed.'
+        + ' Missing: ' + missingNames + '.';
     }
 
     // P5: a straight row whose endpoints coincide (zero measurable length)
@@ -15515,12 +16981,27 @@ function getAnnotationsOnImage(image) {
     // 9/10 whose cupModel was hidden/absent — P3). validate-fixture requires
     // REVIEW_ONLY rows to carry null geometry, and a stale line must never be
     // drawn for a row the TD has to place by hand.
+    //
+    // Phase 7, item 4: every REVIEW_ONLY row also gets reviewNotes — the
+    // landmark QA explanations for its missing anchors (guard demotions) or,
+    // for other demotion paths (hidden cup, degenerate geometry), for any of
+    // its required anchors that the QA layer flagged. Empty stays absent: an
+    // uncertainty line with no QA evidence behind it is still valid.
     for (const row of rows) {
       if (row.drawability !== 'REVIEW_ONLY') continue;
       row.start = null; row.end = null;
       row.control1 = null; row.control2 = null;
       if (!row.uncertainty) {
         row.uncertainty = 'No reliable evidence to auto-place this line; the TD should place it.';
+      }
+      if (!row.reviewNotes) {
+        const tpl = POM_TEMPLATE[String(row.pom)];
+        const required = (tpl && Array.isArray(tpl.requiredAnchors)) ? tpl.requiredAnchors : [];
+        const kinds = (row.missingAnchors && row.missingAnchors.length)
+          ? row.missingAnchors
+          : required;
+        const notes = reviewNotesForKinds(kinds);
+        if (notes.length) row.reviewNotes = notes;
       }
     }
 
@@ -15683,6 +17164,14 @@ function getAnnotationsOnImage(image) {
       proposedEndLandmark: row.proposedEndLandmark || null,
       reason: row.reason || null,
       uncertainty: row.uncertainty || null,
+      // Phase 7 review-note plumbing: which required anchors were missing and
+      // the landmark-QA explanations behind a REVIEW_ONLY demotion.
+      missingAnchors: Array.isArray(row.missingAnchors) && row.missingAnchors.length
+        ? row.missingAnchors.slice()
+        : null,
+      reviewNotes: Array.isArray(row.reviewNotes) && row.reviewNotes.length
+        ? row.reviewNotes.slice()
+        : null,
       sharedAnchorFamily: row.sharedAnchorFamily || null,
       viewRole: row.viewRole || effectivePomViewRole(row.pom),
       approvedAt: null,
@@ -15776,6 +17265,19 @@ function getAnnotationsOnImage(image) {
         if (!row.uncertainty) {
           warnings.push(`${tag}: REVIEW_ONLY rows should explain why a line cannot be drawn.`);
         }
+        // Phase 7 boundary audit: a row may only claim missing anchors that
+        // its POM actually declares as required in pom-template.json — the
+        // rule JSON stays the source of truth, and the review note cannot
+        // drift from it.
+        if (Array.isArray(row.missingAnchors) && row.missingAnchors.length) {
+          const tpl = pomTemplate[String(row.pom)];
+          const required = (tpl && Array.isArray(tpl.requiredAnchors)) ? tpl.requiredAnchors : [];
+          for (const kind of row.missingAnchors) {
+            if (required.indexOf(kind) < 0) {
+              errors.push(`${tag}: missingAnchors lists "${kind}" which is not a declared requiredAnchor.`);
+            }
+          }
+        }
         continue;
       }
 
@@ -15840,6 +17342,19 @@ function getAnnotationsOnImage(image) {
     }
 
     if (pom14 && pom14.type !== 'curved') errors.push('POM 14 must be a curved strap-length line.');
+    // POM 14's curve handles arc over the shoulder: their x must interpolate
+    // between the two strap endpoints. A handle pinned outside that span is a
+    // numeric error (e.g. NaN coerced to 0 by clamp01), not a real curve.
+    if (pom14 && pom14.type === 'curved' && pom14.drawability !== 'REVIEW_ONLY'
+        && pom14.start && pom14.end && pom14.control1 && pom14.control2) {
+      const xLo = Math.min(pom14.start.x, pom14.end.x) - 0.05;
+      const xHi = Math.max(pom14.start.x, pom14.end.x) + 0.05;
+      for (const [name, h] of [['control1', pom14.control1], ['control2', pom14.control2]]) {
+        if (!(h.x >= xLo && h.x <= xHi)) {
+          errors.push(`POM 14 ${name}.x (${h.x}) must lie within the strap span [${xLo.toFixed(3)}, ${xHi.toFixed(3)}].`);
+        }
+      }
+    }
 
     if (pom16 && pom16.drawability !== 'REVIEW_ONLY') {
       if (!isFiniteNormalized(pom16.start) || !isFiniteNormalized(pom16.end)) {
@@ -16661,6 +18176,31 @@ function getAnnotationsOnImage(image) {
     };
   }
 
+  // Stage attribution (Engineering Workflow Phase 8, item 1): which pipeline
+  // stage most likely caused the correction the TD just made. Purely
+  // diagnostic — the bias math never reads it — but it tells an engineer (via
+  // the learning-data dialog and the sample records) WHERE the engine loses
+  // accuracy. Precedence follows the pipeline upstream-first: a tiny drag is
+  // an anchor nudge whatever the stage flags say; otherwise the deepest weak
+  // stage claims the correction (segmentation → contour/seam evidence →
+  // geometry frame → the landmark pick itself).
+  const RESIDUAL_NUDGE_LIMIT = 0.015; // ≤1.5% of the image dimension = fine-tune
+  function classifyResidualStage(anchorKind, dxNorm, dyNorm) {
+    const mag = Math.max(Math.abs(Number(dxNorm) || 0), Math.abs(Number(dyNorm) || 0));
+    if (mag < RESIDUAL_NUDGE_LIMIT) return 'anchor-nudge';
+    const det = state.autoMode && state.autoMode.detection;
+    if (!det) return 'unknown';
+    if (det.segmentationReviewRequired) return 'segmentation-weak';
+    const qa = det.landmarkQa && det.landmarkQa.byKind
+      ? det.landmarkQa.byKind[anchorKind]
+      : null;
+    // 'projected' covers seamProjected / seamDip / ratio / cupRatioFallback —
+    // the landmark had no direct contour/seam/ink evidence to rest on.
+    if (qa && qa.sourceClass === 'projected') return 'contour-missing';
+    if (det.geometryReviewRequired) return 'geometry-wrong';
+    return 'landmark-wrong';
+  }
+
   function recordAnchorResidual(anchorKind, dxNorm, dyNorm, anchor) {
     if (!isLearningEnabled()) return false;
     // Derived anchors (Phase 3, plan 2) are geometric consequences of their
@@ -16677,7 +18217,25 @@ function getAnnotationsOnImage(image) {
     const sampleAnchor = anchor || { kind: anchorKind };
     const key = learningBucketKey(anchorKind, anchor);
     const bucket = learningStore.buckets[key] || (learningStore.buckets[key] = []);
-    bucket.push({ dx: dxNorm, dy: dyNorm, ts: Date.now() });
+    // Phase 8 sample context — additive fields the bias math never reads:
+    //   stage — suspected pipeline stage behind the correction (item 1);
+    //   part  — semantic bra part (item 3 scoping context);
+    //   style — the project's style code, so a future scoped-bias pass can
+    //           split buckets per style WITHOUT invalidating today's data
+    //           (the bucket key stays kind|viewRole on purpose);
+    //   conf  — the anchor's confidence tier before the correction.
+    const sample = {
+      dx: dxNorm, dy: dyNorm, ts: Date.now(),
+      stage: classifyResidualStage(anchorKind, dxNorm, dyNorm),
+    };
+    const part = (typeof semanticPartForAnchorKind === 'function')
+      ? semanticPartForAnchorKind(anchorKind)
+      : null;
+    if (part) sample.part = part;
+    const styleId = (typeof currentStyleId === 'function') ? currentStyleId() : null;
+    if (styleId) sample.style = styleId;
+    if (anchor && anchor.confidence) sample.conf = anchor.confidence;
+    bucket.push(sample);
     // Drop the oldest entries first — recent TDs are more representative
     // of the current sketch style than ones from months ago.
     if (bucket.length > LEARNING_MAX_PER_BUCKET) {
@@ -16899,10 +18457,18 @@ function getAnnotationsOnImage(image) {
     const buckets = (learningStore && learningStore.buckets) || {};
     const rows = [];
     let totalSamples = 0;
+    // Phase 8: corrections by suspected pipeline stage. Samples recorded
+    // before stage attribution existed have no stage field — counted as
+    // 'unattributed' so the totals still reconcile.
+    const stageCounts = {};
     for (const key of Object.keys(buckets)) {
       const bucket = buckets[key] || [];
       const n = bucket.length;
       totalSamples += n;
+      for (const r of bucket) {
+        const stage = r && r.stage ? r.stage : 'unattributed';
+        stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+      }
       const pipe = key.indexOf('|');
       const kind = pipe >= 0 ? key.slice(0, pipe) : key;
       const viewRole = pipe >= 0 ? key.slice(pipe + 1) : '';
@@ -16951,6 +18517,7 @@ function getAnnotationsOnImage(image) {
       minSamples: LEARNING_MIN_SAMPLES,
       clampLimit: LEARNING_CLAMP,
       outlierLimit: LEARNING_OUTLIER_LIMIT,
+      stageCounts,
       paramSampleCounts: params,
       totalParamSamples,
       rows,
@@ -18309,6 +19876,247 @@ function getAnnotationsOnImage(image) {
     return payload;
   }
 
+  // -------- Per-stage debug summary (Engineering Workflow, Phase 1) --------
+  //
+  // A compact, strictly READ-ONLY snapshot of what each pipeline stage produced
+  // on the most recent Auto-Mode run. It maps the "segmentation -> contour ->
+  // geometry -> landmark -> anchor" mental model in Engineering Workflow.md onto
+  // the fields the current detector already emits, so an engineer or TD reviewer
+  // can answer "did this stage do its job?" at a glance.
+  //
+  // This function only READS state.autoMode.detection / .anchors — it never
+  // writes back, so it cannot alter detection output or drift golden. Fields
+  // that the current pipeline does not yet compute cleanly are reported as null
+  // with a `notes` entry rather than invented; those gaps are later phases
+  // (e.g. a dedicated segmentation-quality score is Phase 3).
+  function buildStageDebugSummary(imageName) {
+    const det = state.autoMode.detection || null;
+    const anchors = state.autoMode.anchors || [];
+    const notes = [];
+    const round = (v, digits) => {
+      if (typeof v !== 'number' || !Number.isFinite(v)) return null;
+      const f = Math.pow(10, digits || 4);
+      return Math.round(v * f) / f;
+    };
+
+    if (!det) {
+      return {
+        generatedAt: new Date().toISOString(),
+        image: imageName || null,
+        ruleVersion: AUTO_RULE_VERSION,
+        templateVersion: AUTO_TEMPLATE_VERSION,
+        hasDetection: false,
+        notes: ['No detection has run yet — run Detect Sketch first.'],
+        segmentation: null,
+        contour: null,
+        geometry: null,
+        landmarks: null,
+        anchors: null,
+        overall: null,
+      };
+    }
+
+    // ---- Stage 2: Segmentation (ink mask separation) ----
+    // Phase 3 made segmentation a first-class stage: det.segmentation carries a
+    // normalized cross-backend result (backend id, bbox, deterministic quality,
+    // and a weak-segmentation review flag). overall.quality remains the blended
+    // detection quality (axis + band + chest), distinct from the mask score.
+    const seg = det.segmentation || null;
+    const segmentation = {
+      // Normalized Phase-3 fields (null on very old captures without the block).
+      backend: seg ? seg.backend : (det.segmentationBackend || null),
+      quality: seg ? round(seg.quality, 4) : round(det.segmentationQuality, 4),
+      weak: seg ? !!seg.weak : !!det.segmentationWeak,
+      reviewRequired: seg ? !!seg.reviewRequired : !!det.segmentationReviewRequired,
+      reasons: seg && Array.isArray(seg.reasons) ? seg.reasons.slice() : [],
+      subScores: seg && seg.subScores ? { ...seg.subScores } : null,
+      retainedInk: seg ? round(seg.retainedInk, 4) : null,
+      rawCoverage: seg ? round(seg.rawCoverage, 6) : null,
+      componentsBackend: seg ? seg.componentsBackend : null,
+      inkCleanupReverted: seg ? !!seg.inkCleanupReverted : null,
+      bbox: seg && seg.bbox ? { ...seg.bbox } : null,
+      // Signals available before Phase 3 too.
+      engine: det.engine || null,
+      coverage: round(det.coverage, 6),
+      primaryCoverage: round(det.primaryCoverage, 6),
+      componentCount: det.componentCount || 0,
+      keptComponentCount: det.keptComponentCount || 0,
+      inkThreshold: det.threshold != null ? det.threshold : null,
+      luminanceThreshold: det.luminanceThreshold != null ? det.luminanceThreshold : null,
+      backgroundLum: det.backgroundLum != null ? det.backgroundLum : null,
+      sampleWidth: det.sampleWidth || null,
+      sampleHeight: det.sampleHeight || null,
+      hasInkMask: !!det.inkMask,
+    };
+    if (segmentation.reviewRequired) {
+      notes.push('segmentation.reviewRequired is set — weak mask quality (' + (segmentation.reasons.join('; ') || 'low score') + '); treat all POMs with extra scrutiny.');
+    }
+
+    // ---- Stage 3: Contour extraction (outlines / seams / junctions) ----
+    // Phase 4 made this a clean CONTOUR-EVIDENCE bundle kept separate from
+    // geometry decisions: type-split skeleton feature points (junctions /
+    // endpoints / corners), deterministic stroke stats, and — once the deferred
+    // Potrace trace runs — traced outlines plus reusable curve candidates.
+    // contours/contourCount/curveCandidates only exist when the trace ran;
+    // junctionSummary is the skeleton pass and is always attempted.
+    const js = det.junctionSummary || null;
+    const ce = det.contourEvidence || null;
+    const contour = {
+      contourCount: typeof det.contourCount === 'number' ? det.contourCount : null,
+      traceDurationMs: typeof det.traceDurationMs === 'number' ? det.traceDurationMs : null,
+      traceRan: !!det.contours,
+      junctionPointCount: Array.isArray(det.junctions) ? det.junctions.length : 0,
+      // Phase 4 evidence bundle (null on old captures without the block).
+      endpointCount: Array.isArray(det.endpoints) ? det.endpoints.length
+        : (ce ? (ce.endpointCount || 0) : null),
+      cornerCount: Array.isArray(det.corners) ? det.corners.length
+        : (ce ? (ce.cornerCount || 0) : null),
+      curveCandidateCount: Array.isArray(det.curveCandidates) ? det.curveCandidates.length
+        : (ce ? (ce.curveCandidateCount || 0) : 0),
+      strokeStats: det.strokeStats ? { ...det.strokeStats }
+        : (ce && ce.strokeStats ? { ...ce.strokeStats } : null),
+      junctionSummary: js ? {
+        junctions: js.junctions || 0,
+        endpoints: js.endpoints || 0,
+        corners: js.corners || 0,
+        skeletonPx: js.skeletonPx || 0,
+        thinningIterations: js.thinningIterations || 0,
+        prunedSpurs: js.prunedSpurs || 0,
+        capped: !!js.capped,
+      } : null,
+    };
+    if (contour.contourCount == null) {
+      notes.push('contour.contourCount is null: the Potrace vector trace did not run for this detection (contours are optional shape evidence).');
+    }
+
+    // ---- Stage 4: Geometry analysis (axis / band / views) ----
+    const geometry = {
+      bbox: det.bbox ? { ...det.bbox } : null,
+      axisX: round(det.axisX, 4),
+      bandY: round(det.bandY, 4),
+      chestY: round(det.chestY, 4),
+      cradleY: round(det.cradleY, 4),
+      sideLeftX: round(det.sideLeftX, 4),
+      sideRightX: round(det.sideRightX, 4),
+      symmetry: round(det.symmetry, 4),
+      axisConfidence: round(det.axisConfidence, 4),
+      baselineConfidence: round(det.baselineConfidence, 4),
+      viewCount: Array.isArray(det.views) ? det.views.length : 0,
+      primaryViewIndex: det.primaryViewIndex,
+      frontOuterViewIndex: det.frontOuterViewIndex,
+      frontInnerViewIndex: det.frontInnerViewIndex,
+      backViewIndex: det.backViewIndex,
+      viewRoleReviewRequired: !!det.viewRoleReviewRequired,
+      views: Array.isArray(det.views) ? det.views.map(v => ({
+        role: v.role || v.viewRole || null,
+        roleConfidence: v.roleConfidence != null ? v.roleConfidence : null,
+      })) : [],
+      // Phase 5: the explicit geometry-fact bundle (center axis, band line, cup
+      // curves, strap candidates, back-panel candidates, and view regions with
+      // roles + confidence), plus the geometry-quality review verdict. This is
+      // produced by the geometry stage BEFORE anchor placement — the seed layer
+      // reads these roles, it does not re-derive them. Null on old captures.
+      geometryFacts: det.geometryFacts ? clone(det.geometryFacts) : null,
+      geometryReviewRequired: !!det.geometryReviewRequired,
+    };
+    if (geometry.geometryReviewRequired) {
+      const reasons = det.geometryFacts && det.geometryFacts.quality
+        && Array.isArray(det.geometryFacts.quality.reasons)
+        ? det.geometryFacts.quality.reasons.join('; ')
+        : 'weak geometry';
+      notes.push('geometry.geometryReviewRequired is set — ' + (reasons || 'weak geometry') + '; the affected landmarks are flagged for TD review.');
+    }
+
+    // ---- Stage 5: Landmark detection (technical points + confidence) ----
+    // Phase 6 made this a first-class layer: det.landmarkQa classifies every
+    // anchor-schema kind (source class, tier, review verdict, QA notes) before
+    // anchor placement. Seeding recomputes and re-attaches it, so it reflects
+    // the verdicts the current anchors actually consumed; for a detection that
+    // has not been seeded yet (or an old capture) it is rebuilt read-only here.
+    const lq = det.landmarkQa
+      || (typeof buildLandmarkQaFromDetection === 'function'
+        ? buildLandmarkQaFromDetection(det)
+        : null);
+    const landmarks = {
+      confidenceByKind: det.confidence ? { ...det.confidence } : null,
+      seamEvidence: det.seamEvidence ? clone(det.seamEvidence) : null,
+      apexJoin: det.apexJoin ? clone(det.apexJoin) : null,
+      cupModelId: det.cupModel && det.cupModel.id ? det.cupModel.id : null,
+      cupVisibility: det.cupModel && det.cupModel.visibility ? det.cupModel.visibility : null,
+      // Phase 6 landmark QA layer (per anchor-schema kind).
+      qaByKind: lq ? clone(lq.byKind) : null,
+      qaSummary: lq ? clone(lq.summary) : null,
+      cupGate: lq ? clone(lq.cupGate) : null,
+    };
+    if (lq) {
+      if (lq.summary.missing > 0) {
+        const missingKinds = Object.keys(lq.byKind).filter(k => !lq.byKind[k].present);
+        notes.push('landmarks: ' + lq.summary.missing + ' kind(s) missing (' + missingKinds.join(', ') + ') — their POMs demote to REVIEW_ONLY rather than fake certainty.');
+      }
+      notes.push('landmarks.qaByKind: ' + lq.summary.reviewRequired + '/' + lq.summary.total + ' kinds flagged reviewRequired (sources: '
+        + lq.summary.bySourceClass.detected + ' detected, '
+        + lq.summary.bySourceClass.derived + ' derived, '
+        + lq.summary.bySourceClass.projected + ' projected, '
+        + lq.summary.bySourceClass.missing + ' missing).');
+    } else {
+      notes.push('landmarks.qaByKind unavailable: this capture predates the Phase 6 landmark QA layer.');
+    }
+
+    // ---- Stage 6: Anchor placement (normalized [0,1] anchors) ----
+    const tierCounts = { high: 0, medium: 0, low: 0, none: 0 };
+    const sourceCounts = {};
+    let reviewRequiredCount = 0;
+    const anchorList = anchors.map(a => {
+      const tier = a.confidence || 'none';
+      if (Object.prototype.hasOwnProperty.call(tierCounts, tier)) tierCounts[tier] += 1;
+      else tierCounts[tier] = (tierCounts[tier] || 0) + 1;
+      const src = a.source || 'unknown';
+      sourceCounts[src] = (sourceCounts[src] || 0) + 1;
+      if (a.reviewRequired) reviewRequiredCount += 1;
+      return {
+        kind: a.kind,
+        confidence: a.confidence || null,
+        source: a.source || null,
+        reviewRequired: !!a.reviewRequired,
+        autoFilled: !!a.autoFilled,
+        calibrated: !!a.calibrated,
+        viewRole: a.viewRole || null,
+      };
+    });
+    const anchorSummary = {
+      count: anchorList.length,
+      reviewRequiredCount,
+      byConfidenceTier: tierCounts,
+      bySource: sourceCounts,
+      anchors: anchorList,
+    };
+
+    const overall = {
+      quality: round(det.quality, 4),
+      segmentationQuality: segmentation.quality,
+      segmentationReviewRequired: segmentation.reviewRequired,
+      durationMs: det.durationMs != null ? det.durationMs : null,
+      computedAt: det.computedAt || null,
+      stageTimingsMs: det.stageTimingsMs ? { ...det.stageTimingsMs } : null,
+      validationStatus: state.autoMode.validation ? (state.autoMode.validation.status || null) : null,
+    };
+
+    return {
+      generatedAt: new Date().toISOString(),
+      image: imageName || (det.sourceImageId || null),
+      ruleVersion: AUTO_RULE_VERSION,
+      templateVersion: AUTO_TEMPLATE_VERSION,
+      hasDetection: true,
+      segmentation,
+      contour,
+      geometry,
+      landmarks,
+      anchors: anchorSummary,
+      overall,
+      notes,
+    };
+  }
+
   if (typeof window !== 'undefined') {
     window.__braAutoModeDebug = {
       // Pure detection pipeline stages, exposed so each can be driven with
@@ -18358,6 +20166,22 @@ function getAnnotationsOnImage(image) {
         // dimensions so tests can assert it was retained.
         const { inkMask, ...rest } = det;
         return Object.assign(clone(rest), { hasInkMask: !!inkMask });
+      },
+      // Read-only per-stage debug summary (Engineering Workflow, Phase 1):
+      // segmentation quality signals, contour/junction counts, geometry facts,
+      // landmark confidence, and anchor confidence for the most recent run.
+      // Pure read of state.autoMode.detection/.anchors — never mutates them, so
+      // it cannot affect detection output.
+      getStageSummary: (name) => clone(buildStageDebugSummary(name)),
+      // Phase 3 segmentation seam. A registered adapter is tried FIRST in the
+      // segmentation stage; it must return the built-in ink-analysis shape and
+      // MUST run fully offline (no network call carrying sketch/measurement
+      // data). Default is unregistered, so the runtime is unchanged until a
+      // caller opts in. clear() restores the built-in OpenCV / legacy path.
+      segmentation: {
+        registerAdapter: (fn) => registerSegmentationAdapter(fn),
+        clearAdapter: () => clearSegmentationAdapter(),
+        hasAdapter: () => !!getSegmentationAdapter(),
       },
       getAnchors: () => clone(state.autoMode.anchors),
       // Board viewport, so UI-level tests can convert an anchor's world
@@ -18516,6 +20340,9 @@ function getAnnotationsOnImage(image) {
         isEnabled: () => isLearningEnabled(),
         setEnabled: (on) => { setLearningEnabled(!!on); },
         recordResidual: (kind, dx, dy, anchor) => recordAnchorResidual(kind, dx, dy, anchor),
+        // Phase 8: stage attribution for a hypothetical correction, without
+        // recording it — lets the learning suite assert the classifier.
+        classifyResidual: (kind, dx, dy) => classifyResidualStage(kind, dx, dy),
         getBias: (kind, anchor) => clone(getAnchorBias(kind, anchor)),
         getSampleCount: () => getLearningSampleCount(),
         getBuckets: () => clone(learningStore.buckets),
@@ -19010,7 +20837,7 @@ function makeExportFileName() {
 // Export Excel: write the Measurement Spec as a single offline .xlsx —
 // title band, styleId + date, one row per visible POM (EN + 中文 + TOL;
 // lines hidden via the review × toggle are omitted entirely), the full
-// 14-column graded size run (alpha S–5XL from base L, depth M2–5XL2 from
+// 15-column graded size run (alpha S–5XL from base L, depth M2–5XL2 from
 // base L2), and the annotated board embedded as a PNG below the table.
 // No library, no template, no network (offline invariant). The ZIP writer
 // is the write-side mirror of the reader in src/import/pptx.js.
@@ -19023,9 +20850,9 @@ function makeExportFileName() {
 // override in state.gradeRules switches that POM to the constant-step
 // model in both tiers (the Size Run dialog's model), so the dialog and
 // the export can never disagree about an overridden POM. Held POMs stay
-// flat across all 14 columns. NOTHING here touches the rule JSON.
+// flat across all 15 columns. NOTHING here touches the rule JSON.
 
-  // The 14-size run from the export mock: 8 alpha + 6 depth columns. Kept as
+  // The 15-size run from the export mock: 8 alpha + 7 depth columns. Kept as
   // data so switching a style to another membership (e.g. the 18-size run, or
   // 4XL2 instead of XL2) is a one-line reviewable edit. `base` is the alpha
   // size a tier-2 column grades around when the constant-step override is on.
@@ -19036,7 +20863,8 @@ function makeExportFileName() {
     { label: '4XL',  base: '4XL', tier: 1 }, { label: '5XL',  base: '5XL', tier: 1 },
     { label: 'M2',   base: 'M',   tier: 2 }, { label: 'L2',   base: 'L',   tier: 2 },
     { label: 'XL2',  base: 'XL',  tier: 2 }, { label: '2XL2', base: '2XL', tier: 2 },
-    { label: '3XL2', base: '3XL', tier: 2 }, { label: '5XL2', base: '5XL', tier: 2 },
+    { label: '3XL2', base: '3XL', tier: 2 }, { label: '4XL2', base: '4XL', tier: 2 },
+    { label: '5XL2', base: '5XL', tier: 2 },
   ];
 
   // SC-derived alpha deltas from base L, in INCHES, one entry per GRADE_SIZES
@@ -19063,7 +20891,7 @@ function makeExportFileName() {
   };
 
   // Depth run: L2 = L + offset (inches; 0 for band and held POMs), then the
-  // per-size deltas from L2 for M2 L2 XL2 2XL2 3XL2 5XL2. Grading rules.md
+  // per-size deltas from L2 for M2 L2 XL2 2XL2 3XL2 4XL2 5XL2. Grading rules.md
   // §2.1 — explicit values, NOT a copied alpha column (the two runs taper at
   // different absolute sizes near the top).
   const SPEC_DEPTH_OFFSET_IN = {
@@ -19072,43 +20900,59 @@ function makeExportFileName() {
     '14': 0, '15': 0, '16': 0.25,
   };
   const SPEC_DEPTH_DELTA_L2_IN = {
-    '1':  [-1.0,   0, 1.0,   2.0, 3.25,  5.25],
-    '2':  [-1.0,   0, 2.0,   3.0, 5.25,  7.25],
-    '3':  [-1.25,  0, 1.25,  2.5, 3.75,  6.25],
-    '4':  [-1.25,  0, 1.25,  2.5, 3.75,  6.25],
-    '5':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75],
-    '6':  [0, 0, 0, 0, 0, 0],
-    '7':  [-0.125, 0, 0.125, 0.25, 0.375, 0.5],
-    '8':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75],
-    '9':  [-0.375, 0, 0.375, 1.0, 1.375, 2.125],
-    '10': [-0.5,   0, 0.5,   1.5, 2.0,   3.0],
-    '11': [-0.25,  0, 0.25,  0.5, 0.625, 0.875],
-    '12': [-0.25,  0, 0.25,  0.5, 0.625, 0.875],
-    '13': [-0.25,  0, 0.25,  0.5, 0.625, 0.875],
-    '14': [0, 0, 0, 0, 0, 0],
-    '15': [0, 0, 0, 0, 0, 0],
-    '16': [-0.25,  0, 0.25,  0.5, 0.75,  1.25],
+    '1':  [-1.0,   0, 1.0,   2.0, 3.25,  4.25, 5.25],
+    '2':  [-1.0,   0, 2.0,   3.0, 5.25,  6.25, 7.25],
+    '3':  [-1.25,  0, 1.25,  2.5, 3.75,  5.25, 6.25],
+    '4':  [-1.25,  0, 1.25,  2.5, 3.75,  5.25, 6.25],
+    '5':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.75],
+    '6':  [0, 0, 0, 0, 0, 0, 0],
+    '7':  [-0.125, 0, 0.125, 0.25, 0.375, 0.4375, 0.5], // 4XL2 interpolated (no SC row); TD to confirm
+    '8':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.75],
+    '9':  [-0.375, 0, 0.375, 1.0, 1.375, 1.75, 2.125],
+    '10': [-0.5,   0, 0.5,   1.5, 2.0,   2.5, 3.0],
+    '11': [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.875],
+    '12': [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.875],
+    '13': [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.875],
+    '14': [0, 0, 0, 0, 0, 0, 0],
+    '15': [0, 0, 0, 0, 0, 0, 0],
+    '16': [-0.25,  0, 0.25,  0.5, 0.75,  1.0, 1.25],
   };
 
   // Effective depth rule for a POM in the project's unit: a TD override in
-  // state.depthRules (per-POM L2−L offset) wins; otherwise the SC default
-  // converted from inches. Mirrors getGradeRule / state.gradeRules.
+  // state.gradeRules.depthOffsets (per-POM L2−L offset — the former separate
+  // state.depthRules field, absorbed into the v2 container by US-011) wins;
+  // otherwise the SC default converted from inches. Mirrors getGradeRule.
   function getDepthRule(pomKey) {
     const key = String(pomKey);
     const unitScale = inchesToUnit(state.calibration.unit);
     const houseOffset = (SPEC_DEPTH_OFFSET_IN[key] || 0) * unitScale;
-    const override = (state.depthRules && state.depthRules[key]) || null;
+    const offsets = (state.gradeRules && state.gradeRules.depthOffsets) || null;
+    const override = (offsets && offsets[key]) || null;
     if (!override || override.offset == null) return { offset: houseOffset, overridden: false };
     return { offset: Number(override.offset), overridden: true };
   }
 
-  // The 14 graded values for one POM, in the project's unit, aligned with
-  // SPEC_SIZE_RUN. Returns nulls when the POM has no base (no Size L and no
-  // measured line) — the writer leaves those cells blank.
+  // Delta rounding for formula strings: same 4-dp quantization as
+  // specNumberText, so the `=G{r}±Δ` / `=N{r}±Δ` text is deterministic
+  // (the byte-identical-export invariant covers formulas, not just values).
+  function roundSpecDelta(value) {
+    return Math.round(value * 10000) / 10000;
+  }
+
+  // The 15 graded cells for one POM, in the project's unit, aligned with
+  // SPEC_SIZE_RUN. Each entry is a descriptor `{ value, base, delta }`:
+  //   base === null → static (the editable Size-L cell, an explicit Size-L2
+  //                   cell, or a blank when value === null);
+  //   base === 'L'  → formula anchored on the Size-L cell (=G{r}+Δ);
+  //   base === 'L2' → formula anchored on the L2 cell (=N{r}+Δ).
+  // `value` is the cached numeric result (unchanged grade math), so the
+  // Excel `<v>` and every value-based test stay identical. Returns
+  // all-null/base-null descriptors when the POM has no base (no Size L and
+  // no measured line) — the writer leaves those cells blank.
   function buildFullSizeRun(pomKey, annByPom) {
     const key = String(pomKey);
     const baseInfo = gradeBaseValue(key, annByPom);
-    if (baseInfo.value == null) return SPEC_SIZE_RUN.map(() => null);
+    if (baseInfo.value == null) return SPEC_SIZE_RUN.map(() => ({ value: null, base: null, delta: 0 }));
     const protoL = baseInfo.value;
     const rule = getGradeRule(key);
     const unitScale = inchesToUnit(state.calibration.unit);
@@ -19141,7 +20985,24 @@ function makeExportFileName() {
       return protoL2 + depthDeltas[depthLabels.indexOf(col.label)] * unitScale;
     };
 
-    return SPEC_SIZE_RUN.map(col => (col.tier === 1 ? alphaValue(col.label) : depthValue(col)));
+    return SPEC_SIZE_RUN.map(col => {
+      if (col.tier === 1) {
+        const value = alphaValue(col.label);
+        // The Size-L cell is the static, editable base of the alpha run.
+        if (col.label === GRADE_BASE_SIZE) return { value, base: null, delta: 0 };
+        return { value, base: 'L', delta: roundSpecDelta(value - protoL) };
+      }
+      const value = depthValue(col);
+      if (col.label === 'L2') {
+        // Explicit Size L2 → static editable base; else derived from Size L.
+        if (explicitL2 != null) return { value, base: null, delta: 0 };
+        return { value, base: 'L', delta: roundSpecDelta(derivedOffset) };
+      }
+      // Held POMs stay flat off the Size-L cell (=G{r}); the depth run for a
+      // held POM never taints an L2 base that equals Size L anyway.
+      if (rule.hold) return { value, base: 'L', delta: roundSpecDelta(value - protoL) };
+      return { value, base: 'L2', delta: roundSpecDelta(value - protoL2) };
+    });
   }
 
   // ---- Offline .xlsx writer (ZIP, method 0 = STORE) ----
@@ -19243,8 +21104,9 @@ function makeExportFileName() {
       .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
   }
 
-  // Column letters for the fixed 18-column grid (A..R): 4 label columns +
-  // the 14 SPEC_SIZE_RUN columns.
+  // Column letters for the export grid: 4 label columns + one per SELECTED
+  // size (US-011: the sheet emits only the sizes chosen in the export
+  // picker; the full 19-column grid is the all-sizes default).
   const SPEC_XLSX_COLS = 4 + SPEC_SIZE_RUN.length;
   function specColLetter(index) {
     let s = '';
@@ -19279,16 +21141,20 @@ function makeExportFileName() {
     'B7DEE8', // 9 XL2 — cyan
     'CCC0DA', // 10 2XL2 — violet
     'FFFF99', // 11 3XL2 — yellow
-    '92CDDC', // 12 5XL2 — teal
+    'E6B8B7', // 12 4XL2 — light rose
+    '92CDDC', // 13 5XL2 — teal
   ];
 
   // cellXfs indexes (see buildSpecStylesXml): 0 default · 1 title · 2 style
-  // row · 3 label header · 4 TOL header · 5 alpha header · 6..11 depth
-  // headers (M2..5XL2) · 12 text cell · 13 centered text cell · 14 number
-  // cell · 15 centered number cell (POM column).
+  // row · 3 label header · 4 TOL header · 5 alpha header · 6..12 depth
+  // headers (M2..5XL2) · 13 text cell · 14 centered text cell · 15 number
+  // cell · 16 centered number cell (POM column) · 17 fraction number cell
+  // (mirrors 15 but with the custom # ??/?? numFmt so graded VALUES render as
+  // fractions, e.g. 3.75 → 3 3/4; the underlying <v> stays decimal so Req-3
+  // formulas still recompute).
   const SPEC_XF = {
     title: 1, styleRow: 2, headLabel: 3, headTol: 4, headAlpha: 5, headDepth0: 6,
-    text: 12, textCenter: 13, number: 14, pom: 15,
+    text: 13, textCenter: 14, number: 15, pom: 16, numberFrac: 17,
   };
 
   function buildSpecStylesXml() {
@@ -19308,7 +21174,7 @@ function makeExportFileName() {
       '<xf numFmtId="0" fontId="1" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">'
         + '<alignment horizontal="center" vertical="center"/></xf>',
       headerXf(4), headerXf(5), headerXf(6),
-      headerXf(7), headerXf(8), headerXf(9), headerXf(10), headerXf(11), headerXf(12),
+      headerXf(7), headerXf(8), headerXf(9), headerXf(10), headerXf(11), headerXf(12), headerXf(13),
       // 12 text cell
       '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1">'
         + '<alignment vertical="center" wrapText="1"/></xf>',
@@ -19321,9 +21187,18 @@ function makeExportFileName() {
       // 15 POM number cell
       '<xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1">'
         + '<alignment horizontal="center" vertical="center"/></xf>',
+      // 16 fraction number cell — mirrors 14 (number cell) but applies the
+      // custom # ??/?? fraction format (numFmtId 164). Appended at the END so
+      // existing xf indices don't shift. Display-only: <v> stays decimal.
+      '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1">'
+        + '<alignment horizontal="right" vertical="center"/></xf>',
     ];
     return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
       + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+      // Custom fraction format used by the size-value cells. numFmts must come
+      // BEFORE <fonts> in an OOXML styleSheet. "# ??/??" is Excel's reduced
+      // up-to-two-digit fraction (3.75 → 3 3/4, 8.375 → 8 3/8).
+      + '<numFmts count="1"><numFmt numFmtId="164" formatCode="# ??/??"/></numFmts>'
       + '<fonts count="3">'
       + '<font><sz val="11"/><name val="Calibri"/></font>'
       + '<font><b/><sz val="11"/><name val="Calibri"/></font>'
@@ -19349,18 +21224,29 @@ function makeExportFileName() {
     return '<c r="' + ref + '" s="' + styleId + '"><v>' + specNumberText(value) + '</v></c>';
   }
 
+  // A graded cell as a live formula (=G{r}±Δ / =N{r}±Δ) with the computed
+  // result cached in <v> so viewers that don't recalc — and the test suite's
+  // <v> reader — still see the number. Editing the base cell reflows the run.
+  function specFormulaCell(ref, styleId, formula, cachedValue) {
+    return '<c r="' + ref + '" s="' + styleId + '"><f>' + xmlEscape(formula) + '</f><v>'
+      + specNumberText(cachedValue) + '</v></c>';
+  }
+
   function specBlankCell(ref, styleId) {
     return '<c r="' + ref + '" s="' + styleId + '"/>';
   }
 
-  function buildSpecSheetXml(rowsData, hasDrawing) {
-    const lastCol = specColLetter(SPEC_XLSX_COLS - 1);
+  function buildSpecSheetXml(rowsData, hasDrawing, colCount) {
+    const totalCols = colCount || SPEC_XLSX_COLS;
+    const lastCol = specColLetter(totalCols - 1);
     const cols = '<cols>'
       + '<col min="1" max="1" width="6" customWidth="1"/>'
       + '<col min="2" max="2" width="42" customWidth="1"/>'
       + '<col min="3" max="3" width="28" customWidth="1"/>'
       + '<col min="4" max="4" width="9" customWidth="1"/>'
-      + '<col min="5" max="' + SPEC_XLSX_COLS + '" width="7.5" customWidth="1"/>'
+      + (totalCols > 4
+        ? '<col min="5" max="' + totalCols + '" width="7.5" customWidth="1"/>'
+        : '')
       + '</cols>';
     const rows = rowsData.map(row =>
       '<row r="' + row.r + '"' + (row.ht ? ' ht="' + row.ht + '" customHeight="1"' : '') + '>'
@@ -19428,6 +21314,13 @@ function makeExportFileName() {
     }
     const pomKeys = allPomKeys.filter(key => !hiddenPomKeys.has(String(key)));
 
+    // US-011: the sheet emits only the SELECTED size columns. The grade math
+    // always runs over the full 15-cell run (positional delta lookups assume
+    // it); columns are filtered at emission time only.
+    const layout = selectedSizeRun();
+    const colCount = 4 + layout.length;
+    const fullIndexByLabel = new Map(SPEC_SIZE_RUN.map((c, i) => [c.label, i]));
+
     const styleLabel = (state.styleId || '').trim() || 'Untitled';
     const rowsData = [];
     // Merged band rows: the anchor cell carries the text; the remaining
@@ -19437,12 +21330,14 @@ function makeExportFileName() {
       r,
       ht: r === 1 ? 26 : 18,
       cells: [specInlineStrCell('A' + r, styleId, text)].concat(
-        Array.from({ length: SPEC_XLSX_COLS - 1 }, (_, i) => specBlankCell(specColLetter(1 + i) + r, styleId))
+        Array.from({ length: colCount - 1 }, (_, i) => specBlankCell(specColLetter(1 + i) + r, styleId))
       ),
     });
     rowsData.push(bandRow(1, SPEC_XF.title, 'Measurement Spec'));
     rowsData.push(bandRow(2, SPEC_XF.styleRow, styleLabel + ' - ' + formatSpecDate(now)));
 
+    // Depth header fills index against the FULL depth list so each size keeps
+    // its own color even when earlier depth columns are deselected.
     const depthLabels = SPEC_SIZE_RUN.filter(c => c.tier === 2).map(c => c.label);
     const headCells = [
       specInlineStrCell('A3', SPEC_XF.headLabel, 'POM'),
@@ -19450,11 +21345,20 @@ function makeExportFileName() {
       specInlineStrCell('C3', SPEC_XF.headLabel, 'Description - Chinese'),
       specInlineStrCell('D3', SPEC_XF.headTol, 'TOL'),
     ];
-    SPEC_SIZE_RUN.forEach((col, i) => {
+    layout.forEach((col, i) => {
       const styleId = col.tier === 1 ? SPEC_XF.headAlpha : SPEC_XF.headDepth0 + depthLabels.indexOf(col.label);
       headCells.push(specInlineStrCell(specColLetter(4 + i) + '3', styleId, col.label));
     });
     rowsData.push({ r: 3, ht: 20, cells: headCells });
+
+    // Base column letters for the live grade formulas, derived from the
+    // SELECTED layout ('G'/'N' only in the all-sizes default). When a base
+    // size is deselected its dependents fall back to static cached values —
+    // a formula must never point at a column that is not in the sheet.
+    const lIdx = layout.findIndex(c => c.label === 'L');
+    const l2Idx = layout.findIndex(c => c.label === 'L2');
+    const lCol = lIdx >= 0 ? specColLetter(4 + lIdx) : null;
+    const l2Col = l2Idx >= 0 ? specColLetter(4 + l2Idx) : null;
 
     for (let i = 0; i < pomKeys.length; i += 1) {
       const key = pomKeys[i];
@@ -19465,17 +21369,38 @@ function makeExportFileName() {
         specNumberCell('A' + r, SPEC_XF.pom, Number(key)),
         specInlineStrCell('B' + r, SPEC_XF.text, spec.en),
         specInlineStrCell('C' + r, SPEC_XF.text, spec.zh),
+        // TOL is written VERBATIM as an inline string — never coerced to a
+        // number/date. So any fraction family (halves, quarters, eighths,
+        // incl. ¾ = "3/4") round-trips to Excel exactly as authored, with no
+        // conversion; fractionToNumber (src/ui/spec-panel.js) parses it back.
         spec.tol ? specInlineStrCell('D' + r, SPEC_XF.textCenter, spec.tol) : specBlankCell('D' + r, SPEC_XF.textCenter),
       ];
-      run.forEach((value, c) => {
+      layout.forEach((col, c) => {
+        const cell = run[fullIndexByLabel.get(col.label)];
         const ref = specColLetter(4 + c) + r;
-        cells.push(value != null ? specNumberCell(ref, SPEC_XF.number, value) : specBlankCell(ref, SPEC_XF.number));
+        const baseCol = cell.base === 'L' ? lCol : (cell.base === 'L2' ? l2Col : null);
+        if (cell.value == null) {
+          cells.push(specBlankCell(ref, SPEC_XF.number));
+        } else if (cell.base == null || baseCol == null) {
+          // Static editable base (Size L, or an explicit Size L2) — or a
+          // graded cell whose base column is not in this export's layout:
+          // emit the cached value as a plain number. The fraction numFmt
+          // renders it as e.g. 3 3/4 while <v> stays decimal.
+          cells.push(specNumberCell(ref, SPEC_XF.numberFrac, cell.value));
+        } else {
+          const d = cell.delta;
+          const formula = baseCol + r
+            + (d === 0 ? '' : (d < 0 ? '-' + specNumberText(-d) : '+' + specNumberText(d)));
+          // Fraction numFmt on the formula cell too — the cached <v> is the
+          // decimal result, so Req-3 recalculation is unaffected.
+          cells.push(specFormulaCell(ref, SPEC_XF.numberFrac, formula, cell.value));
+        }
       });
       rowsData.push({ r, cells });
     }
 
     const hasImage = !!(image && image.bytes && image.bytes.length);
-    const sheetXml = buildSpecSheetXml(rowsData, hasImage);
+    const sheetXml = buildSpecSheetXml(rowsData, hasImage, colCount);
 
     const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
       + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
@@ -19567,12 +21492,19 @@ function makeExportFileName() {
       showToast('Nothing to export yet. Paste an image or draw annotations first.');
       return;
     }
+    // US-011: pick the size columns first; the choice persists per project.
+    openExportSizeDialog(() => { void runSpecXlsxExport(); });
+  }
+
+  async function runSpecXlsxExport() {
     try {
       const now = new Date();
       const image = await specBoardPngBytes();
       const zipBytes = buildSpecWorkbookXlsx(now, image);
       downloadBlob(new Blob([zipBytes], { type: SPEC_XLSX_MIME }), makeSpecXlsxFileName(now));
-      showToast('Excel spec exported — 16 POMs, full size run, sketch embedded.');
+      const sizeCount = selectedSizeRun().length;
+      showToast('Excel spec exported — ' + sizeCount + ' of ' + SPEC_SIZE_RUN.length
+        + ' size columns, sketch embedded.');
     } catch (error) {
       console.error('[Export Excel] failed:', error);
       showToast('Excel export failed. Please try again after reducing image size.', 4200);
@@ -19588,12 +21520,22 @@ function makeExportFileName() {
       const now = isoDate ? new Date(isoDate) : new Date();
       const withImage = !options || options.image !== false;
       const image = withImage ? await specBoardPngBytes() : null;
-      return bytesToBase64(buildSpecWorkbookXlsx(now, image));
+      // options.sizeSelection lets the suite exercise subset layouts without
+      // driving the picker dialog; restored so tests stay order-independent.
+      const hadSelection = state.sizeSelection;
+      if (options && 'sizeSelection' in options) state.sizeSelection = options.sizeSelection;
+      try {
+        return bytesToBase64(buildSpecWorkbookXlsx(now, image));
+      } finally {
+        if (options && 'sizeSelection' in options) state.sizeSelection = hadSelection;
+      }
     };
     window.__braAutoModeDebug.buildFullSizeRun = (pomKey) => {
       const annByPom = new Map();
       for (const ann of state.annotations) annByPom.set(getLabelText(ann), ann);
-      return buildFullSizeRun(pomKey, annByPom);
+      // Preserve the numeric-array contract: the descriptors are an internal
+      // detail of the formula writer; callers still get the graded values.
+      return buildFullSizeRun(pomKey, annByPom).map(c => c.value);
     };
   }
 

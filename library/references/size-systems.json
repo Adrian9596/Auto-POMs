@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "size_systems": [
+    {
+      "size_system_id": "crossian-alpha-depth-v1",
+      "canonical_unit": "in",
+      "base_roles": {
+        "alpha": "L",
+        "depth": "L2"
+      },
+      "members": [
+        { "size_code": "S", "run": "alpha", "position": 1 },
+        { "size_code": "M", "run": "alpha", "position": 2 },
+        { "size_code": "L", "run": "alpha", "position": 3 },
+        { "size_code": "XL", "run": "alpha", "position": 4 },
+        { "size_code": "2XL", "run": "alpha", "position": 5 },
+        { "size_code": "3XL", "run": "alpha", "position": 6 },
+        { "size_code": "4XL", "run": "alpha", "position": 7 },
+        { "size_code": "5XL", "run": "alpha", "position": 8 },
+        { "size_code": "M2", "run": "depth", "position": 9 },
+        { "size_code": "L2", "run": "depth", "position": 10 },
+        { "size_code": "XL2", "run": "depth", "position": 11 },
+        { "size_code": "2XL2", "run": "depth", "position": 12 },
+        { "size_code": "3XL2", "run": "depth", "position": 13 },
+        { "size_code": "4XL2", "run": "depth", "position": 14 },
+        { "size_code": "5XL2", "run": "depth", "position": 15 }
+      ]
+    }
+  ]
+}

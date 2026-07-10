@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/style-landmark-evidence.schema.json",
+  "title": "Style Landmark Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidence_id", "record_version", "style_id", "style_version", "pom_concept_id", "view", "landmark_id", "point", "provenance", "confidence", "source_image_fingerprint", "detector_version", "rule_version", "template_version", "td_status", "original_detected_point", "corrected_point", "status", "created_at", "approved_at", "approved_by"],
+  "properties": {
+    "evidence_id": {"type": "string", "minLength": 1},
+    "record_version": {"type": "integer", "minimum": 1},
+    "style_id": {"type": "string", "minLength": 1},
+    "style_version": {"type": "string", "minLength": 1},
+    "pom_concept_id": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"},
+    "view": {"enum": ["front_outer", "front_inner", "back", "front_to_back"]},
+    "landmark_id": {"type": "string", "minLength": 1},
+    "point": {"$ref": "#/$defs/point"},
+    "provenance": {"enum": ["observed", "derived", "fallback", "td-corrected"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "source_image_fingerprint": {"$ref": "#/$defs/fingerprint"},
+    "detector_version": {"type": ["string", "null"]},
+    "rule_version": {"type": "string", "minLength": 1},
+    "template_version": {"type": "string", "minLength": 1},
+    "td_status": {"enum": ["unreviewed", "confirmed", "corrected", "rejected"]},
+    "original_detected_point": {"oneOf": [{"$ref": "#/$defs/point"}, {"type": "null"}]},
+    "corrected_point": {"oneOf": [{"$ref": "#/$defs/point"}, {"type": "null"}]},
+    "status": {"enum": ["pending", "approved", "rejected", "superseded"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "approved_at": {"type": ["string", "null"], "format": "date-time"},
+    "approved_by": {"type": ["string", "null"], "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"td_status": {"const": "corrected"}}, "required": ["td_status"]}, "then": {"properties": {"corrected_point": {"$ref": "#/$defs/point"}}}},
+    {"if": {"properties": {"status": {"const": "approved"}}, "required": ["status"]}, "then": {"properties": {"td_status": {"enum": ["confirmed", "corrected"]}, "approved_at": {"type": "string", "format": "date-time"}, "approved_by": {"type": "string", "minLength": 1}}}}
+  ],
+  "$defs": {
+    "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "point": {"type": "object", "additionalProperties": false, "required": ["x", "y"], "properties": {"x": {"type": "number", "minimum": 0, "maximum": 1}, "y": {"type": "number", "minimum": 0, "maximum": 1}}}
+  }
+}

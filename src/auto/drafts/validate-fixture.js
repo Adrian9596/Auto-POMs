@@ -75,6 +75,19 @@
         if (!row.uncertainty) {
           warnings.push(`${tag}: REVIEW_ONLY rows should explain why a line cannot be drawn.`);
         }
+        // Phase 7 boundary audit: a row may only claim missing anchors that
+        // its POM actually declares as required in pom-template.json — the
+        // rule JSON stays the source of truth, and the review note cannot
+        // drift from it.
+        if (Array.isArray(row.missingAnchors) && row.missingAnchors.length) {
+          const tpl = pomTemplate[String(row.pom)];
+          const required = (tpl && Array.isArray(tpl.requiredAnchors)) ? tpl.requiredAnchors : [];
+          for (const kind of row.missingAnchors) {
+            if (required.indexOf(kind) < 0) {
+              errors.push(`${tag}: missingAnchors lists "${kind}" which is not a declared requiredAnchor.`);
+            }
+          }
+        }
         continue;
       }
 
@@ -139,6 +152,19 @@
     }
 
     if (pom14 && pom14.type !== 'curved') errors.push('POM 14 must be a curved strap-length line.');
+    // POM 14's curve handles arc over the shoulder: their x must interpolate
+    // between the two strap endpoints. A handle pinned outside that span is a
+    // numeric error (e.g. NaN coerced to 0 by clamp01), not a real curve.
+    if (pom14 && pom14.type === 'curved' && pom14.drawability !== 'REVIEW_ONLY'
+        && pom14.start && pom14.end && pom14.control1 && pom14.control2) {
+      const xLo = Math.min(pom14.start.x, pom14.end.x) - 0.05;
+      const xHi = Math.max(pom14.start.x, pom14.end.x) + 0.05;
+      for (const [name, h] of [['control1', pom14.control1], ['control2', pom14.control2]]) {
+        if (!(h.x >= xLo && h.x <= xHi)) {
+          errors.push(`POM 14 ${name}.x (${h.x}) must lie within the strap span [${xLo.toFixed(3)}, ${xHi.toFixed(3)}].`);
+        }
+      }
+    }
 
     if (pom16 && pom16.drawability !== 'REVIEW_ONLY') {
       if (!isFiniteNormalized(pom16.start) || !isFiniteNormalized(pom16.end)) {

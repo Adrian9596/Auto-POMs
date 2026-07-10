@@ -23,7 +23,8 @@ Non-negotiables for any code change:
 
 ## Skills
 
-Before building a non-trivial feature, run **`/grill-with-docs`** — a relentless
+Before building a non-trivial feature, run **`/grill-with-docs`** — adapted from
+Matt Pocock's `skills/engineering/grill-with-docs`. It is a relentless
 one-question-at-a-time interview (`/grilling`) that sharpens the plan and, via
 `/domain-modeling`, captures the glossary in `docs/GLOSSARY.md` and decisions in
 `docs/decisions/` (using `docs/templates/decision.md` + `harness-cli decision
@@ -48,4 +49,9 @@ Use the Rust Harness CLI at `scripts/bin/harness-cli` on macOS/Linux or
 step that could use an external tool, run `scripts/bin/harness-cli query tools
 --capability <name> --status present` to see what is equipped; an absent
 capability is a clean skip.
+
+If the CLI binary is absent in this checkout, do not block the product work.
+Use `docs/TEST_MATRIX.md` as the checked-in fallback matrix, record the missing
+CLI as harness friction in the final response or story evidence, and avoid
+inventing durable rows until the CLI is restored.
 <!-- HARNESS:END -->

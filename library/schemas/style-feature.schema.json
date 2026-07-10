@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/style-feature.schema.json",
+  "title": "Style Feature Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["style_id", "style_version", "feature_id", "record_version", "state", "value", "status", "source", "confidence", "created_at", "approved_at", "approved_by"],
+  "properties": {
+    "style_id": {"type": "string", "minLength": 1},
+    "style_version": {"type": "string", "minLength": 1},
+    "feature_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"},
+    "record_version": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["known", "absent", "unknown"]},
+    "value": {"type": ["string", "number", "boolean", "null"]},
+    "status": {"enum": ["pending", "approved", "rejected", "superseded"]},
+    "source": {"$ref": "#/$defs/source"},
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "approved_at": {"type": ["string", "null"], "format": "date-time"},
+    "approved_by": {"type": ["string", "null"], "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"state": {"const": "known"}}, "required": ["state"]}, "then": {"properties": {"value": {"type": ["string", "number", "boolean"]}}}, "else": {"properties": {"value": {"type": "null"}}}},
+    {"if": {"properties": {"status": {"const": "approved"}}, "required": ["status"]}, "then": {"properties": {"approved_at": {"type": "string", "format": "date-time"}, "approved_by": {"type": "string", "minLength": 1}}}}
+  ],
+  "$defs": {
+    "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "source": {"type": "object", "additionalProperties": false, "required": ["type", "id", "fingerprint"], "properties": {"type": {"enum": ["saved-project-json", "measurement-spec-xlsx", "source-image", "indexeddb-project", "style-evidence-store", "learning-residual", "td-review", "manual-entry"]}, "id": {"type": ["string", "null"]}, "fingerprint": {"oneOf": [{"$ref": "#/$defs/fingerprint"}, {"type": "null"}]}}}
+  }
+}

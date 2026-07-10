@@ -24,9 +24,9 @@ let failures = 0;
 
 const FROZEN_DATE = '2026-07-08T10:00:00';
 
-// 18-column grid: A..D labels, then the 14-size run.
-const SIZE_COLS = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', 'M2', 'L2', 'XL2', '2XL2', '3XL2', '5XL2'];
-const COL_OF = Object.fromEntries(SIZE_COLS.map((label, i) => [label, 'EFGHIJKLMNOPQR'[i]]));
+// 19-column grid: A..D labels, then the 15-size run.
+const SIZE_COLS = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', 'M2', 'L2', 'XL2', '2XL2', '3XL2', '4XL2', '5XL2'];
+const COL_OF = Object.fromEntries(SIZE_COLS.map((label, i) => [label, 'EFGHIJKLMNOPQRS'[i]]));
 const rowOfPom = (pom) => 3 + Number(pom); // POM 1 → row 4 … POM 16 → row 19
 
 async function main() {
@@ -77,7 +77,7 @@ async function main() {
         zoom: 1, panX: 0, panY: 0,
         styleId: 'TestStyle',
         pomSpecs: {
-          '1':  { sizeL: '27.5', tol: '± 1/2' },
+          '1':  { sizeL: '27.5', tol: '± 3/4' },
           '5':  { sizeL: '7.5', tol: '± 1/8', zh: '前中高测试' },
           '10': { sizeL: '5', sizeL2: '5.6', tol: '± 1/4' },
           '14': { sizeL: '14', tol: '± 1/4' },
@@ -133,9 +133,33 @@ async function main() {
   checkNum(sheet, COL_OF.L2 + r5, 7.75, 'POM 5 L2 = protoL + 0.25 offset');
   checkNum(sheet, COL_OF.XL2 + r5, 8.0, 'POM 5 XL2 = protoL2 + 0.25');
   checkNum(sheet, COL_OF['3XL2'] + r5, 8.375, 'POM 5 3XL2 = protoL2 + 0.625 (depth taper, not alpha copy)');
+  checkNum(sheet, COL_OF['4XL2'] + r5, 8.5, 'POM 5 4XL2 = protoL2 + 0.75');
   check(inlineText(sheet, 'D' + r5) === '± 1/8', 'POM 5 TOL written verbatim as text');
   check(inlineText(sheet, 'C' + r5) === '前中高测试', 'POM 5 中文 override in Chinese column');
   check(inlineText(sheet, 'B' + r5).length > 0, 'POM 5 English description non-empty (built-in fallback)');
+
+  // --- Fractional VALUE display (Req 2): the size-value cells carry a custom
+  // "# ??/??" number format so 3.75 renders as 3 3/4. Display-only: the
+  // cached <v> stays decimal (every checkNum above still reads the decimal),
+  // so Req-3 formula recalculation is unaffected. ---
+  const styles = entries['xl/styles.xml'].toString('utf-8');
+  check(styles.includes('<numFmt numFmtId="164" formatCode="# ??/??"/>'),
+    'styles.xml declares the # ??/?? fraction numFmt (id 164)');
+  // Find the fraction xf index robustly (don't hard-code): the cellXfs entry
+  // that references numFmtId 164 with applyNumberFormat.
+  const cellXfsBlock = styles.match(/<cellXfs[^>]*>([\s\S]*?)<\/cellXfs>/)?.[1] || '';
+  const xfs = [...cellXfsBlock.matchAll(/<xf\b[\s\S]*?(?:\/>|<\/xf>)/g)].map(m => m[0]);
+  const fracXf = xfs.findIndex(x => x.includes('numFmtId="164"') && x.includes('applyNumberFormat="1"'));
+  const plainNumXf = xfs.findIndex(x => x.includes('numFmtId="0"') && x.includes('horizontal="right"'));
+  check(fracXf >= 0, 'a cellXfs entry uses numFmtId 164 with applyNumberFormat', 'fracXf=' + fracXf);
+  // A data size cell (POM 5 Size-L, and a graded formula cell) must reference
+  // the fraction xf, not the plain-number xf.
+  const g5Style = cellStyle(sheet, 'G' + r5);
+  const xl2Style = cellStyle(sheet, COL_OF.XL2 + r5);
+  check(g5Style === fracXf && g5Style !== plainNumXf,
+    'POM 5 static size cell G uses the fraction xf (not plain number)', 'got style ' + g5Style + ' want ' + fracXf);
+  check(xl2Style === fracXf,
+    'POM 5 formula size cell XL2 uses the fraction xf', 'got style ' + xl2Style + ' want ' + fracXf);
 
   // --- POM 1 (band): irregular alpha deltas; depth run equals alpha (offset 0) ---
   const r1 = rowOfPom(1);
@@ -143,6 +167,9 @@ async function main() {
   checkNum(sheet, 'I' + r1, 29.5, 'POM 1 2XL = protoL + 2.0');
   checkNum(sheet, COL_OF.M2 + r1, 26.5, 'POM 1 M2 = M (band L2 = L)');
   checkNum(sheet, COL_OF['5XL2'] + r1, 32.75, 'POM 1 5XL2 = protoL + 5.25');
+  // Fraction TOL family (¾): TOL flows to Excel verbatim as text, so an
+  // arbitrary "a/b" round-trips with no day→fraction map / conversion.
+  check(inlineText(sheet, 'D' + r1) === '± 3/4', 'POM 1 TOL ± 3/4 fraction round-trips verbatim as text', 'got: ' + inlineText(sheet, 'D' + r1));
 
   // --- POM 10 (cup width): explicit Size L2 wins over derivation ---
   const r10 = rowOfPom(10);
@@ -151,10 +178,34 @@ async function main() {
   checkNum(sheet, COL_OF.XL2 + r10, 6.1, 'POM 10 XL2 = explicit L2 + 0.5');
   checkNum(sheet, COL_OF['2XL2'] + r10, 7.1, 'POM 10 2XL2 = explicit L2 + 1.5');
 
-  // --- POM 14 (held strap): flat across all 14 columns ---
+  // --- Live grade formulas (Req 3): Size-L / L2 are static editable bases,
+  // every other graded cell is a =G{r}±Δ / =N{r}±Δ formula. The cached <v>
+  // (asserted above) is unchanged, so grade math and formulas stay in sync. ---
+  check(!cellXml(sheet, 'G' + r5).includes('<f>'), 'POM 5 Size-L cell G is a static number (no formula)');
+  check(cellFormula(sheet, 'E' + r5) === 'G' + r5 + '-0.5',
+    'POM 5 S is a formula =G' + r5 + '-0.5', 'got: ' + cellFormula(sheet, 'E' + r5));
+  check(cellFormula(sheet, COL_OF.XL2 + r5) === 'N' + r5 + '+0.25',
+    'POM 5 XL2 is a depth formula =N' + r5 + '+0.25', 'got: ' + cellFormula(sheet, COL_OF.XL2 + r5));
+
+  // POM 10 has an explicit Size L2 → its L2 cell is a static base, and its
+  // depth cells anchor on it.
+  check(!cellXml(sheet, COL_OF.L2 + r10).includes('<f>'),
+    'POM 10 explicit L2 cell N is a static number (no formula)');
+  check(cellFormula(sheet, COL_OF.XL2 + r10) === 'N' + r10 + '+0.5',
+    'POM 10 XL2 is a depth formula =N' + r10 + '+0.5', 'got: ' + cellFormula(sheet, COL_OF.XL2 + r10));
+
+  // --- POM 14 (held strap): flat across all 15 columns ---
   const r14 = rowOfPom(14);
   for (const label of ['S', 'L', '5XL', 'M2', 'L2', '5XL2']) {
     checkNum(sheet, COL_OF[label] + r14, 14, `POM 14 ${label} held at 14`);
+  }
+  // Held → Size-L is static, every other size cell is a flat =G{r} formula
+  // (including the L2 cell, whose derived offset is 0).
+  check(!cellXml(sheet, 'G' + r14).includes('<f>'), 'POM 14 Size-L cell G is a static number (no formula)');
+  for (const label of SIZE_COLS) {
+    if (label === 'L') continue;
+    check(cellFormula(sheet, COL_OF[label] + r14) === 'G' + r14,
+      `POM 14 ${label} is a flat formula =G${r14}`, 'got: ' + cellFormula(sheet, COL_OF[label] + r14));
   }
 
   // --- POM 16 (front apex): no library data and no line → every size cell blank ---
@@ -213,6 +264,18 @@ function cellXml(sheet, ref) {
 function cellNumber(sheet, ref) {
   const xml = cellXml(sheet, ref);
   const m = xml && xml.match(/<v>([^<]*)<\/v>/);
+  return m ? Number(m[1]) : null;
+}
+
+function cellFormula(sheet, ref) {
+  const xml = cellXml(sheet, ref);
+  const m = xml && xml.match(/<f>([^<]*)<\/f>/);
+  return m ? m[1] : null;
+}
+
+function cellStyle(sheet, ref) {
+  const xml = cellXml(sheet, ref);
+  const m = xml && xml.match(/<c r="[^"]*" s="(\d+)"/);
   return m ? Number(m[1]) : null;
 }
 

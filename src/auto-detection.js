@@ -165,6 +165,16 @@
           (typeof performance !== 'undefined' ? performance.now() : Date.now()) - traceT0
         );
         detection.engine += '+potrace';
+        // Phase 4: normalize the traced outlines into reusable curve candidates
+        // (one shared classification pass) and complete the contour-evidence
+        // summary. Both are the deferred half of extractContours' bundle —
+        // shape evidence only, no geometry decision.
+        detection.curveCandidates = buildContourCurveCandidates(traced, detection);
+        if (detection.contourEvidence) {
+          detection.contourEvidence.traced = true;
+          detection.contourEvidence.contourCount = traced.paths.length;
+          detection.contourEvidence.curveCandidateCount = detection.curveCandidates.length;
+        }
       }
     } catch (err) {
       console.warn('[Auto Mode] Potrace tracing failed:', err);
@@ -299,6 +309,118 @@
     const real = window.RealOpenCVAPI;
     if (real && typeof real.isReady === 'function' && real.isReady()) return real;
     return window.FreeOpenCVAPI || null;
+  }
+
+  // -------- Segmentation adapter seam (Engineering Workflow Phase 3, item 4) --------
+  //
+  // A single, null-guarded plug point for a future SAM-like segmenter. The
+  // contract mirrors the built-in ink-mask adapters (createInkMaskFromImage):
+  // an adapter receives the source bitmap + options and returns the SAME ink
+  // analysis shape { engine, width, height, total, mask, stats, threshold,
+  // luminanceThreshold, backgroundLum, ... }. When registered it is tried
+  // first in buildInkAnalysisFromImage and, on any failure or bad shape, the
+  // pipeline falls back to OpenCV / legacy exactly as before.
+  //
+  // HARD OFFLINE RULE: an adapter MUST run fully locally. It may wrap a
+  // vendored/WASM model, but it MUST NOT make any network call that carries
+  // sketch or measurement data. Nothing here reaches the network; the default
+  // is null, so the runtime is unchanged until a caller opts in.
+  let externalSegmentationAdapter = null;
+  function registerSegmentationAdapter(fn) {
+    externalSegmentationAdapter = (typeof fn === 'function') ? fn : null;
+    return !!externalSegmentationAdapter;
+  }
+  function clearSegmentationAdapter() { externalSegmentationAdapter = null; }
+  function getSegmentationAdapter() { return externalSegmentationAdapter; }
+
+  // Normalize the many possible ink-mask engine strings into a small, stable
+  // set of backend ids so downstream code / debug summaries never have to
+  // pattern-match version-stamped strings.
+  function classifySegmentationBackend(engine) {
+    const e = String(engine || '');
+    if (/^real-opencv/.test(e)) return 'opencv-real';
+    if (/^free-opencv/.test(e)) return 'opencv-free';
+    if (/^offline-vision-legacy/.test(e)) return 'legacy';
+    if (/^external/.test(e)) return 'external-adapter';
+    if (/^synthetic/.test(e)) return 'synthetic';
+    return e || 'unknown';
+  }
+
+  // Deterministic segmentation-quality score in [0,1], derived only from
+  // signals the segmentation stage already computes. Same mask in → same
+  // number out (no timing, no randomness). Low quality is a review signal,
+  // not a failure: the mask still flows downstream, but callers can flag the
+  // POMs for extra TD scrutiny.
+  //
+  // Sub-scores (each in [0,1]):
+  //   coverage      — ink is a small-but-real fraction of the canvas; near-zero
+  //                   means "found nothing", near-total means "flooded / frame".
+  //   retention     — share of raw ink that survived component cleanup; a clean
+  //                   line drawing keeps almost all of it, a noisy scan loses a
+  //                   lot of speckle.
+  //   fragmentation — few raw components is good; hundreds is speckle / dashes.
+  //   presence      — at least one ink component survived cleanup.
+  // A fail-open ink-cleanup revert halves the score (the mask may carry the
+  // page frame / speckle the filter tried to strip).
+  function computeSegmentationQuality(sig) {
+    const coverage = Number.isFinite(sig.coverage) ? sig.coverage : 0;
+    const retainedInk = Number.isFinite(sig.retainedInk) ? sig.retainedInk : 0;
+    const componentCount = Number.isFinite(sig.componentCount) ? sig.componentCount : 0;
+    const keptComponentCount = Number.isFinite(sig.keptComponentCount) ? sig.keptComponentCount : 0;
+    const inkCleanupReverted = !!sig.inkCleanupReverted;
+
+    const c01 = (v) => Math.max(0, Math.min(1, v));
+    const rampUp = (v, lo, hi) => (hi <= lo ? (v >= hi ? 1 : 0) : c01((v - lo) / (hi - lo)));
+    const rampDown = (v, lo, hi) => (hi <= lo ? (v <= lo ? 1 : 0) : c01((hi - v) / (hi - lo)));
+
+    const coverageScore = Math.min(rampUp(coverage, 0.002, 0.01), rampDown(coverage, 0.35, 0.55));
+    const retentionScore = rampUp(retainedInk, 0.45, 0.85);
+    const fragScore = rampDown(componentCount, 60, 220);
+    const presenceScore = keptComponentCount > 0 ? 1 : 0;
+
+    let quality = c01(
+      0.38 * coverageScore
+      + 0.30 * retentionScore
+      + 0.20 * fragScore
+      + 0.12 * presenceScore
+    );
+    if (inkCleanupReverted) quality = c01(quality * 0.5);
+    quality = Math.round(quality * 1e4) / 1e4;
+
+    const reasons = [];
+    if (coverage < 0.004) reasons.push('very little ink coverage — segmentation may have missed the garment');
+    if (coverage > 0.45) reasons.push('very high ink coverage — segmentation may include the page frame or a fill');
+    if (retainedInk < 0.5 && !inkCleanupReverted) reasons.push('component cleanup discarded a large share of the ink — noisy or fragmented source');
+    if (componentCount > 160) reasons.push('many disconnected components — speckle or dashed line art');
+    if (keptComponentCount === 0 && !inkCleanupReverted) reasons.push('no ink component survived cleanup');
+    if (inkCleanupReverted) reasons.push('ink-cleanup revert fired — the outline may include page edges or speckle');
+
+    const weak = inkCleanupReverted || quality < 0.45;
+    return {
+      quality,
+      weak,
+      reviewRequired: weak,
+      reasons,
+      subScores: {
+        coverage: Math.round(coverageScore * 1e4) / 1e4,
+        retention: Math.round(retentionScore * 1e4) / 1e4,
+        fragmentation: Math.round(fragScore * 1e4) / 1e4,
+        presence: presenceScore,
+      },
+    };
+  }
+
+  // Serializable view of the normalized segmentation-stage result: everything
+  // except the raw mask typed array (the mask travels separately as
+  // detection.inkMask, exposed by dimensions only so a JSON clone can't
+  // explode it into one key per pixel).
+  function serializeSegmentation(seg) {
+    if (!seg) return null;
+    const { mask, ...rest } = seg;
+    return {
+      ...rest,
+      hasMask: !!mask,
+    };
   }
 
   // Detection analysis resolution. Higher = better small-feature accuracy
@@ -452,13 +574,35 @@
     if (!naturalW || !naturalH) throw new Error('image has zero size');
 
     let cvAnalysis = null;
-    const cv = getCvApi();
     // Record which backend ACTUALLY produced the mask so the components stage
     // can reuse the same one. getCvApi() can flip (real opencv.js finishes
     // compiling) between calls, so we must not re-pick later — see
     // detectSketchFromImage.
     let inkBackend = null;
-    if (cv && typeof cv.createInkMaskFromImage === 'function') {
+
+    // Phase 3 seam: a registered SAM-like segmentation adapter gets first
+    // refusal. Default is null (see registerSegmentationAdapter), so this
+    // branch is skipped entirely in normal offline runs. An adapter mask keeps
+    // the in-house components path (inkBackend stays null) unless the adapter
+    // also exposes connectedComponentsWithStats — same rule as the legacy path.
+    const adapter = getSegmentationAdapter();
+    if (adapter) {
+      try {
+        const adapted = adapter(src, { targetWidth: DETECTION_TARGET_WIDTH, minSize: 32 });
+        if (adapted && adapted.mask && adapted.stats) {
+          cvAnalysis = adapted;
+          if (!cvAnalysis.engine) cvAnalysis.engine = 'external-segmentation-adapter';
+          inkBackend = (typeof adapted.connectedComponentsWithStats === 'function') ? adapted : null;
+        }
+      } catch (err) {
+        console.warn('[Auto Mode] segmentation adapter failed; using built-in detector:', err);
+        cvAnalysis = null;
+        inkBackend = null;
+      }
+    }
+
+    const cv = getCvApi();
+    if (!cvAnalysis && cv && typeof cv.createInkMaskFromImage === 'function') {
       try {
         cvAnalysis = cv.createInkMaskFromImage(src, { targetWidth: DETECTION_TARGET_WIDTH, minSize: 32 });
         if (cvAnalysis && cvAnalysis.mask && cvAnalysis.stats) inkBackend = cv;
@@ -499,20 +643,69 @@
   // pipeline runnable from Node with a synthetic ink analysis. Per-stage
   // durations are recorded on detection.stageTimingsMs so each stage can be
   // independently timed.
+  // Pure detection pipeline, now composed from four named stage functions:
+  //   segmentSketch    → ink mask + connected-component cleanup
+  //   extractContours  → junction / endpoint topology on the cleaned mask
+  //   analyzeGeometry  → view boxes, symmetry axis, band/chest/cradle rows,
+  //                      side-seam columns (geometry facts in pixel space)
+  //   detectLandmarks  → apex/strap/cup/back landmarks, confidence, and the
+  //                      assembled detection result
+  // The stages thread explicit context objects between them (no shared closure
+  // state beyond the injected stage marker), and the composed output is the
+  // same detection object shape the rest of the app already consumed. This is
+  // a pure structural refactor — see Engineering Workflow Phase 2.
   function detectSketchFromInkAnalysis(cvAnalysis, opts) {
     const cv = (opts && opts.cv) || null;
     const detectionParams = normalizeDetectionParams(opts && opts.params);
     const debugEnabled = !!(opts && opts.debug);
     const stageTimingsMs = {};
-    const _stageNow = (typeof performance !== 'undefined' && performance.now)
+    const mark = makeStageMarker(stageTimingsMs);
+
+    // Stage 2: segmentation (ink mask + connected-component cleanup).
+    const seg = segmentSketch(cvAnalysis, { cv, mark, stageTimingsMs });
+    if (seg.earlyReturn) return seg.earlyReturn;
+
+    // Stage 3: contour / topology extraction (the clean evidence bundle).
+    const contours = extractContours(seg, { mark });
+
+    // Stage 4: geometry analysis (view roles, axis, band/cup rows, seams).
+    // The contour-evidence bundle is threaded in so the geometry stage CAN read
+    // endpoints / curve candidates (Phase 4, item 3); geometry decisions are
+    // unchanged in this phase — it is availability, not forced consumption.
+    const geometry = analyzeGeometry(seg, {
+      detectionParams, mark, stageTimingsMs, contourEvidence: contours,
+    });
+    if (geometry.earlyReturn) return geometry.earlyReturn;
+
+    // Stage 5: landmark construction + confidence + assembly.
+    return detectLandmarks(cvAnalysis, seg, geometry, contours, {
+      detectionParams, debugEnabled, stageTimingsMs, mark,
+    });
+  }
+
+  // Per-stage wall-clock marker. Records the delta (ms, 2dp) since the last
+  // mark under `name` on the shared timings object. Timings are diagnostic
+  // only and inherently non-deterministic — nothing downstream keys on them.
+  function makeStageMarker(timings) {
+    const now = (typeof performance !== 'undefined' && performance.now)
       ? () => performance.now()
       : () => Date.now();
-    let _stageT = _stageNow();
-    const _stageMark = (name) => {
-      const t = _stageNow();
-      stageTimingsMs[name] = Math.max(0, Math.round((t - _stageT) * 100) / 100);
-      _stageT = t;
+    let last = now();
+    return function markStage(name) {
+      const t = now();
+      timings[name] = Math.max(0, Math.round((t - last) * 100) / 100);
+      last = t;
     };
+  }
+
+  // ---- Stage 2: segmentation (ink mask + connected-component cleanup) ----
+  // Input: the ink analysis (mask + stats + thresholds) from
+  // buildInkAnalysisFromImage. Output: the cleaned foreground mask (`dark`),
+  // its stats, the kept components, and the raw fallbacks. Returns
+  // { earlyReturn } when there is not enough ink to proceed.
+  function segmentSketch(cvAnalysis, ctx) {
+    const { cv, stageTimingsMs } = ctx;
+    const _stageMark = ctx.mark;
 
     const w = cvAnalysis.width;
     const h = cvAnalysis.height;
@@ -523,8 +716,36 @@
     const rawStats = cvAnalysis.stats;
     _stageMark('inkMaskIngest');
 
+    const backend = classifySegmentationBackend(cvAnalysis.engine);
+
     if (rawStats.maxX < 0 || rawStats.maxY < 0 || rawStats.count < 80) {
-      return { coverage: rawStats.count / total, threshold, luminanceThreshold, stageTimingsMs };
+      // Too little ink to segment. Still emit a normalized (weak) segmentation
+      // block so the "no detection" path is measurable rather than opaque.
+      const emptyCoverage = rawStats.count / total;
+      const emptyQuality = computeSegmentationQuality({
+        coverage: emptyCoverage, retainedInk: 0,
+        componentCount: 0, keptComponentCount: 0, inkCleanupReverted: false,
+      });
+      return {
+        earlyReturn: {
+          coverage: emptyCoverage, threshold, luminanceThreshold, stageTimingsMs,
+          segmentation: {
+            backend,
+            engine: cvAnalysis.engine || null,
+            componentsBackend: cv ? 'opencv' : 'inhouse',
+            maskW: w, maskH: h,
+            bbox: null,
+            coverage: Number(emptyCoverage.toFixed(6)),
+            rawCoverage: Number(emptyCoverage.toFixed(6)),
+            retainedInk: 0,
+            componentCount: 0,
+            keptComponentCount: 0,
+            inkCleanupReverted: false,
+            emptyMask: true,
+            ...emptyQuality,
+          },
+        },
+      };
     }
 
     // ---- Stage: connected-component cleanup ----
@@ -565,10 +786,70 @@
 
     _stageMark('connectedComponents');
 
+    // ---- Normalized segmentation-stage output (Phase 3) ----
+    // One shape for every backend (OpenCV real / free, in-house legacy, or a
+    // registered adapter): the cleaned foreground mask, its bbox, a backend
+    // id, and a deterministic quality score. The mask reference stays here for
+    // in-process consumers; the serializable detection view drops it (the mask
+    // travels as detection.inkMask, by dimensions only).
+    const coverage = globalStats.count / total;
+    const rawCoverage = rawStats.count / total;
+    const retainedInk = rawStats.count > 0 ? globalStats.count / rawStats.count : 0;
+    const componentCount = filtered.componentCount || 0;
+    const keptComponentCount = (filtered.keptComponents || []).length;
+    const segBbox = globalStats.maxX >= 0
+      ? normalizeBounds(statsToBounds(globalStats), w, h)
+      : null;
+    const segQuality = computeSegmentationQuality({
+      coverage, retainedInk, componentCount, keptComponentCount, inkCleanupReverted,
+    });
+    const segmentation = {
+      backend,
+      engine: cvAnalysis.engine || null,
+      componentsBackend: cv ? 'opencv' : 'inhouse',
+      mask: dark,
+      maskW: w,
+      maskH: h,
+      bbox: segBbox,
+      coverage: Number(coverage.toFixed(6)),
+      rawCoverage: Number(rawCoverage.toFixed(6)),
+      retainedInk: Number(retainedInk.toFixed(4)),
+      componentCount,
+      keptComponentCount,
+      inkCleanupReverted,
+      emptyMask: false,
+      ...segQuality,
+    };
+
+    return {
+      w, h, total, threshold, luminanceThreshold,
+      rawDark, rawStats, dark, globalStats, filtered, inkCleanupReverted,
+      segmentation,
+    };
+  }
+
+  // ---- Stage 3: contour / topology extraction (Engineering Workflow Phase 4) ----
+  // Input: the cleaned mask from segmentSketch. Output: a clean CONTOUR-EVIDENCE
+  // bundle — { contours, endpoints, junctions, corners, curves, strokeStats }
+  // (plus the raw junctionMap handle for back-compat). This is deliberately a
+  // bag of SHAPE EVIDENCE, not geometry decisions: nothing here is an anchor or
+  // a garment-level verdict, and downstream stages only READ it. Keeping the
+  // raw contour data separate from technical meaning is the whole point of the
+  // phase (see Engineering Workflow.md §3, "Keep raw contour data separate").
+  //
+  // Two fields are populated lazily by the deferred Potrace edge pass (its
+  // duration is non-deterministic, so it runs at the orchestrator edge, not in
+  // this pure stage): `contours` (traced outlines → detection.contours) and
+  // `curves` (reusable curve candidates → detection.curveCandidates, built by
+  // buildContourCurveCandidates). They are null here by design.
+  // Auxiliary data only — a failure here must never sink the detection.
+  function extractContours(seg, ctx) {
+    const _stageMark = ctx.mark;
+    const { dark, w, h } = seg;
+
     // ---- Stage: junction / endpoint / corner map (Phase 1, plan 2) ----
-    // Skeleton-topology features on the CLEANED mask. Auxiliary data only:
-    // nothing downstream consumes it yet (semantic snap will), so a failure
-    // here must never sink the detection — hence the catch.
+    // Skeleton-topology features on the CLEANED mask. A failure here must never
+    // sink the detection — hence the catch.
     let junctionMap = null;
     try {
       junctionMap = detectJunctions(dark, w, h);
@@ -579,6 +860,132 @@
       junctionMap = null;
     }
     _stageMark('junctions');
+
+    // Split the raw feature points by type and roll up stroke statistics. The
+    // shaping lives in the junction module (buildContourTopology) so it stays
+    // testable next to detectJunctions.
+    const topology = buildContourTopology(junctionMap);
+
+    return {
+      // Raw traced outlines — filled by the deferred Potrace edge pass.
+      contours: null,
+      // Skeleton topology, split so consumers don't re-filter by type.
+      junctions: topology.junctions,
+      endpoints: topology.endpoints,
+      corners: topology.corners,
+      // Reusable curve candidates — populated from the trace (see
+      // buildContourCurveCandidates) once detection.contours exists.
+      curves: null,
+      // Deterministic skeleton stroke statistics (px, iterations, counts).
+      strokeStats: topology.strokeStats,
+      // Internal handle: detectLandmarks maps this to the unchanged
+      // detection.junctions / detection.junctionSummary contract.
+      junctionMap,
+    };
+  }
+
+  // Phase 4: build a compact, serializable summary of the contour-evidence
+  // bundle for the detection result. Deterministic skeleton-derived counts +
+  // stroke stats; the trace-dependent fields (traced / contourCount /
+  // curveCandidateCount) start empty here and are filled at the Potrace edge.
+  function buildContourEvidenceSummary(contourEvidence) {
+    const ce = contourEvidence || {};
+    const stroke = ce.strokeStats || null;
+    return {
+      junctionCount: Array.isArray(ce.junctions) ? ce.junctions.length : 0,
+      endpointCount: Array.isArray(ce.endpoints) ? ce.endpoints.length : 0,
+      cornerCount: Array.isArray(ce.corners) ? ce.corners.length : 0,
+      strokeStats: stroke ? { ...stroke } : null,
+      // Raw traced outlines are optional shape evidence attached at the edge.
+      traced: false,
+      contourCount: null,
+      curveCandidateCount: 0,
+    };
+  }
+
+  // Phase 4: normalize traced contour paths into a reusable curve-candidate
+  // list. One classification pass shared by every downstream consumer (cup
+  // inner seam, gore bottom, and future geometry/landmark curve reads) instead
+  // of each re-scanning contours.paths ad hoc. Pure SHAPE evidence: bbox +
+  // orientation + span flags + a back-reference to the source path index (full
+  // samples remain available via samplePathPoints on demand, so this list stays
+  // lean on the session-only detection object). No garment meaning is baked in.
+  function buildContourCurveCandidates(traced, detection) {
+    if (!traced || !Array.isArray(traced.paths)) return [];
+    const axisX = detection && detection.axisX != null ? detection.axisX : null;
+    const round6 = (v) => Math.round(v * 1e6) / 1e6;
+    const out = [];
+    for (let i = 0; i < traced.paths.length; i += 1) {
+      const p = traced.paths[i];
+      const b = p && p.bbox;
+      if (!b) continue;
+      const width = b.width, height = b.height;
+      const orientation = width >= height * 1.6 ? 'horizontal'
+        : height >= width * 1.6 ? 'vertical'
+        : 'arc';
+      const minX = b.x, maxX = b.x + width;
+      const spansAxisX = axisX != null && minX < axisX && maxX > axisX;
+      out.push({
+        id: i,
+        pathIndex: i,
+        bbox: { x: round6(b.x), y: round6(b.y), width: round6(width), height: round6(height) },
+        orientation,
+        lengthNorm: round6(Math.hypot(width, height)),
+        spansAxisX,
+        center: { x: round6(minX + width / 2), y: round6(b.y + height / 2) },
+        segmentCount: Array.isArray(p.segments) ? p.segments.length : 0,
+      });
+    }
+    return out;
+  }
+
+  // Phase 5: build the explicit VIEW-REGION facts. View classification is a
+  // GEOMETRY decision (role + confidence per detected garment component) that is
+  // produced here, in the geometry stage, BEFORE any anchor is placed — the seed
+  // layer only READS these roles, it never re-derives them. Surfacing the
+  // regions as a first-class list (with role, confidence, primary flag, and both
+  // pixel + normalized bbox) makes that separation visible instead of implicit.
+  // Pure restructuring of values classifySketchViewRoles already computed — no
+  // numeric change to any role or bbox.
+  function buildGeometryViewRegions(viewBoxesPx, viewClassification, primaryViewIndex, w, h) {
+    const round3 = (v) => (Number.isFinite(v) ? Math.round(v * 1e3) / 1e3 : null);
+    return (viewBoxesPx || []).map((box, index) => {
+      const role = (viewClassification.roles && viewClassification.roles[index]) || 'unknown';
+      const score = (viewClassification.scores && viewClassification.scores[index]) || null;
+      const norm = normalizeBounds(box, w, h);
+      return {
+        index,
+        role,
+        viewRole: role,
+        isPrimary: index === primaryViewIndex,
+        roleConfidence: score && score.roleConfidence != null ? round3(score.roleConfidence) : null,
+        centroidX: score ? round3(score.centroidX) : null,
+        widthRatio: score ? round3(score.widthRatio) : null,
+        bboxPx: { minX: box.minX, minY: box.minY, maxX: box.maxX, maxY: box.maxY, count: box.count || 0 },
+        bboxNorm: { x: norm.x, y: norm.y, width: norm.width, height: norm.height },
+      };
+    });
+  }
+
+  // ---- Stage 4: geometry analysis ----
+  // Input: the segmentation stage output (cleaned + raw masks, stats,
+  // components). Output: geometry facts in pixel space — view boxes and their
+  // roles, the symmetry axis, band/chest/cradle/underbust rows, and the
+  // side-seam columns. Still not the final POM decision. Returns
+  // { earlyReturn } when the primary view has too little ink.
+  function analyzeGeometry(seg, ctx) {
+    const { detectionParams, stageTimingsMs } = ctx;
+    const _stageMark = ctx.mark;
+    // Phase 4: the contour-evidence bundle (endpoints / curve candidates /
+    // stroke stats) is available here via ctx.contourEvidence so geometry can
+    // read shape evidence without re-deriving it. Geometry decisions do not
+    // consume it yet — wiring that in is Phase 5 — so output stays identical.
+    const contourEvidence = ctx.contourEvidence || null;
+    void contourEvidence;
+    const {
+      dark, rawDark, w, h, total, globalStats, filtered,
+      threshold, luminanceThreshold,
+    } = seg;
 
     // ---- Stage: view-box grouping + role classification ----
     let viewBoxesPx = detectSketchViewBoxes(filtered.keptComponents, globalStats, w, h);
@@ -611,7 +1018,12 @@
     let maxY = localStats.maxY;
 
     if (maxX < 0 || maxY < 0 || darkCount < 80) {
-      return { coverage: globalStats.count / total, threshold, luminanceThreshold, stageTimingsMs };
+      return {
+        earlyReturn: {
+          coverage: globalStats.count / total, threshold, luminanceThreshold, stageTimingsMs,
+          segmentation: seg.segmentation ? serializeSegmentation(seg.segmentation) : null,
+        },
+      };
     }
     _stageMark('viewBoxes');
 
@@ -800,6 +1212,108 @@
 
     _stageMark('verticalFeatures');
 
+    // ---- Explicit geometry facts (Engineering Workflow Phase 5, items 1-2) ----
+    // Make the frame geometry a first-class, self-describing output: center
+    // axis, band line, the horizontal construction rows, the side-seam columns,
+    // and the classified view regions — each in BOTH image-pixel and normalized
+    // [0,1] space. This is a pure surfacing of values already computed above; no
+    // detected coordinate changes, so anchors (and golden) are untouched. The
+    // semantic-part facts (cup / strap / seam / back-panel candidates) and the
+    // geometry-quality/review verdict are completed in the landmark stage, where
+    // those parts exist — see detectLandmarks, which extends this same object.
+    const sigConfLocal = (peak, floor) => clamp01((peak - floor) / Math.max(1, floor * 2));
+    const geometryFacts = {
+      space: 'image-pixel + normalized[0,1]',
+      bbox: { ...bbox },
+      bboxPx: { minX, minY, maxX, maxY, width: bboxW, height: bboxH },
+      symmetryAxis: {
+        xPx: Math.round(axisXpx),
+        xNorm: axisX,
+        symmetry,
+        confidence: clamp01(symmetry),
+      },
+      bandLine: {
+        yPx: bandEdgeRow >= 0 ? bandEdgeRow : null,
+        yNorm: bandY,
+        zoneRowPx: bandRow,
+        strength: bandStrength,
+        confidence: sigConfLocal(bandStrength, rowNoiseFloor),
+      },
+      horizontalLines: {
+        chest: chestY != null ? { yPx: chestRow, yNorm: chestY, strength: chestStrength } : null,
+        cradle: cradleY != null ? { yPx: cradleRow, yNorm: cradleY, strength: cradleStrength } : null,
+        underbust: underbustY != null
+          ? { yPx: underbustRow, yNorm: underbustY, runPx: underbustRunPx } : null,
+      },
+      sideSeamColumns: {
+        left: sideLeftX != null
+          ? { xPx: sideLeftCol, xNorm: sideLeftX, strength: sideLeftStrength } : null,
+        right: sideRightX != null
+          ? { xPx: sideRightCol, xNorm: sideRightX, strength: sideRightStrength } : null,
+      },
+      viewRegions: buildGeometryViewRegions(viewBoxesPx, viewClassification, primaryViewIndex, w, h),
+      viewClassification: {
+        primaryViewIndex,
+        frontOuterIndex: viewClassification.frontOuterIndex,
+        frontInnerIndex: viewClassification.frontInnerIndex,
+        backIndex: viewClassification.backIndex,
+        reviewRequired: !!viewClassification.reviewRequired,
+      },
+    };
+
+    return {
+      dark, rawDark, w, h, total, filtered, globalStats,
+      threshold, luminanceThreshold,
+      viewBoxesPx, viewClassification, primaryViewIndex, darkCount,
+      minX, minY, maxX, maxY, bbox, bboxW, bboxH,
+      axisXpx, axisX, symmetry, axisPx,
+      rowNoiseFloor, colNoiseFloor,
+      bandStart, bandRow, bandStrength, bandPreferred, bandEdgeRow, bandY,
+      chestRow, chestStrength, chestY,
+      peakSep, cradleRow, cradleStrength, cradleY,
+      underbustRow, underbustStrength, minRowSpan, underbustRunPx, underbustY,
+      medianRow, medianCol, innerLo, innerHi, axisGuard,
+      sideLeftCol, sideLeftStrength, sideLeftX,
+      sideRightCol, sideRightStrength, sideRightX,
+      geometryFacts,
+    };
+  }
+
+  // ---- Stage 5: landmark construction (+ confidence + assembly) ----
+  // Input: segmentation output, geometry facts, and the contour/topology map.
+  // Output: the assembled detection result the rest of the app consumes —
+  // apex/strap/inner-cup/side/back landmarks, the cup model, per-feature
+  // confidence, overall quality, seam evidence, view metadata, and (when
+  // requested) the layered CV-debug payload. Landmarks carry technical
+  // meaning; normalization to anchors happens later in the anchor seed layer.
+  function detectLandmarks(cvAnalysis, seg, geometry, contours, ctx) {
+    const { detectionParams, debugEnabled, stageTimingsMs } = ctx;
+    const _stageMark = ctx.mark;
+    const { rawStats, inkCleanupReverted, segmentation } = seg;
+    // Contour-evidence bundle (Phase 4). junctionMap keeps the unchanged
+    // detection.junctions / junctionSummary contract; endpoints / corners /
+    // strokeStats are the reusable shape evidence, exposed additively.
+    const { junctionMap } = contours;
+    const contourEndpoints = contours.endpoints || [];
+    const contourCorners = contours.corners || [];
+    const contourStrokeStats = contours.strokeStats || null;
+    const {
+      dark, rawDark, w, h, total, filtered, globalStats,
+      threshold, luminanceThreshold,
+      viewBoxesPx, viewClassification, primaryViewIndex, darkCount,
+      minX, minY, maxX, maxY, bbox, bboxW, bboxH,
+      axisXpx, axisX, symmetry, axisPx,
+      rowNoiseFloor, colNoiseFloor,
+      bandStart, bandRow, bandStrength, bandPreferred, bandEdgeRow, bandY,
+      chestRow, chestStrength, chestY,
+      peakSep, cradleRow, cradleStrength, cradleY,
+      underbustRow, underbustStrength, minRowSpan, underbustRunPx, underbustY,
+      medianRow, medianCol, innerLo, innerHi, axisGuard,
+      sideLeftCol, sideLeftStrength, sideLeftX,
+      sideRightCol, sideRightStrength, sideRightX,
+      geometryFacts,
+    } = geometry;
+
     // ---- Stage: apex + strap landmarks ----
     const bounds = { minX, minY, maxX, maxY };
     const apexLeftCandidate = findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, -1);
@@ -818,7 +1332,22 @@
     const apexRightInner = (apexRightInfo && apexRightInfo.innerEdgeX != null)
       ? { x: apexRightInfo.innerEdgeX, y: apexRightInfo.point.y }
       : apexRight;
+    // Outer-edge apex points (POM 14's fallback strap join sits on the OUTER
+    // edge of the cup/strap join — ADR 0017, TD correction 2026-07-10).
+    const apexLeftOuter = (apexLeftInfo && apexLeftInfo.outerEdgeX != null)
+      ? { x: apexLeftInfo.outerEdgeX, y: apexLeftInfo.point.y }
+      : apexLeft;
+    const apexRightOuter = (apexRightInfo && apexRightInfo.outerEdgeX != null)
+      ? { x: apexRightInfo.outerEdgeX, y: apexRightInfo.point.y }
+      : apexRight;
     const strapInfo = findStrapLandmarksFromInk(dark, w, h, bounds, axisPx, chestRow);
+    // POM 14 starts at the upper joining seam of the stitched section of the
+    // FRONT RIGHT shoulder strap (TD-corrected, ADR 0016: the strap adjacent
+    // to the back view, so the drawn curve follows one continuous strap over
+    // the shoulder). This is a separate semantic landmark from strapInfo.top
+    // (the topmost strap ink) and from the back strap/panel join.
+    const frontStrapStartInfo = findFrontStrapStartFromInk(
+      dark, w, h, bounds, apexRightInfo || apexLeftInfo, chestRow);
 
     _stageMark('apexStrap');
 
@@ -1112,7 +1641,97 @@
         } else if (cradleCfTopBandInkRatio < 0.02) {
           cradleCfTopReject = 'no baseline ink under CF axis to project POM 6 endpoint';
         } else {
-          cradleCfTop = { x: axisXpx / w, y: cradleRow / h };
+          // Direct accept — but on a front-closure style (zip/hook placket at
+          // CF) the ink that satisfied the axis-window test is the PLACKET's
+          // own vertical structure, which inks the axis zone at EVERY row, so
+          // (axis, cradleRow) can sit below the real cup-seam ↔ CF junction
+          // (TD correction 2026-07-10, zip-front sketch: POM 6 starts where
+          // the cradle seam MEETS the placket, not at the flat cradle row).
+          // Detect a placket — near-continuous vertical ink columns
+          // bracketing the axis — and snap y UP to the topmost row where
+          // seam ink adjoins the placket from BOTH sides. Classic gores have
+          // no such columns and keep the flat-cradle-row behavior unchanged.
+          let cfSeamRow = cradleRow;
+          {
+            const xz = Math.max(4, Math.round(bboxW * 0.06));
+            const vTop = Math.max(0, cradleRow - Math.round(bboxH * 0.15));
+            const vBot = Math.min(h - 1, bandRow - 2);
+            let placketL = -1, placketR = -1;
+            if (vBot > vTop + 4) {
+              for (let x = Math.max(0, axisPx - xz); x <= Math.min(w - 1, axisPx + xz); x += 1) {
+                let inked = 0;
+                for (let y = vTop; y <= vBot; y += 1) {
+                  if (rawDark[y * w + x]) inked += 1;
+                }
+                // ≥ 0.85: a placket edge is a continuous drawn LINE. A dotted
+                // mesh-gore fill also stacks ink in a column but stays well
+                // under this bar, and must not be mistaken for a placket.
+                if (inked / (vBot - vTop + 1) >= 0.85) {
+                  if (x <= axisPx && (placketL < 0 || x < placketL)) placketL = x;
+                  if (x >= axisPx && x > placketR) placketR = x;
+                }
+              }
+            }
+            // A real placket (zip/hook/button stand) has WIDTH. A single CF
+            // seam line under the gore also reads as a continuous vertical
+            // column but is 1-3 px wide — snapping along it would drag POM 6
+            // up the gore's converging lace edges (TD-annotated fixture
+            // "need TD correction.png" pins the start at the gore bottom).
+            const minPlacketW = Math.max(6, Math.round(w * 0.015));
+            if (placketL >= 0 && placketR - placketL >= minPlacketW) {
+              // Adjacency gap in IMAGE-width terms, not bbox terms: the ink
+              // bbox spans BOTH views on two-view sketches, so a bbox-relative
+              // gap balloons to ~10px and lets scattered lace-texture dots
+              // "adjoin" the placket (same failure class as the B4 seam-pad
+              // fix). 0.4% of the analysis width ≈ a real seam-to-placket
+              // touch distance.
+              const gmax = Math.max(2, Math.round(w * 0.004));
+              const jTop = Math.max(0, cradleRow - Math.round(bboxH * 0.12));
+              // Two adjacency strengths. FINDING the junction (scanning up
+              // from the cradle row) accepts any real ink touch (≥2 px) — a
+              // thin dashed cup seam crosses the placket edge with only a
+              // couple of pixels per row pair. EXTENDING upward to the seam's
+              // top line demands a solid run (≥4 px): sparse lace-texture
+              // dots peak at 2-3 and would otherwise form stepping stones
+              // that walk the junction up a decorative lace edge.
+              const strip = gmax + 4;
+              const adjoins = (y, x0, x1, minHits) => {
+                let hits = 0;
+                for (let y2 = y; y2 <= Math.min(h - 1, y + 1); y2 += 1) {
+                  for (let x = Math.max(0, x0); x <= Math.min(w - 1, x1); x += 1) {
+                    if (rawDark[y2 * w + x]) hits += 1;
+                  }
+                }
+                return hits >= minHits;
+              };
+              const adjoinsBoth = (y, minHits) => adjoins(y, placketL - strip, placketL - 1, minHits)
+                && adjoins(y, placketR + 1, placketR + strip, minHits);
+              // Scan UP from the cradle row and take the FIRST adjoining seam
+              // block — the cradle seam is the structure nearest the cradle
+              // row. Taking the topmost adjoining row in the window instead
+              // would snap to an unrelated upper junction (a lace neckline
+              // edge also adjoins the placket on some styles). Then extend to
+              // the seam's TOP ink line: the seam is drawn as paired/dashed
+              // stitch lines that adjoin at slightly different rows, so hop
+              // small non-adjoining gaps (≤ hop rows, relative to the latest
+              // top) — but never far enough to leave the seam block for a
+              // distant structure. The TD arrow tip sits on the upper line.
+              const hop = Math.max(3, Math.round(bboxH * 0.03));
+              for (let y = cradleRow - 2; y >= jTop; y -= 1) {
+                if (adjoinsBoth(y, 2)) {
+                  let top = y;
+                  let probe = y - 1;
+                  while (probe >= jTop && (top - probe) <= hop) {
+                    if (adjoinsBoth(probe, 4)) top = probe;
+                    probe -= 1;
+                  }
+                  cfSeamRow = top;
+                  break;
+                }
+              }
+            }
+          }
+          cradleCfTop = { x: axisXpx / w, y: cfSeamRow / h };
         }
       }
     }
@@ -1598,6 +2217,7 @@
       apexLeft: apexLeftInfo ? apexLeftInfo.confidence : 0,
       apexRight: apexRightInfo ? apexRightInfo.confidence : 0,
       strap: strapInfo ? strapInfo.confidence : 0,
+      frontStrapStart: frontStrapStartInfo ? frontStrapStartInfo.confidence : 0,
       back: backInfo ? backInfo.confidence : 0,
       innerCupTop: innerCupTopInfo ? innerCupTopInfo.confidence : 0,
       sideTopLeft: sideTopLeftInfo ? sideTopLeftInfo.confidence : 0,
@@ -1630,6 +2250,8 @@
       apexRight,
       apexLeftInner,
       apexRightInner,
+      apexLeftOuter,
+      apexRightOuter,
       apexMissingReason: apexPair ? null : 'No reliable strap-cup joining seam / highest cup point was detected.',
       // Front-view ink endpoints — see "Front-view ink endpoints" pass above.
       chestLeftX,
@@ -1662,6 +2284,7 @@
       cradleCupMissingReason: cradleCupReject,
       strapTop: strapInfo ? strapInfo.top : null,
       strapBottom: strapInfo ? strapInfo.bottom : null,
+      frontStrapStart: frontStrapStartInfo ? frontStrapStartInfo.point : null,
       back: backInfo,
       backFeatures,
       // Cup model — shared backbone for POM 9 (height) and POM 10 (width).
@@ -1684,8 +2307,20 @@
       // Junction / endpoint / corner map (Phase 1, plan 2). Normalized
       // coords; consumed by the semantic-snap engine (Phase 4) and the
       // __braDebug.junctions overlay. Empty array when the pass failed.
+      // NOTE: detection.junctions is the FULL feature-point list (junctions +
+      // endpoints + corners) — the junction-tests / pipeline-tests contract.
       junctions: junctionMap ? junctionMap.points : [],
       junctionSummary: junctionMap ? junctionMap.summary : null,
+      // Contour evidence bundle (Engineering Workflow Phase 4). Raw SHAPE
+      // evidence kept SEPARATE from the geometry / landmark decisions above:
+      // type-split feature points, deterministic stroke stats, and a compact
+      // serializable summary. Additive — the junctions / junctionSummary
+      // contract above is unchanged. The trace-dependent parts (contours,
+      // curveCandidates) are attached later at the Potrace edge.
+      endpoints: contourEndpoints,
+      corners: contourCorners,
+      strokeStats: contourStrokeStats,
+      contourEvidence: buildContourEvidenceSummary(contours),
       coverage: globalStats.count / total,
       primaryCoverage: darkCount / total,
       sampleWidth: w,
@@ -1696,6 +2331,17 @@
       detectionParams,
       componentCount: filtered.componentCount,
       keptComponentCount: filtered.keptComponents.length,
+      // Normalized segmentation-stage result (Phase 3): one shape across
+      // OpenCV / legacy / adapter backends, with a deterministic quality score.
+      // Metadata only — the mask itself is exposed separately as inkMask.
+      segmentation: serializeSegmentation(segmentation),
+      // Top-level mirrors so downstream review logic can read the segmentation
+      // verdict without reaching into the block. segmentationReviewRequired is
+      // the weak-segmentation review signal (Phase 3, item 3).
+      segmentationBackend: segmentation ? segmentation.backend : null,
+      segmentationQuality: segmentation ? segmentation.quality : null,
+      segmentationWeak: segmentation ? !!segmentation.weak : false,
+      segmentationReviewRequired: segmentation ? !!segmentation.reviewRequired : false,
       views: viewBoxesPx.map((box, index) => {
         const role = viewClassification.roles[index] || 'unknown';
         const score = viewClassification.scores[index] || null;
@@ -1799,6 +2445,106 @@
       const botY = cupModel.bottomPoint ? Math.round(cupModel.bottomPoint.y * 1000) : 0;
       cupModel.id = sidePart + ':' + vis + ':' + topY + ':' + botY;
     }
+
+    // ---- Complete the geometry facts with the semantic-part candidates ----
+    // (Engineering Workflow Phase 5, items 2-3.) The frame facts (axis, band,
+    // rows, side seams, view regions) were built in analyzeGeometry; here we add
+    // the cup / strap / seam / back-panel candidate geometry (already computed
+    // above as the cup model, apex/strap landmarks, seam evidence, and back-view
+    // features) plus an explicit geometry-quality verdict. All values are copies
+    // of numbers computed above — nothing is re-detected, so anchors and golden
+    // are unchanged. The quality.reviewRequired flag is the geometry stage's own
+    // "do we trust the frame?" signal; it is fed into the landmark/anchor review
+    // decision (see seedAnchorsFromDetection) so weak geometry raises TD review
+    // instead of faking certainty.
+    if (geometryFacts) {
+      geometryFacts.cupGeometry = cupModel ? {
+        id: cupModel.id || null,
+        side: cupModel.side,
+        viewRole: cupModel.viewRole || null,
+        visibility: cupModel.visibility || null,
+        topPoint: cupModel.topPoint || null,
+        bottomPoint: cupModel.bottomPoint || null,
+        innerEdge: cupModel.innerEdge || null,
+        outerEdgeNearArmhole: cupModel.outerEdgeNearArmhole || null,
+        centerPoint: cupModel.centerPoint || null,
+        contourConfidence: cupModel.contourConfidence != null ? cupModel.contourConfidence : null,
+        seamConfidence: cupModel.seamConfidence != null ? cupModel.seamConfidence : null,
+      } : null;
+      geometryFacts.strapGeometry = {
+        top: strapInfo ? strapInfo.top : null,
+        bottom: strapInfo ? strapInfo.bottom : null,
+        confidence: strapInfo ? strapInfo.confidence : 0,
+        frontStart: frontStrapStartInfo ? frontStrapStartInfo.point : null,
+        frontStartConfidence: frontStrapStartInfo ? frontStrapStartInfo.confidence : 0,
+        apexLeft: apexLeft || null,
+        apexRight: apexRight || null,
+        apexPairValidated: !!apexPair,
+      };
+      geometryFacts.seamGeometry = {
+        cradleCfTop: cradleCfTop || null,
+        cradleCfDipProjected: !!cradleCfTopDipProjected,
+        cradleCupTop: cradleCupTop || null,
+        cradleCupBottom: cradleCupBottom || null,
+        cradleCupSide: cradleCupSide || 0,
+        upperCupCfSeamPresent: cfTopY != null,
+      };
+      geometryFacts.backPanelGeometry = {
+        present: backViewIndex >= 0,
+        viewIndex: backViewIndex,
+        panelTop: backPanelInfo && backPanelInfo.top ? backPanelInfo.top : null,
+        panelBottom: backPanelInfo && backPanelInfo.bottom ? backPanelInfo.bottom : null,
+        panelHeightConfidence: backPanelHeightInfo
+          ? backPanelHeightInfo.confidence
+          : (backPanelInfo ? backPanelInfo.confidence : 0),
+        strapTop: backStrapTopInfo ? backStrapTopInfo.point : null,
+        sideTop: backSideTopInfo ? backSideTopInfo.point : null,
+        sideBottom: backSideBottomInfo ? backSideBottomInfo.point : null,
+      };
+      // Geometry-quality verdict. Deterministic mix of the axis/band frame
+      // priors and the view-classification confidence. reviewRequired fires only
+      // when the geometry is genuinely weak (ambiguous view roles, or a frame
+      // prior near the floor) — on a cleanly detected sketch every term is
+      // strong, so the flag is false and no well-detected landmark is disturbed.
+      const geomAxisConf = clamp01(symmetry);
+      const geomBandConf = baselineConfidence;
+      const roleRegions = (geometryFacts.viewRegions || [])
+        .filter(r => r.role && r.role !== 'unknown' && r.roleConfidence != null);
+      const viewConfidence = roleRegions.length
+        ? clamp01(roleRegions.reduce((s, r) => s + r.roleConfidence, 0) / roleRegions.length)
+        : (geometryFacts.viewRegions && geometryFacts.viewRegions.length ? 0.35 : 0);
+      const geometryOverall = clamp01(
+        0.45 * geomAxisConf + 0.30 * geomBandConf + 0.25 * viewConfidence
+      );
+      const geometryReasons = [];
+      if (viewClassification.reviewRequired) geometryReasons.push('view roles are ambiguous — confirm which region is front/back/inner');
+      if (geomAxisConf < 0.15) geometryReasons.push('weak symmetry axis — the center-front prior is unreliable');
+      if (geomBandConf < 0.15) geometryReasons.push('weak band line — the baseline prior is unreliable');
+      const geometryReviewRequired = !!viewClassification.reviewRequired
+        || geomAxisConf < 0.15
+        || geomBandConf < 0.15;
+      geometryFacts.quality = {
+        axisConfidence: Number(geomAxisConf.toFixed(4)),
+        baselineConfidence: Number(geomBandConf.toFixed(4)),
+        viewConfidence: Number(viewConfidence.toFixed(4)),
+        overall: Number(geometryOverall.toFixed(4)),
+        reviewRequired: geometryReviewRequired,
+        reasons: geometryReasons,
+      };
+      detectionResult.geometryFacts = geometryFacts;
+      detectionResult.geometryReviewRequired = geometryReviewRequired;
+    }
+
+    // ---- Landmark QA layer (Engineering Workflow Phase 6) ----
+    // Classify every anchor-schema kind — source class (detected / derived /
+    // projected / missing), confidence tier, review verdict, and QA notes —
+    // BEFORE anchor placement. Read-only over the assembled result; the seed
+    // layer recomputes it at seed time (the detection object can be mutated
+    // between runs) and consumes the same verdicts, so this attach is the
+    // stage-level record, not a second decision path.
+    detectionResult.landmarkQa = buildLandmarkQaFromDetection(detectionResult);
+    _stageMark('landmarkQa');
+
     // CV Debug snapshot — intermediate detector state in pixel coords.
     // Mirrors the locals used to pick anchors so the TD can answer "why did
     // the detector choose this row/column?" without sprinkling console.logs.
@@ -1980,6 +2726,7 @@
                 innerEdgeSource: cupModel.diagnostics.innerEdgeSource || null,
                 innerEdgeX: safeNum(cupModel.diagnostics.innerEdgeX, 4),
                 outerEdgeX: safeNum(cupModel.diagnostics.outerEdgeX, 4),
+                innerEdgeSupported: cupModel.diagnostics.innerEdgeSupported !== false,
               }
             : null,
         } : null,
@@ -2003,6 +2750,9 @@
         } : null,
         confidence: { ...detectionResult.confidence },
         quality: safeNum(detectionResult.quality, 4),
+        // Normalized segmentation-stage verdict (Phase 3): backend, coverage,
+        // deterministic quality, and the weak-segmentation review signal.
+        segmentation: detectionResult.segmentation,
         stageTimingsMs,
         // Layer-by-layer view of the POM 6 / 7 / 8 decision pipeline per
         // rule.md. Each layer summarises the evidence that feeds into the
@@ -2033,7 +2783,9 @@
               ? 'Ink cleanup was reverted (very faint/dashed sketch or a heavy scan frame) — the outline may include page edges or speckle; verify the detected shape and all POMs.'
               : ((axisConfidence < 0.4 || baselineConfidence < 0.4)
                 ? 'Low axis or baseline confidence — treat POM 6/7/8 with caution.'
-                : null),
+                : ((segmentation && segmentation.weak)
+                  ? 'Weak segmentation (low mask quality) — the detected ink may be noisy or incomplete; verify all POMs.'
+                  : null)),
             // D7: raw boolean so the spec-panel / drafter can react
             // specifically to a fail-open ink-cleanup revert if desired.
             inkCleanupReverted: inkCleanupReverted,
@@ -2920,6 +3672,9 @@
             // inner-edge across the cup/front-strap joining seams, so the left
             // cup uses the run's right edge and the right cup its left edge.
             innerX: side < 0 ? runEnd : startX,
+            // Outer edge (nearer the side seam) — POM 14's strap join anchor
+            // sits on the OUTER edge of the join (ADR 0017, TD correction).
+            outerX: side < 0 ? startX : runEnd,
             y,
             support,
             verticalSpan,
@@ -2938,6 +3693,7 @@
     return {
       point: { x: best.x / w, y: best.y / h },
       innerEdgeX: best.innerX / w,
+      outerEdgeX: best.outerX / w,
       confidence,
       support: {
         count: best.support,
@@ -2963,6 +3719,83 @@
 
   // (Removed dead findCupApexFromInk: never referenced — the live pipeline
   // uses findCupStrapJoinFromInk / buildCupModel for apex detection.)
+
+  // Front shoulder-strap start for POM 14. The TD measurement starts at the
+  // upper joining seam of the stitched/elastic front strap section (the first
+  // clear cross-strap seam above the cup), not at the cup/strap apex and not
+  // at the topmost silhouette ink. Search a narrow column around the validated
+  // left cup/strap join and choose the highest substantial horizontal run.
+  // apexInfo is the cup/strap join the strap rises from — the RIGHT join on a
+  // standard two-view sheet (ADR 0016), falling back to the left join when the
+  // right one wasn't validated.
+  function findFrontStrapStartFromInk(dark, w, h, bounds, apexInfo, chestRow) {
+    if (!apexInfo || !apexInfo.point) return null;
+    const bboxW = bounds.maxX - bounds.minX + 1;
+    const bboxH = bounds.maxY - bounds.minY + 1;
+    const cx = Math.round(apexInfo.point.x * w);
+    const apexY = Math.round(apexInfo.point.y * h);
+    const y1 = Math.max(bounds.minY + Math.round(bboxH * 0.025), 1);
+    const y2 = Math.min(
+      apexY - Math.max(3, Math.round(bboxH * 0.035)),
+      chestRow > 0 ? chestRow - 2 : bounds.maxY);
+    const halfWindow = Math.max(6, Math.round(bboxW * 0.055));
+    const x1 = Math.max(bounds.minX, cx - halfWindow);
+    const x2 = Math.min(bounds.maxX, cx + halfWindow);
+    const minRun = Math.max(4, Math.round(bboxW * 0.014));
+    const maxRun = Math.max(minRun + 2, Math.round(bboxW * 0.11));
+    if (y2 <= y1 || x2 <= x1) return null;
+
+    let best = null;
+    for (let y = y1; y <= y2; y += 1) {
+      const base = y * w;
+      let runStart = -1;
+      for (let x = x1; x <= x2 + 1; x += 1) {
+        const on = x <= x2 && !!dark[base + x];
+        if (on && runStart < 0) runStart = x;
+        if (on) continue;
+        if (runStart < 0) continue;
+        const runEnd = x - 1;
+        const runWidth = runEnd - runStart + 1;
+        const runCenter = (runStart + runEnd) / 2;
+        runStart = -1;
+        if (runWidth < minRun || runWidth > maxRun) continue;
+        if (Math.abs(runCenter - cx) > halfWindow * 0.62) continue;
+
+        // A joining seam is supported by strap ink immediately below it.
+        // This rejects an isolated crop/silhouette cap at the top of the view.
+        let belowSupport = 0;
+        const supportDepth = Math.max(4, Math.round(bboxH * 0.025));
+        for (let yy = y + 1; yy <= Math.min(y2, y + supportDepth); yy += 1) {
+          const b = yy * w;
+          for (let xx = Math.max(x1, Math.round(runCenter - minRun));
+            xx <= Math.min(x2, Math.round(runCenter + minRun)); xx += 1) {
+            if (dark[b + xx]) belowSupport += 1;
+          }
+        }
+        if (belowSupport < supportDepth * 2) continue;
+
+        // Prefer the LOWEST valid seam — the joining seam at the top of the
+        // stitched (zigzag) section sits nearest the cup join; the zigzag ink
+        // itself only yields sub-minRun runs so it can't win. Preferring the
+        // topmost run (pre-ADR-0016) landed on the strap cap / top of the
+        // elastic stripes, which the TD flagged as too high. Width/support
+        // break ties between adjacent antialiased rows of the same seam.
+        const score = runWidth + Math.min(minRun * 2, belowSupport / Math.max(1, supportDepth));
+        if (!best || y > best.y + 2 || (Math.abs(y - best.y) <= 2 && score > best.score)) {
+          best = { x: runCenter, y, runWidth, belowSupport, score };
+        }
+      }
+    }
+    if (!best) return null;
+    const confidence = clamp01(0.28
+      + Math.min(0.36, best.runWidth / Math.max(1, minRun * 2) * 0.22)
+      + Math.min(0.28, best.belowSupport / Math.max(1, bboxH * 0.08)));
+    return {
+      point: { x: best.x / w, y: best.y / h },
+      confidence,
+      support: { runWidth: best.runWidth, belowSupport: best.belowSupport },
+    };
+  }
 
   function findStrapLandmarksFromInk(dark, w, h, bounds, axisPx, chestRow) {
     const bboxW = bounds.maxX - bounds.minX + 1;
@@ -3784,6 +4617,35 @@
     const innerEdge = { x: clamp01(innerEdgeXpx / w), y: centerY };
     diagnostics.innerEdgeSilhouettePx = innerSilPx;
     diagnostics.innerEdgeExtendedToSeam = innerSilPx != null && innerEdgeXpx !== goreInsetXpx;
+    // Ink support for the inner endpoint. The gore inset is a FABRICATED
+    // fallback — legitimate only when the point lies inside the garment. On
+    // front-closure styles whose apex fires on the strap top, the width row
+    // crosses the OPEN neckline V and the inset point floats in blank
+    // background. Consumers (landmark-qa cupModelUsable, seed
+    // innerCupFromCupModel) treat innerEdgeSupported === false as "cup model
+    // not usable for anchors" so the seed falls down the existing precedence
+    // chain (innerCupTopInk → view ratios → delete) instead.
+    // "Inside the garment" test: faint fills (lace texture) don't register in
+    // the dark mask, so ink-proximity alone can't tell garment interior from
+    // the neckline opening. But every garment-interior point has the
+    // neckline/top edge line somewhere ABOVE it, while a point in the open
+    // neckline V sees nothing but background all the way to the ink-bbox top.
+    let innerEdgeSupported = innerSilPx != null;
+    if (!innerEdgeSupported && dark) {
+      const rowPx = Math.min(h - 1, Math.max(0, Math.round(centerY * h)));
+      const cLo = Math.max(minX, innerEdgeXpx - 2);
+      const cHi = Math.min(maxX, innerEdgeXpx + 2);
+      scan: for (let y = rowPx - 1; y >= Math.max(0, bounds.minY); y -= 1) {
+        const rowBase = y * w;
+        for (let x = cLo; x <= cHi; x += 1) {
+          if (dark[rowBase + x]) { innerEdgeSupported = true; break scan; }
+        }
+      }
+    }
+    diagnostics.innerEdgeSupported = innerEdgeSupported;
+    if (!innerEdgeSupported && typeof console !== 'undefined' && console.warn) {
+      console.warn('[Auto Mode] cupModel inner edge unsupported (width row crosses a void) → cup model not usable for POM 9/10 anchors');
+    }
 
     // Outer endpoint = the cup's OUTER edge near the armhole. Prefer the traced
     // outer ink edge when it is a valid outer boundary (on the side-seam side of
@@ -3791,7 +4653,12 @@
     // column. Invariant B4 keeps it ≥0.3% off the side seam.
     const outerInsetPx = Math.max(2, Math.round(bboxW * 0.02));
     const outerFallbackXpx = side < 0 ? sideColPx + outerInsetPx : sideColPx - outerInsetPx;
-    const seamPadPx = Math.max(2, Math.round(bboxW * 0.004));
+    // Size the seam pad in IMAGE-width terms as well (0.4% of w): invariant B4
+    // measures the seam gap as a fraction of the full image (>0.3%), and a
+    // purely bbox-relative pad bottoms out at 2px on multi-view sketches whose
+    // ink bbox is a small fraction of the frame — landing the outer endpoint
+    // inside the B4 floor (same failure class as the B3 gore inset above).
+    const seamPadPx = Math.max(2, Math.round(bboxW * 0.004), Math.ceil(w * 0.004));
     const outerInkValid = inkWidthUsable
       && (side < 0 ? inkWidth.outerX < cupCenterX : inkWidth.outerX > cupCenterX);
     // POM 10 must span the full cup — CF gore → outer side seam. The traced ink
@@ -3851,6 +4718,7 @@
     return {
       side, viewRole, visibility,
       topPoint, bottomPoint, innerEdge, outerEdgeNearArmhole, centerPoint,
+      innerEdgeSupported,
       contourConfidence, seamConfidence, texturePenalty,
       sideReason, visibilityReason,
       topFromApex, bottomFromSeam, bottomFromInk, bottomEvidence,

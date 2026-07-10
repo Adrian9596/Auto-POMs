@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/style.schema.json",
+  "title": "Style Version",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["style_id", "style_version", "record_version", "status", "base_size", "size_system", "source_project_id", "source_export_id", "source_image_fingerprints", "supersedes", "created_at", "approved_at", "approved_by"],
+  "properties": {
+    "style_id": {"type": "string", "minLength": 1},
+    "style_version": {"type": "string", "minLength": 1},
+    "record_version": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["pending", "approved", "rejected", "superseded"]},
+    "base_size": {"enum": ["L", "L2"]},
+    "size_system": {"const": "crossian-alpha-depth-v1"},
+    "source_project_id": {"type": ["string", "null"], "minLength": 1},
+    "source_export_id": {"type": ["string", "null"], "minLength": 1},
+    "source_image_fingerprints": {"type": "array", "items": {"$ref": "#/$defs/fingerprint"}, "uniqueItems": true},
+    "supersedes": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "object", "additionalProperties": false, "required": ["style_id", "style_version", "record_version"], "properties": {"style_id": {"type": "string", "minLength": 1}, "style_version": {"type": "string", "minLength": 1}, "record_version": {"type": "integer", "minimum": 1}}}
+      ]
+    },
+    "created_at": {"type": "string", "format": "date-time"},
+    "approved_at": {"type": ["string", "null"], "format": "date-time"},
+    "approved_by": {"type": ["string", "null"], "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "approved"}}, "required": ["status"]}, "then": {"properties": {"approved_at": {"type": "string", "format": "date-time"}, "approved_by": {"type": "string", "minLength": 1}}}}
+  ],
+  "$defs": {"fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}
+}

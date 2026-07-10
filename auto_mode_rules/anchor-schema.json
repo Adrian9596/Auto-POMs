@@ -13,7 +13,11 @@
       "hint": "Bottom of the center front, on the underbust band.",
       "derivation": {
         "method": "drop_to_line",
-        "args": ["cf-top", "band-left", "band-right"],
+        "args": [
+          "cf-top",
+          "band-left",
+          "band-right"
+        ],
         "axis": "vertical"
       }
     },
@@ -36,7 +40,11 @@
       "hint": "Band baseline directly below the bottom-cup cradle point (POM 7 bottom).",
       "derivation": {
         "method": "drop_to_line",
-        "args": ["cradle-cup-top", "band-left", "band-right"],
+        "args": [
+          "cradle-cup-top",
+          "band-left",
+          "band-right"
+        ],
         "axis": "vertical"
       }
     },
@@ -114,13 +122,13 @@
     },
     {
       "kind": "strap-top",
-      "name": "Back strap top",
+      "name": "Front strap join",
       "group": "strap",
-      "hint": "Top of the back shoulder strap, back view."
+      "hint": "Strap join of the right shoulder strap (the strap adjacent to the back view) on the front view: the top seam of the stitched strap section, or where a plain strap attaches to the cup/neckline. Never the strap’s top cut edge — POM 14 start."
     },
     {
       "kind": "strap-bottom",
-      "name": "Strap btm",
+      "name": "Back strap join",
       "group": "strap",
       "hint": "End of the shoulder strap at the back / back-panel join — POM 14 end."
     },

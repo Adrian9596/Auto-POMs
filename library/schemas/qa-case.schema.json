@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/qa-case.schema.json",
+  "title": "Library QA Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "record_version", "name", "category", "status", "input_asset_fingerprints", "expected_outcomes", "allowed_tolerance", "approved_by", "approved_at", "may_influence_generation", "may_influence_retrieval", "reserved_for_evaluation", "created_at"],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "record_version": {"type": "integer", "minimum": 1},
+    "name": {"type": "string", "minLength": 1},
+    "category": {"enum": ["view-detection", "component-detection", "landmark-placement", "pom-line-geometry", "hidden-export", "grading-tolerance", "feature-extraction", "similar-style-retrieval", "measurement-suggestion", "known-limitation"]},
+    "status": {"enum": ["draft", "approved", "held-out", "retired"]},
+    "input_asset_fingerprints": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fingerprint"}, "uniqueItems": true},
+    "expected_outcomes": {"type": "object"},
+    "allowed_tolerance": {"type": ["object", "number", "null"]},
+    "approved_by": {"type": ["string", "null"], "minLength": 1},
+    "approved_at": {"type": ["string", "null"], "format": "date-time"},
+    "may_influence_generation": {"type": "boolean"},
+    "may_influence_retrieval": {"type": "boolean"},
+    "reserved_for_evaluation": {"type": "boolean"},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "held-out"}}, "required": ["status"]}, "then": {"properties": {"reserved_for_evaluation": {"const": true}, "may_influence_generation": {"const": false}, "may_influence_retrieval": {"const": false}}}},
+    {"if": {"properties": {"status": {"enum": ["approved", "held-out"]}}, "required": ["status"]}, "then": {"properties": {"approved_at": {"type": "string", "format": "date-time"}, "approved_by": {"type": "string", "minLength": 1}}}}
+  ],
+  "$defs": {"fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}
+}

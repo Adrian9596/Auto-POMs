@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "source_types": [
+    "saved-project-json",
+    "indexeddb-project-snapshot",
+    "measurement-spec-xlsx",
+    "source-image",
+    "style-evidence-store",
+    "correction-store",
+    "grading-standard-reference",
+    "derived-snapshot"
+  ],
+  "record_statuses": [
+    "pending",
+    "approved",
+    "superseded",
+    "retired"
+  ],
+  "concept_statuses": [
+    "active_contract",
+    "approved",
+    "reserved_pending_definition",
+    "retired"
+  ],
+  "qa_statuses": [
+    "draft",
+    "approved",
+    "held-out"
+  ],
+  "review_statuses": [
+    "pending",
+    "approved",
+    "rejected",
+    "superseded"
+  ],
+  "feature_evidence_states": [
+    "known",
+    "absent",
+    "unknown"
+  ],
+  "landmark_provenance": [
+    "observed",
+    "derived",
+    "fallback"
+  ],
+  "pom_membership_statuses": [
+    "applicable_present",
+    "applicable_missing",
+    "not_applicable",
+    "unknown_not_provided",
+    "pending_term_mapping"
+  ],
+  "export_visibility_statuses": [
+    "included_in_export",
+    "excluded_from_export",
+    "unknown"
+  ],
+  "value_origins": [
+    "td-entered",
+    "measured",
+    "graded",
+    "derived",
+    "imported",
+    "suggested"
+  ],
+  "identity_types": [
+    "style-version",
+    "source-project",
+    "source-export",
+    "source-image",
+    "pom-concept",
+    "pom-value-set",
+    "qa-case",
+    "correction"
+  ],
+  "units": [
+    "in",
+    "cm",
+    "mm",
+    "m"
+  ],
+  "view_roles": [
+    "front_outer",
+    "front_inner",
+    "back",
+    "front_to_back"
+  ],
+  "confidence_tiers": [
+    "high",
+    "medium",
+    "low"
+  ]
+}

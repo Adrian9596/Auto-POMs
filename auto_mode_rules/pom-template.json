@@ -163,7 +163,7 @@
       "view": "front_to_back",
       "placementViewRole": "back",
       "refL": null,
-      "requiredAnchors": ["apex-left", "strap-bottom"],
+      "requiredAnchors": ["strap-top", "strap-bottom"],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "low"

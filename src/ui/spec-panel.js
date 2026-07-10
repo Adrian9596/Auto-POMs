@@ -58,6 +58,18 @@
     return a + d;
   }
 
+  // How many POM lines can be toggled at all: drawn annotations plus (in Auto
+  // Mode) outstanding drafts. Template rows with no line drawn yet are not
+  // hideable, so they don't count. Drives whether the visibility control row
+  // renders and whether "Hide all" has anything to act on.
+  function hideablePomCount() {
+    let n = Array.isArray(state.annotations) ? state.annotations.length : 0;
+    if (state.appMode === 'auto' && state.autoMode && Array.isArray(state.autoMode.draftAnnotations)) {
+      n += state.autoMode.draftAnnotations.length;
+    }
+    return n;
+  }
+
   function showAllPoms() {
     let changed = false;
     if (Array.isArray(state.hiddenAnnIds) && state.hiddenAnnIds.length > 0) {
@@ -67,6 +79,32 @@
     if (Array.isArray(state.hiddenDraftIds) && state.hiddenDraftIds.length > 0) {
       state.hiddenDraftIds = [];
       changed = true;
+    }
+    if (!changed) return;
+    renderSpecPanel();
+    requestRender();
+  }
+
+  // Inverse of showAllPoms: hide every visible POM line at once so the TD can
+  // clear the sketch and reveal lines one at a time. Mirrors showAllPoms'
+  // ann + draft handling so the two stay symmetric.
+  function hideAllPoms() {
+    let changed = false;
+    if (!Array.isArray(state.hiddenAnnIds)) state.hiddenAnnIds = [];
+    for (const ann of state.annotations) {
+      if (ann && ann.id != null && state.hiddenAnnIds.indexOf(ann.id) === -1) {
+        state.hiddenAnnIds.push(ann.id);
+        changed = true;
+      }
+    }
+    if (state.appMode === 'auto' && state.autoMode && Array.isArray(state.autoMode.draftAnnotations)) {
+      if (!Array.isArray(state.hiddenDraftIds)) state.hiddenDraftIds = [];
+      for (const draft of state.autoMode.draftAnnotations) {
+        if (draft && draft.id != null && state.hiddenDraftIds.indexOf(draft.id) === -1) {
+          state.hiddenDraftIds.push(draft.id);
+          changed = true;
+        }
+      }
     }
     if (!changed) return;
     renderSpecPanel();
@@ -148,11 +186,12 @@
     }
     el.specBody.innerHTML = '';
 
-    // Sticky "N hidden — Show all" row: renders only when at least one POM
-    // is hidden. Keeps the reset within one click so the TD can un-isolate
-    // instantly after checking a line's evidence.
-    if (hiddenPomCount() > 0) {
-      el.specBody.appendChild(buildShowAllRow());
+    // Sticky visibility control row: renders whenever there is at least one
+    // hideable line, offering "Hide all" (isolate the sketch) and, once
+    // anything is hidden, "Show all" — each a one-click toggle so the TD can
+    // reveal and re-hide lines while checking evidence.
+    if (hideablePomCount() > 0) {
+      el.specBody.appendChild(buildVisibilityControlRow());
     }
 
     // Auto Mode: render the 16-row draft review section first.
@@ -427,22 +466,45 @@
     return td;
   }
 
-  function buildShowAllRow() {
+  // Sticky control row at the top of the panel. Shows "Hide all POMs" while any
+  // line is still visible and "Show all POMs (N hidden)" while any line is
+  // hidden — both together when the sketch is partially hidden.
+  function buildVisibilityControlRow() {
     const tr = document.createElement('tr');
     tr.className = 'spec-show-all-row';
     const td = document.createElement('td');
     td.colSpan = SPEC_COL_COUNT;
-    const count = hiddenPomCount();
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'spec-show-all-btn';
-    btn.textContent = 'Show all POMs (' + count + ' hidden)';
-    btn.title = 'Restore visibility for every hidden POM line on the sketch.';
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showAllPoms();
-    });
-    td.appendChild(btn);
+    const wrap = document.createElement('div');
+    wrap.className = 'spec-vis-actions';
+
+    const hiddenCount = hiddenPomCount();
+    const visibleCount = hideablePomCount() - hiddenCount;
+
+    if (visibleCount > 0) {
+      const hideBtn = document.createElement('button');
+      hideBtn.type = 'button';
+      hideBtn.className = 'spec-hide-all-btn';
+      hideBtn.textContent = 'Hide all POMs';
+      hideBtn.title = 'Hide every POM line on the sketch so you can reveal them one at a time.';
+      hideBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideAllPoms();
+      });
+      wrap.appendChild(hideBtn);
+    }
+    if (hiddenCount > 0) {
+      const showBtn = document.createElement('button');
+      showBtn.type = 'button';
+      showBtn.className = 'spec-show-all-btn';
+      showBtn.textContent = 'Show all POMs (' + hiddenCount + ' hidden)';
+      showBtn.title = 'Restore visibility for every hidden POM line on the sketch.';
+      showBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showAllPoms();
+      });
+      wrap.appendChild(showBtn);
+    }
+    td.appendChild(wrap);
     tr.appendChild(td);
     return tr;
   }
@@ -717,52 +779,10 @@
       hidden: isAnnHidden(ann.id),
       onToggle: () => toggleAnnHidden(ann.id),
     });
-    appendAutoMetadataBadges(td, ann);
+    // No metadata badges here (TD request 2026-07-10: the POM-number cell
+    // shows only the number). Confidence/drawability/accepted state remain
+    // visible in the Auto Mode draft-review rows.
     return { td, getValue: () => input.value.trim() };
-  }
-
-  function appendAutoMetadataBadges(td, ann) {
-    if (!isAutoDraft(ann)) return;
-    const stack = document.createElement('div');
-    stack.className = 'spec-meta-stack';
-    if (ann.tdEdited) {
-      const edited = document.createElement('div');
-      edited.className = 'spec-conf edited';
-      edited.textContent = 'edited';
-      edited.title = 'This line was placed by Auto Mode and adjusted manually.';
-      stack.appendChild(edited);
-    }
-    const conf = ann.confidence;
-    if (conf === 'high' || conf === 'medium' || conf === 'low') {
-      const badge = document.createElement('div');
-      badge.className = 'spec-conf ' + conf;
-      badge.textContent = conf;
-      badge.title = 'Auto Mode placement confidence: ' + conf + '.';
-      stack.appendChild(badge);
-    }
-    const drawability = normalizeDrawabilityBadge(ann.drawability);
-    if (drawability) {
-      const badge = document.createElement('div');
-      badge.className = 'spec-conf ' + drawability.className;
-      badge.textContent = drawability.label;
-      badge.title = 'Auto Mode drawability: ' + drawability.title + '.';
-      stack.appendChild(badge);
-    }
-    if (ann.acceptedWithoutEdit) {
-      const accepted = document.createElement('div');
-      accepted.className = 'spec-conf accepted';
-      accepted.textContent = 'accepted';
-      accepted.title = 'Applied without TD geometry edits.';
-      stack.appendChild(accepted);
-    }
-    if (stack.children.length) td.appendChild(stack);
-  }
-
-  function normalizeDrawabilityBadge(drawability) {
-    if (drawability === 'DRAWABLE') return { className: 'drawable', label: 'draw', title: 'drawable' };
-    if (drawability === 'APPROXIMATE') return { className: 'approximate', label: 'approx', title: 'approximate' };
-    if (drawability === 'REVIEW_ONLY') return { className: 'review_only', label: 'review', title: 'review only' };
-    return null;
   }
 
   function labelSortKey(ann) {
@@ -960,6 +980,12 @@
     if (draft.confidence) metaBits.push('conf: ' + draft.confidence);
     if (draft.reason) metaBits.push(draft.reason);
     if (draft.uncertainty && isReviewOnlyDraft(draft)) metaBits.push(draft.uncertainty);
+    // Phase 7: the landmark-QA explanations behind a review-only demotion
+    // (missing seam, no back view, inferred cup, …) so the TD sees the "why"
+    // without opening the debug payload.
+    if (isReviewOnlyDraft(draft) && Array.isArray(draft.reviewNotes)) {
+      for (const note of draft.reviewNotes) metaBits.push(note);
+    }
     if (metaBits.length) meta.textContent = metaBits.join(' • ');
     descTd.appendChild(meta);
 

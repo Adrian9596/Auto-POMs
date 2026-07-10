@@ -379,6 +379,25 @@
         ? '1 bucket is Conflicting — its spread dwarfs its median, so bias is halved when applied.'
         : conflictingCount + ' buckets are Conflicting — spread dwarfs median, so bias is halved when applied.');
     }
+    // Phase 8: corrections by suspected pipeline stage — tells the TD (and
+    // engineers) WHERE the engine loses accuracy, not just how often.
+    const stageCounts = learning.stageCounts || {};
+    const stageLabels = {
+      'anchor-nudge': 'small nudges',
+      'landmark-wrong': 'landmark wrong',
+      'contour-missing': 'contour/seam evidence missing',
+      'geometry-wrong': 'geometry frame weak',
+      'segmentation-weak': 'segmentation weak',
+      unknown: 'no detection context',
+      unattributed: 'recorded before stage tracking',
+    };
+    const stageBits = Object.keys(stageCounts)
+      .filter(k => stageCounts[k] > 0)
+      .sort((x, y) => stageCounts[y] - stageCounts[x])
+      .map(k => (stageLabels[k] || k) + ': ' + stageCounts[k]);
+    if (stageBits.length) {
+      introParts.push('Suspected cause of corrections — ' + stageBits.join(' · ') + '.');
+    }
     intro.textContent = introParts.join(' ');
     section.appendChild(intro);
 

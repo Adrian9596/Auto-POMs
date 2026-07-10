@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/library-manifest.schema.json",
+  "title": "Bra Auto Measure Library Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "snapshot_version", "contracts", "size_system_version", "feature_vocabulary_version", "similarity_config_version", "counts", "generated_at", "source_fingerprints", "generator_version", "validation"],
+  "properties": {
+    "schema_version": {"type": "string", "minLength": 1},
+    "snapshot_version": {"type": "string", "minLength": 1},
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pom", "anchor"],
+      "properties": {
+        "pom": {"$ref": "#/$defs/contractFingerprint"},
+        "anchor": {"$ref": "#/$defs/contractFingerprint"}
+      }
+    },
+    "size_system_version": {"const": "crossian-alpha-depth-v1"},
+    "feature_vocabulary_version": {"type": "string", "minLength": 1},
+    "similarity_config_version": {"type": "string", "minLength": 1},
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {"type": "integer", "minimum": 0}
+      }
+    },
+    "generated_at": {"type": "string", "format": "date-time"},
+    "source_fingerprints": {"type": "array", "items": {"$ref": "#/$defs/fingerprint"}, "uniqueItems": true},
+    "generator_version": {"type": "string", "minLength": 1},
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "validated_at", "errors"],
+      "properties": {
+        "status": {"enum": ["pass", "fail", "not_run"]},
+        "validated_at": {"type": ["string", "null"], "format": "date-time"},
+        "errors": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "contractFingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "file", "fingerprint"],
+      "properties": {
+        "version": {"type": "string", "minLength": 1},
+        "file": {"type": "string", "minLength": 1},
+        "fingerprint": {"$ref": "#/$defs/fingerprint"}
+      }
+    }
+  }
+}

@@ -2,11 +2,11 @@
 // Synthetic diagnostic matrix for POM 14 (shoulder strap length).
 //
 // POM 14 is the shoulder-strap LENGTH, measured as a curved path from the front
-// cup/strap joining seam to the end of the shoulder strap at the back.
+// strap upper joining seam to the end of the shoulder strap at the back.
 //
 // Hard invariants asserted here (a change flips the case to FAIL):
 //   - Front+back sketch: POM 14 is DRAWABLE, curved, never high confidence,
-//     starts on the front cup/strap join and ends at the back strap end.
+//     starts on the front strap upper join and ends at the back strap end.
 //   - Front-only sketch (no back view): POM 14 REFUSES to guess — it demotes to
 //     REVIEW_ONLY because the back strap end is absent.
 //
@@ -105,7 +105,7 @@ function pack(canvas, engine) {
 }
 
 // Front (left) + back (right, with strap) — a normal 2-view tech pack. POM 14
-// curves from the front cup/strap join to the back strap end.
+// curves from the front strap upper join to the back strap end.
 function buildFrontBack(width, height) {
   const c = makeInkCanvas(width, height);
   drawFront(c.setDark, Math.round(width * 0.27), Math.round(height * 0.18), Math.round(width * 0.26), Math.round(height * 0.64));
@@ -123,12 +123,12 @@ function buildFrontOnly(width, height) {
 function classifyPom14(item) {
   const { detection, anchors, fixture } = runPipeline(pipeline, item.analysis, { id: item.id });
   const pom14 = pomRow(fixture, 14);
-  const apexLeft = anchors.find((a) => a.kind === 'apex-left');
+  const strapTop = anchors.find((a) => a.kind === 'strap-top');
   const strapBot = anchors.find((a) => a.kind === 'strap-bottom');
   const notes = [
     `views=${detection.views ? detection.views.length : '?'} backViewIndex=${detection.backViewIndex}`,
     `pom14 type=${pom14 && pom14.type} drawability=${pom14 && pom14.drawability} confidence=${pom14 && pom14.confidence}`,
-    `apex-left: ${apexLeft ? `viewRole=${apexLeft.viewRole} y=${apexLeft.y.toFixed(3)} conf=${apexLeft.confidence} src=${apexLeft.source} rr=${apexLeft.reviewRequired}` : 'absent'}`,
+    `strap-top: ${strapTop ? `viewRole=${strapTop.viewRole} y=${strapTop.y.toFixed(3)} conf=${strapTop.confidence} src=${strapTop.source} rr=${strapTop.reviewRequired}` : 'absent'}`,
     `strap-bottom: ${strapBot ? `viewRole=${strapBot.viewRole} y=${strapBot.y.toFixed(3)} conf=${strapBot.confidence} src=${strapBot.source} rr=${strapBot.reviewRequired}` : 'absent'}`,
   ];
 
@@ -142,14 +142,14 @@ function classifyPom14(item) {
     };
   }
 
-  // Two-view (front+back): POM 14 curves from the front cup/strap join to the back strap end.
+  // Two-view (front+back): POM 14 curves from the front strap upper join to the back strap end.
   const drawable = !!pom14 && pom14.drawability === 'DRAWABLE';
   const curved = !!pom14 && pom14.type === 'curved';
   const notHigh = !!pom14 && pom14.confidence !== 'high';
-  const rolesOk = !!apexLeft && !!strapBot && apexLeft.viewRole === 'front_outer' && strapBot.viewRole === 'back';
+  const rolesOk = !!strapTop && !!strapBot && strapTop.viewRole === 'front_outer' && strapBot.viewRole === 'back';
   return {
     actual: `drawable=${drawable ? 'yes' : 'no'} curved=${curved ? 'yes' : 'no'} not-high=${notHigh ? 'yes' : 'no'} roles-ok=${rolesOk ? 'yes' : 'no'}`,
-    detail: '(POM 14 measured from front cup/strap join to back strap end)',
+    detail: '(POM 14 measured from front strap upper join to back strap end)',
     notes,
   };
 }
@@ -158,7 +158,7 @@ const cases = [
   {
     id: 'front-back-strap',
     mode: 'twoview',
-    label: 'front + back (with back strap): POM 14 curves from front cup/strap join to back strap end',
+    label: 'front + back (with back strap): POM 14 curves from front strap upper join to back strap end',
     hardExpected: 'drawable=yes curved=yes not-high=yes roles-ok=yes',
     analysis: buildFrontBack(900, 480),
   },

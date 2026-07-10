@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "pom-concepts-v1",
+  "mappings": [
+    {
+      "raw_term": "neck line length",
+      "normalized_term": "neck line length",
+      "candidate_concept_ids": ["neckline_length"],
+      "reason": "POM 17 is reserved, but its measurement method and approved aliases are not yet TD-approved.",
+      "status": "pending"
+    },
+    {
+      "raw_term": "neckline length",
+      "normalized_term": "neckline length",
+      "candidate_concept_ids": ["neckline_length"],
+      "reason": "POM 17 is reserved, but its measurement method and approved aliases are not yet TD-approved.",
+      "status": "pending"
+    }
+  ]
+}

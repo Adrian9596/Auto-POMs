@@ -1021,6 +1021,27 @@
     background:#fed7aa;
     border-color:#fb923c;
   }
+  /* Row can hold "Hide all" and "Show all" side by side; each fills its half. */
+  .spec-vis-actions{
+    display:flex;
+    gap:8px;
+  }
+  .spec-vis-actions > button{
+    flex:1 1 0;
+  }
+  .spec-hide-all-btn{
+    padding:6px 10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    background:#f1f5f9;
+    color:#334155;
+    font:600 12px/1.2 system-ui, sans-serif;
+    cursor:pointer;
+  }
+  .spec-hide-all-btn:hover{
+    background:#e2e8f0;
+    border-color:#94a3b8;
+  }
   .spec-conf{
     display:inline-block;
     margin-top:3px;
@@ -1044,13 +1065,6 @@
   /* Size-L suggestion badge: sits under the input, non-uppercase so the
      "library · medium" provenance reads as a hint, not a status flag. */
   .spec-suggest-badge{ text-transform:none; letter-spacing:0; font-weight:600; cursor:help; }
-  .spec-meta-stack{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    margin-top:3px;
-  }
   .spec-pom-pair{
     display:inline-block;
     padding:3px 8px;

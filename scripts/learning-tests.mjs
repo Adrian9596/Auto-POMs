@@ -438,6 +438,44 @@ async function runLearningTests(cdp, imagePath) {
         record('Reset Learning clears all residual buckets', false, String(e && e.message || e));
       }
 
+      // --- TEST 6: Phase 8 stage attribution + sample context -------------
+      // A correction below the nudge limit is an 'anchor-nudge' regardless of
+      // detection state; a large one must be attributed to a real pipeline
+      // stage (which one depends on the fixture's detection — the learning
+      // fixture's geometry frame is flagged weak, so geometry-wrong is a
+      // legitimate verdict) and the recorded sample must carry the SAME
+      // attribution plus the Phase 8 context fields (part / style / conf),
+      // without disturbing the bias math.
+      try {
+        L.setEnabled(true);
+        L.clearBuckets();
+        const STAGES = ['segmentation-weak', 'contour-missing', 'geometry-wrong', 'landmark-wrong'];
+        const nudge = L.classifyResidual('band-left', 0.005, 0.004);
+        const large = L.classifyResidual('band-left', 0.03, 0.02);
+        L.recordResidual('band-left', 0.03, 0.02,
+          { kind: 'band-left', viewRole: 'front_outer', confidence: 'high' });
+        const buckets = L.getBuckets();
+        const sample = (buckets['band-left|front_outer'] || [])[0] || null;
+        const bias = L.getBias('band-left', { kind: 'band-left', viewRole: 'front_outer' });
+        const summary = L.summarize();
+        const stageCounts = summary && summary.stageCounts ? summary.stageCounts : {};
+        const ok = nudge === 'anchor-nudge'
+          && STAGES.indexOf(large) >= 0
+          && !!sample
+          && sample.stage === large
+          && sample.part === 'bottomBand'
+          && typeof sample.style === 'string' && sample.style.length > 0
+          && sample.conf === 'high'
+          && bias.n === 1
+          && stageCounts[large] === 1;
+        record('Stage attribution + context recorded on corrections', ok,
+          'nudge=' + nudge + ' large=' + large + ' sample=' + JSON.stringify(sample)
+          + ' stageCounts=' + JSON.stringify(stageCounts),
+          { nudge, large, sample, stageCounts });
+      } catch (e) {
+        record('Stage attribution + context recorded on corrections', false, String(e && e.message || e));
+      }
+
       return { tests };
     })()
   `);

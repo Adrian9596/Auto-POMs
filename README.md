@@ -51,6 +51,7 @@ Then open the printed local URL.
 ```sh
 npm run check   # rebuild + syntax/wiring checks
 npm run smoke   # headless end-to-end Auto Mode run on demo/demo1.jpg
+npm run library-l0-tests # governed library contracts, schemas, fingerprints
 ```
 
 Other suites: `golden`, `accuracy`, `invariants`, `contract`, `pipeline-tests`,
@@ -90,12 +91,15 @@ story packets, a validation matrix, and decision records before they touch code.
 - Product truth, stories, decisions, and templates live under [`docs/`](docs/README.md).
 - Operational state (intake, stories, traces, matrix) is managed by the Rust
   Harness CLI at `scripts/bin/harness-cli`, backed by a local `harness.db`.
+- If the CLI binary is absent, agents use [`docs/TEST_MATRIX.md`](docs/TEST_MATRIX.md)
+  as the fallback proof map and report that durable intake/trace rows were not
+  recorded.
 
 The Harness CLI binary is not committed. Install it (and refresh any harness
 files) with:
 
 ```sh
-curl -fsSL "https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh" | bash -s -- --merge --claude --yes
+curl -fsSL "https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --merge --claude --yes
 ```
 
 Then initialize the durable layer:
@@ -103,3 +107,7 @@ Then initialize the durable layer:
 ```sh
 scripts/bin/harness-cli init
 ```
+
+The installer executes a remote script. In restricted environments, inspect or
+run it outside the sandbox with explicit human approval, then return here and
+run `scripts/bin/harness-cli query matrix`.

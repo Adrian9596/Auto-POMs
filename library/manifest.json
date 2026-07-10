@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "snapshot_version": "not-generated",
+  "contracts": {
+    "pom": {
+      "version": "fixed16-2026-07-10",
+      "file": "auto_mode_rules/pom-template.json",
+      "fingerprint": "sha256:4ed9b16d3c85f0781b9e3724b9b3211574b2733536d7cef9b684358c4ead6899"
+    },
+    "anchor": {
+      "version": "anchors-2026-07-10d",
+      "file": "auto_mode_rules/anchor-schema.json",
+      "fingerprint": "sha256:6d21b298a2aa324da7afcbb9627ed7adcc3773bdee7549ba078be7e0a2554e5d"
+    }
+  },
+  "size_system_version": "crossian-alpha-depth-v1",
+  "feature_vocabulary_version": "not-defined",
+  "similarity_config_version": "similarity-config-v0",
+  "counts": {
+    "styles": { "pending": 0, "approved": 0 },
+    "features": { "pending": 0, "approved": 0 },
+    "landmarks": { "pending": 0, "approved": 0 },
+    "pom_definitions": { "active_contract": 16, "reserved_pending_definition": 1 },
+    "pom_values": { "pending": 0, "approved": 0 },
+    "qa_cases": { "draft": 0, "approved": 0, "held_out": 0 },
+    "corrections": { "pending": 0, "reviewed": 0 }
+  },
+  "generated_at": "2026-07-10T00:00:00Z",
+  "source_fingerprints": [
+    "sha256:4ed9b16d3c85f0781b9e3724b9b3211574b2733536d7cef9b684358c4ead6899",
+    "sha256:6d21b298a2aa324da7afcbb9627ed7adcc3773bdee7549ba078be7e0a2554e5d"
+  ],
+  "generator_version": "library-l0-bootstrap-v1",
+  "validation": {
+    "status": "pass",
+    "validated_at": "2026-07-10T00:00:00Z",
+    "errors": []
+  }
+}

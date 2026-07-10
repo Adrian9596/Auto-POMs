@@ -26,7 +26,8 @@
     "viewrole-limitations": "node scripts/viewrole-limitations.mjs",
     "detection-limitations": "npm run pom6-limitations && npm run pom7-limitations && npm run pom14-limitations && npm run viewrole-limitations",
     "contract": "node scripts/pom-contract-tests.mjs",
-    "invariants": "node scripts/invariant-tests.mjs"
+    "invariants": "node scripts/invariant-tests.mjs",
+    "library-l0-tests": "node scripts/library-l0-tests.mjs"
   },
   "devDependencies": {
     "@slidev/cli": "^52.16.0",

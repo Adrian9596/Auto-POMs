@@ -2,10 +2,13 @@
 // Golden-fixture detection harness.
 //
 // Runs auto-mode sketch detection on EVERY demo/*.jpg in a headless Chrome and
-// compares the resulting anchors (normalized, keyed by kind), draft count, and
-// detection.quality against committed per-image baselines. This is the only
-// thing that can answer "did a detection change make things better or worse",
-// since the smoke suite only runs one image and checks structure.
+// compares the resulting anchors (normalized, keyed by kind), draft count,
+// per-POM draft-line GEOMETRY (start/end/control points, normalized to the
+// source image), and detection.quality against committed per-image baselines.
+// This is the only thing that can answer "did a detection change make things
+// better or worse", since the smoke suite only runs one image and checks
+// structure. Geometry coverage guards the fixture->draft path that anchor
+// drift can't see (e.g. the 2026-07-10 POM 14 NaN control-point bug).
 //
 //   node scripts/golden-tests.mjs            # compare against baselines (fails on drift)
 //   node scripts/golden-tests.mjs --update   # (re)seed baselines from current output
@@ -174,6 +177,32 @@ function compareOne(image) {
         r.ok = false;
         r.pomChanges.push(`POM ${pom}: no-edit acceptance candidate lost`);
       }
+      // Draft-geometry drift: compare each geometry point with the same
+      // tolerance as anchors, reported as pom{n}.{point} in the drift list.
+      // Baselines seeded before this field exists skip silently (re-seed with
+      // --update to arm). A point present in one capture but not the other is
+      // a hard fail — geometry appearing/vanishing is never benign.
+      if (before.geometry && after.geometry) {
+        if (before.geometry.type !== after.geometry.type) {
+          r.ok = false;
+          r.pomChanges.push(`POM ${pom}: type ${before.geometry.type} -> ${after.geometry.type}`);
+        }
+        for (const pt of ['start', 'end', 'control1', 'control2']) {
+          const a = before.geometry[pt], b = after.geometry[pt];
+          if (!a && !b) continue;
+          if (!a || !b) {
+            r.ok = false;
+            r.pomChanges.push(`POM ${pom}: ${pt} ${a ? 'lost' : 'appeared'}`);
+            continue;
+          }
+          const drift = Math.hypot(b.x - a.x, b.y - a.y);
+          if (drift > 1e-9) r.drifts.push({ kind: `pom${pom}.${pt}`, drift });
+          if (drift > TOL) r.ok = false;
+        }
+      } else if (!!before.geometry !== !!after.geometry) {
+        r.ok = false;
+        r.pomChanges.push(`POM ${pom}: geometry ${before.geometry ? 'lost' : 'appeared'} (drawability flip?)`);
+      }
     }
   }
   r.drifts.sort((x, y) => y.drift - x.drift);
@@ -204,6 +233,14 @@ function captureExpr(imagePath) {
       const result = await debug.runAutoOnDataUrl(dataURL);
       const det = result.detection || {};
       const drafts = result.drafts || [];
+      // Drafts are world-space; normalize back to source-image space so the
+      // baseline survives board layout changes. The source image is the last
+      // one added by runAutoOnDataUrl.
+      const img = (result.images || [])[(result.images || []).length - 1] || null;
+      const normPt = (p) => (p && img)
+        ? { x: Math.round(((p.x - img.x) / img.width) * 1e6) / 1e6,
+            y: Math.round(((p.y - img.y) / img.height) * 1e6) / 1e6 }
+        : null;
       const poms = {};
       let acceptedWithoutEditCandidates = 0;
       for (const d of drafts) {
@@ -215,6 +252,17 @@ function captureExpr(imagePath) {
           drawability: d.drawability || null,
           confidence: d.confidence || null,
           acceptedWithoutEditCandidate: acceptedCandidate,
+          // Draft-line geometry (normalized). REVIEW_ONLY rows have null
+          // geometry by contract; control points exist only on curved lines.
+          // Guards the fixture->draft path that anchor drift can't see (e.g.
+          // the 2026-07-10 POM 14 NaN control-point bug).
+          geometry: drawable ? {
+            type: d.type || 'straight',
+            start: normPt(d.start),
+            end: normPt(d.end),
+            control1: normPt(d.control1),
+            control2: normPt(d.control2),
+          } : null,
         };
       }
       const anchors = {};

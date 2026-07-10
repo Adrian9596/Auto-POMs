@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/similarity-index.schema.json",
+  "title": "Generated Similarity Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["index_version", "library_schema_version", "library_snapshot_version", "scoring_config_version", "generated_at", "source_fingerprints", "styles", "build_report"],
+  "properties": {
+    "index_version": {"type": "string", "minLength": 1},
+    "library_schema_version": {"type": "string", "minLength": 1},
+    "library_snapshot_version": {"type": "string", "minLength": 1},
+    "scoring_config_version": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "source_fingerprints": {"type": "array", "items": {"$ref": "#/$defs/fingerprint"}, "uniqueItems": true},
+    "styles": {"type": "array", "items": {"$ref": "#/$defs/styleVector"}},
+    "build_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["style_count", "excluded_style_count", "warnings", "deterministic_digest"],
+      "properties": {
+        "style_count": {"type": "integer", "minimum": 0},
+        "excluded_style_count": {"type": "integer", "minimum": 0},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "deterministic_digest": {"$ref": "#/$defs/fingerprint"}
+      }
+    }
+  },
+  "$defs": {
+    "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "numericMap": {"type": "object", "additionalProperties": {"type": "number"}},
+    "styleVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["style_id", "style_version", "mandatory_filters", "feature_vector", "landmark_descriptors", "completeness", "support", "source_record_fingerprints"],
+      "properties": {
+        "style_id": {"type": "string", "minLength": 1},
+        "style_version": {"type": "string", "minLength": 1},
+        "mandatory_filters": {"type": "object", "additionalProperties": {"type": ["string", "number", "boolean"]}},
+        "feature_vector": {"$ref": "#/$defs/numericMap"},
+        "landmark_descriptors": {"$ref": "#/$defs/numericMap"},
+        "completeness": {"type": "number", "minimum": 0, "maximum": 1},
+        "support": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "source_record_fingerprints": {"type": "array", "items": {"$ref": "#/$defs/fingerprint"}, "uniqueItems": true}
+      }
+    }
+  }
+}

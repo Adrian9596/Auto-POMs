@@ -4,7 +4,7 @@ Date: 2026-07-09
 
 ## Status
 
-Accepted. Supersedes ADR 0012 for POM 14 geometry.
+Superseded by [0015 POM 14 starts at the front strap upper join](0015-pom14-front-strap-upper-join.md).
 
 ## Context
 

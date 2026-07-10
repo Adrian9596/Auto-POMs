@@ -70,6 +70,14 @@
       proposedEndLandmark: row.proposedEndLandmark || null,
       reason: row.reason || null,
       uncertainty: row.uncertainty || null,
+      // Phase 7 review-note plumbing: which required anchors were missing and
+      // the landmark-QA explanations behind a REVIEW_ONLY demotion.
+      missingAnchors: Array.isArray(row.missingAnchors) && row.missingAnchors.length
+        ? row.missingAnchors.slice()
+        : null,
+      reviewNotes: Array.isArray(row.reviewNotes) && row.reviewNotes.length
+        ? row.reviewNotes.slice()
+        : null,
       sharedAnchorFamily: row.sharedAnchorFamily || null,
       viewRole: row.viewRole || effectivePomViewRole(row.pom),
       approvedAt: null,

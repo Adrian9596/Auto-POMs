@@ -28,7 +28,7 @@
       calibration: clone(state.calibration),
       pomSpecs: clone(state.pomSpecs || {}),
       gradeRules: clone(state.gradeRules || {}),
-      depthRules: clone(state.depthRules || {}),
+      customPoms: clone(state.customPoms || []),
     };
   }
 
@@ -79,8 +79,10 @@
     state.idCounter = snapshot.idCounter || inferNextIdCounter();
     state.calibration = snapshot.calibration || { unitsPerPx: null, unit: 'in' };
     state.pomSpecs = clone(snapshot.pomSpecs || {});
-    state.gradeRules = clone(snapshot.gradeRules || {});
-    state.depthRules = clone(snapshot.depthRules || {});
+    // migrate defensively: history is session-only, but a snapshot taken by
+    // pre-US-011 code (or with a legacy depthRules field) must still restore.
+    state.gradeRules = migrateGradeRulesV2(snapshot.gradeRules, snapshot.depthRules);
+    state.customPoms = clone(snapshot.customPoms || []);
     state.editingLabelId = null;
     state.drawSession = null;
     state.eraseSession = null;

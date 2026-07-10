@@ -1327,6 +1327,245 @@ console.log('\nstage: detection carries junction map');
     badCoord ? JSON.stringify(badCoord) : '');
 }
 
+// ---- Test 12b: extractContours emits a clean evidence bundle (Phase 4) ----
+// The contour stage now carries type-split feature points + stroke stats as
+// SHAPE evidence, kept separate from geometry decisions, without disturbing
+// the detection.junctions / junctionSummary contract asserted above.
+console.log('\nstage: contour evidence bundle (Phase 4)');
+{
+  const W = 640, H = 480;
+  const analysis = buildSyntheticInkAnalysis(W, H);
+  const detection = pipeline.detectSketchFromInkAnalysis(analysis, { cv: null });
+  check('detection.endpoints is an array', Array.isArray(detection.endpoints),
+    typeof detection.endpoints);
+  check('detection.corners is an array', Array.isArray(detection.corners),
+    typeof detection.corners);
+  check('detection.strokeStats present', !!detection.strokeStats,
+    JSON.stringify(detection.strokeStats));
+  check('detection.contourEvidence summary present',
+    !!detection.contourEvidence && typeof detection.contourEvidence === 'object',
+    JSON.stringify(detection.contourEvidence));
+  // The full junctions list is junctions + endpoints + corners; the split must
+  // reconcile against the summary counts.
+  const ce = detection.contourEvidence || {};
+  const split = (ce.junctionCount || 0) + (ce.endpointCount || 0) + (ce.cornerCount || 0);
+  check('evidence split reconciles with detection.junctions length',
+    split === (detection.junctions || []).length,
+    `split=${split} junctions=${(detection.junctions || []).length}`);
+  check('endpoints carry only endpoint-type points',
+    (detection.endpoints || []).every(p => p.type === 'endpoint'),
+    JSON.stringify((detection.endpoints || []).map(p => p.type)));
+  check('strokeStats.skeletonPx matches the junction summary',
+    detection.strokeStats && detection.junctionSummary
+      && detection.strokeStats.skeletonPx === detection.junctionSummary.skeletonPx,
+    `stroke=${detection.strokeStats && detection.strokeStats.skeletonPx} summary=${detection.junctionSummary && detection.junctionSummary.skeletonPx}`);
+  // Curve candidates are the deferred half of the bundle: without the Potrace
+  // edge pass (pure Node pipeline) the summary reports none, cleanly.
+  check('contourEvidence reports no traced curves in the pure pipeline',
+    ce.traced === false && ce.curveCandidateCount === 0,
+    JSON.stringify(ce));
+}
+
+// ---- Test 12c: explicit geometry facts (Phase 5) ----
+// The geometry stage now emits a first-class, self-describing fact bundle:
+// center axis, band line, cup/strap/seam candidate geometry, back-panel
+// candidates, and the classified VIEW REGIONS (role + confidence) — produced
+// BEFORE anchor placement so view-region detection is separated from anchoring.
+// A deterministic geometry-quality verdict carries the review signal.
+console.log('\nstage: explicit geometry facts (Phase 5)');
+{
+  const W = 640, H = 480;
+  const analysis = buildSyntheticInkAnalysis(W, H);
+  const detection = pipeline.detectSketchFromInkAnalysis(analysis, { cv: null });
+  const gf = detection.geometryFacts;
+  check('detection.geometryFacts present', !!gf && typeof gf === 'object',
+    JSON.stringify(gf ? Object.keys(gf) : gf));
+  check('symmetryAxis carries pixel + normalized x',
+    gf && gf.symmetryAxis && Number.isFinite(gf.symmetryAxis.xPx)
+      && gf.symmetryAxis.xNorm >= 0 && gf.symmetryAxis.xNorm <= 1,
+    JSON.stringify(gf && gf.symmetryAxis));
+  check('bandLine carries normalized y in [0,1]',
+    gf && gf.bandLine && gf.bandLine.yNorm >= 0 && gf.bandLine.yNorm <= 1,
+    JSON.stringify(gf && gf.bandLine));
+  check('viewRegions is a list with explicit roles',
+    gf && Array.isArray(gf.viewRegions) && gf.viewRegions.length > 0
+      && gf.viewRegions.every(r => typeof r.role === 'string' && 'roleConfidence' in r),
+    JSON.stringify(gf && gf.viewRegions));
+  check('exactly one view region is flagged primary',
+    gf && gf.viewRegions.filter(r => r.isPrimary).length === 1,
+    JSON.stringify(gf && gf.viewRegions.map(r => r.isPrimary)));
+  check('view region bbox exposed in BOTH pixel and normalized space',
+    gf && gf.viewRegions.every(r => r.bboxPx && r.bboxNorm
+      && r.bboxNorm.x >= 0 && r.bboxNorm.x <= 1),
+    JSON.stringify(gf && gf.viewRegions[0]));
+  check('semantic-part candidate geometry present (cup/strap/seam/back)',
+    gf && 'cupGeometry' in gf && 'strapGeometry' in gf
+      && 'seamGeometry' in gf && 'backPanelGeometry' in gf,
+    JSON.stringify(gf ? Object.keys(gf) : gf));
+  check('geometry quality carries a review verdict + reasons',
+    gf && gf.quality && typeof gf.quality.reviewRequired === 'boolean'
+      && Array.isArray(gf.quality.reasons)
+      && gf.quality.overall >= 0 && gf.quality.overall <= 1,
+    JSON.stringify(gf && gf.quality));
+  check('top-level geometryReviewRequired mirrors the quality verdict',
+    detection.geometryReviewRequired === gf.quality.reviewRequired,
+    `top=${detection.geometryReviewRequired} quality=${gf && gf.quality && gf.quality.reviewRequired}`);
+  // The geometry facts are a surfacing of the frame the detector already found:
+  // axis / band in the facts must equal the top-level detection coordinates.
+  check('geometryFacts axis/band agree with top-level detection coords',
+    gf && gf.symmetryAxis.xNorm === detection.axisX && gf.bandLine.yNorm === detection.bandY,
+    `axis=${gf && gf.symmetryAxis.xNorm}/${detection.axisX} band=${gf && gf.bandLine.yNorm}/${detection.bandY}`);
+  // Determinism: same ink analysis → identical geometry-quality verdict.
+  const again = pipeline.detectSketchFromInkAnalysis(buildSyntheticInkAnalysis(W, H), { cv: null });
+  check('geometry quality is deterministic (same in → same out)',
+    again.geometryFacts && again.geometryFacts.quality.overall === gf.quality.overall
+      && again.geometryReviewRequired === detection.geometryReviewRequired,
+    `q1=${gf.quality.overall} q2=${again.geometryFacts && again.geometryFacts.quality.overall}`);
+}
+
+// ---- Test 13: normalized segmentation stage output (Phase 3) ----
+// Segmentation is now a first-class stage: every backend produces one shape
+// (backend id, bbox, deterministic quality, weak/review flags), surfaced on
+// detection.segmentation plus top-level mirrors.
+console.log('\nstage: segmentation normalized output + quality (Phase 3)');
+{
+  const W = 256, H = 384;
+  const analysis = buildSyntheticInkAnalysis(W, H);
+  const detection = pipeline.detectSketchFromInkAnalysis(analysis, { cv: null });
+  const seg = detection.segmentation;
+
+  check('detection.segmentation block present', seg && typeof seg === 'object');
+  check('segmentation.backend classified from engine', seg && seg.backend === 'synthetic',
+    `backend=${seg && seg.backend}`);
+  check('segmentation.componentsBackend is inhouse (cv=null)',
+    seg && seg.componentsBackend === 'inhouse', `got=${seg && seg.componentsBackend}`);
+  check('segmentation.quality is a number in [0,1]',
+    seg && typeof seg.quality === 'number' && seg.quality >= 0 && seg.quality <= 1,
+    `quality=${seg && seg.quality}`);
+  check('segmentation.bbox normalized to [0,1]',
+    seg && seg.bbox && seg.bbox.x >= 0 && seg.bbox.x <= 1
+      && seg.bbox.width > 0 && seg.bbox.width <= 1,
+    `bbox=${seg && JSON.stringify(seg.bbox)}`);
+  check('segmentation carries deterministic sub-scores',
+    seg && seg.subScores && typeof seg.subScores.coverage === 'number'
+      && typeof seg.subScores.retention === 'number'
+      && typeof seg.subScores.fragmentation === 'number',
+    `subScores=${seg && JSON.stringify(seg.subScores)}`);
+  check('segmentation block omits the raw mask (hasMask flag only)',
+    seg && seg.mask === undefined && seg.hasMask === true,
+    `mask=${seg && typeof seg.mask} hasMask=${seg && seg.hasMask}`);
+  check('clean synthetic torso is NOT weak', seg && seg.weak === false,
+    `weak=${seg && seg.weak} reasons=${seg && JSON.stringify(seg.reasons)}`);
+  check('top-level segmentation mirrors present',
+    detection.segmentationBackend === 'synthetic'
+      && typeof detection.segmentationQuality === 'number'
+      && detection.segmentationWeak === false
+      && detection.segmentationReviewRequired === false,
+    `mirrors=${JSON.stringify({ b: detection.segmentationBackend, q: detection.segmentationQuality, w: detection.segmentationWeak, r: detection.segmentationReviewRequired })}`);
+
+  // Determinism: same ink analysis → identical quality + weak verdict.
+  const again = pipeline.detectSketchFromInkAnalysis(buildSyntheticInkAnalysis(W, H), { cv: null });
+  check('segmentation quality is deterministic (same in → same out)',
+    again.segmentation && again.segmentation.quality === seg.quality
+      && again.segmentation.weak === seg.weak,
+    `q1=${seg.quality} q2=${again.segmentation && again.segmentation.quality}`);
+}
+
+// ---- Test 14: weak segmentation → review signal, not silence (Phase 3) ----
+// A speckle-only mask survives the ink-count gate but the component cleanup
+// discards everything, tripping the fail-open revert. That must surface as a
+// weak, review-required segmentation with an explaining reason — never hidden.
+function buildSyntheticSpeckleInkAnalysis(width, height) {
+  const total = width * height;
+  const mask = new Uint8Array(total);
+  const stats = {
+    count: 0, minX: width, minY: height, maxX: -1, maxY: -1,
+    colDark: new Uint32Array(width),
+    rowDark: new Uint32Array(height),
+  };
+  const setDark = (x, y) => {
+    if (x < 0 || y < 0 || x >= width || y >= height) return;
+    const p = y * width + x;
+    if (mask[p]) return;
+    mask[p] = 1;
+    stats.count += 1;
+    if (x < stats.minX) stats.minX = x;
+    if (y < stats.minY) stats.minY = y;
+    if (x > stats.maxX) stats.maxX = x;
+    if (y > stats.maxY) stats.maxY = y;
+    stats.colDark[x] += 1;
+    stats.rowDark[y] += 1;
+  };
+  // Isolated single-pixel dots on a 5px grid: each its own tiny component,
+  // all below the keep threshold → cleanup drops them → fail-open revert.
+  for (let y = 20; y < 120; y += 5) {
+    for (let x = 20; x < 120; x += 5) setDark(x, y);
+  }
+  return {
+    engine: 'synthetic-speckle-fixture',
+    width, height, total, mask, stats,
+    threshold: 80, luminanceThreshold: 160, backgroundLum: 255,
+  };
+}
+console.log('\nstage: weak segmentation surfaces as a review signal (Phase 3)');
+{
+  const W = 256, H = 384;
+  const detection = pipeline.detectSketchFromInkAnalysis(
+    buildSyntheticSpeckleInkAnalysis(W, H), { cv: null }
+  );
+  const seg = detection.segmentation;
+  check('speckle mask still returns a detection with segmentation',
+    seg && typeof seg === 'object', `segmentation=${JSON.stringify(seg)}`);
+  check('speckle segmentation is weak', seg && seg.weak === true,
+    `weak=${seg && seg.weak}`);
+  check('speckle segmentation requires review', seg && seg.reviewRequired === true,
+    `reviewRequired=${seg && seg.reviewRequired}`);
+  check('speckle segmentation records the ink-cleanup revert',
+    seg && seg.inkCleanupReverted === true, `reverted=${seg && seg.inkCleanupReverted}`);
+  check('weak segmentation carries an explaining reason (not silent)',
+    seg && Array.isArray(seg.reasons) && seg.reasons.length > 0
+      && seg.reasons.some(r => /revert|speckle|noisy|component/i.test(r)),
+    `reasons=${seg && JSON.stringify(seg.reasons)}`);
+  check('top-level segmentationReviewRequired propagates',
+    detection.segmentationReviewRequired === true,
+    `flag=${detection.segmentationReviewRequired}`);
+}
+
+// ---- Test 15: too-little-ink early return still reports segmentation ----
+// The "no detection" path (ink count below the floor) must not be opaque: it
+// carries a normalized, weak segmentation block so review can act on it.
+console.log('\nstage: empty-ink early return carries a weak segmentation block');
+{
+  const W = 128, H = 128;
+  const total = W * H;
+  const mask = new Uint8Array(total);
+  const stats = {
+    count: 0, minX: W, minY: H, maxX: -1, maxY: -1,
+    colDark: new Uint32Array(W), rowDark: new Uint32Array(H),
+  };
+  // 50 ink pixels — below the 80-pixel segmentation floor → early return.
+  for (let i = 0; i < 50; i += 1) {
+    const x = 10 + i, y = 40;
+    mask[y * W + x] = 1;
+    stats.count += 1;
+    stats.minX = Math.min(stats.minX, x); stats.maxX = Math.max(stats.maxX, x);
+    stats.minY = Math.min(stats.minY, y); stats.maxY = Math.max(stats.maxY, y);
+    stats.colDark[x] += 1; stats.rowDark[y] += 1;
+  }
+  const analysis = {
+    engine: 'synthetic-empty-fixture', width: W, height: H, total, mask, stats,
+    threshold: 80, luminanceThreshold: 160, backgroundLum: 255,
+  };
+  const detection = pipeline.detectSketchFromInkAnalysis(analysis, { cv: null });
+  check('early-return detection has a segmentation block',
+    detection.segmentation && typeof detection.segmentation === 'object',
+    `segmentation=${JSON.stringify(detection.segmentation)}`);
+  check('early-return segmentation flags emptyMask + weak',
+    detection.segmentation && detection.segmentation.emptyMask === true
+      && detection.segmentation.weak === true,
+    `seg=${JSON.stringify(detection.segmentation)}`);
+}
+
 // ---- Summary ----
 console.log('');
 if (failures.length) {

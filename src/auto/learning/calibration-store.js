@@ -285,6 +285,31 @@
     };
   }
 
+  // Stage attribution (Engineering Workflow Phase 8, item 1): which pipeline
+  // stage most likely caused the correction the TD just made. Purely
+  // diagnostic — the bias math never reads it — but it tells an engineer (via
+  // the learning-data dialog and the sample records) WHERE the engine loses
+  // accuracy. Precedence follows the pipeline upstream-first: a tiny drag is
+  // an anchor nudge whatever the stage flags say; otherwise the deepest weak
+  // stage claims the correction (segmentation → contour/seam evidence →
+  // geometry frame → the landmark pick itself).
+  const RESIDUAL_NUDGE_LIMIT = 0.015; // ≤1.5% of the image dimension = fine-tune
+  function classifyResidualStage(anchorKind, dxNorm, dyNorm) {
+    const mag = Math.max(Math.abs(Number(dxNorm) || 0), Math.abs(Number(dyNorm) || 0));
+    if (mag < RESIDUAL_NUDGE_LIMIT) return 'anchor-nudge';
+    const det = state.autoMode && state.autoMode.detection;
+    if (!det) return 'unknown';
+    if (det.segmentationReviewRequired) return 'segmentation-weak';
+    const qa = det.landmarkQa && det.landmarkQa.byKind
+      ? det.landmarkQa.byKind[anchorKind]
+      : null;
+    // 'projected' covers seamProjected / seamDip / ratio / cupRatioFallback —
+    // the landmark had no direct contour/seam/ink evidence to rest on.
+    if (qa && qa.sourceClass === 'projected') return 'contour-missing';
+    if (det.geometryReviewRequired) return 'geometry-wrong';
+    return 'landmark-wrong';
+  }
+
   function recordAnchorResidual(anchorKind, dxNorm, dyNorm, anchor) {
     if (!isLearningEnabled()) return false;
     // Derived anchors (Phase 3, plan 2) are geometric consequences of their
@@ -301,7 +326,25 @@
     const sampleAnchor = anchor || { kind: anchorKind };
     const key = learningBucketKey(anchorKind, anchor);
     const bucket = learningStore.buckets[key] || (learningStore.buckets[key] = []);
-    bucket.push({ dx: dxNorm, dy: dyNorm, ts: Date.now() });
+    // Phase 8 sample context — additive fields the bias math never reads:
+    //   stage — suspected pipeline stage behind the correction (item 1);
+    //   part  — semantic bra part (item 3 scoping context);
+    //   style — the project's style code, so a future scoped-bias pass can
+    //           split buckets per style WITHOUT invalidating today's data
+    //           (the bucket key stays kind|viewRole on purpose);
+    //   conf  — the anchor's confidence tier before the correction.
+    const sample = {
+      dx: dxNorm, dy: dyNorm, ts: Date.now(),
+      stage: classifyResidualStage(anchorKind, dxNorm, dyNorm),
+    };
+    const part = (typeof semanticPartForAnchorKind === 'function')
+      ? semanticPartForAnchorKind(anchorKind)
+      : null;
+    if (part) sample.part = part;
+    const styleId = (typeof currentStyleId === 'function') ? currentStyleId() : null;
+    if (styleId) sample.style = styleId;
+    if (anchor && anchor.confidence) sample.conf = anchor.confidence;
+    bucket.push(sample);
     // Drop the oldest entries first — recent TDs are more representative
     // of the current sketch style than ones from months ago.
     if (bucket.length > LEARNING_MAX_PER_BUCKET) {
@@ -523,10 +566,18 @@
     const buckets = (learningStore && learningStore.buckets) || {};
     const rows = [];
     let totalSamples = 0;
+    // Phase 8: corrections by suspected pipeline stage. Samples recorded
+    // before stage attribution existed have no stage field — counted as
+    // 'unattributed' so the totals still reconcile.
+    const stageCounts = {};
     for (const key of Object.keys(buckets)) {
       const bucket = buckets[key] || [];
       const n = bucket.length;
       totalSamples += n;
+      for (const r of bucket) {
+        const stage = r && r.stage ? r.stage : 'unattributed';
+        stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+      }
       const pipe = key.indexOf('|');
       const kind = pipe >= 0 ? key.slice(0, pipe) : key;
       const viewRole = pipe >= 0 ? key.slice(pipe + 1) : '';
@@ -575,6 +626,7 @@
       minSamples: LEARNING_MIN_SAMPLES,
       clampLimit: LEARNING_CLAMP,
       outlierLimit: LEARNING_OUTLIER_LIMIT,
+      stageCounts,
       paramSampleCounts: params,
       totalParamSamples,
       rows,

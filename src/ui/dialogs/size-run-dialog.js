@@ -45,7 +45,7 @@
     const key = String(pomKey);
     const house = HOUSE_GRADE_INCHES[key] || { step: 0, hold: false };
     const houseStepUnit = house.step * inchesToUnit(state.calibration.unit);
-    const override = (state.gradeRules && state.gradeRules[key]) || null;
+    const override = (state.gradeRules && state.gradeRules.steps && state.gradeRules.steps[key]) || null;
     if (!override) return { step: houseStepUnit, hold: !!house.hold, overridden: false };
     return {
       step: override.step != null ? Number(override.step) : houseStepUnit,
@@ -56,8 +56,10 @@
 
   function setGradeRule(pomKey, patch) {
     const key = String(pomKey);
-    if (!state.gradeRules) state.gradeRules = {};
-    state.gradeRules[key] = Object.assign({}, state.gradeRules[key] || {}, patch);
+    if (!state.gradeRules || state.gradeRules.version !== 2) {
+      state.gradeRules = migrateGradeRulesV2(state.gradeRules, null);
+    }
+    state.gradeRules.steps[key] = Object.assign({}, state.gradeRules.steps[key] || {}, patch);
     pushHistoryIfChanged();
   }
 
@@ -212,7 +214,9 @@
     resetBtn.textContent = 'Reset steps';
     resetBtn.title = 'Discard step edits and restore the house-default increments.';
     resetBtn.addEventListener('click', () => {
-      state.gradeRules = {};
+      // Reset only the constant-step overrides this dialog edits; per-size
+      // deltas and depth offsets in the v2 container belong to other UIs.
+      state.gradeRules.steps = {};
       pushHistoryIfChanged();
       renderTable();
       showToast('Grade steps reset to house defaults.');

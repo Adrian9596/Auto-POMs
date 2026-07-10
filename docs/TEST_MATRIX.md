@@ -31,7 +31,7 @@ Do not mark a row `implemented` until its suite has actually been run and passes
 | — | Anchor seeding lands near TD ground truth (tight ≈0.02 / loose ≈0.04) | no | no | yes | no | planned | `npm run accuracy` (needs corpus, charter M3) |
 | — | 16 POMs generated on correct views; structural invariants hold | no | no | yes | no | implemented | `npm run invariants` |
 | — | Fragile front POMs 6/7/8/9/10/16 semantically correct | no | no | yes | no | implemented | `npm run contract`, `npm run pom6-limitations`, `npm run pom7-limitations` |
-| — | POM 14 shoulder strap is a curved front cup/strap join → back strap end measurement, low confidence, always-verify; front-only sketches demote to `REVIEW_ONLY` | no | no | yes | no | implemented | `npm run contract`, `npm run pom14-limitations` |
+| — | POM 14 shoulder strap is a curved front strap upper join → back strap/panel join measurement, low confidence, always-verify; front-only sketches demote to `REVIEW_ONLY` | no | no | yes | no | implemented | `npm run contract`, `npm run pom14-limitations` |
 | — | Determinism: same sketch → same lines (no drift vs baseline) | no | no | yes | no | implemented | `npm run golden` |
 | — | Auto-first mode: fresh load boots Auto; Apply hands off to Manual; projects with applied lines reopen in Manual | no | no | yes | no | implemented | `npm run smoke`, `npm run meaning-tests` |
 | — | Learning loop: bias activates, off-blocks, dup/large-residual reject, reset | no | no | yes | no | implemented | `npm run learning-tests` |
@@ -41,6 +41,7 @@ Do not mark a row `implemented` until its suite has actually been run and passes
 | — | Export Excel writes the measurement spec workbook with deterministic OOXML, graded sizes, held POMs, suggestions/TD values, and embedded PNG | no | no | yes | no | implemented | `npm run export-xlsx` |
 | — | Hidden POMs are excluded from exported workbook rows and shared export image surfaces (PDF / Copy Image / Excel embedded PNG) | yes | no | no | no | implemented | `npm run export-hidden` |
 | — | Tier-0 library-value suggestions load, regenerate, badge, skip no-data POMs, and allow TD override/revert | yes | no | yes | no | implemented | `npm run suggestions-tests` |
+| US-005 | Governed library Phase L0: schemas, contract fingerprints, immutable POM registry 1–17, and pending/approved boundaries | yes | no | no | no | implemented | `npm run library-l0-tests`, `npm run check`, `npm run contract` |
 | — | Detection limitation matrices guard POM 6, POM 7, POM 14, and view-role hard cases while reporting known weak spots as non-fatal limitations | yes | no | no | no | implemented | `npm run detection-limitations` |
 
 ## Evidence Rules

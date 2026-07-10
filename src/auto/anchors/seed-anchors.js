@@ -73,15 +73,27 @@
 
     const det = detection.confidence || {};
 
+    // Landmark QA layer (Engineering Workflow Phase 6): the per-landmark
+    // verdicts — source class, confidence tier, reviewRequired, QA notes —
+    // that this seed layer consumes below instead of recomputing its own
+    // tables. Computed HERE (not reused from detection time) because the
+    // detection object can be mutated between seedings (e.g. the front_inner
+    // branch backfills detection.innerCupTop), and it must run BEFORE that
+    // mutation so its evidence reads match this seeding pass. Re-attached so
+    // debug consumers always see the verdicts the current anchors came from.
+    const landmarkQa = buildLandmarkQaFromDetection(detection);
+    if (landmarkQa) detection.landmarkQa = landmarkQa;
+    const qaByKind = (landmarkQa && landmarkQa.byKind) || {};
+
     // Inner cup sits on the side with the stronger local cup signal. Default
     // to the left cup because the bundled reference sketch shows it clearly.
     const icSide = (det.apexRight || 0) > (det.apexLeft || 0) + 0.08 ? +1 : -1;
     const icX    = ax + icSide * halfW * 0.12;
     const icHalf = halfW * 0.18;
     // POM 14 (shoulder-strap length) is a curved front-to-back strap path:
-    // apex-left = front cup/strap join, strap-bottom = back strap end. The back
-    // end seeds only inside the back-view branch below; a front-only sketch has
-    // no back end, so POM 14 → REVIEW_ONLY.
+    // strap-top = upper joining seam of the front left strap; strap-bottom =
+    // back strap/panel join. The back end seeds only inside the back-view branch
+    // below; a front-only sketch has no back end, so POM 14 → REVIEW_ONLY.
 
     // POM 6 rescue: when the direct CF-seam detector missed (no cradleCfTop)
     // but the bottom-cup cradle seam WAS found (cradleCupTop — the POM 7 top),
@@ -187,9 +199,6 @@
     // (e.g. apex + cradle-cup both missing) AND the front_inner view branch
     // below isn't used either.
     const cupModel = detection.cupModel || null;
-    const cupModelUsable = !!(cupModel && cupModel.visibility !== 'hidden'
-      && cupModel.topPoint && cupModel.bottomPoint
-      && cupModel.innerEdge && cupModel.outerEdgeNearArmhole);
     const innerCupTopInk = detection.innerCupTop || null;
     const sideTopRightInk = detection.sideTopRight || null;
     const sideTopLeftInk  = detection.sideTopLeft  || null;
@@ -203,7 +212,13 @@
     // regardless of which cup side the model picked. Single source of truth for
     // both the frontView and frontInnerView branches below.
     const innerCupFromCupModel = (cm) => {
+      // innerEdgeSupported === false: the model's width row crosses a void
+      // (open neckline V) and the inner endpoint is a fabricated gore inset
+      // with no ink near it — fall down the precedence chain instead of
+      // anchoring POM 9/10 in blank space. Mirrors cupModelUsable in
+      // landmark-qa.js (the authoritative gate predicate).
       if (!(cm && cm.visibility !== 'hidden'
+            && cm.innerEdgeSupported !== false
             && cm.topPoint && cm.bottomPoint
             && cm.innerEdge && cm.outerEdgeNearArmhole)) {
         return null;
@@ -395,18 +410,27 @@
         useIcLeft = frontCupPts.left;
         useIcRight = frontCupPts.right;
       } else if (innerCupTopInk) {
-        // Legacy fallback — cupModel could not be built but ink suggests a cup
-        // top. Anchor POM 9 on the detected ink top (x shared top→bottom so the
-        // height reads vertical, bottom on the detected cradle row) and derive
-        // POM 10 width from the CF axis + side seam on the ink-top's cup side.
+        // Legacy fallback — the cupModel could not be built (or its inner edge
+        // is unsupported) but ink suggests a cup top. Anchor POM 9 on the
+        // detected ink top (x shared top→bottom so the height reads vertical,
+        // bottom on the detected cradle row) and derive POM 10 width from the
+        // CF axis + side seam. The cup SIDE honors the cupModel's pick when a
+        // model exists — invariants B1/B2 judge the anchors against
+        // cupModel.side, and the ink top often sits ON the gore (≈ the axis),
+        // making its own left/right tie-break arbitrary. The shared POM 9
+        // column is clamped into the POM 10 span so A5/B1 hold even when the
+        // gore-top ink lands a hair past the axis.
         const inkX = clamp01(innerCupTopInk.x);
-        const cupIsLeft = inkX <= axSafe;
+        const cupIsLeft = (cupModel && (cupModel.side === -1 || cupModel.side === 1))
+          ? cupModel.side < 0
+          : inkX <= axSafe;
         const widthY = clamp01(innerCupTopInk.y + Math.max(0.05, (band - innerCupTopInk.y) * 0.45));
         const w = landmarkInnerCupWidth(cupIsLeft, widthY);
-        useIcTop = { x: inkX, y: clamp01(innerCupTopInk.y) };
+        const colX = Math.min(Math.max(inkX, w.left.x), w.right.x);
+        useIcTop = { x: colX, y: clamp01(innerCupTopInk.y) };
         useIcLeft  = w.left;
         useIcRight = w.right;
-        useIcBottomFromCup = { x: inkX, y: clamp01(cradle) };
+        useIcBottomFromCup = { x: colX, y: clamp01(cradle) };
       } else {
         // Pure fallback — no cupModel and no ink top. Still avoid fixed view
         // ratios: estimate the cup from detected landmarks (CF axis, side
@@ -441,6 +465,22 @@
       const useApexR = apexRsrc
         ? { x: clamp01(apexRsrc.x), y: clamp01(apexRsrc.y) }
         : null;
+      // Front endpoint of POM 14 (ADR 0016/0017): the strap JOIN on the RIGHT
+      // shoulder strap — the strap adjacent to the back view, so the drawn
+      // curve follows one continuous strap. With a stitched strap section the
+      // join is that section's top seam (frontStrapStart); on plain straps
+      // there is no such seam, and the join is where the strap attaches to the
+      // cup/neckline — the validated cup/strap join, on its OUTER edge (the
+      // apex-inner variant belongs to POM 16). Never the strap's top cut edge
+      // (TD corrections 2026-07-10: "front strap join, not front strap top";
+      // "outer edge of front strap join, not inner edge").
+      const strapJoin = detection.apexRightOuter || detection.apexLeftOuter
+        || (useApexR || useApexL);
+      const useFrontStrapTop = detection.frontStrapStart
+        ? { x: clamp01(detection.frontStrapStart.x), y: clamp01(detection.frontStrapStart.y) }
+        : (strapJoin
+          ? { x: clamp01(strapJoin.x), y: clamp01(strapJoin.y) }
+          : inView(f, 0.80, 0.18));
       // CF-bottom: bandY is the highest-confidence horizontal signal in the
       // pipeline. Prefer (axisX, bandY) over the view-box fraction so POMs 5
       // and 6 land on the actual band ink.
@@ -472,7 +512,9 @@
         'inner-cup-right': useIcRight,
         'side-top':        useSideTop,
         'side-bottom':     useSideBot,
+        'strap-top':       useFrontStrapTop,
       };
+      roleByKind['strap-top'] = 'front_outer';
       if (useApexL && useApexR) {
         seeds['apex-left'] = useApexL;
         seeds['apex-right'] = useApexR;
@@ -553,27 +595,13 @@
     // legacy innerCupTopInk fires we keep them too — that's a heuristic but
     // it carries some structure information, and the existing flow has shown
     // it usable on a number of sketches.
-    const hasFrontInnerSeedView = !!(frontInnerView && frontInnerView.width > 0 && frontInnerView.height > 0);
-    const anchorGateWillDelete = !!(cupModel && cupModel.visibility === 'hidden' && !innerCupTopInk && !hasFrontInnerSeedView);
     // Anchor-gate diagnostic — which source path POM 9/10 ended up using.
-    // Surfaced via detection.debug.cupAnchorGate so debug consumers (rule.md
-    // 'why was this row demoted?' question) can see the gate decision without
-    // re-running detection.
-    const cupAnchorGate = {
-      cupModelPresent: !!cupModel,
-      cupModelVisibility: cupModel ? cupModel.visibility : null,
-      cupModelUsable,
-      innerCupTopInkPresent: !!innerCupTopInk,
-      hasFrontInnerView: hasFrontInnerSeedView,
-      pathTaken: anchorGateWillDelete
-        ? 'deleted (POM 9/10 → REVIEW_ONLY)'
-        : (cupModelUsable
-          ? 'cupModel'
-          : (innerCupTopInk
-            ? 'innerCupTopInk fallback'
-            : (hasFrontInnerSeedView ? 'front_inner view ratios' : 'view-box ratio fallback'))),
-      cupModelReason: cupModel ? cupModel.reason : null,
-    };
+    // Computed by the landmark QA layer (single source of truth for the gate
+    // predicate); surfaced via detection.debug.cupAnchorGate so debug
+    // consumers (rule.md 'why was this row demoted?' question) can see the
+    // gate decision without re-running detection.
+    const cupAnchorGate = landmarkQa ? landmarkQa.cupGate : null;
+    const anchorGateWillDelete = !!(cupAnchorGate && cupAnchorGate.willDelete);
     if (detection && detection.debug && typeof detection.debug === 'object') {
       detection.debug.cupAnchorGate = cupAnchorGate;
     }
@@ -651,12 +679,8 @@
         : (backPanelInk && backPanelInk.bottom
           ? { x: clamp01(backPanelInk.bottom.x), y: clamp01(backPanelInk.bottom.y) }
           : inView(b, 0.232, 0.985));
-      // Back strap helper landmarks. POM 14 uses strap-bottom as the back end;
-      // its front start is apex-left, the cup/strap join. strap-top still marks
-      // the top of the back strap for review/debugging.
-      const useBackStrapTop = detection.backStrapTop
-        ? { x: clamp01(detection.backStrapTop.x), y: clamp01(detection.backStrapTop.y) }
-        : inView(b, 0.187, 0.405);
+      // POM 14's back endpoint is the strap/panel join. strap-top is seeded in
+      // the front-view branch and must not be overwritten with back-view ink.
       const useBackStrapBottom = { x: usePanelTop.x, y: usePanelTop.y };
       // POM 11 side seam: follow the back panel's outer outline with ink.
       // side-top is the topmost edge ink; side-bottom follows that seam DOWN to
@@ -683,178 +707,35 @@
         'back-panel-bottom': usePanelBot,
         'back-strap-left':   { x: clamp01(bStrapL.x), y: clamp01(bStrapL.y) },
         'back-strap-right':  { x: clamp01(bStrapR.x), y: clamp01(bStrapR.y) },
-        'strap-top':         useBackStrapTop,
         'strap-bottom':      useBackStrapBottom,
       };
-      // Back strap helper anchors live on the back view.
-      roleByKind['strap-top'] = 'back';
+      // Only the ending strap anchor lives on the back view.
       roleByKind['strap-bottom'] = 'back';
     }
 
-    // Anchor confidence flows from the underlying detection signal — strong
-    // peaks → 'high', weak peaks → 'medium', geometry-only fallbacks → 'low'.
-    // Old hardcoded buckets remain as the default when the new fields aren't
-    // present (back-compat for any caller that synthesizes a detection).
-    const tier = (score, fallback) => {
-      if (score == null || score <= 0) return fallback;
-      if (score >= 0.5) return 'high';
-      if (score >= 0.2) return 'medium';
-      return 'low';
-    };
-    // Inner-cup anchors: score-based tier, but an *inferred* cupModel (no
-    // front_inner view — cup built from apex + cradle-cup seam) can never claim
-    // 'high'. Capped at 'medium' so the TD isn't shown a confident green dot for
-    // a seam we only inferred, even when the contour/seam blend scores well
-    // (a high score is confidence in the trace, not proof the view was seen).
-    // A 'direct' cupModel keeps the full score-based tier. The plain `tier`
-    // fallback can't express this: it only fires when score <= 0, so a strong
-    // score bypasses the visibility ceiling entirely.
-    const cupTier = (score, cm) => {
-      const direct = cm && cm.visibility === 'direct';
-      const t = tier(score, direct ? 'high' : 'medium');
-      return (!direct && t === 'high') ? 'medium' : t;
-    };
-    const confByKind = {
-      'cf-top':            tier(det.axis, 'medium'),
-      'cf-bottom':         tier(det.band, 'high'),
-      'cradle-cf-top':     (cradleCfFromCupSeam || detection.cradleCfTopDipProjected)
-                             ? 'low'
-                             : tier(det.cradleCfTop, 'medium'),
-      'cradle-cup-top':    tier(det.cradleCupTop, 'medium'),
-      'cradle-cup-bottom': tier(det.cradleCupBottom, 'medium'),
-      'band-left':         tier(det.band, 'high'),
-      'band-right':        tier(det.band, 'high'),
-      'chest-left':        tier(det.chest, 'medium'),
-      'chest-right':       tier(det.chest, 'medium'),
-      // Inner-cup anchors: 'high' when the cupModel has direct visibility
-      // (front_inner view fired), 'medium' when inferred from apex + seam,
-      // 'low' on legacy heuristic fallback. The tier function returns the
-      // first non-null bucket — we feed it a score derived from cupModel
-      // confidences so all four anchors agree on the same tier.
-      'inner-cup-top':     (cupModelUsable
-                              ? cupTier((cupModel.contourConfidence || 0) * 0.6 + (cupModel.seamConfidence || 0) * 0.4, cupModel)
-                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : tier(det.chest, 'medium'))),
-      'inner-cup-bottom':  (cupModelUsable
-                              ? cupTier((cupModel.seamConfidence || 0) * 0.7 + (cupModel.contourConfidence || 0) * 0.3, cupModel)
-                              : tier(det.cradle, 'medium')),
-      'inner-cup-left':    (cupModelUsable
-                              ? cupTier((cupModel.contourConfidence || 0) * 0.5 + (cupModel.seamConfidence || 0) * 0.5, cupModel)
-                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : 'medium')),
-      'inner-cup-right':   (cupModelUsable
-                              ? cupTier((cupModel.contourConfidence || 0) * 0.5 + (cupModel.seamConfidence || 0) * 0.5, cupModel)
-                              : (innerCupTopInk ? tier(det.innerCupTop, 'medium') : 'medium')),
-      'side-top':          sideTopRightInk ? tier(det.sideTopRight, 'medium') : tier(det.sideRight, 'medium'),
-      'side-bottom':       tier(det.sideRight, 'medium'),
-      'apex-left':         tier(det.apexLeft, 'medium'),
-      'apex-right':        tier(det.apexRight, 'medium'),
-      // POM 14 is the only contractually-low POM (always verify by hand); floor
-      // both strap ends to 'low' so reviewRequired is guaranteed (ADR 0012).
-      'strap-top':         'low',
-      'strap-bottom':      'low',
-      'back-top':          tier(det.back, 'low'),
-      'back-bottom':       tier(det.back, 'low'),
-      'back-panel-top':    (backPanelHeightInk || backPanelInk) ? tier(det.backPanel, 'medium') : (backView ? 'medium' : 'low'),
-      'back-panel-bottom': (backPanelHeightInk || backPanelInk) ? tier(det.backPanel, 'medium') : (backView ? 'medium' : 'low'),
-      'back-strap-left':   backView ? 'medium' : 'low',
-      'back-strap-right':  backView ? 'medium' : 'low',
-    };
-
-    // Per-anchor provenance. 'seam' = direct seam ink (POM 6/7/8 endpoints
-    // that pass rule.md L3 evidence). 'silhouette' = mask-derived (axis,
-    // band, chest, side seam). 'cupModel' / 'frontInnerView' /
-    // 'innerCupTopInkFallback' / 'cupRatioFallback' = which inner-cup path
-    // ran (mirrors cupAnchorGate.pathTaken). 'apexJoin' = strap-cup join
-    // seam (POM 16, never strap-ring hardware). 'ratio' = view-box ratio
-    // fallback. Tests assert 'apex-*' source !== 'strap-ring' and
-    // 'inner-cup-*' carries the cup-model path used.
-    const cupPath = cupAnchorGate.pathTaken;
-    // Cup-model anchors that came from 'inferred' visibility (no front_inner
-    // view; cup built from apex + cradle-cup seam) carry lower confidence
-    // than 'direct'. Distinguish the two so contract tests can assert
-    // "POM 9/10 fell back to front_outer" with reviewRequired=true.
-    const cupModelInferred = cupModel && cupModel.visibility === 'inferred';
-    const cupSource = cupPath === 'cupModel'
-      ? (cupModelInferred ? 'cupModelInferred' : 'cupModel')
-      : (cupPath === 'front_inner view ratios'
-        ? 'frontInnerView'
-        : (cupPath === 'innerCupTopInk fallback'
-          ? 'innerCupTopInkFallback'
-          : 'cupRatioFallback'));
-    const sourceByKind = {
-      'cf-top':            detection.cfTopY != null ? 'ink' : 'ratio',
-      'cf-bottom':         detection.bandY != null ? 'silhouette' : 'ratio',
-      'cradle-cf-top':     cradleCfFromCupSeam
-                             ? 'seamProjected'
-                             : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'),
-      'cradle-cup-top':    'seam',
-      'cradle-cup-bottom': 'seam',
-      'band-left':         detection.bandLeftX != null ? 'ink' : 'silhouette',
-      'band-right':        detection.bandRightX != null ? 'ink' : 'silhouette',
-      'chest-left':        (detection.underbustLeftX != null || detection.chestLeftX != null) ? 'ink' : 'ratio',
-      'chest-right':       (detection.underbustRightX != null || detection.chestRightX != null) ? 'ink' : 'ratio',
-      'inner-cup-top':     cupSource,
-      'inner-cup-bottom':  cupSource,
-      'inner-cup-left':    cupSource,
-      'inner-cup-right':   cupSource,
-      'side-top':          sideTopRightInk ? 'ink' : 'silhouette',
-      'side-bottom':       detection.sideBottomRight ? 'ink' : 'silhouette',
-      'apex-left':         detection.apexLeft ? 'apexJoin' : 'ratio',
-      'apex-right':        detection.apexRight ? 'apexJoin' : 'ratio',
-      'strap-top':         detection.backStrapTop ? 'backStrapInk' : 'ratio',
-      'strap-bottom':      (backPanelHeightInk || backPanelInk) ? 'backPanelJoin' : 'ratio',
-      'back-top':          (detection.back && detection.back.top) ? 'ink' : 'ratio',
-      'back-bottom':       (detection.back && detection.back.bottom) ? 'ink' : 'ratio',
-      'back-panel-top':    (backPanelHeightInk || backPanelInk) ? 'ink' : 'ratio',
-      'back-panel-bottom': (backPanelHeightInk || backPanelInk) ? 'ink' : 'ratio',
-      'back-strap-left':   (detection.backStrapInner && detection.backStrapInner.left)  ? 'ink' : (backView ? 'silhouette' : 'ratio'),
-      'back-strap-right':  (detection.backStrapInner && detection.backStrapInner.right) ? 'ink' : (backView ? 'silhouette' : 'ratio'),
-    };
-    // reviewRequired = the seed is ratio-only OR confidence tier is 'low'.
-    // The drafter still respects requiredAnchors for hard-gating; this flag
-    // lets the spec panel (and contract tests) mark a drawn line as needing
-    // a second look without forcing REVIEW_ONLY.
+    // Anchor confidence, provenance, and reviewRequired come from the landmark
+    // QA layer (Engineering Workflow Phase 6 — see buildLandmarkQaFromDetection
+    // in src/auto/detect/landmark-qa.js, where the tier / provenance / review
+    // predicates live with their full rationale). The seed layer places
+    // coordinates; the QA layer says how much to trust each landmark and why.
+    // The verdicts are the exact tables that used to live here, so anchors,
+    // drafts, and golden output are unchanged.
     const cupId = (detection.cupModel && detection.cupModel.id) || null;
 
     const list = [];
     for (const schema of ANCHOR_SCHEMA) {
       const seed = seeds[schema.kind];
       if (!seed) continue;
-      const source = sourceByKind[schema.kind] || 'unknown';
-      const confTier = confByKind[schema.kind] || 'medium';
-      // reviewRequired = the seed is ratio-only OR confidence tier is 'low' OR a
-      // genuinely-inferred cup anchor is weak (below). The drafter still respects
-      // requiredAnchors for hard-gating; this flag lets the spec panel (and contract
-      // tests) mark a drawn line as needing a second look without forcing
-      // REVIEW_ONLY. A DIRECT cup (source 'cupModel' — real apex + real cup-bottom,
-      // or a front_inner cutaway) is trusted at full confidence per the 2026-07-09
-      // TD correction; it is no longer down-flagged by a blunt contour+seam
-      // threshold (that reintroduced the "penalize a well-drawn front cup" churn).
-      // A genuinely INFERRED cup (endpoints placeable but one is only extrapolated
-      // — a flat-cradle bottom or a missing apex) is not blanket-flagged. Instead
-      // each inner-cup anchor is judged on the structure it actually rests on,
-      // so a strong apex + high-contour cup keeps its correct top / left /
-      // right trusted (POM 9 start, POM 10 width) and only the anchor whose
-      // evidence is genuinely missing is flagged:
-      //   - contour poorly traced (no validated apex) → all inner-cup anchors,
-      //   - no real cup bottom → inner-cup-bottom only (POM 9 end). The bottom
-      //     is real when POM 7 committed a seam (bottomFromSeam) OR a coherent
-      //     underwire arc was traced from the ink (bottomFromInk); a bare
-      //     flat-cradle-row guess still flags for review.
-      //   - top not anchored on a real apex → inner-cup-top only (POM 9 start).
-      const cupInferredWeakAnchor = source === 'cupModelInferred'
-        && cupModel
-        && (
-          (cupModel.contourConfidence || 0) < 0.5
-          || (schema.kind === 'inner-cup-bottom' && !cupModel.bottomFromSeam && !cupModel.bottomFromInk)
-          || (schema.kind === 'inner-cup-top' && !cupModel.topFromApex)
-        );
-      const reviewRequired = confTier === 'low'
-        || source === 'ratio'
-        || source === 'seamProjected'
-        || source === 'seamDip'
-        || source === 'cupRatioFallback'
-        || source === 'innerCupTopInkFallback'
-        || cupInferredWeakAnchor;
+      const qaEntry = qaByKind[schema.kind] || null;
+      const source = qaEntry && qaEntry.source ? qaEntry.source : 'unknown';
+      const confTier = qaEntry ? qaEntry.confidence : 'medium';
+      // reviewRequired is the QA layer's weak-landmark verdict: ratio-only or
+      // projected seeds, 'low' tiers, genuinely-inferred weak cup anchors, and
+      // non-'high' anchors on a weak geometry frame. The drafter still
+      // respects requiredAnchors for hard-gating; this flag lets the spec
+      // panel (and contract tests) mark a drawn line as needing a second look
+      // without forcing REVIEW_ONLY.
+      const reviewRequired = qaEntry ? !!qaEntry.reviewRequired : false;
       const record = {
         id: createUniqueAnnotationId(),
         kind: schema.kind,
@@ -869,6 +750,16 @@
         source,
         reviewRequired,
       };
+      // Phase 6 provenance carried onto the anchor record: the landmark
+      // source class (detected / derived / projected — 'learned' is applied
+      // below when the learning loop moves the seed) and the QA notes that
+      // explain any weakness in TD language.
+      if (qaEntry) {
+        record.landmarkSourceClass = qaEntry.sourceClass;
+        if (Array.isArray(qaEntry.notes) && qaEntry.notes.length) {
+          record.qaNotes = qaEntry.notes.slice();
+        }
+      }
       // Attach the shared cupModel id to inner-cup-* anchors so contract
       // tests can prove POM 9 and POM 10 read from the SAME cup model.
       if (cupId && schema.kind.indexOf('inner-cup-') === 0) {
@@ -885,7 +776,20 @@
     // computed against the unbiased prediction, never against an already-
     // biased one (which would compound the error and make the median drift).
     if (options && options.skipLearning) return list;
-    return applyLearningBiasToAnchors(list);
+    const biased = applyLearningBiasToAnchors(list);
+    // Phase 6: an anchor the learning loop actually moved is 'learned' — the
+    // seed position is no longer purely the detector's landmark. The fine
+    // `source` provenance is untouched (it still says which detector path
+    // produced the seed); only the source CLASS is re-tagged.
+    for (const anchor of biased) {
+      if (anchor && anchor.calibrated && anchor.landmarkSourceClass) {
+        anchor.landmarkSourceClass = 'learned';
+        anchor.qaNotes = (anchor.qaNotes || []).concat(
+          'learned: seed nudged by the median residual of past TD corrections.'
+        );
+      }
+    }
+    return biased;
   }
 
   function clamp01(v) { return Math.max(0, Math.min(1, Number(v) || 0)); }
@@ -900,7 +804,8 @@
   function defaultViewRoleForAnchorKind(kind) {
     if (/^back-|^back$/.test(kind)) return 'back';
     if (kind === 'side-top' || kind === 'side-bottom') return 'back';
-    if (kind === 'strap-top' || kind === 'strap-bottom') return 'back';
+    if (kind === 'strap-bottom') return 'back';
+    if (kind === 'strap-top') return 'front_outer';
     if (kind.indexOf('inner-cup-') === 0) return 'front_outer';
     return 'front_outer';
   }

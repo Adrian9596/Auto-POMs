@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/correction.schema.json",
+  "title": "TD Correction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["correction_id", "record_version", "category", "style_id", "style_version", "concept_id", "pom_number", "before", "after", "reason", "source_versions", "source_fingerprints", "td_status", "status", "created_at", "reviewed_at", "reviewed_by", "promoted_record_id"],
+  "properties": {
+    "correction_id": {"type": "string", "minLength": 1},
+    "record_version": {"type": "integer", "minimum": 1},
+    "category": {"enum": ["geometry", "measurement", "tolerance", "confirmed-absence", "inapplicability", "feature"]},
+    "style_id": {"type": "string", "minLength": 1},
+    "style_version": {"type": "string", "minLength": 1},
+    "concept_id": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"},
+    "pom_number": {"type": ["integer", "null"], "minimum": 1},
+    "before": {},
+    "after": {},
+    "reason": {"type": "string", "minLength": 1},
+    "source_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+    "source_fingerprints": {"type": "array", "items": {"$ref": "#/$defs/fingerprint"}, "uniqueItems": true},
+    "td_status": {"enum": ["unreviewed", "accepted", "rejected", "needs-more-evidence"]},
+    "status": {"enum": ["pending", "reviewed", "promoted", "rejected", "superseded"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+    "reviewed_by": {"type": ["string", "null"], "minLength": 1},
+    "promoted_record_id": {"type": ["string", "null"], "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"enum": ["reviewed", "promoted", "rejected"]}}, "required": ["status"]}, "then": {"properties": {"reviewed_at": {"type": "string", "format": "date-time"}, "reviewed_by": {"type": "string", "minLength": 1}}}},
+    {"if": {"properties": {"status": {"const": "promoted"}}, "required": ["status"]}, "then": {"properties": {"td_status": {"const": "accepted"}, "promoted_record_id": {"type": "string", "minLength": 1}}}}
+  ],
+  "$defs": {"fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}
+}

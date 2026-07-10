@@ -137,6 +137,52 @@
   // reference images by id instead of carrying (and re-serializing) base64 copies.
   const imageDataById = new Map();
 
+  // ---- Grade rules v2 container (US-011) ----------------------------------
+  // One persisted object holds every TD grading override:
+  //   steps        — v1 constant-step overrides { [pom]: {step, hold} }
+  //                  (step in the project unit, as the Size Run dialog wrote)
+  //   alpha, depth — per-POM per-size delta overrides { [pom]: {[size]: Δ} },
+  //                  stored in INCHES (unit-independent, converted at use like
+  //                  the built-ins). Written by the Grading dialog (S3).
+  //   depthOffsets — the former state.depthRules { [pom]: {offset} } (project
+  //                  unit), absorbed here so one field persists all grading.
+  function makeEmptyGradeRulesV2() {
+    return { version: 2, steps: {}, alpha: {}, depth: {}, depthOffsets: {} };
+  }
+
+  // Lossless upgrade of persisted grading state to the v2 container.
+  // Accepts: a v2 container (returned normalized), a v1 map of
+  // { [pom]: {step, hold} } entries, or null/garbage (fresh container).
+  // legacyDepthRules is the old separate state.depthRules field from
+  // pre-US-011 files; it folds into depthOffsets.
+  function migrateGradeRulesV2(raw, legacyDepthRules) {
+    const out = makeEmptyGradeRulesV2();
+    if (raw && typeof raw === 'object') {
+      if (raw.version === 2) {
+        for (const k of ['steps', 'alpha', 'depth', 'depthOffsets']) {
+          if (raw[k] && typeof raw[k] === 'object') out[k] = JSON.parse(JSON.stringify(raw[k]));
+        }
+      } else {
+        // v1: version-less map of per-POM {step, hold} overrides.
+        for (const key of Object.keys(raw)) {
+          const e = raw[key];
+          if (e && typeof e === 'object' && ('step' in e || 'hold' in e)) {
+            out.steps[key] = { ...e };
+          }
+        }
+      }
+    }
+    if (legacyDepthRules && typeof legacyDepthRules === 'object') {
+      for (const key of Object.keys(legacyDepthRules)) {
+        const e = legacyDepthRules[key];
+        if (e && typeof e === 'object' && e.offset != null && out.depthOffsets[key] == null) {
+          out.depthOffsets[key] = { ...e };
+        }
+      }
+    }
+    return out;
+  }
+
   const state = {
     tool: 'select',
     drawStyle: 'solid',
@@ -196,17 +242,26 @@
     // history snapshots so undo/redo covers spec edits.
     pomSpecs: {},
 
-    // Per-POM size-grade rules (per-size step increment + hold flag), keyed by
-    // POM label ("1".."16"). The Size Run dialog seeds each POM from the house
-    // default; only TD overrides are stored here. Persisted with the project
-    // and captured in history so undo/redo covers grade edits.
-    gradeRules: {},
+    // Grading overrides, v2 container (US-011): constant-step overrides
+    // (steps, the old v1 shape), per-size delta overrides (alpha/depth, from
+    // the Grading dialog), and L2−L offsets (depthOffsets, the former
+    // state.depthRules). Only TD overrides are stored; built-in defaults live
+    // in export-xlsx.js. Persisted with the project and captured in history
+    // so undo/redo covers grade edits. Old files migrate on load via
+    // migrateGradeRulesV2.
+    gradeRules: makeEmptyGradeRulesV2(),
 
-    // Per-POM depth-run overrides (the L2−L offset that anchors the M2–5XL2
-    // tier in the Excel export), keyed by POM label. Only TD overrides are
-    // stored; the SC defaults live in export-xlsx.js. Persisted with the
-    // project and captured in history, mirroring gradeRules.
-    depthRules: {},
+    // TD-defined POMs beyond the standard 16 (US-011, ADR 0018). Array of
+    // { pom: '17', en, zh, tol }. Numbering continues from 17 per project.
+    // Lives in project state — the 16-POM rule JSON is never touched.
+    // Persisted with the project and captured in history.
+    customPoms: [],
+
+    // Which size columns Export Excel emits: { alpha: [...], depth: [...] }
+    // of SPEC_SIZE_RUN labels. null → all 15 sizes (back-compat default).
+    // Persisted with the project (not in history — an export preference,
+    // not board content).
+    sizeSelection: null,
 
     // Review-time per-POM visibility toggles. When an annotation / draft id
     // is in these lists it is skipped by the canvas renderer and hit-test

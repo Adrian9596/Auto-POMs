@@ -34,8 +34,11 @@
         panY: state.panY,
         styleId: state.styleId || '',
         pomSpecs: clone(state.pomSpecs || {}),
+        // v2 container carries steps + per-size deltas + depthOffsets (the
+        // former depthRules field); old files still load via migration.
         gradeRules: clone(state.gradeRules || {}),
-        depthRules: clone(state.depthRules || {}),
+        customPoms: clone(state.customPoms || []),
+        sizeSelection: state.sizeSelection ? clone(state.sizeSelection) : null,
       },
     };
   }
@@ -229,8 +232,13 @@
       state.panY = s.panY ?? 0;
       state.styleId = (typeof s.styleId === 'string') ? s.styleId : '';
       state.pomSpecs = (s.pomSpecs && typeof s.pomSpecs === 'object') ? clone(s.pomSpecs) : {};
-      state.gradeRules = (s.gradeRules && typeof s.gradeRules === 'object') ? clone(s.gradeRules) : {};
-      state.depthRules = (s.depthRules && typeof s.depthRules === 'object') ? clone(s.depthRules) : {};
+      // THE single v1→v2 grading migration point: saved files and autosave
+      // restores both funnel through loadProject. Legacy s.depthRules folds
+      // into the v2 container's depthOffsets losslessly.
+      state.gradeRules = migrateGradeRulesV2(s.gradeRules, s.depthRules);
+      state.customPoms = Array.isArray(s.customPoms) ? clone(s.customPoms) : [];
+      state.sizeSelection = (s.sizeSelection && typeof s.sizeSelection === 'object')
+        ? clone(s.sizeSelection) : null;
 
       // Images are in place now, so the Auto status chip can resolve
       // ready/idle correctly for the reopened board.

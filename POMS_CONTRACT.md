@@ -150,11 +150,11 @@ The Measurements panel renders each pair as one row with two value inputs.
 ### POM 14 — Shoulder Strap Length
 - **View:** front outer → back (curved strap path; rule JSON
   `view: "front_to_back"`, `placementViewRole: "back"`)
-- **Anchors:** `apex-left` (front cup/shoulder-strap joining seam) ↔
-  `strap-bottom` (end of the shoulder strap at the back)
+- **Anchors:** `strap-top` (upper joining seam of the left shoulder strap on
+  the front view) ↔ `strap-bottom` (shoulder strap/back-panel join)
 - **Expected confidence:** **low**
 - Length of the shoulder strap, measured as the curved path from the front
-  cup/strap join over the shoulder to the back strap end. The only POM with a
+  strap upper joining seam over the shoulder to the back strap end. The only POM with a
   low confidence tier — straps are the hardest to detect; always verify
   manually. A front-only sketch with no back strap end leaves POM 14 in
   REVIEW_ONLY.
@@ -180,7 +180,7 @@ the detection evidence for each measurement in isolation. Suggested order
 for spot-checking:
 
 1. **POM 14** first — it's the only low-confidence POM and crosses from the
-   front cup/strap join to the back strap end.
+   front strap upper joining seam to the back strap end.
 2. Any medium-confidence POM on the **back** view (POMs 11, 12, 13, 15) — those
    depend on view detection being correct in addition to anchor placement.
 3. Paired POMs 1/2 and 3/4 — sanity-check that both halves land on the

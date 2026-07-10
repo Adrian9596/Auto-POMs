@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "config_version": "similarity-config-v0",
+  "enabled": false,
+  "approved_records_only": true,
+  "deterministic": true,
+  "mandatory_filters": [],
+  "ranking_features": [],
+  "note": "Reserved by Phase L0. Ranking is not implemented before the importer, review boundary, and approved snapshot gates pass."
+}

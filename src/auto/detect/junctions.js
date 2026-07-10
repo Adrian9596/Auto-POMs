@@ -496,6 +496,38 @@
     return path;
   }
 
+  // Phase 4 (contour evidence): shape the raw skeleton feature points from
+  // detectJunctions into a reusable, decision-free topology bundle — points
+  // split by type plus normalized stroke statistics. Pure: same junctionMap in
+  // → same topology out. It lives in the junction module so the endpoint /
+  // junction evidence shaping stays unit-testable alongside detectJunctions
+  // (scripts/junction-tests.mjs), and carries NO garment-level meaning: it is
+  // shape evidence only, never an anchor or a geometry verdict.
+  function buildContourTopology(junctionMap) {
+    const points = junctionMap && Array.isArray(junctionMap.points) ? junctionMap.points : [];
+    const summary = (junctionMap && junctionMap.summary) || {};
+    const junctions = [];
+    const endpoints = [];
+    const corners = [];
+    for (const p of points) {
+      if (p.type === 'junction') junctions.push(p);
+      else if (p.type === 'endpoint') endpoints.push(p);
+      else if (p.type === 'corner') corners.push(p);
+    }
+    const strokeStats = {
+      skeletonPx: summary.skeletonPx || 0,
+      thinningIterations: summary.thinningIterations || 0,
+      prunedSpurs: summary.prunedSpurs || 0,
+      suppressedDense: summary.suppressedDense || 0,
+      featurePoints: points.length,
+      junctionCount: junctions.length,
+      endpointCount: endpoints.length,
+      cornerCount: corners.length,
+      capped: !!summary.capped,
+    };
+    return { junctions, endpoints, corners, strokeStats };
+  }
+
   // Merge points closer than radius. Type priority junction > corner >
   // endpoint (a thick junction often also reads as several corners). Points are
   // processed highest-priority-first, so the survivor is the highest-priority

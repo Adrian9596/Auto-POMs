@@ -97,7 +97,9 @@ context-load time. Never wrap them in backticks; that disables the import.
 
 @docs/FEATURE_INTAKE.md
 
-Also run `scripts/bin/harness-cli query matrix` before starting work.
+Also run `scripts/bin/harness-cli query matrix` before starting work. If the
+binary is absent, say so, use `docs/TEST_MATRIX.md` as the fallback matrix, and
+record the missing CLI as harness friction rather than blocking the task.
 
 Lane-dependent context (`README.md`, `docs/HARNESS.md`, `docs/ARCHITECTURE.md`,
 `docs/CONTEXT_RULES.md`, product docs, stories, decisions) is intentionally not

@@ -1,7 +1,7 @@
 // Export Excel: write the Measurement Spec as a single offline .xlsx —
 // title band, styleId + date, one row per visible POM (EN + 中文 + TOL;
 // lines hidden via the review × toggle are omitted entirely), the full
-// 14-column graded size run (alpha S–5XL from base L, depth M2–5XL2 from
+// 15-column graded size run (alpha S–5XL from base L, depth M2–5XL2 from
 // base L2), and the annotated board embedded as a PNG below the table.
 // No library, no template, no network (offline invariant). The ZIP writer
 // is the write-side mirror of the reader in src/import/pptx.js.
@@ -14,9 +14,9 @@
 // override in state.gradeRules switches that POM to the constant-step
 // model in both tiers (the Size Run dialog's model), so the dialog and
 // the export can never disagree about an overridden POM. Held POMs stay
-// flat across all 14 columns. NOTHING here touches the rule JSON.
+// flat across all 15 columns. NOTHING here touches the rule JSON.
 
-  // The 14-size run from the export mock: 8 alpha + 6 depth columns. Kept as
+  // The 15-size run from the export mock: 8 alpha + 7 depth columns. Kept as
   // data so switching a style to another membership (e.g. the 18-size run, or
   // 4XL2 instead of XL2) is a one-line reviewable edit. `base` is the alpha
   // size a tier-2 column grades around when the constant-step override is on.
@@ -27,7 +27,8 @@
     { label: '4XL',  base: '4XL', tier: 1 }, { label: '5XL',  base: '5XL', tier: 1 },
     { label: 'M2',   base: 'M',   tier: 2 }, { label: 'L2',   base: 'L',   tier: 2 },
     { label: 'XL2',  base: 'XL',  tier: 2 }, { label: '2XL2', base: '2XL', tier: 2 },
-    { label: '3XL2', base: '3XL', tier: 2 }, { label: '5XL2', base: '5XL', tier: 2 },
+    { label: '3XL2', base: '3XL', tier: 2 }, { label: '4XL2', base: '4XL', tier: 2 },
+    { label: '5XL2', base: '5XL', tier: 2 },
   ];
 
   // SC-derived alpha deltas from base L, in INCHES, one entry per GRADE_SIZES
@@ -54,7 +55,7 @@
   };
 
   // Depth run: L2 = L + offset (inches; 0 for band and held POMs), then the
-  // per-size deltas from L2 for M2 L2 XL2 2XL2 3XL2 5XL2. Grading rules.md
+  // per-size deltas from L2 for M2 L2 XL2 2XL2 3XL2 4XL2 5XL2. Grading rules.md
   // §2.1 — explicit values, NOT a copied alpha column (the two runs taper at
   // different absolute sizes near the top).
   const SPEC_DEPTH_OFFSET_IN = {
@@ -63,43 +64,59 @@
     '14': 0, '15': 0, '16': 0.25,
   };
   const SPEC_DEPTH_DELTA_L2_IN = {
-    '1':  [-1.0,   0, 1.0,   2.0, 3.25,  5.25],
-    '2':  [-1.0,   0, 2.0,   3.0, 5.25,  7.25],
-    '3':  [-1.25,  0, 1.25,  2.5, 3.75,  6.25],
-    '4':  [-1.25,  0, 1.25,  2.5, 3.75,  6.25],
-    '5':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75],
-    '6':  [0, 0, 0, 0, 0, 0],
-    '7':  [-0.125, 0, 0.125, 0.25, 0.375, 0.5],
-    '8':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75],
-    '9':  [-0.375, 0, 0.375, 1.0, 1.375, 2.125],
-    '10': [-0.5,   0, 0.5,   1.5, 2.0,   3.0],
-    '11': [-0.25,  0, 0.25,  0.5, 0.625, 0.875],
-    '12': [-0.25,  0, 0.25,  0.5, 0.625, 0.875],
-    '13': [-0.25,  0, 0.25,  0.5, 0.625, 0.875],
-    '14': [0, 0, 0, 0, 0, 0],
-    '15': [0, 0, 0, 0, 0, 0],
-    '16': [-0.25,  0, 0.25,  0.5, 0.75,  1.25],
+    '1':  [-1.0,   0, 1.0,   2.0, 3.25,  4.25, 5.25],
+    '2':  [-1.0,   0, 2.0,   3.0, 5.25,  6.25, 7.25],
+    '3':  [-1.25,  0, 1.25,  2.5, 3.75,  5.25, 6.25],
+    '4':  [-1.25,  0, 1.25,  2.5, 3.75,  5.25, 6.25],
+    '5':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.75],
+    '6':  [0, 0, 0, 0, 0, 0, 0],
+    '7':  [-0.125, 0, 0.125, 0.25, 0.375, 0.4375, 0.5], // 4XL2 interpolated (no SC row); TD to confirm
+    '8':  [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.75],
+    '9':  [-0.375, 0, 0.375, 1.0, 1.375, 1.75, 2.125],
+    '10': [-0.5,   0, 0.5,   1.5, 2.0,   2.5, 3.0],
+    '11': [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.875],
+    '12': [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.875],
+    '13': [-0.25,  0, 0.25,  0.5, 0.625, 0.75, 0.875],
+    '14': [0, 0, 0, 0, 0, 0, 0],
+    '15': [0, 0, 0, 0, 0, 0, 0],
+    '16': [-0.25,  0, 0.25,  0.5, 0.75,  1.0, 1.25],
   };
 
   // Effective depth rule for a POM in the project's unit: a TD override in
-  // state.depthRules (per-POM L2−L offset) wins; otherwise the SC default
-  // converted from inches. Mirrors getGradeRule / state.gradeRules.
+  // state.gradeRules.depthOffsets (per-POM L2−L offset — the former separate
+  // state.depthRules field, absorbed into the v2 container by US-011) wins;
+  // otherwise the SC default converted from inches. Mirrors getGradeRule.
   function getDepthRule(pomKey) {
     const key = String(pomKey);
     const unitScale = inchesToUnit(state.calibration.unit);
     const houseOffset = (SPEC_DEPTH_OFFSET_IN[key] || 0) * unitScale;
-    const override = (state.depthRules && state.depthRules[key]) || null;
+    const offsets = (state.gradeRules && state.gradeRules.depthOffsets) || null;
+    const override = (offsets && offsets[key]) || null;
     if (!override || override.offset == null) return { offset: houseOffset, overridden: false };
     return { offset: Number(override.offset), overridden: true };
   }
 
-  // The 14 graded values for one POM, in the project's unit, aligned with
-  // SPEC_SIZE_RUN. Returns nulls when the POM has no base (no Size L and no
-  // measured line) — the writer leaves those cells blank.
+  // Delta rounding for formula strings: same 4-dp quantization as
+  // specNumberText, so the `=G{r}±Δ` / `=N{r}±Δ` text is deterministic
+  // (the byte-identical-export invariant covers formulas, not just values).
+  function roundSpecDelta(value) {
+    return Math.round(value * 10000) / 10000;
+  }
+
+  // The 15 graded cells for one POM, in the project's unit, aligned with
+  // SPEC_SIZE_RUN. Each entry is a descriptor `{ value, base, delta }`:
+  //   base === null → static (the editable Size-L cell, an explicit Size-L2
+  //                   cell, or a blank when value === null);
+  //   base === 'L'  → formula anchored on the Size-L cell (=G{r}+Δ);
+  //   base === 'L2' → formula anchored on the L2 cell (=N{r}+Δ).
+  // `value` is the cached numeric result (unchanged grade math), so the
+  // Excel `<v>` and every value-based test stay identical. Returns
+  // all-null/base-null descriptors when the POM has no base (no Size L and
+  // no measured line) — the writer leaves those cells blank.
   function buildFullSizeRun(pomKey, annByPom) {
     const key = String(pomKey);
     const baseInfo = gradeBaseValue(key, annByPom);
-    if (baseInfo.value == null) return SPEC_SIZE_RUN.map(() => null);
+    if (baseInfo.value == null) return SPEC_SIZE_RUN.map(() => ({ value: null, base: null, delta: 0 }));
     const protoL = baseInfo.value;
     const rule = getGradeRule(key);
     const unitScale = inchesToUnit(state.calibration.unit);
@@ -132,7 +149,24 @@
       return protoL2 + depthDeltas[depthLabels.indexOf(col.label)] * unitScale;
     };
 
-    return SPEC_SIZE_RUN.map(col => (col.tier === 1 ? alphaValue(col.label) : depthValue(col)));
+    return SPEC_SIZE_RUN.map(col => {
+      if (col.tier === 1) {
+        const value = alphaValue(col.label);
+        // The Size-L cell is the static, editable base of the alpha run.
+        if (col.label === GRADE_BASE_SIZE) return { value, base: null, delta: 0 };
+        return { value, base: 'L', delta: roundSpecDelta(value - protoL) };
+      }
+      const value = depthValue(col);
+      if (col.label === 'L2') {
+        // Explicit Size L2 → static editable base; else derived from Size L.
+        if (explicitL2 != null) return { value, base: null, delta: 0 };
+        return { value, base: 'L', delta: roundSpecDelta(derivedOffset) };
+      }
+      // Held POMs stay flat off the Size-L cell (=G{r}); the depth run for a
+      // held POM never taints an L2 base that equals Size L anyway.
+      if (rule.hold) return { value, base: 'L', delta: roundSpecDelta(value - protoL) };
+      return { value, base: 'L2', delta: roundSpecDelta(value - protoL2) };
+    });
   }
 
   // ---- Offline .xlsx writer (ZIP, method 0 = STORE) ----
@@ -234,8 +268,9 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
   }
 
-  // Column letters for the fixed 18-column grid (A..R): 4 label columns +
-  // the 14 SPEC_SIZE_RUN columns.
+  // Column letters for the export grid: 4 label columns + one per SELECTED
+  // size (US-011: the sheet emits only the sizes chosen in the export
+  // picker; the full 19-column grid is the all-sizes default).
   const SPEC_XLSX_COLS = 4 + SPEC_SIZE_RUN.length;
   function specColLetter(index) {
     let s = '';
@@ -270,16 +305,20 @@
     'B7DEE8', // 9 XL2 — cyan
     'CCC0DA', // 10 2XL2 — violet
     'FFFF99', // 11 3XL2 — yellow
-    '92CDDC', // 12 5XL2 — teal
+    'E6B8B7', // 12 4XL2 — light rose
+    '92CDDC', // 13 5XL2 — teal
   ];
 
   // cellXfs indexes (see buildSpecStylesXml): 0 default · 1 title · 2 style
-  // row · 3 label header · 4 TOL header · 5 alpha header · 6..11 depth
-  // headers (M2..5XL2) · 12 text cell · 13 centered text cell · 14 number
-  // cell · 15 centered number cell (POM column).
+  // row · 3 label header · 4 TOL header · 5 alpha header · 6..12 depth
+  // headers (M2..5XL2) · 13 text cell · 14 centered text cell · 15 number
+  // cell · 16 centered number cell (POM column) · 17 fraction number cell
+  // (mirrors 15 but with the custom # ??/?? numFmt so graded VALUES render as
+  // fractions, e.g. 3.75 → 3 3/4; the underlying <v> stays decimal so Req-3
+  // formulas still recompute).
   const SPEC_XF = {
     title: 1, styleRow: 2, headLabel: 3, headTol: 4, headAlpha: 5, headDepth0: 6,
-    text: 12, textCenter: 13, number: 14, pom: 15,
+    text: 13, textCenter: 14, number: 15, pom: 16, numberFrac: 17,
   };
 
   function buildSpecStylesXml() {
@@ -299,7 +338,7 @@
       '<xf numFmtId="0" fontId="1" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">'
         + '<alignment horizontal="center" vertical="center"/></xf>',
       headerXf(4), headerXf(5), headerXf(6),
-      headerXf(7), headerXf(8), headerXf(9), headerXf(10), headerXf(11), headerXf(12),
+      headerXf(7), headerXf(8), headerXf(9), headerXf(10), headerXf(11), headerXf(12), headerXf(13),
       // 12 text cell
       '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1">'
         + '<alignment vertical="center" wrapText="1"/></xf>',
@@ -312,9 +351,18 @@
       // 15 POM number cell
       '<xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1">'
         + '<alignment horizontal="center" vertical="center"/></xf>',
+      // 16 fraction number cell — mirrors 14 (number cell) but applies the
+      // custom # ??/?? fraction format (numFmtId 164). Appended at the END so
+      // existing xf indices don't shift. Display-only: <v> stays decimal.
+      '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1">'
+        + '<alignment horizontal="right" vertical="center"/></xf>',
     ];
     return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
       + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+      // Custom fraction format used by the size-value cells. numFmts must come
+      // BEFORE <fonts> in an OOXML styleSheet. "# ??/??" is Excel's reduced
+      // up-to-two-digit fraction (3.75 → 3 3/4, 8.375 → 8 3/8).
+      + '<numFmts count="1"><numFmt numFmtId="164" formatCode="# ??/??"/></numFmts>'
       + '<fonts count="3">'
       + '<font><sz val="11"/><name val="Calibri"/></font>'
       + '<font><b/><sz val="11"/><name val="Calibri"/></font>'
@@ -340,18 +388,29 @@
     return '<c r="' + ref + '" s="' + styleId + '"><v>' + specNumberText(value) + '</v></c>';
   }
 
+  // A graded cell as a live formula (=G{r}±Δ / =N{r}±Δ) with the computed
+  // result cached in <v> so viewers that don't recalc — and the test suite's
+  // <v> reader — still see the number. Editing the base cell reflows the run.
+  function specFormulaCell(ref, styleId, formula, cachedValue) {
+    return '<c r="' + ref + '" s="' + styleId + '"><f>' + xmlEscape(formula) + '</f><v>'
+      + specNumberText(cachedValue) + '</v></c>';
+  }
+
   function specBlankCell(ref, styleId) {
     return '<c r="' + ref + '" s="' + styleId + '"/>';
   }
 
-  function buildSpecSheetXml(rowsData, hasDrawing) {
-    const lastCol = specColLetter(SPEC_XLSX_COLS - 1);
+  function buildSpecSheetXml(rowsData, hasDrawing, colCount) {
+    const totalCols = colCount || SPEC_XLSX_COLS;
+    const lastCol = specColLetter(totalCols - 1);
     const cols = '<cols>'
       + '<col min="1" max="1" width="6" customWidth="1"/>'
       + '<col min="2" max="2" width="42" customWidth="1"/>'
       + '<col min="3" max="3" width="28" customWidth="1"/>'
       + '<col min="4" max="4" width="9" customWidth="1"/>'
-      + '<col min="5" max="' + SPEC_XLSX_COLS + '" width="7.5" customWidth="1"/>'
+      + (totalCols > 4
+        ? '<col min="5" max="' + totalCols + '" width="7.5" customWidth="1"/>'
+        : '')
       + '</cols>';
     const rows = rowsData.map(row =>
       '<row r="' + row.r + '"' + (row.ht ? ' ht="' + row.ht + '" customHeight="1"' : '') + '>'
@@ -419,6 +478,13 @@
     }
     const pomKeys = allPomKeys.filter(key => !hiddenPomKeys.has(String(key)));
 
+    // US-011: the sheet emits only the SELECTED size columns. The grade math
+    // always runs over the full 15-cell run (positional delta lookups assume
+    // it); columns are filtered at emission time only.
+    const layout = selectedSizeRun();
+    const colCount = 4 + layout.length;
+    const fullIndexByLabel = new Map(SPEC_SIZE_RUN.map((c, i) => [c.label, i]));
+
     const styleLabel = (state.styleId || '').trim() || 'Untitled';
     const rowsData = [];
     // Merged band rows: the anchor cell carries the text; the remaining
@@ -428,12 +494,14 @@
       r,
       ht: r === 1 ? 26 : 18,
       cells: [specInlineStrCell('A' + r, styleId, text)].concat(
-        Array.from({ length: SPEC_XLSX_COLS - 1 }, (_, i) => specBlankCell(specColLetter(1 + i) + r, styleId))
+        Array.from({ length: colCount - 1 }, (_, i) => specBlankCell(specColLetter(1 + i) + r, styleId))
       ),
     });
     rowsData.push(bandRow(1, SPEC_XF.title, 'Measurement Spec'));
     rowsData.push(bandRow(2, SPEC_XF.styleRow, styleLabel + ' - ' + formatSpecDate(now)));
 
+    // Depth header fills index against the FULL depth list so each size keeps
+    // its own color even when earlier depth columns are deselected.
     const depthLabels = SPEC_SIZE_RUN.filter(c => c.tier === 2).map(c => c.label);
     const headCells = [
       specInlineStrCell('A3', SPEC_XF.headLabel, 'POM'),
@@ -441,11 +509,20 @@
       specInlineStrCell('C3', SPEC_XF.headLabel, 'Description - Chinese'),
       specInlineStrCell('D3', SPEC_XF.headTol, 'TOL'),
     ];
-    SPEC_SIZE_RUN.forEach((col, i) => {
+    layout.forEach((col, i) => {
       const styleId = col.tier === 1 ? SPEC_XF.headAlpha : SPEC_XF.headDepth0 + depthLabels.indexOf(col.label);
       headCells.push(specInlineStrCell(specColLetter(4 + i) + '3', styleId, col.label));
     });
     rowsData.push({ r: 3, ht: 20, cells: headCells });
+
+    // Base column letters for the live grade formulas, derived from the
+    // SELECTED layout ('G'/'N' only in the all-sizes default). When a base
+    // size is deselected its dependents fall back to static cached values —
+    // a formula must never point at a column that is not in the sheet.
+    const lIdx = layout.findIndex(c => c.label === 'L');
+    const l2Idx = layout.findIndex(c => c.label === 'L2');
+    const lCol = lIdx >= 0 ? specColLetter(4 + lIdx) : null;
+    const l2Col = l2Idx >= 0 ? specColLetter(4 + l2Idx) : null;
 
     for (let i = 0; i < pomKeys.length; i += 1) {
       const key = pomKeys[i];
@@ -456,17 +533,38 @@
         specNumberCell('A' + r, SPEC_XF.pom, Number(key)),
         specInlineStrCell('B' + r, SPEC_XF.text, spec.en),
         specInlineStrCell('C' + r, SPEC_XF.text, spec.zh),
+        // TOL is written VERBATIM as an inline string — never coerced to a
+        // number/date. So any fraction family (halves, quarters, eighths,
+        // incl. ¾ = "3/4") round-trips to Excel exactly as authored, with no
+        // conversion; fractionToNumber (src/ui/spec-panel.js) parses it back.
         spec.tol ? specInlineStrCell('D' + r, SPEC_XF.textCenter, spec.tol) : specBlankCell('D' + r, SPEC_XF.textCenter),
       ];
-      run.forEach((value, c) => {
+      layout.forEach((col, c) => {
+        const cell = run[fullIndexByLabel.get(col.label)];
         const ref = specColLetter(4 + c) + r;
-        cells.push(value != null ? specNumberCell(ref, SPEC_XF.number, value) : specBlankCell(ref, SPEC_XF.number));
+        const baseCol = cell.base === 'L' ? lCol : (cell.base === 'L2' ? l2Col : null);
+        if (cell.value == null) {
+          cells.push(specBlankCell(ref, SPEC_XF.number));
+        } else if (cell.base == null || baseCol == null) {
+          // Static editable base (Size L, or an explicit Size L2) — or a
+          // graded cell whose base column is not in this export's layout:
+          // emit the cached value as a plain number. The fraction numFmt
+          // renders it as e.g. 3 3/4 while <v> stays decimal.
+          cells.push(specNumberCell(ref, SPEC_XF.numberFrac, cell.value));
+        } else {
+          const d = cell.delta;
+          const formula = baseCol + r
+            + (d === 0 ? '' : (d < 0 ? '-' + specNumberText(-d) : '+' + specNumberText(d)));
+          // Fraction numFmt on the formula cell too — the cached <v> is the
+          // decimal result, so Req-3 recalculation is unaffected.
+          cells.push(specFormulaCell(ref, SPEC_XF.numberFrac, formula, cell.value));
+        }
       });
       rowsData.push({ r, cells });
     }
 
     const hasImage = !!(image && image.bytes && image.bytes.length);
-    const sheetXml = buildSpecSheetXml(rowsData, hasImage);
+    const sheetXml = buildSpecSheetXml(rowsData, hasImage, colCount);
 
     const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
       + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
@@ -558,12 +656,19 @@
       showToast('Nothing to export yet. Paste an image or draw annotations first.');
       return;
     }
+    // US-011: pick the size columns first; the choice persists per project.
+    openExportSizeDialog(() => { void runSpecXlsxExport(); });
+  }
+
+  async function runSpecXlsxExport() {
     try {
       const now = new Date();
       const image = await specBoardPngBytes();
       const zipBytes = buildSpecWorkbookXlsx(now, image);
       downloadBlob(new Blob([zipBytes], { type: SPEC_XLSX_MIME }), makeSpecXlsxFileName(now));
-      showToast('Excel spec exported — 16 POMs, full size run, sketch embedded.');
+      const sizeCount = selectedSizeRun().length;
+      showToast('Excel spec exported — ' + sizeCount + ' of ' + SPEC_SIZE_RUN.length
+        + ' size columns, sketch embedded.');
     } catch (error) {
       console.error('[Export Excel] failed:', error);
       showToast('Excel export failed. Please try again after reducing image size.', 4200);
@@ -579,11 +684,21 @@
       const now = isoDate ? new Date(isoDate) : new Date();
       const withImage = !options || options.image !== false;
       const image = withImage ? await specBoardPngBytes() : null;
-      return bytesToBase64(buildSpecWorkbookXlsx(now, image));
+      // options.sizeSelection lets the suite exercise subset layouts without
+      // driving the picker dialog; restored so tests stay order-independent.
+      const hadSelection = state.sizeSelection;
+      if (options && 'sizeSelection' in options) state.sizeSelection = options.sizeSelection;
+      try {
+        return bytesToBase64(buildSpecWorkbookXlsx(now, image));
+      } finally {
+        if (options && 'sizeSelection' in options) state.sizeSelection = hadSelection;
+      }
     };
     window.__braAutoModeDebug.buildFullSizeRun = (pomKey) => {
       const annByPom = new Map();
       for (const ann of state.annotations) annByPom.set(getLabelText(ann), ann);
-      return buildFullSizeRun(pomKey, annByPom);
+      // Preserve the numeric-array contract: the descriptors are an internal
+      // detail of the formula writer; callers still get the graded values.
+      return buildFullSizeRun(pomKey, annByPom).map(c => c.value);
     };
   }
