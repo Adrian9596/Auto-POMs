@@ -20,6 +20,7 @@
     --select:#356dff;
   }
   *{box-sizing:border-box}
+  [hidden]{ display:none !important; }
   html,body{height:100%;margin:0}
   body{
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -41,12 +42,27 @@
     box-shadow:var(--soft-shadow);
   }
   .toolbar{
+    grid-row:1;
     display:flex;
+    min-width:0;
     align-items:center;
     gap:6px;
     padding:7px 8px;
     flex-wrap:wrap;
   }
+  /* Board and MAIN PAGE are peer pages (US-069, ADR 0038), each toggled by
+     page-nav.js via .page-hidden. Every row-3 occupant needs an explicit
+     grid-row so CSS Grid auto-placement doesn't push the sibling into a new
+     implicit row 4 when both exist in the DOM at once. */
+  .board-toolbar-groups{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+    flex:1 0 100%;
+    min-width:0;
+  }
+  .page-hidden{ display:none !important; }
   .group{
     display:flex;
     align-items:center;
@@ -63,6 +79,121 @@
     bottom:7px;
     width:1px;
     background:var(--hairline);
+  }
+  .toolbar-spacer{ flex:1 1 18px; min-width:0; }
+
+  /* US-082: the Board toolbar is state-driven. Core workflow and authoring
+     actions stay direct; secondary commands live in compact, accessible
+     menus. Existing command button ids stay on the real menu items so
+     shortcuts and bindings keep one execution path. */
+  .board-menu-tray{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding-right:0;
+    margin-left:auto;
+  }
+  .board-menu-tray::after{ display:none; }
+  .toolbar-menu{ position:relative; }
+  .toolbar-menu-trigger[aria-expanded="true"]{
+    background:#eef0f4;
+    border-color:#cfd2da;
+  }
+  .toolbar-menu-list{
+    position:absolute;
+    top:calc(100% + 7px);
+    right:0;
+    z-index:60;
+    min-width:220px;
+    max-width:min(320px, calc(100vw - 24px));
+    max-height:min(70vh, 520px);
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    padding:6px;
+    border:1px solid var(--hairline);
+    border-radius:11px;
+    background:#fff;
+    box-shadow:0 14px 34px rgba(17,24,39,.2);
+  }
+  .toolbar-menu-list.menu-left{ left:0; right:auto; }
+  .toolbar-menu-list button{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:8px;
+    text-align:left;
+    border-color:transparent;
+    background:transparent;
+    box-shadow:none;
+    white-space:nowrap;
+  }
+  .toolbar-menu-list button:hover:not(:disabled){ background:#f4f5f7; }
+  .toolbar-menu-list button.active{ background:#eef0f4; }
+  .toolbar-menu-list .menu-danger{ color:#b42318; }
+  .toolbar-menu-list .menu-danger:hover:not(:disabled){ background:#fff1f0; border-color:#fecaca; }
+  .toolbar-menu-separator{ height:1px; margin:4px 2px; background:var(--hairline); }
+  .toolbar-menu-label{
+    padding:6px 9px 3px;
+    color:#8a909c;
+    font:700 10px/1 system-ui,sans-serif;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .toolbar-menu-meta{ padding:4px 8px 6px; display:flex; flex-wrap:wrap; gap:5px; }
+  .board-drawing-group{ gap:5px; }
+  .board-drawing-group::after, .board-context-actions::after{ display:none; }
+  .board-context-actions{ padding:3px; border:1px solid var(--hairline); border-radius:10px; background:#fafafa; }
+  .board-context-actions button{ padding:6px 9px; }
+  .line-quick-menu > .toolbar-menu-trigger{ min-width:78px; }
+  #colorMenuBtn .color-swatch{ width:15px; height:15px; }
+  #autoModeBar.workflow-empty{ display:none; }
+  #autoModeBar .auto-flow-status{ display:flex; align-items:center; gap:5px; }
+  #autoModeBar .auto-flow-status::before{
+    content:"";
+    width:1px;
+    align-self:stretch;
+    background:var(--hairline);
+    margin:0 2px;
+  }
+  .board-toolbar-groups .primary-btn.context-primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  body:not(.app-auto) .auto-only{ display:none !important; }
+  #colorMenuBtn[data-color="red"] .color-swatch{ background:#e63939; }
+  #colorMenuBtn[data-color="blue"] .color-swatch{ background:#2563eb; }
+  #colorMenuBtn[data-color="black"] .color-swatch{ background:#111827; }
+  #colorMenuBtn[data-color="white"] .color-swatch{ background:#fff; border-color:#e5e7eb; }
+  @media (max-width: 1100px){
+    .auto-step-indicator{ display:none !important; }
+    #visionEngineChip{ display:none !important; }
+  }
+  @media (max-width: 820px){
+    .toolbar{ align-items:flex-start; }
+    .board-toolbar-groups{
+      flex:0 0 100%;
+      width:100%;
+      max-width:100%;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      padding-bottom:2px;
+      scrollbar-width:thin;
+    }
+    .board-toolbar-groups > *{ flex:0 0 auto; }
+    .toolbar-spacer{ flex:1 0 8px; }
+    .board-menu-tray{
+      position:sticky;
+      right:0;
+      z-index:8;
+      margin-left:auto;
+      padding-left:8px;
+      background:#fff;
+      box-shadow:-10px 0 14px rgba(255,255,255,.96);
+    }
   }
   button, .chip{
     appearance:none;
@@ -91,6 +222,24 @@
     cursor:not-allowed;
     transform:none;
   }
+  /* Inline keyboard-shortcut hint shown inside a button (e.g. Fit F). Driven by
+     a data-key attribute set in the markup; currentColor makes the badge adapt
+     to the button's own text color (dark on light buttons, light on active/dark
+     ones) with no per-state rules. Pseudo-element, so it survives dynamic label
+     text updates (Hide/Show Panel, Learning On/Off). */
+  button[data-key]::after{
+    content:attr(data-key);
+    margin-left:6px;
+    font:600 9.5px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+    color:currentColor;
+    border:1px solid currentColor;
+    border-radius:4px;
+    padding:0 3px;
+    vertical-align:middle;
+    opacity:.5;
+    white-space:nowrap;
+  }
+  button[data-key]:hover::after{ opacity:.62; }
   .chip{
     display:flex;
     align-items:center;
@@ -127,6 +276,7 @@
   }
   body.tool-eraser canvas{ cursor:crosshair; }
   .statusbar{
+    grid-row:2;
     display:grid;
     grid-template-columns:1fr auto;
     gap:14px;
@@ -145,6 +295,7 @@
   .status-item strong{ font-weight:700; }
   .muted{ color:var(--muted); }
   .workspace{
+    grid-row:3;
     min-height:0;
     display:flex;
   }
@@ -165,6 +316,41 @@
     box-shadow:var(--soft-shadow);
     border:1px solid var(--hairline);
   }
+  /* US-038: floating anchor manager — a testing/accuracy tool, kept apart
+     from the exported Measurements panel. Docked top-left over the board,
+     non-modal so pins stay visible/clickable. */
+  .anchor-panel{
+    position:absolute; top:12px; left:12px; z-index:20;
+    width:300px; max-height:calc(100% - 24px);
+    display:flex; flex-direction:column;
+    background:#fff; border:1px solid var(--hairline); border-radius:10px;
+    box-shadow:0 8px 28px rgba(15,23,42,.18);
+    font-size:12px;
+  }
+  .anchor-panel[hidden]{ display:none; }
+  .anchor-panel-head{
+    display:flex; align-items:flex-start; gap:8px;
+    padding:9px 10px; border-bottom:1px solid #eef2f7;
+  }
+  .anchor-panel-title{ font-weight:700; color:#0f172a; font-size:13px; }
+  .anchor-panel-sub{ font-size:10.5px; color:#b45309; margin-top:1px; }
+  .anchor-panel-close{
+    margin-left:auto; border:0; background:none; cursor:pointer;
+    font-size:18px; line-height:1; color:#64748b; padding:0 2px;
+  }
+  .anchor-panel-close:hover{ color:#0f172a; }
+  .anchor-panel-actions{
+    display:flex; align-items:center; gap:6px; padding:7px 10px;
+    border-bottom:1px solid #eef2f7; background:#f8fafc;
+  }
+  .anchor-panel-count{ color:#64748b; }
+  .anchor-panel-spacer{ flex:1; }
+  .anchor-panel-btn{
+    border:1px solid #cbd5e1; background:#fff; border-radius:5px;
+    cursor:pointer; font-size:11px; padding:2px 8px; color:#334155;
+  }
+  .anchor-panel-btn:hover{ border-color:#94a3b8; }
+  .anchor-panel-body{ overflow-y:auto; padding:2px 0 6px; }
   .board-card.no-image{
     border:1px dashed #dcdce2;
   }
@@ -174,6 +360,10 @@
     height:100%;
     background:#fff;
     cursor:default;
+    /* US-036: the board owns its touch gestures (one-finger drag, pinch
+       zoom/pan) — suppress the browser's own scrolling/zooming here only.
+       Panel and dialogs keep native touch scrolling. */
+    touch-action:none;
   }
   .board-card.no-image canvas{
     background:
@@ -881,6 +1071,12 @@
   .spec-table td.spec-td-tol input{
     text-align:center;
     font-variant-numeric:tabular-nums;
+    /* US-050: always read as an editable field. These were borderless +
+       transparent (only bordered on hover), so a pre-filled library value
+       looked like static text and TDs didn't realise they could type over it. */
+    border-color:#e2e8f0;
+    background:#f8fafc;
+    cursor:text;
   }
   .spec-table td.spec-td-zh input.spec-zh{
     width:100%;
@@ -1096,6 +1292,21 @@
     background:#fff;
     box-shadow:0 0 0 3px rgba(53,109,255,.12);
   }
+  /* US-034: keyboard focus must be visible on every button (toolbar, panel,
+     dialogs). :focus-visible keeps mouse clicks outline-free. */
+  button:focus-visible{
+    outline:2px solid var(--select);
+    outline-offset:2px;
+  }
+  /* US-035: unit hint in the numeric column headers, and a visible invalid
+     state for Size L / L2 / TOL values that don't parse. */
+  .th-unit{ font-weight:500; color:#9ca3af; font-size:10px; }
+  .spec-table input.spec-invalid,
+  .spec-table input.spec-invalid:focus{
+    border-color:#dc2626;
+    background:#fef2f2;
+    box-shadow:0 0 0 3px rgba(220,38,38,.10);
+  }
   .spec-table input.spec-val::placeholder{ color:#b6bcc8; font-weight:500; }
   /* A pre-filled library suggestion (no TD override yet) reads muted + italic
      so it is visibly distinct from a value the TD typed. */
@@ -1127,155 +1338,6 @@
     box-shadow:0 4px 14px rgba(17,24,39,.18);
   }
   .label-editor:focus{ outline:none; }
-
-  /* Phase 3 — POM meaning confirmation popover. Shown only when a TD labels
-     a Manual Mode line with POM 6+ and the meaning isn't yet confirmed. */
-  .pom-meaning-popover{
-    position:absolute;
-    z-index:35;
-    display:none;
-    width:240px;
-    background:#fff;
-    border:1px solid #d0d4dc;
-    border-radius:10px;
-    box-shadow:0 8px 24px rgba(17,24,39,.18);
-    padding:10px 12px;
-    font:13px/1.4 system-ui, sans-serif;
-    color:var(--text);
-    transform:translate(-50%, 12px);
-  }
-  .pmp-title{ font-weight:700; margin-bottom:8px; }
-  .pmp-title strong{ color:var(--select); }
-  .pmp-suggestions{ display:flex; flex-direction:column; gap:4px; }
-  .pmp-suggestion{
-    text-align:left;
-    background:#f4f5f7;
-    border:1px solid transparent;
-    border-radius:6px;
-    padding:6px 8px;
-    cursor:pointer;
-    font:inherit;
-    color:var(--text);
-  }
-  .pmp-suggestion:hover{ background:#e9ebef; border-color:var(--select); }
-  .pmp-suggestion .pmp-anchors{ display:block; color:var(--muted); font-size:11px; margin-top:2px; }
-  .pmp-other{ margin-top:8px; padding-top:8px; border-top:1px solid #eee; }
-  .pmp-other-btn{
-    width:100%;
-    background:none;
-    border:1px dashed #c4c9d4;
-    border-radius:6px;
-    padding:6px 8px;
-    color:var(--muted);
-    cursor:pointer;
-    font:inherit;
-  }
-  .pmp-other-btn:hover{ border-color:var(--select); color:var(--text); }
-  .pmp-other-input{
-    width:100%;
-    padding:6px 8px;
-    border:1px solid #d0d4dc;
-    border-radius:6px;
-    box-sizing:border-box;
-    font:inherit;
-    color:var(--text);
-  }
-  .pmp-actions{ margin-top:6px; text-align:right; }
-  .pmp-link-btn{
-    background:none;
-    border:none;
-    color:var(--muted);
-    cursor:pointer;
-    font-size:12px;
-    padding:2px 4px;
-  }
-  .pmp-link-btn:hover{ color:var(--text); }
-
-  /* Annotation right-click menu (Reconfirm Meaning) */
-  .ann-context-menu{
-    position:absolute;
-    z-index:60;
-    display:none;
-    min-width:180px;
-    background:#fff;
-    border:1px solid #d0d4dc;
-    border-radius:8px;
-    box-shadow:0 6px 18px rgba(17,24,39,.16);
-    padding:4px;
-    font:13px/1.3 system-ui, sans-serif;
-    color:var(--text);
-  }
-  .ann-context-menu button{
-    display:block;
-    width:100%;
-    text-align:left;
-    background:none;
-    border:0;
-    padding:6px 10px;
-    border-radius:6px;
-    font:inherit;
-    color:inherit;
-    cursor:pointer;
-  }
-  .ann-context-menu button:hover{ background:#eef0f5; }
-  .ann-context-menu button:disabled{ color:var(--muted); cursor:not-allowed; background:none; }
-
-  /* Manage POM meanings picker */
-  .dialog-body.manage-meanings-body{
-    padding:14px 20px 18px;
-    overflow:auto;
-    max-height:60vh;
-  }
-  .mm-list{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
-  .mm-row{
-    display:grid;
-    grid-template-columns:64px 1fr auto;
-    align-items:center;
-    gap:10px;
-    padding:6px 10px;
-    border:1px solid var(--border);
-    border-radius:8px;
-    background:#fff;
-  }
-  .mm-pom{
-    font-weight:700;
-    font-size:13px;
-    color:var(--text);
-  }
-  .mm-select{
-    width:100%;
-    padding:6px 8px;
-    border:1px solid var(--border);
-    border-radius:6px;
-    font:inherit;
-    font-size:13px;
-    color:var(--text);
-    background:#fff;
-  }
-  .mm-forget{
-    background:#fff;
-    border:1px solid #e0e0e8;
-    border-radius:6px;
-    padding:5px 10px;
-    font:inherit;
-    font-size:12px;
-    cursor:pointer;
-    color:#c0392b;
-  }
-  .mm-forget:hover{
-    border-color:#c0392b;
-    background:#fef5f3;
-  }
-  .mm-empty{
-    padding:20px;
-    text-align:center;
-    color:var(--muted);
-    font-size:13px;
-  }
 
   /* Learning data dialog (Transparent Learning) */
   .dialog-panel.ld-wide{ width:min(820px, 100%); }
@@ -1596,49 +1658,1131 @@
      the Manual/Auto toggle, the automatic post-Apply handoff, or by
      reopening a saved project that contains applied lines. */
   body.app-auto .manual-only{ display:none !important; }
+
+  /* ===== MAIN PAGE sheet (US-068, ADR 0037; page-ified US-069, ADR 0038) =====
+     A page of the tech pack, a peer of the Board — not a modal — so it gets a
+     grid row of its own (see .toolbar's comment on row-3 occupants) and its
+     own print rules. Rebuilt on this tool's primitives — see src/ui/main-page.js. */
+  .mp-page{
+    grid-row:3;
+    min-height:0;
+    overflow:auto;
+    background:#eceef2;
+    padding:16px;
+  }
+  .mp-sheet{
+    max-width:1180px;
+    margin:0 auto;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:16px 18px 22px;
+  }
+  .mp-sheethead{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    border-bottom:2px solid var(--text);
+    padding-bottom:8px;
+    margin-bottom:12px;
+  }
+  .mp-shl{ font-size:12.5px; color:var(--muted); }
+  .mp-shm{ font-size:17px; font-weight:700; letter-spacing:.06em; text-align:center; }
+  .mp-shr{ text-align:right; display:flex; gap:6px; justify-content:flex-end; align-items:center; }
+  .mp-draft{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    color:#8a5300;
+    background:#fff5e0;
+    border:1px solid #f0d9a8;
+    border-radius:6px;
+    padding:3px 8px;
+  }
+  .mp-sheetbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .mp-sbhint{ font-size:11.5px; color:var(--muted); }
+  /* The three bases plus two 14px gaps overshoot 100%, so the columns must be
+     allowed to shrink (flex-shrink 1, not 0) — otherwise the row is always a
+     few pixels wider than the sheet. */
+  .mp-cols{ display:flex; gap:14px; align-items:flex-start; }
+  .mp-col{ min-width:0; }
+  /* 32/33/33 rather than 30/34/34: the breakdown splits the value cell three
+     ways, so the field column needs the extra points more than the version
+     panels do. */
+  .mp-col-fields{ flex:0 1 32%; }
+  .mp-col-version{ flex:0 1 33%; }
+  /* On a narrow window the three columns still FIT (nothing overflows), but
+     the value column gets too thin to read a breakdown sub-cell in. Reflow
+     the EDITING page only — scoped to #mainPageOverlay so the Preview & Export
+     paper, which is laid out at its own natural width and then scaled, keeps
+     the factory three-column layout whatever the window is doing. */
+  /* `screen and`, not a bare width query: the print page box is ~794px, so an
+     all-media rule would stack the columns on paper too and the factory would
+     get a sheet that does not match the layout it works from. */
+  @media screen and (max-width: 1024px) {
+    #mainPageOverlay .mp-cols{ flex-wrap:wrap; }
+    #mainPageOverlay .mp-col-fields{ flex:1 1 100%; }
+    #mainPageOverlay .mp-col-version{ flex:1 1 calc(50% - 7px); }
+  }
+
+  table.mp-kv, table.mp-cwx{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    /* Auto layout sizes a table to its min-content, which the long bilingual
+       labels push past the 30% column: below ~800px the field table used to
+       overflow and print under the Lace panel. Fixed layout makes the table
+       follow its column and wrap the label instead. */
+    table-layout:fixed;
+  }
+  table.mp-kv th, table.mp-kv td,
+  table.mp-cwx th, table.mp-cwx td{ overflow-wrap:break-word; }
+  table.mp-kv th, table.mp-kv td,
+  table.mp-cwx th, table.mp-cwx td{
+    border:1px solid var(--border);
+    padding:4px 6px;
+    vertical-align:top;
+    text-align:left;
+  }
+  table.mp-kv th, table.mp-cwx th{
+    background:#f7f8fa;
+    font-weight:600;
+    width:40%;
+  }
+  table.mp-cwx th{ width:26%; }
+  table.mp-kv td[contenteditable]:focus,
+  table.mp-kv th[contenteditable]:focus,
+  table.mp-cwx td[contenteditable]:focus,
+  .mp-note[contenteditable]:focus{
+    outline:2px solid var(--select);
+    outline-offset:-2px;
+  }
+  /* Brand and the creation date are derived, not typed. */
+  .mp-fixed{ background:#fafbfc; color:var(--text); }
+  .mp-sheet td.act{ width:24px; padding:2px; text-align:center; }
+  .mp-sheet td.act button{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:5px;
+    width:20px;
+    height:20px;
+    line-height:1;
+    font-size:11px;
+    color:var(--muted);
+    cursor:pointer;
+    padding:0;
+  }
+  .mp-sheet td.act button:hover{ background:#f1f2f5; color:var(--text); }
+  button.mp-dd::after{ content:"\25BE"; }
+
+  .mp-vpanel{
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .mp-vhead{
+    background:#f7f8fa;
+    border-bottom:1px solid var(--border);
+    padding:6px 8px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.04em;
+  }
+  /* US-080: two TD-supplied technical flats per version, FRONT then BACK. */
+  .mp-sketchrow{
+    min-height:120px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    padding:8px;
+    border-bottom:1px solid var(--border);
+  }
+  .mp-sketch{
+    position:relative;
+    border:1px dashed var(--border);
+    border-radius:6px;
+    background:#fff;
+    min-height:104px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px;
+    cursor:pointer;
+    overflow:hidden;
+  }
+  .mp-sketch.mp-sk-filled{ border-style:solid; }
+  .mp-sketch:hover{ border-color:var(--select); }
+  .mp-sk-img{ max-width:100%; max-height:200px; object-fit:contain; display:block; }
+  .mp-sk-empty{ font-size:11.5px; color:var(--muted); text-align:center; }
+  .mp-sk-tag{
+    position:absolute;
+    left:4px;
+    bottom:3px;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--muted);
+    background:rgba(255,255,255,.85);
+    padding:0 3px;
+    border-radius:3px;
+  }
+  .mp-sk-x{
+    position:absolute;
+    top:3px;
+    right:3px;
+    width:18px;
+    height:18px;
+    line-height:1;
+    padding:0;
+    font-size:11px;
+    border:1px solid var(--border);
+    border-radius:5px;
+    background:#fff;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .mp-sk-x:hover{ background:#f1f2f5; color:var(--text); }
+  .mp-sketch-menu{ width:250px; padding:8px; }
+  .mp-sk-hint{ font-size:11px; color:var(--muted); line-height:1.4; margin-bottom:6px; }
+  .mp-sk-actions{ display:flex; gap:6px; }
+  .mp-sk-actions button{
+    flex:1;
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:6px;
+    padding:5px 6px;
+    font-size:11.5px;
+    cursor:pointer;
+  }
+  .mp-sk-actions button:hover{ background:#f1f2f5; }
+
+  /* Style No Breakdown — three sub-cells under their own captions. */
+  .mp-bdhead, .mp-bdcell{ padding:0 !important; }
+  /* minmax(0,1fr), not 1fr: a grid track's default min-content floor lets a
+     long prefix push the third sub-cell past the (now fixed-width) value
+     column. Wrapping inside the track is the behaviour that survives a narrow
+     window. */
+  .mp-bdhead{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  /* The row's height comes from the wrapped label in the th, so the sub-cell
+     track has to stretch or its dividers stop short of the row border. */
+  .mp-bdcell{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-content:stretch; grid-auto-rows:minmax(19px,1fr); }
+  .mp-bdhead span, .mp-bd-sub{ min-width:0; overflow-wrap:break-word; }
+  .mp-bdhead span{
+    padding:2px 5px;
+    font-size:10px;
+    color:var(--muted);
+    text-align:center;
+    border-left:1px solid var(--border);
+  }
+  .mp-bdhead span:first-child{ border-left:none; }
+  .mp-bd-sub{
+    padding:4px 5px;
+    min-height:19px;
+    border-left:1px solid var(--border);
+  }
+  .mp-bd-sub:first-child{ border-left:none; }
+  .mp-bd-sub:focus{ outline:2px solid var(--select); outline-offset:-2px; }
+  .mp-bd-headrow th.mp-bd-blank{ background:#fff; border-bottom:none; }
+  .mp-bd-headrow td.mp-bdhead{ border-bottom:none; }
+  .mp-note{
+    margin-top:10px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:8px 10px;
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--muted);
+    min-height:60px;
+  }
+  /* Empty on a fresh sheet, so it has to say what it is for — a bare box
+     reads as a rendering fault. An empty note must not print. */
+  .mp-note:empty::before{
+    content:"Where these measurements came from — sample, photo teardown, approved pack, designer call.";
+    color:#9aa1ac;
+  }
+  @media print{ .mp-note:empty{ display:none; } }
+  .mp-note-label{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--muted);
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+
+  /* Colour picker, hung off the "Add colour" button. */
+  .color-add-wrap{ position:relative; display:inline-block; }
+  .color-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0;
+    z-index:5;
+    width:340px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:8px;
+    box-shadow:var(--shadow);
+    padding:6px;
+  }
+  .color-add-wrap.open .color-menu{ display:block; }
+  .color-menu .cm-q, .mp-menu .mm-q{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:5px 8px;
+    font-size:12px;
+    font-family:inherit;
+  }
+  .color-menu .cm-list, .mp-menu .mm-list{
+    max-height:260px;
+    overflow:auto;
+    margin-top:5px;
+  }
+  .color-menu .cm-list button, .mp-menu .mm-list button{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    width:100%;
+    border:0;
+    background:transparent;
+    border-radius:6px;
+    padding:4px 6px;
+    font-size:12px;
+    font-family:inherit;
+    text-align:left;
+    color:var(--text);
+    cursor:pointer;
+  }
+  .color-menu .cm-list button:hover, .mp-menu .mm-list button:hover{ background:#f1f2f5; }
+  .color-menu .cm-on, .mp-menu .mm-on{ font-weight:600; }
+  .color-menu .cm-foot, .mp-menu .mm-foot, .color-menu .cm-empty{
+    font-size:11px;
+    color:var(--muted);
+    padding:5px 6px 2px;
+    border-top:1px solid var(--hairline);
+    margin-top:4px;
+  }
+  .color-menu .cm-empty{ border-top:0; margin-top:0; }
+  .mp-chip{
+    flex:0 0 auto;
+    width:13px;
+    height:13px;
+    border-radius:3px;
+    border:1px solid var(--chip-border);
+    background:var(--chip, transparent);
+  }
+  .cm-name, .mm-name{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* The field picker is parked on <body> so the scrolling sheet cannot clip it. */
+  .mp-menu{
+    display:none;
+    position:fixed;
+    z-index:70;
+    width:300px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:8px;
+    box-shadow:var(--shadow);
+    padding:6px;
+  }
+  .mp-menu.open{ display:block; }
+
+  /* Printing the sheet prints ONLY the sheet: the board, toolbar and every
+     screen-only control drop out so the page matches the tech pack's. */
+  @media print{
+    body.mainpage-open{ overflow:visible; }
+    /* .mp-page is now nested inside .app (US-069), so .app itself must stay
+       visible and unboxed for print — its OTHER child, #boardToolbarGroups /
+       .statusbar / .workspace, is already display:none via .page-hidden,
+       applied the moment the TD switched tabs on screen. */
+    body.mainpage-open .app{
+      display:block;
+      height:auto;
+      padding:0;
+    }
+    body.mainpage-open .mp-page{
+      overflow:visible;
+      padding:0;
+      background:#fff;
+    }
+    body.mainpage-open .mp-sheet{
+      max-width:none;
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+      padding:0;
+    }
+    body.mainpage-open .mp-screen-only{ display:none !important; }
+    body.mainpage-open .mp-menu{ display:none !important; }
+  }
+
+  /* ===== Construction annotation page (US-070, ADR 0039) =====
+     A third peer page of the tech pack, alongside Board and MAIN PAGE — same
+     row-3 grid slot as .mp-page (see .toolbar's comment on row-3 occupants).
+     Rebuilt on this tool's primitives from the sibling "Bra construction"
+     project — see src/ui/construction.js. */
+  .cc-page{
+    grid-row:3;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    background:#eceef2;
+    border-radius:12px;
+    overflow:hidden;
+  }
+  .cc-toolbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 10px;
+    background:#fff;
+    border-bottom:1px solid var(--hairline);
+  }
+  .cc-toolbar button{
+    font:inherit;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#fff;
+    cursor:pointer;
+  }
+  #ccAddNoteBtn.cc-armed{
+    background:var(--select);
+    color:#fff;
+    border-color:var(--select);
+  }
+  /* Lace / Solid are two independent note sheets over the same board sketch
+     (mirrors the reference tech-pack tool's #sheet-con-lace / #sheet-con) —
+     switching tabs swaps which notes render/hit-test, it does not swap images. */
+  .cc-variant-tabs{ display:flex; gap:4px; }
+  .cc-variant-btn{
+    font:inherit;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#fff;
+    cursor:pointer;
+  }
+  .cc-variant-btn[aria-pressed="true"]{
+    background:var(--select);
+    color:#fff;
+    border-color:var(--select);
+  }
+  .cc-hint{ font-size:12px; color:var(--muted); }
+  .cc-body{
+    flex:1;
+    min-height:0;
+    display:flex;
+  }
+  .cc-canvas{
+    flex:1;
+    min-width:0;
+    display:block;
+    background:#f7f8fa;
+    cursor:crosshair;
+  }
+  .cc-side{
+    width:280px;
+    flex:none;
+    border-left:1px solid var(--hairline);
+    background:#fff;
+    padding:12px;
+    overflow:auto;
+  }
+  .cc-side-empty{ font-size:12.5px; color:var(--muted); }
+  .cc-side-title{ font-weight:600; margin-bottom:6px; }
+  #ccNoteZone{
+    width:100%;
+    font:inherit;
+    padding:6px 8px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin-bottom:8px;
+  }
+  #ccNoteText{
+    width:100%;
+    min-height:64px;
+    font:inherit;
+    padding:6px 8px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    resize:vertical;
+    margin-bottom:8px;
+  }
+  #ccPhraseSearch{
+    width:100%;
+    font:inherit;
+    padding:6px 8px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin-bottom:6px;
+  }
+  .cc-phrase-list{
+    max-height:220px;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    margin-bottom:10px;
+  }
+  .cc-phrase-list button{
+    text-align:left;
+    font-size:12.5px;
+    padding:5px 8px;
+    border-radius:6px;
+    border:1px solid var(--chip-border);
+    background:var(--chip);
+    cursor:pointer;
+  }
+  .cc-phrase-empty{ font-size:12px; color:var(--muted); }
+  .cc-side-row{ display:flex; gap:8px; }
+  .cc-side-row button{
+    flex:1;
+    font:inherit;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#fff;
+    cursor:pointer;
+  }
+  /* Second+ leader line on a note (US-071): armed like #ccAddNoteBtn, and
+     removed one at a time by double-clicking its arrowhead on the canvas —
+     ported convention from the reference tool's .anc double-click-to-delete. */
+  #ccAddArrowBtn.cc-armed{
+    background:var(--select);
+    color:#fff;
+    border-color:var(--select);
+  }
+  #ccDeleteNoteBtn{
+    color:#8a1f1f;
+    border-color:#e8c2c2;
+    background:#fff5f5;
+  }
+  /* Construction table (US-076, ADR 0042): a live, editable mirror of the
+     notes visible on the current Lace/Solid tab, below the canvas+side row.
+     .cc-page is already a column flexbox, so this sits below .cc-body as a
+     bounded, independently-scrolling strip rather than competing with the
+     canvas for height. */
+  #ccTableToggleBtn[aria-pressed="false"]{ opacity:.6; }
+  .cc-table-wrap{
+    flex:0 0 auto;
+    max-height:34vh;
+    overflow:auto;
+    border-top:1px solid var(--hairline);
+    background:#fff;
+  }
+  .cc-table-wrap.cc-table-collapsed{ display:none; }
+  .cc-table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  .cc-table thead th{
+    position:sticky;
+    top:0;
+    background:#f3f4f7;
+    text-align:left;
+    padding:6px 8px;
+    border-bottom:1px solid var(--hairline);
+    font-weight:600;
+  }
+  .cc-table tbody tr{ border-bottom:1px solid var(--hairline); cursor:pointer; }
+  .cc-table tbody tr.cc-row-selected{ background:#eef4ff; }
+  .cc-table td{ padding:4px 8px; vertical-align:top; }
+  .cc-tbl-seq{ width:32px; text-align:center; color:var(--muted); cursor:default; }
+  .cc-tbl-zone select{ font:inherit; padding:3px 4px; border:1px solid var(--border); border-radius:6px; }
+  .cc-tbl-note{ width:100%; }
+  .cc-tbl-note textarea{
+    width:100%;
+    min-height:30px;
+    font:inherit;
+    padding:4px 6px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    resize:vertical;
+  }
+  .cc-tbl-del{ width:28px; text-align:center; }
+  .cc-tbl-del button{ border:none; background:none; color:#8a1f1f; cursor:pointer; font-size:14px; line-height:1; }
+  .cc-table-empty{ padding:14px; font-size:12.5px; color:var(--muted); }
+
+  /* US-078 / ADR 0045: one continuous Construction sheet. The wide
+     Outer/Inner Working Board stays above its row-owned Construction Table,
+     matching BOM's sheet-first reading order. */
+  .cc-combined-view{
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    padding:12px;
+    box-sizing:border-box;
+  }
+  .cc-sheet{
+    width:min(100%, 1600px);
+    min-width:1180px;
+    margin:0 auto;
+    padding:20px 24px 28px;
+    box-sizing:border-box;
+    background:#fff;
+    box-shadow:0 1px 5px rgba(0,0,0,.18);
+  }
+  .cc-sheet-head{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:end;
+    gap:12px;
+    padding-bottom:8px;
+    border-bottom:2px solid #111;
+    font-size:12px;
+    letter-spacing:.04em;
+  }
+  .cc-sheet-head strong{ font-size:16px; letter-spacing:.08em; }
+  .cc-sheet-head > :last-child{ text-align:right; color:var(--muted); }
+  .cc-section-title{
+    margin-top:14px;
+    padding:7px 10px;
+    background:#d9d9d9;
+    border:1px solid #999;
+    border-bottom:0;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.04em;
+  }
+  .cc-board-toolbar{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+    padding:7px 8px;
+    border:1px solid #999;
+    border-bottom:0;
+    background:#f7f7f7;
+  }
+  .cc-board-toolbar button,
+  .cc-view-target{
+    font:inherit;
+    padding:5px 8px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:#fff;
+    cursor:pointer;
+  }
+  .cc-board-toolbar button:disabled{ opacity:.45; cursor:not-allowed; }
+  .cc-toolbar-sep{ width:1px; height:22px; background:#cdd1d8; margin:0 2px; }
+  .cc-view-target-label{ font-size:11.5px; color:var(--muted); }
+  .cc-view-target[aria-pressed="true"],
+  .cc-tool-btn.cc-tool-active{
+    color:#fff;
+    background:var(--select);
+    border-color:var(--select);
+  }
+  .cc-tool-hint{ flex:1 1 260px; font-size:11.5px; color:var(--muted); }
+  .cc-working-canvas{
+    display:block;
+    width:100%;
+    height:540px;
+    border:1px solid #999;
+    background:#eef0f4;
+    box-sizing:border-box;
+  }
+  .cc-working-canvas.cc-tool-select{ cursor:default; }
+  .cc-working-canvas.cc-tool-callout,
+  .cc-working-canvas.cc-tool-leader{ cursor:crosshair; }
+  .cc-table-section .cc-table-wrap{
+    display:block;
+    max-height:none;
+    overflow:visible;
+    border:1px solid #999;
+    background:#fff;
+  }
+  .cc-table-section .cc-table{ table-layout:fixed; font-size:12px; }
+  .cc-table-section .cc-table thead th{
+    position:static;
+    border:1px solid #999;
+    background:#f2f2f2;
+    text-transform:uppercase;
+  }
+  .cc-table-section .cc-table td{ border:1px solid #aaa; vertical-align:middle; }
+  .cc-table-section .cc-view-band th{
+    padding:6px 8px;
+    border:1px solid #999;
+    background:#e5e7eb;
+    text-align:left;
+    font-size:11.5px;
+    letter-spacing:.05em;
+  }
+  .cc-table-section .cc-row-selected{ background:#eef4ff; }
+  .cc-tbl-view{ width:92px; }
+  .cc-tbl-area{ width:150px; }
+  .cc-tbl-callout{ width:68px; text-align:center; }
+  .cc-table-section select{
+    width:100%;
+    font:inherit;
+    padding:4px 5px;
+    border:1px solid var(--border);
+    border-radius:5px;
+    background:#fff;
+  }
+  .cc-detail-wrap{ display:flex; align-items:stretch; gap:4px; }
+  .cc-tbl-detail textarea{
+    width:100%;
+    min-height:30px;
+    padding:5px 7px;
+    border:1px solid var(--border);
+    border-radius:5px;
+    resize:vertical;
+    font:inherit;
+  }
+  .cc-detail-wrap button,
+  .cc-tbl-callout button{
+    flex:none;
+    min-width:28px;
+    border:1px solid var(--border);
+    border-radius:5px;
+    background:#fff;
+    cursor:pointer;
+  }
+  .cc-add-row td{ padding:5px 8px !important; background:#fafafa; }
+  .cc-add-row button{ border:0; background:transparent; color:#1c5fa8; cursor:pointer; font:inherit; }
+  .cc-phrase-menu{
+    position:fixed;
+    z-index:5000;
+    width:370px;
+    max-height:320px;
+    padding:8px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+  }
+  .cc-phrase-menu #ccPhraseSearch{ margin-bottom:7px; }
+  .cc-phrase-menu .cc-phrase-list{ max-height:255px; margin-bottom:0; }
+  @media print{
+    .cc-screen-only{ display:none !important; }
+    .cc-tbl-del{ display:none !important; }
+    .cc-combined-view{ overflow:visible; padding:0; }
+    .cc-sheet{ min-width:0; width:100%; box-shadow:none; padding:0; }
+    .cc-working-canvas{ height:520px; }
+    .cc-table-wrap{ max-height:none; overflow:visible; }
+  }
+
+  @media print{
+    body.construction-open .app{
+      display:block;
+      height:auto;
+      padding:0;
+    }
+    body.construction-open .cc-page{
+      overflow:visible;
+      border-radius:0;
+    }
+    body.construction-open > .app > .cc-toolbar,
+    body.construction-open .cc-page > .cc-toolbar,
+    body.construction-open .cc-side{
+      display:none !important;
+    }
+  }
+
+  /* ===== BOM page (US-072, ADR 0041) =====
+     Fourth peer page of the tech pack. Reuses Construction's generic
+     .cc-toolbar/.cc-variant-tabs/.cc-hint/.cc-body/.cc-canvas/.cc-side/
+     .cc-side-* classes verbatim (view-agnostic chrome) and adds bm-* classes
+     only for what's actually new: the editable table and the material
+     suggestion panel. See src/ui/bom.js. */
+  .bm-combined-view{
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    padding:12px;
+    box-sizing:border-box;
+  }
+  .bm-combined-sheet{
+    width:min(100%, 1600px);
+    min-width:1450px;
+  }
+  .bm-table-view{
+    display:block;
+    overflow:visible;
+  }
+  .bm-sections{
+    min-width:0;
+    overflow:visible;
+    padding:0;
+  }
+  /* Factory-sheet table framing, matching the reference pack's table.grid/
+     td.secband look: 1px #999 cell borders, #f2f2f2 repeated header rows,
+     #d9d9d9 section bands, 12px type on a white sheet. */
+  .bm-sheet{
+    background:#fff;
+    padding:22px 26px;
+    margin:0 auto;
+    width:min(100%, 1600px);
+    min-width:1450px;
+    box-sizing:border-box;
+    box-shadow:0 1px 5px rgba(0,0,0,.18);
+  }
+  @media print{ .bm-sheet{ box-shadow:none; padding:0; } }
+  /* Reference .sheethead: meta line + sheet name over a 2px black rule. */
+  .bm-sheet-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    border-bottom:2px solid #000;
+    padding:0 0 6px;
+    margin:0 0 8px;
+  }
+  .bm-shl{ font-weight:700; font-size:15px; }
+  .bm-shm{ flex:1; text-align:right; font-size:13px; color:#444; }
+  .bm-band{
+    background:#ececec; border:1px solid #999; font-weight:700;
+    text-align:center; padding:5px 8px; margin:8px 0 0;
+  }
+  .bm-band-big{ font-size:15px; padding:7px 8px; }
+  /* Bilingual header string under the EN label (reference span.cn). */
+  .bm-cn{ display:block; font-weight:400; font-size:10px; color:#555; }
+  /* Both print sheets exist in the DOM at all times; only print shows them. */
+  .bm-print-sheets{ display:none; }
+  .bm-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    background:#fff;
+    font-size:12px;
+  }
+  .bm-table th, .bm-table td{
+    border:1px solid #999;
+    padding:4px 6px;
+    text-align:left;
+    vertical-align:top;
+    overflow-wrap:anywhere;
+  }
+  .bm-table col.bm-col-num{ width:38px; }
+  .bm-table col.bm-col-description{ width:145px; }
+  .bm-table col.bm-col-composition{ width:116px; }
+  .bm-table col.bm-col-supplier{ width:112px; }
+  .bm-table col.bm-col-article{ width:128px; }
+  .bm-table col.bm-col-width{ width:78px; }
+  .bm-table col.bm-col-size{ width:110px; }
+  .bm-table col.bm-col-area{ width:150px; }
+  .bm-table col.bm-col-photo{ width:220px; }
+  .bm-table col.bm-col-colorway{ width:100px; }
+  .bm-table col.bm-col-actions{ width:118px; }
+  .bm-table tr.bm-hdr th{ background:#f2f2f2; font-weight:700; white-space:normal; line-height:1.15; }
+  .bm-table td.bm-secband{
+    background:#d9d9d9;
+    border:1px solid #888;
+    font-weight:700;
+    padding:4px 10px;
+  }
+  .bm-table td[contenteditable]{ min-width:70px; cursor:text; }
+  .bm-table td span[data-cell]{ display:block; min-width:70px; min-height:1em; cursor:text; outline:none; }
+  .bm-table td span[data-cell]:focus{ background:#f2f6ff; }
+  /* ▾ suggestion button overlaid inside the cell (reference .bom-dd) — a
+     sibling of the editable span, never inside it. */
+  .bm-table td.bm-sugg{ position:relative; padding-right:18px; }
+  .bm-dd{
+    position:absolute; top:2px; right:2px; width:14px; height:14px; line-height:1;
+    padding:0; font-size:9px; color:#666; border:1px solid #c9c9d0; background:#fff;
+    border-radius:3px; cursor:pointer;
+  }
+  .bm-dd::after{ content:'▾'; }
+  .bm-dd:hover{ background:#eef4ff; border-color:#8fb6ea; }
+  .bm-dd-menu{
+    position:fixed; z-index:300; width:300px; padding:7px;
+    border:1px solid #c9c9d0; border-radius:7px; background:#fff;
+    box-shadow:0 5px 18px rgba(0,0,0,.18);
+  }
+  .bm-dd-menu[hidden]{ display:none; }
+  .bm-dd-menu .bm-dd-q{
+    width:100%; box-sizing:border-box; border:1px solid #c9c9d0; border-radius:5px;
+    padding:4px 7px; font-size:12px; font-family:inherit; margin:0 0 6px;
+  }
+  .bm-dd-menu .bm-dd-list{ max-height:260px; overflow:auto; display:grid; grid-template-columns:1fr; gap:3px; }
+  .bm-dd-menu .bm-dd-list button{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px; min-width:0;
+    text-align:left; border:1px solid #d3d3da; background:#fbfbfc; border-radius:4px;
+    padding:3px 8px; font-size:12px; font-family:inherit; cursor:pointer;
+  }
+  .bm-dd-menu .bm-dd-list button:hover{ background:#eef4ff; border-color:#8fb6ea; }
+  .bm-dd-tag{ color:#888; font-size:10px; white-space:nowrap; }
+  .bm-dd-empty{ font-size:11px; color:#a33; padding:4px 2px; }
+  /* MATERIAL IMAGES cell (reference .photo-trigger) */
+  .bm-photo-cell{ text-align:center; }
+  .bm-photo-trigger{
+    position:relative; width:44px; height:44px; border:1px dashed #c9c9d0; border-radius:6px;
+    background:#fafafa; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    font-size:15px; color:#888; padding:0;
+  }
+  .bm-photo-trigger:hover{ border-color:#8fb6ea; background:#eef4ff; }
+  .bm-photo-trigger img{ width:100%; height:100%; object-fit:cover; border-radius:5px; }
+  .bm-photo-menu{ width:220px; }
+  .bm-photo-hint{ font-size:11px; color:#666; margin:0 0 6px; line-height:1.3; }
+  .bm-photo-actions{ display:flex; gap:6px; }
+  .bm-photo-actions button{
+    flex:1; border:1px solid #c9c9d0; border-radius:5px; background:#fff;
+    padding:4px 6px; font-size:11px; font-family:inherit; cursor:pointer;
+  }
+  .bm-photo-actions button:hover{ background:#f5f5f7; }
+  /* Add Note zone menu (reference .zone-menu) */
+  .cc-zone-menu{
+    position:fixed; z-index:300; display:flex; flex-wrap:wrap; gap:6px;
+    width:max-content; max-width:420px; padding:5px;
+    background:#fff; border:1px solid #b9b9c2; border-radius:6px;
+    box-shadow:0 6px 16px rgba(0,0,0,.16);
+  }
+  .cc-zone-menu[hidden]{ display:none; }
+  .cc-zone-menu button{
+    border:1px solid #d3d3da; background:#fbfbfc; border-radius:4px;
+    padding:3px 8px; font-size:11px; font-family:inherit; cursor:pointer; white-space:nowrap;
+  }
+  .cc-zone-menu button:hover{ background:#eef4ff; border-color:#8fb6ea; }
+  .cc-color-label{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#444;
+  }
+  .cc-color-label input[type=color]{
+    width:26px; height:22px; padding:1px; border:1px solid #c9c9d0; border-radius:5px;
+    background:#fff; cursor:pointer;
+  }
+  #ccNoteRedBtn.cc-red-on{ background:#cc0000; border-color:#cc0000; color:#fff; }
+  .bm-table td.act, .bm-table th.act{ border:none; background:none; text-align:center; white-space:normal; width:118px; }
+  .bm-table td.bm-num, .bm-table th.bm-num{ text-align:center; white-space:nowrap; }
+  .bm-table select{ font:inherit; font-size:11px; max-width:58px; }
+  .bm-table td.act button{ font:inherit; font-size:11px; margin-right:3px; }
+  .bm-table tr.bm-row-selected td{ background:#eaf1ff; }
+  .bm-table tr.bm-addrow-tr td{ border:none; padding:2px 0; }
+  .bm-addrow{
+    border:1px dashed #999;
+    background:#fafafa;
+    border-radius:4px;
+    padding:2px 10px;
+    font-size:11px;
+    cursor:pointer;
+  }
+  .bm-addrow:hover{ background:#f0f0f0; }
+  .bm-table [data-bom-rm]{
+    border:1px solid var(--chip-border);
+    background:var(--chip);
+    border-radius:6px;
+    cursor:pointer;
+    padding:2px 7px;
+  }
+  .bm-mat-side{
+    width:280px;
+    flex:none;
+    border-left:1px solid var(--hairline);
+    background:#fff;
+    padding:12px;
+    overflow:auto;
+  }
+  #bomMatSearch{
+    width:100%;
+    font:inherit;
+    padding:6px 8px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin:6px 0;
+  }
+  .bm-mat-list{
+    max-height:calc(100% - 60px);
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .bm-mat-list button{
+    text-align:left;
+    font-size:12.5px;
+    padding:6px 8px;
+    border-radius:6px;
+    border:1px solid var(--chip-border);
+    background:var(--chip);
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .bm-mat-section{ color:var(--muted); font-size:11px; }
+  .bm-mat-empty{ font-size:12px; color:var(--muted); }
+  .bm-matkey-view{
+    height:520px;
+    min-height:420px;
+    display:flex;
+    flex-direction:column;
+    border:1px solid #999;
+    margin:8px 0;
+    overflow:hidden;
+  }
+  #bomMatkeyCanvas.bm-drag-over{ outline:3px solid #3f8ae0; outline-offset:-3px; }
+  .bm-print-matkey{
+    position:relative; width:100%; aspect-ratio:1900/820; overflow:hidden;
+    background:#fff; border:1px solid #ccc; box-sizing:border-box;
+  }
+  .bm-print-matkey > img{ position:absolute; object-fit:contain; }
+  .bm-print-matkey > svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .bm-print-matkey line{ stroke:#cc0066; stroke-width:3; }
+  .bm-print-matkey circle{ fill:#cc0066; }
+  .bm-print-label{
+    position:absolute; z-index:2; color:#cc0066; font-size:12px; font-weight:700;
+    white-space:nowrap; background:rgba(255,255,255,.8); padding:1px 3px;
+  }
+  #bomMkRowSelect{
+    width:100%;
+    font:inherit;
+    padding:6px 8px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin-bottom:8px;
+  }
+  .bm-tool-btn.bm-tool-active{
+    background:var(--select);
+    color:#fff;
+    border-color:var(--select);
+  }
+  .bm-tool-btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .bm-tool-sep{ width:1px; align-self:stretch; background:var(--border); margin:1px 2px; }
+  #bomMatkeyCanvas.bm-tool-callout,
+  #bomMatkeyCanvas.bm-tool-leader{ cursor:crosshair; }
+  #bomMatkeyCanvas.bm-tool-select{ cursor:default; }
+  #bomDeleteCalloutBtn{
+    color:#8a1f1f;
+    border-color:#e8c2c2;
+    background:#fff5f5;
+  }
+
+  /* ---- Preview & Export page (US-079, ADR 0046) ------------------------- */
+  .pv-title{ font-size:14px; white-space:nowrap; }
+  /* .cc-toolbar button (higher specificity) paints buttons white, which left
+     .primary-btn's white text invisible — restate the accent colors here. */
+  .cc-toolbar button.pv-export-btn{
+    margin-left:auto;
+    white-space:nowrap;
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+  .cc-toolbar button.pv-export-btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .pv-sheets{
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    padding:18px 16px 30px;
+  }
+  .pv-sheet{ width:max-content; max-width:none; margin:0 auto 30px; }
+  .pv-sheet-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 6px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    user-select:none;
+  }
+  .pv-sheet-head input{ width:15px; height:15px; }
+  .pv-orient{ color:#7a8190; font-weight:400; font-size:11px; }
+  .pv-off .pv-paper{ opacity:.35; filter:grayscale(.6); }
+  .pv-off .pv-sheet-name{ color:#9aa0ab; text-decoration:line-through; }
+  .pv-paper{
+    background:#fff;
+    box-shadow:0 2px 12px rgba(0,0,0,.22);
+    padding:28px;
+    box-sizing:border-box;
+    overflow:hidden;
+    margin:0 auto;
+  }
+  .pv-portrait{ width:794px; min-height:1123px; }
+  .pv-landscape{ width:1123px; min-height:794px; }
+  .pv-canvas{ display:block; width:100%; }
+  .pv-board{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:10px 0 14px;
+    border:1px solid #ddd;
+  }
+  .pv-spec{ width:100%; border-collapse:collapse; font-size:11px; background:#fff; }
+  .pv-spec th, .pv-spec td{ border:1px solid #999; padding:3px 5px; text-align:left; vertical-align:top; }
+  .pv-spec th{ background:#f2f2f2; white-space:nowrap; }
+  .pv-spec td.pv-num{ text-align:center; white-space:nowrap; }
+  .pv-empty{ color:#7a8190; font-size:12px; padding:40px 10px; text-align:center; }
+  /* The BOM factory sheet keeps its reference min-width inside the paper —
+     pvFitPaper's transform scales it to the page. Neutralize the standalone
+     sheet chrome: the paper itself is the sheet. */
+  .pv-paper .bm-sheet{ box-shadow:none; padding:0; min-width:1450px; }
+  /* An empty Material Key renders as a full-height placeholder box on the
+     print path; on a preview sheet it would waste half the page — hide it. */
+  .pv-paper .bm-print-matkey-empty{ display:none; }
+  .pv-paper .mp-sheet{ box-shadow:none; border:none; border-radius:0; padding:0; max-width:none; }
+
+  @media print{
+    body.bom-open .app{
+      display:block;
+      height:auto;
+      padding:0;
+    }
+    body.bom-open .cc-page{
+      overflow:visible;
+      border-radius:0;
+    }
+    body.bom-open .cc-toolbar,
+    body.bom-open .bm-combined-view,
+    body.bom-open .bm-table td.act,
+    body.bom-open .bm-table th.act,
+    body.bom-open .bm-table tr.bm-addrow-tr,
+    .bm-dd,
+    .bm-dd-menu,
+    .cc-zone-menu{
+      display:none !important;
+    }
+    /* An empty photo slot prints blank, not as a dashed editor affordance;
+       a filled one prints its image. */
+    body.bom-open .bm-photo-trigger{ border:none; background:none; color:transparent; }
+    /* What prints (US-073) is the reference's pair of factory sheets —
+       BOM-SOLID then BOM-LACE from #bomPrintSheets — whatever sub-view or
+       variant tab is open on screen. The interactive table stays screen-only. */
+    body.bom-open .bm-print-sheets{
+      display:block !important;
+    }
+    .bm-print-sheet{ page-break-after:always; }
+    .bm-print-sheet:last-child{ page-break-after:auto; }
+    .bm-print-matkey{ border:none; }
+  }
 </style>
 </head>
 <body class="app-auto">
 <div class="app">
   <div class="toolbar">
+    <div id="pageTabBar" class="group group-pages segmented-control mp-screen-only" role="tablist" aria-label="Tech pack pages"></div>
+    <div id="boardToolbarGroups" class="board-toolbar-groups">
     <div class="group group-mode">
       <div class="segmented-control mode-switch" role="group" aria-label="App mode">
         <button id="modeManualBtn" class="active" type="button" title="Manual Mode — full drawing toolset">Manual</button>
         <button id="modeAutoBtn" type="button" title="Auto Mode — detect the sketch, review generated POM drafts, then apply approved lines">Auto</button>
       </div>
     </div>
-    <div id="autoModeBar" class="group group-auto">
-      <button id="autoDetectBtn" class="primary-btn" type="button" title="Run local offline vision on the source sketch to estimate view, landmarks, and anchors">Detect</button>
-      <button id="autoResetAnchorsBtn" type="button" title="Re-seed anchors from the current detection (discards manual anchor edits)">Reset Anchors</button>
-      <button id="autoGenerateBtn" class="primary-btn" type="button" title="Generate 16 POM drafts from the current anchor positions">Generate Drafts</button>
+    <div id="autoModeBar" class="group group-auto workflow-empty">
+      <button id="autoDetectBtn" data-key="1" type="button" title="Run local offline vision on the source sketch to estimate view, landmarks, and anchors">Detect</button>
+      <button id="autoManageAnchorsBtn" type="button" title="Manage anchor visibility — hide all / show all, hide a group, or isolate one anchor">Anchors</button>
+      <button id="autoGenerateBtn" data-key="2" type="button" title="Generate 18 POM drafts from the current anchor positions">Generate Drafts</button>
       <button id="autoApproveBtn" class="recovery-only" type="button" title="Approve the selected draft line">Approve</button>
       <button id="autoReviewOnlyBtn" class="recovery-only" type="button" title="Mark the selected draft as REVIEW_ONLY (no line will be drawn)">Review-Only</button>
-      <button id="autoApplyBtn" class="primary-btn recovery-only" type="button" title="Atomically copy all approved drafts into the project">Apply Lines</button>
+      <button id="autoApplyBtn" data-key="3" class="primary-btn recovery-only" type="button" title="Atomically copy all approved drafts into the project">Apply Lines</button>
       <button id="autoDiscardBtn" class="recovery-only" type="button" title="Discard all current drafts without changing the project">Discard Drafts</button>
-      <button id="autoResetBoardBtn" type="button" title="Reset the working board — delete all photos and lines so you can start a new bra sketch">Reset Board</button>
-      <button id="autoLearnToggleBtn" class="manual-only" type="button" title="Apply learned anchor calibration from past TD corrections">Learning</button>
-      <span id="autoLearnChip" class="auto-status-chip manual-only" title="Number of recorded TD corrections that feed the calibration median">0 samples</span>
-      <span id="autoAcceptanceChip" class="auto-status-chip acceptance manual-only" title="Auto-applied POM lines accepted without edit">0/0 accepted</span>
-      <div id="autoLearnMenuWrap" class="style-menu manual-only">
-        <button id="autoLearnMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Reset learning or manage POM meanings">Manage ▾</button>
-        <div id="autoLearnMenuList" class="style-menu-list" role="menu" hidden>
-          <button id="viewLearningDataItem" role="menuitem" type="button" title="See what the tool has learned: anchor calibration samples, confirmed POM meanings, and known style buckets">View learning data…</button>
-          <button id="resetResidualsItem" role="menuitem" type="button" title="Clear all learned anchor corrections — Auto Mode goes back to the raw geometric rules">Reset calibration residuals</button>
-          <button id="resetMeaningsCurrentItem" role="menuitem" type="button" title="Forget every confirmed POM meaning for the current style code">Forget POM meanings (current style)</button>
-          <button id="resetMeaningsAllItem" role="menuitem" type="button" title="Forget every confirmed POM meaning across every style code, plus custom measurements">Forget POM meanings (all styles)</button>
-          <button id="manageMeaningsItem" role="menuitem" type="button" title="Edit or remove individual POM meanings for the current style code">Manage POM meanings…</button>
-        </div>
-      </div>
-      <span id="autoStepIndicator" class="auto-step-indicator" title="Where you are in the auto-measure pass">
-        <span class="step" data-step="detect">1 Detect</span>
-        <span class="step" data-step="generate">2 Generate</span>
-        <span class="step" data-step="review">3 Review</span>
+      <span class="auto-flow-status">
+        <span id="autoStepIndicator" class="auto-step-indicator" title="Where you are in the auto-measure pass">
+          <span class="step" data-step="detect">1 Detect</span>
+          <span class="step" data-step="generate">2 Generate</span>
+          <span class="step" data-step="review">3 Review</span>
+        </span>
+        <span id="autoStatusChip" class="auto-status-chip" title="Auto Mode status">Add a sketch to start</span>
+        <span id="visionEngineChip" class="auto-status-chip vision" data-engine="warming" title="The OpenCV vision engine compiles in the background after the page loads">vision warming…</span>
       </span>
-      <span id="autoStatusChip" class="auto-status-chip" title="Auto Mode status">Add a sketch to start</span>
-      <span id="visionEngineChip" class="auto-status-chip vision" data-engine="warming" title="The OpenCV vision engine compiles in the background after the page loads">vision warming…</span>
     </div>
     <div class="group group-add">
-      <button id="addImageBtn" class="primary-btn has-ico" type="button" title="Add a sketch image — or paste with Ctrl/Cmd+V, or drag one onto the board">
+      <button id="addImageBtn" data-key="A" class="primary-btn has-ico" type="button" title="Add a sketch image (A) — or paste with Ctrl/Cmd+V, or drag one onto the board">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 14.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9" />
           <circle cx="8.5" cy="9" r="1.4" />
@@ -1648,25 +2792,24 @@
         Add Image
       </button>
       <input id="imageFileInput" type="file" accept="image/*" multiple hidden />
-      <button id="importPptxBtn" class="manual-only" type="button" title="Import sketches from a PowerPoint (.pptx) deck">Import PPTX</button>
       <input id="pptxFileInput" type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden />
     </div>
 
-    <div class="group manual-only">
+    <div class="group manual-only board-drawing-group">
       <div class="toolset" role="group" aria-label="Drawing tools">
-        <button id="toolSelect" class="tool-btn active has-ico" type="button" title="Select & move — click a line, label, or image to edit it (S)">
+        <button id="toolSelect" data-key="S" class="tool-btn active has-ico" type="button" title="Select & move — click a line, label, or image to edit it (S)">
           <svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.4 3.1l13 6.1c.74.35.6 1.43-.2 1.59l-5 1-2 5c-.3.78-1.4.7-1.6-.1L4.2 4.4c-.2-.83.6-1.55 1.2-1.3z"/></svg>
           Select
         </button>
-        <button id="toolStraight" class="tool-btn has-ico" type="button" title="Straight line — click the start point, then the end point (0)">
+        <button id="toolStraight" data-key="0" class="tool-btn has-ico" type="button" title="Straight line — click the start point, then the end point (0)">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="19" x2="19" y2="5"/><circle cx="5" cy="19" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="5" r="1.7" fill="currentColor" stroke="none"/></svg>
           Straight
         </button>
-        <button id="toolCurved" class="tool-btn has-ico" type="button" title="Curved line — click the start point, then the end point (C)">
+        <button id="toolCurved" data-key="C" class="tool-btn has-ico" type="button" title="Curved line — click the start point, then the end point (C)">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 17C8 7 16 7 20 11"/><circle cx="4" cy="17" r="1.7" fill="currentColor" stroke="none"/><circle cx="20" cy="11" r="1.7" fill="currentColor" stroke="none"/></svg>
           Curved
         </button>
-        <button id="toolEraser" class="tool-btn has-ico" type="button" title="Eraser – paint white over unwanted lines in the photo (E)">
+        <button id="toolEraser" data-key="X" class="tool-btn has-ico" type="button" title="Eraser – paint white over unwanted lines in the photo (X)">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 18.5l-3-3a2 2 0 0 1 0-2.8l7-7a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8l-6.8 6.8z"/><line x1="8.5" y1="18.5" x2="20" y2="18.5"/></svg>
           Eraser
         </button>
@@ -1708,29 +2851,34 @@
       </label>
     </div>
 
-    <div class="group manual-only">
-      <div class="segmented-control" role="group" aria-label="Arrow type">
-        <button id="arrowDoubleBtn" class="active" type="button" title="Arrowheads on both ends">Double</button>
-        <button id="arrowSingleBtn" type="button" title="Arrowhead on end point only">Single</button>
-        <button id="arrowNoneBtn" type="button" title="Line without arrowhead">None</button>
+    <div class="group manual-only board-line-settings">
+      <div id="arrowMenuWrap" class="toolbar-menu line-quick-menu">
+        <button id="arrowMenuBtn" class="toolbar-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="arrowMenuList" title="Choose arrowheads">Arrow: Double</button>
+        <div id="arrowMenuList" class="toolbar-menu-list menu-left" role="menu" hidden>
+          <button id="arrowDoubleBtn" class="active" role="menuitem" type="button" title="Arrowheads on both ends">Double arrows</button>
+          <button id="arrowSingleBtn" role="menuitem" type="button" title="Arrowhead on end point only">Single arrow</button>
+          <button id="arrowNoneBtn" role="menuitem" type="button" title="Line without arrowhead">No arrows</button>
+        </div>
       </div>
-      <div class="segmented-control" role="group" aria-label="Line color">
-        <button id="colorRedBtn" class="color-btn active" data-color="red" type="button" title="Red line"><span class="color-swatch"></span></button>
-        <button id="colorBlueBtn" class="color-btn" data-color="blue" type="button" title="Blue line"><span class="color-swatch"></span></button>
-        <button id="colorBlackBtn" class="color-btn" data-color="black" type="button" title="Black line"><span class="color-swatch"></span></button>
-        <button id="colorWhiteBtn" class="color-btn" data-color="white" type="button" title="White line (for dark sketch areas)"><span class="color-swatch"></span></button>
+      <div id="colorMenuWrap" class="toolbar-menu line-quick-menu">
+        <button id="colorMenuBtn" class="toolbar-menu-trigger has-ico" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="colorMenuList" title="Choose line color"><span class="color-swatch"></span><span id="colorMenuLabel">Red</span></button>
+        <div id="colorMenuList" class="toolbar-menu-list menu-left" role="menu" hidden>
+          <button id="colorRedBtn" class="color-btn active" data-color="red" role="menuitem" type="button" title="Red line"><span class="color-swatch"></span>Red</button>
+          <button id="colorBlueBtn" class="color-btn" data-color="blue" role="menuitem" type="button" title="Blue line"><span class="color-swatch"></span>Blue</button>
+          <button id="colorBlackBtn" class="color-btn" data-color="black" role="menuitem" type="button" title="Black line"><span class="color-swatch"></span>Black</button>
+          <button id="colorWhiteBtn" class="color-btn" data-color="white" role="menuitem" type="button" title="White line (for dark sketch areas)"><span class="color-swatch"></span>White</button>
+        </div>
       </div>
     </div>
 
-    <div class="group manual-only">
-      <button id="undoBtn" type="button">Undo</button>
-      <button id="redoBtn" type="button">Redo</button>
-      <button id="copyLineBtn" type="button" title="Copy the selected line (⌘/Ctrl+C)">Copy</button>
-      <button id="pasteLineBtn" type="button" title="Paste the copied line (⌘/Ctrl+V)">Paste</button>
-      <button id="reflectLineBtn" type="button" title="Reflect the selected line across the sketch axis (M)">Reflect</button>
-      <button id="deleteBtn" type="button" title="Delete the selected line or image">Delete</button>
-      <button id="clearBtn" type="button" title="Clear all annotations">Clear</button>
-      <button id="lockImageBtn" class="has-ico" type="button" title="Lock the selected image so it can't be moved, resized, or deleted accidentally">
+    <div id="boardContextActions" class="group manual-only board-context-actions" hidden>
+      <button id="undoBtn" data-key="⌘Z" type="button">Undo</button>
+      <button id="redoBtn" data-key="⌘⇧Z" type="button">Redo</button>
+      <button id="copyLineBtn" data-key="⌘C" type="button" title="Copy the selected line (⌘/Ctrl+C)">Copy</button>
+      <button id="pasteLineBtn" data-key="⌘V" type="button" title="Paste the copied line (⌘/Ctrl+V)">Paste</button>
+      <button id="reflectLineBtn" data-key="M" type="button" title="Reflect the selected line across the sketch axis (M)">Reflect</button>
+      <button id="deleteBtn" data-key="⌫" type="button" title="Delete the selected line or image">Delete</button>
+      <button id="lockImageBtn" data-key="L" class="has-ico" type="button" title="Lock the selected image so it can't be moved, resized, or deleted accidentally">
         <svg id="lockImageIco" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="5" y="11" width="14" height="9" rx="2" />
           <path d="M8 11V8a4 4 0 0 1 8 0v3" />
@@ -1739,35 +2887,64 @@
       </button>
     </div>
 
-    <div class="group">
-      <button id="fitBtn" type="button">Fit</button>
-      <button id="togglePanelBtn" type="button" title="Hide the Measurements panel">Hide Panel</button>
-      <button id="toggleLabelsBtn" class="manual-only" type="button" title="Hide the callout numbers on the board (N) — the measurements panel still shows them">Hide Numbers</button>
-      <button id="learningToolbarBtn" class="learning-toolbar-btn manual-only" type="button" title="Turn learning on, then correct Auto lines and save evidence for reuse">Learning Off</button>
-      <span id="learningToolbarChip" class="auto-status-chip manual-only" title="Recorded learning samples">0 samples</span>
-      <button id="setScaleBtn" type="button" title="Calibrate: select a line whose real length you know, then set the scale">Set Scale</button>
-      <button id="clearScaleBtn" type="button" title="Remove calibration">Clear Scale</button>
-      <button id="sizeRunBtn" type="button" title="Grade the base spec into a full size run (S–5XL)">Size Run</button>
-    </div>
-
-    <div class="group">
-      <button id="saveProjectBtn" type="button" title="Save the whole board (images, lines, measurements) to a file you can reopen later">Save</button>
-      <button id="openProjectBtn" type="button" title="Open a previously saved project file">Open</button>
+    <div class="toolbar-spacer" aria-hidden="true"></div>
+    <div class="group board-menu-tray">
+      <div id="fileMenuWrap" class="toolbar-menu">
+        <button id="fileMenuBtn" class="toolbar-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="fileMenuList">File ▾</button>
+        <div id="fileMenuList" class="toolbar-menu-list" role="menu" hidden>
+          <button id="addImageMenuBtn" class="manual-only" role="menuitem" type="button">Add image…</button>
+          <button id="saveProjectBtn" data-key="⌘S" role="menuitem" type="button" title="Save the whole board (images, lines, measurements) to a file you can reopen later">Save project</button>
+          <button id="openProjectBtn" data-key="⌘O" role="menuitem" type="button" title="Open a previously saved project file">Open project…</button>
+          <button id="importPptxBtn" data-key="I" class="manual-only" role="menuitem" type="button" title="Import sketches from a PowerPoint (.pptx) deck">Import PowerPoint…</button>
+          <button id="libraryBtn" class="manual-only" role="menuitem" type="button" title="Browse every saved project archived inside this tool">Project Library…</button>
+        </div>
+      </div>
       <input id="projectFileInput" type="file" accept=".json,application/json" hidden />
-      <button id="libraryBtn" class="manual-only" type="button" title="Browse every saved project archived inside this tool (per-style history, available for review and editing)">Library</button>
-      <button id="copyImageBtn" class="export-btn manual-only" type="button" title="Copy the whole board (sketch + lines + labels) to the clipboard as a PNG image (Ctrl/Cmd+Shift+C)">Copy Image</button>
-      <button id="exportPdfBtn" class="export-btn manual-only" type="button">Export PDF</button>
-      <button id="exportExcelBtn" class="export-btn manual-only" type="button" title="Export the measurement spec (POMs, full size run, sketch) as an .xlsx">Export Excel</button>
-    </div>
 
-    <div class="group group-help manual-only">
-      <button id="helpBtn" class="icon-btn" type="button" aria-label="Help & keyboard shortcuts" title="Help & keyboard shortcuts (?)">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M9.2 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.6 2.3-2.6 4" />
-          <circle cx="12" cy="17" r="0.7" fill="currentColor" stroke="none" />
-        </svg>
-      </button>
+      <div id="exportMenuWrap" class="toolbar-menu manual-only">
+        <button id="exportMenuBtn" class="toolbar-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="exportMenuList">Export ▾</button>
+        <div id="exportMenuList" class="toolbar-menu-list" role="menu" hidden>
+          <button id="copyImageBtn" data-key="⌘⇧C" role="menuitem" type="button" title="Copy the whole board as a PNG image">Copy board image</button>
+          <button id="exportPdfBtn" data-key="P" role="menuitem" type="button">Export PDF</button>
+          <button id="exportExcelBtn" data-key="E" role="menuitem" type="button" title="Export the measurement spec — POMs, size run, sketch, as an .xlsx">Export measurement Excel</button>
+        </div>
+      </div>
+
+      <div id="moreMenuWrap" class="toolbar-menu">
+        <button id="moreMenuBtn" class="toolbar-menu-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenuList" aria-label="More Board actions">More ···</button>
+        <div id="moreMenuList" class="toolbar-menu-list" role="menu" hidden>
+          <div class="toolbar-menu-label">View</div>
+          <button id="fitBtn" data-key="F" role="menuitem" type="button">Fit board</button>
+          <button id="togglePanelBtn" data-key="H" role="menuitem" type="button" title="Hide the Measurements panel (H)">Hide Measurements</button>
+          <button id="toggleLabelsBtn" data-key="N" class="manual-only" role="menuitem" type="button" title="Hide the callout numbers on the board">Hide Numbers</button>
+          <div class="toolbar-menu-separator"></div>
+          <div class="toolbar-menu-label">Measurements</div>
+          <button id="setScaleBtn" role="menuitem" type="button" title="Calibrate from a selected line whose real length you know">Set Scale…</button>
+          <button id="clearScaleBtn" role="menuitem" type="button" title="Remove calibration">Clear Scale</button>
+          <button id="sizeRunBtn" role="menuitem" type="button" title="Grade the base spec into a full size run (S–5XL)">Size Run…</button>
+          <button id="gradingBtn" data-key="G" role="menuitem" type="button" title="View and edit the per-size grading rule">Grading Rules…</button>
+          <div class="toolbar-menu-separator"></div>
+          <div class="toolbar-menu-label">Learning</div>
+          <button id="autoLearnToggleBtn" class="auto-only" role="menuitem" type="button" title="Apply learned anchor calibration from past TD corrections">Learning</button>
+          <button id="learningToolbarBtn" class="learning-toolbar-btn manual-only" role="menuitem" type="button" title="Turn learning on, then correct Auto lines and save evidence for reuse">Learning Off</button>
+          <button id="viewLearningDataItem" class="auto-only" role="menuitem" type="button" title="See learned anchor calibration, POM meanings, and style buckets">View learning data…</button>
+          <button id="resetResidualsItem" class="auto-only" role="menuitem" type="button">Reset calibration residuals</button>
+          <button id="resetMeaningsCurrentItem" class="auto-only" role="menuitem" type="button">Forget POM meanings (current style)</button>
+          <button id="resetMeaningsAllItem" class="auto-only" role="menuitem" type="button">Forget POM meanings (all styles)</button>
+          <div class="toolbar-menu-meta">
+            <span id="autoLearnChip" class="auto-status-chip auto-only" title="Recorded TD corrections that feed calibration">0 samples</span>
+            <span id="autoAcceptanceChip" class="auto-status-chip acceptance auto-only" title="Auto-applied POM lines accepted without edit">0/0 accepted</span>
+            <span id="learningToolbarChip" class="auto-status-chip manual-only" title="Recorded learning samples">0 samples</span>
+          </div>
+          <div class="toolbar-menu-separator"></div>
+          <div class="toolbar-menu-label">Board</div>
+          <button id="autoResetAnchorsBtn" class="auto-only" role="menuitem" type="button" title="Re-seed anchors from the current detection">Reset Anchors</button>
+          <button id="autoResetBoardBtn" class="auto-only menu-danger" role="menuitem" type="button" title="Delete all photos and lines and start a new sketch">Reset Board…</button>
+          <button id="clearBtn" class="manual-only menu-danger" role="menuitem" type="button" title="Clear all annotations">Clear all annotations…</button>
+          <button id="helpBtn" class="manual-only" role="menuitem" type="button" aria-label="Help & keyboard shortcuts" title="Help & keyboard shortcuts (?)">Help &amp; shortcuts…</button>
+        </div>
+      </div>
+    </div>
     </div>
   </div>
 
@@ -1781,6 +2958,25 @@
     <div class="board-shell">
       <div id="boardCard" class="board-card no-image is-empty">
         <canvas id="boardCanvas" aria-label="Sketch annotation board"></canvas>
+        <!-- US-038: anchor visibility is a TEST / accuracy tool, deliberately
+             separate from the Measurements panel (which is what gets exported).
+             Floating, non-modal, opened from the Auto toolbar "Anchors" button. -->
+        <div id="anchorManagerPanel" class="anchor-panel" hidden aria-label="Anchor visibility (testing tool)">
+          <div class="anchor-panel-head">
+            <div class="anchor-panel-titles">
+              <div class="anchor-panel-title">Anchors</div>
+              <div class="anchor-panel-sub">Testing &amp; accuracy tool — not exported</div>
+            </div>
+            <button id="anchorManagerCloseBtn" type="button" class="anchor-panel-close" title="Close">×</button>
+          </div>
+          <div class="anchor-panel-actions">
+            <span id="anchorManagerCount" class="anchor-panel-count">0/0 shown</span>
+            <span class="anchor-panel-spacer"></span>
+            <button id="anchorManagerHideAllBtn" type="button" class="anchor-panel-btn">Hide all</button>
+            <button id="anchorManagerShowAllBtn" type="button" class="anchor-panel-btn">Show all</button>
+          </div>
+          <div id="anchorManagerBody" class="anchor-panel-body"></div>
+        </div>
         <div id="boardEmpty" class="board-empty" aria-hidden="true">
           <div class="board-empty-icon">
             <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1807,20 +3003,7 @@
           </div>
         </div>
         <input id="labelEditor" class="label-editor" type="text" autocomplete="off" spellcheck="false" aria-label="Edit label text" />
-        <div id="annContextMenu" class="ann-context-menu" role="menu" aria-label="Line actions">
-          <button id="annCtxReconfirm" type="button" role="menuitem">Reconfirm Meaning</button>
-        </div>
-        <div id="pomMeaningPopover" class="pom-meaning-popover" role="dialog" aria-label="Confirm POM meaning">
-          <div class="pmp-title">What does <strong id="pmpPomLabel">POM ?</strong> measure?</div>
-          <div id="pmpSuggestions" class="pmp-suggestions"></div>
-          <div class="pmp-other">
-            <button id="pmpOtherBtn" type="button" class="pmp-other-btn">+ Add new measurement…</button>
-          </div>
-          <div class="pmp-actions">
-            <button id="pmpSkipBtn" type="button" class="pmp-link-btn">Skip</button>
-          </div>
-        </div>
-        <div id="toast" class="toast"></div>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
       </div>
     </div>
     <aside class="specPanel" aria-label="Measurement list">
@@ -1836,7 +3019,7 @@
       <div class="spec-table-wrap">
         <table class="spec-table">
           <thead>
-            <tr><th class="th-pom"><abbr title="Point of Measure — the standard place on the garment this line records">POM</abbr></th><th>Description</th><th class="th-zh">中文</th><th class="th-val"><abbr title="Measured length of the drawn line — pixels until you Set Scale, then real units">Value</abbr></th><th class="th-size"><abbr title="Target measurement for size L from the spec sheet">Size L</abbr></th><th class="th-size"><abbr title="Optional second sample base for the depth tier (M2–5XL2) in the Excel export — blank derives L2 from Size L">Size L2</abbr></th><th class="th-tol"><abbr title="Tolerance — allowed variance from Size L">TOL</abbr></th></tr>
+            <tr><th class="th-pom"><abbr title="Point of Measure — the standard place on the garment this line records">POM</abbr></th><th>Description</th><th class="th-zh">中文</th><th class="th-val"><abbr title="Measured length of the drawn line — pixels until you Set Scale, then real units">Value</abbr></th><th class="th-size"><abbr title="Target measurement for size L from the spec sheet">Size L</abbr> <span class="th-unit"></span></th><th class="th-size"><abbr title="Optional second sample base for the depth tier (M2–5XL2) in the Excel export — blank derives L2 from Size L">Size L2</abbr> <span class="th-unit"></span></th><th class="th-tol"><abbr title="Tolerance — allowed variance from Size L">TOL</abbr> <span class="th-unit"></span></th></tr>
           </thead>
           <tbody id="specBody"></tbody>
         </table>
@@ -1844,9 +3027,178 @@
       </div>
     </aside>
   </div>
+
+  <!-- US-068 / ADR 0037: the tech pack MAIN PAGE sheet, rebuilt on this tool's
+       primitives so a style can be finished in one place. Style metadata only —
+       no anchor, no POM, no view, so detection never reads it. Sketch images
+       on the sheet are deliberately out of scope for now; the .mp-sketchrow
+       slots are here so they can drop in later without a relayout. Nested
+       inside .app (US-069, ADR 0038) as a peer page of the Board, sharing
+       grid row 3 — see .mp-page's CSS. -->
+  <div id="mainPageOverlay" class="mp-page page-hidden" aria-label="MAIN PAGE sheet">
+  <div class="mp-sheet" id="sheet-main">
+    <div class="mp-sheethead">
+      <div class="mp-shl">Bra Auto Measure</div>
+      <div class="mp-shm">MAIN PAGE</div>
+      <div class="mp-shr">
+        <span class="mp-draft">DRAFT &middot; all measurements TBC</span>
+        <button id="mainPagePrintBtn" class="mp-screen-only" type="button" title="Print just this sheet">Print</button>
+      </div>
+    </div>
+
+    <div class="mp-sheetbar mp-screen-only">
+      <span class="color-add-wrap">
+        <button id="mainPageAddColorBtn" type="button">&#65291; Add colour</button>
+        <span class="color-menu" role="menu"></span>
+      </span>
+      <span class="mp-sbhint">Every cell is editable — click to type. Use &#9662; for suggestions; anything you type off the list is remembered with this project.</span>
+    </div>
+
+    <div class="mp-cols">
+      <div class="mp-col mp-col-fields">
+        <table class="mp-kv" id="mp-fields"></table>
+        <div class="mp-note-label" style="margin-top:10px;">Provenance</div>
+        <div class="mp-note" id="mp-provenance" contenteditable spellcheck="false"></div>
+      </div>
+      <div class="mp-col mp-col-version">
+        <div class="mp-vpanel">
+          <div class="mp-vhead">Lace Version</div>
+          <div class="mp-sketchrow" data-mp-variant="lace"></div>
+          <table class="mp-cwx"></table>
+        </div>
+      </div>
+      <div class="mp-col mp-col-version">
+        <div class="mp-vpanel">
+          <div class="mp-vhead">Solid Version</div>
+          <div class="mp-sketchrow" data-mp-variant="solid"></div>
+          <table class="mp-cwx"></table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script src="opencv_free_api.js?v=free-opencv-20260617-1"></script>
+<div id="constructionPage" class="cc-page page-hidden" aria-label="Construction annotation page">
+  <div class="cc-toolbar">
+    <div class="cc-variant-tabs" role="tablist" aria-label="Construction sheet">
+      <button type="button" data-cc-sheet="solid" class="cc-variant-btn" role="tab" aria-pressed="true">Construction Solid</button>
+      <button type="button" data-cc-sheet="lace" class="cc-variant-btn" role="tab" aria-pressed="false">Construction Lace</button>
+    </div>
+    <span class="cc-hint">Each sheet keeps its Outer/Inner annotation Working Board directly above one synchronized Construction Table.</span>
+  </div>
+  <div class="cc-combined-view">
+    <div class="cc-sheet">
+      <div class="cc-sheet-head">
+        <span class="cc-sheet-brand">Bra Auto Measure</span>
+        <strong id="ccSheetTitle">CONSTRUCTION · SOLID</strong>
+        <span>WORKING SHEET</span>
+      </div>
+      <section class="cc-working-board" aria-label="Construction Annotation Working Board">
+        <div class="cc-section-title">CONSTRUCTION ANNOTATION · WORKING BOARD</div>
+        <div class="cc-board-toolbar cc-screen-only">
+          <button type="button" id="ccAddImageBtn">&#128228; Add Images</button>
+          <button type="button" id="ccPasteImageBtn">&#128203; Paste Image</button>
+          <button type="button" id="ccDeleteImageBtn">Delete Image</button>
+          <button type="button" id="ccImageZoomOutBtn" title="Make the selected image smaller">&minus;</button>
+          <button type="button" id="ccImageZoomInBtn" title="Make the selected image larger">&plus;</button>
+          <span class="cc-toolbar-sep"></span>
+          <span class="cc-view-target-label">Active panel</span>
+          <button type="button" data-cc-active-view="outer" class="cc-view-target" aria-pressed="true">Outer</button>
+          <button type="button" data-cc-active-view="inner" class="cc-view-target" aria-pressed="false">Inner</button>
+          <span class="cc-toolbar-sep"></span>
+          <button type="button" id="ccSelectToolBtn" class="cc-tool-btn cc-tool-active" aria-pressed="true">&#8598; Select</button>
+          <button type="button" id="ccAddCalloutBtn" class="cc-tool-btn" aria-pressed="false">&#65291; Add Callouts</button>
+          <button type="button" id="ccAddLeaderBtn" class="cc-tool-btn" aria-pressed="false">&#65291; Add Leaders</button>
+          <button type="button" id="ccDeleteCalloutBtn">Delete Callout</button>
+          <span id="ccToolHint" class="cc-tool-hint"></span>
+        </div>
+        <input id="ccImageInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+        <canvas id="constructionCanvas" class="cc-working-canvas"></canvas>
+      </section>
+      <section class="cc-table-section" aria-label="Construction Table">
+        <div class="cc-section-title">CONSTRUCTION TABLE</div>
+        <div class="cc-table-wrap" id="ccTableWrap">
+          <table class="cc-table">
+            <thead>
+              <tr><th class="cc-tbl-seq">#</th><th class="cc-tbl-view">View</th><th class="cc-tbl-area">Area</th><th class="cc-tbl-detail">Construction Detail</th><th class="cc-tbl-callout">Callout</th><th class="cc-tbl-del"></th></tr>
+            </thead>
+            <tbody id="ccTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="ccPhraseMenu" class="cc-phrase-menu cc-screen-only" hidden>
+    <input type="search" id="ccPhraseSearch" spellcheck="false" placeholder="Search construction phrases&hellip;">
+    <div class="cc-phrase-list" id="ccPhraseList"></div>
+  </div>
+</div>
+
+<div id="bomPage" class="cc-page page-hidden" aria-label="BOM page">
+  <div class="cc-toolbar">
+    <div class="cc-variant-tabs" role="tablist" aria-label="BOM variant">
+      <button type="button" data-bom-variant="solid" class="cc-variant-btn" role="tab" aria-pressed="true">BOM Solid</button>
+      <button type="button" data-bom-variant="lace" class="cc-variant-btn" role="tab" aria-pressed="false">BOM Lace</button>
+    </div>
+    <span class="cc-hint">Each BOM keeps its Material Key directly above its editable FABRIC/TRIM table.</span>
+  </div>
+  <div id="bomCombinedView" class="bm-combined-view">
+    <div class="bm-sheet bm-combined-sheet">
+      <div id="bomSheetHead"></div>
+      <div id="bomMatkeyView" class="bm-matkey-view">
+        <div class="cc-toolbar">
+          <button type="button" id="bomAddImageBtn">&#128228; Add Images</button>
+          <button type="button" id="bomPasteImageBtn">&#128203; Paste Image</button>
+          <button type="button" id="bomDeleteImageBtn">Delete Image</button>
+          <button type="button" id="bomImageZoomOutBtn" title="Make the selected image smaller">&minus;</button>
+          <button type="button" id="bomImageZoomInBtn" title="Make the selected image larger">&plus;</button>
+          <button type="button" id="bomFitImagesBtn">Fit Images</button>
+          <span class="bm-tool-sep" aria-hidden="true"></span>
+          <button type="button" id="bomSelectToolBtn" class="bm-tool-btn bm-tool-active" aria-pressed="true">&#8598; Select</button>
+          <button type="button" id="bomAddCalloutBtn" class="bm-tool-btn" aria-pressed="false">&#65291; Add Callouts</button>
+          <button type="button" id="bomAddArrowBtn" class="bm-tool-btn" aria-pressed="false" disabled>&#65291; Add Leaders</button>
+          <span class="cc-hint" id="bomToolHint">Select a callout label, leader, or target to adjust it.</span>
+          <input type="file" id="bomImageFileInput" accept="image/*" multiple hidden>
+        </div>
+        <div class="cc-body">
+          <canvas id="bomMatkeyCanvas" class="cc-canvas"></canvas>
+          <div class="cc-side" id="bomMkSidePanel">
+            <div class="cc-side-empty" id="bomMkSideEmpty">Place a callout (or click an existing one) to edit it here.</div>
+            <div class="cc-side-note" id="bomMkSideCallout" hidden>
+              <div class="cc-side-title">Callout <span id="bomMkSideSeq"></span></div>
+              <select id="bomMkRowSelect" aria-label="Linked BOM row"></select>
+              <div class="cc-side-row">
+                <button type="button" id="bomDeleteCalloutBtn">Delete callout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="bomTableView" class="bm-table-view">
+        <div id="bomSections" class="bm-sections"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Print-only (US-073): BOM-SOLID + BOM-LACE factory sheets, re-rendered
+       alongside the screen table by bmRenderPrintSheets(). Never interactive. -->
+  <div id="bomPrintSheets" class="bm-print-sheets" aria-hidden="true"></div>
+</div>
+
+<!-- US-079/ADR 0046: fifth tech-pack tab. The whole tech pack as A4 sheets
+     in contract order, each with an include checkbox; Export Tech Pack
+     writes the enabled sheets as one multi-sheet .xlsx. See
+     src/ui/preview-page.js. -->
+<div id="previewPage" class="cc-page pv-page page-hidden" aria-label="Preview and Export page">
+  <div class="cc-toolbar">
+    <strong class="pv-title">Preview &amp; Export</strong>
+    <span class="cc-hint">Tick the sheets to include, review them top to bottom, then export the tech pack as one Excel workbook.</span>
+    <button type="button" id="pvExportXlsxBtn" class="primary-btn pv-export-btn">&#11015; Export Tech Pack (.xlsx)</button>
+  </div>
+  <div id="pvSheets" class="pv-sheets"></div>
+</div>
+</div>
+
+<script src="vendor/opencv_free_api.js?v=free-opencv-20260617-1"></script>
 <!-- Real opencv.js (WASM embedded, ~11MB) — async so it never blocks first
      paint. Self-hosted from vendor/ (see vendor/README.md for provenance):
      offline stays genuinely offline and the build is version-pinned, which
@@ -1856,8 +3208,8 @@
      falls back to FreeOpenCVAPI. Test harnesses pin the free path
      explicitly with ?freeCv=1. -->
 <script async src="vendor/opencv-4.x-20260603.js?v=opencv-4x-20260603-1"></script>
-<script src="opencv_real_api.js?v=real-opencv-20260708-1"></script>
-<script src="potrace.js?v=potrace-20260617-1"></script>
-<script src="app.js?v=20260707-1"></script>
+<script src="vendor/opencv_real_api.js?v=real-opencv-20260708-1"></script>
+<script src="vendor/potrace.js?v=potrace-20260617-1"></script>
+<script src="app.js?v=2baf1af17aef"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 //
 // renderSpecPanel rebuilds the table on the right side of the board. It
 // renders the Auto Mode draft review section (if drafts are present),
-// then walks the 16 POM template slots in order — using a drawn
+// then walks the 18 POM template slots in order — using a drawn
 // annotation when the label matches, or a read-only template row when
 // nothing has been drawn yet — pairing primary/secondary POMs into one
 // row where the schema defines a pair. Every row exposes editable Size L
@@ -167,8 +167,69 @@
   // (M2–5XL2) in the Excel export — blank derives L2 = L + offset.
   const SPEC_COL_COUNT = 7;
 
+  // ---- US-033: rebuild-skip fingerprint -----------------------------------
+  // renderSpecPanel runs on every updateUI (every click), but most calls
+  // change nothing the table renders from — only the selection moved. The
+  // fingerprint captures the table's actual data inputs; when it matches the
+  // one stored after the last full rebuild, we refresh highlight classes and
+  // stop. Selection is deliberately NOT fingerprinted.
+  //
+  // If you add a panel feature that renders from state not listed here, add
+  // its input to this fingerprint or the panel will go stale.
+  let lastSpecPanelFingerprint = null;
+  const specDepIds = new WeakMap();
+  let specDepNext = 1;
+
+  // Identity marker for heavyweight objects that are replaced wholesale
+  // (detection) rather than mutated — cheaper than stringifying them.
+  function specDepId(obj) {
+    if (!obj || typeof obj !== 'object') return 0;
+    if (!specDepIds.has(obj)) specDepIds.set(obj, specDepNext++);
+    return specDepIds.get(obj);
+  }
+
+  function specPanelFingerprint() {
+    const r = (p) => (p ? [Math.round(p.x * 1000), Math.round(p.y * 1000)] : 0);
+    const annBits = state.annotations.map(a => [
+      a.id, a.seq, a.text, a.type,
+      r(a.start), r(a.end), r(a.midPoint),
+      r(a.control1), r(a.control2), r(a.midHandleIn), r(a.midHandleOut),
+    ]);
+    const draftBits = state.autoMode.draftAnnotations.map(d => [
+      d.id, d.seq, d.text, !!d.tdApproved, !!d.tdEdited, !!d.tdTouched,
+      d.drawability, d.confidence, d.reason, d.uncertainty, d.reviewNotes,
+    ]);
+    const anchors = state.autoMode.anchors;
+    return JSON.stringify([
+      state.appMode,
+      annBits,
+      draftBits,
+      state.pomSpecs,
+      state.customPoms,
+      state.calibration.unitsPerPx, state.calibration.unit,
+      state.hiddenAnnIds, state.hiddenDraftIds,
+      state.images.length,
+      specDepId(state.autoMode.detection),
+      anchors.length, anchors.filter(a => a && a.reviewRequired).length,
+      // US-038 anchor visibility lives in its OWN floating panel, not the
+      // exported Measurements panel — so it is deliberately NOT fingerprinted
+      // here.
+    ]);
+  }
+
+  // US-035: the three numeric column headers name the board's active unit.
+  // Runs before the US-033 fingerprint skip — it's three textContent sets,
+  // and calibration is fingerprinted so full rebuilds stay correct too.
+  function updateSpecUnitHeaders() {
+    const u = '(' + (state.calibration.unit || 'in') + ')';
+    document.querySelectorAll('.specPanel thead .th-unit').forEach((elm) => {
+      if (elm.textContent !== u) elm.textContent = u;
+    });
+  }
+
   function renderSpecPanel() {
     renderSpecCalNote();
+    updateSpecUnitHeaders();
     // Only preserve focus when the user is mid-edit in a text field inside
     // the panel — annotation rows, template rows, and paired rows all
     // qualify. Draft rows have no editable inputs, so Approve / R/O buttons
@@ -179,11 +240,22 @@
     const editingPanelField = active
       && el.specBody.contains(active)
       && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')
-      && !!(active.closest('tr[data-ann-id]') || active.closest('tr[data-pom-key]'));
+      // The Add-POM inline form (US-011) also counts: rebuilding while the
+      // TD types the new POM's name would destroy the half-typed entry.
+      && !!(active.closest('tr[data-ann-id]') || active.closest('tr[data-pom-key]')
+        || active.closest('tr.add-pom-row'));
     if (editingPanelField) {
       updateSpecHighlightOnly();
       return;
     }
+
+    // US-033: nothing the table renders from changed — selection-only call.
+    const fingerprint = specPanelFingerprint();
+    if (fingerprint === lastSpecPanelFingerprint) {
+      updateSpecHighlightOnly();
+      return;
+    }
+
     el.specBody.innerHTML = '';
 
     // Sticky visibility control row: renders whenever there is at least one
@@ -194,8 +266,13 @@
       el.specBody.appendChild(buildVisibilityControlRow());
     }
 
-    // Auto Mode: render the 16-row draft review section first.
+    // Auto Mode: render the 18-row draft review section first.
     const draftPomKeys = new Set();
+    // Construction summary renders whenever a detection exists — the TD
+    // lands in Manual mode after Apply (ADR 0008) and still needs to see
+    // what the detector recognized. No-op on pure manual projects.
+    renderConstructionSummary();
+
     if (state.appMode === 'auto') {
       renderAutoReviewHeader();
       const drafts = state.autoMode.draftAnnotations
@@ -208,7 +285,7 @@
       }
     }
 
-    // Panel is now pre-populated with the 16 POM template rows, so the
+    // Panel is now pre-populated with the 18 POM template rows, so the
     // "No measurements yet" placeholder is redundant.
     el.specEmpty.style.display = 'none';
 
@@ -237,9 +314,26 @@
       }
     }
 
-    // Any additional user-labeled annotations that fall outside 1..16
-    // (custom POMs, renamed labels) render after the template block in
-    // POM-numerical order.
+    // Registered custom POMs (19+, US-011) render template-style rows right
+    // after the core 18 — with or without a drawn line — so a TD can spec them
+    // before drawing. A row with a line behaves exactly like a template POM.
+    const customKeys = (state.customPoms || []).map(p => String(p.pom))
+      .sort((a, b) => Number(a) - Number(b));
+    for (const pomKey of customKeys) {
+      const ann = annByPom.get(pomKey) || null;
+      if (ann) {
+        el.specBody.appendChild(buildSingleSpecRow(ann));
+        renderedAnnIds.add(ann.id);
+      } else if (!draftPomKeys.has(pomKey)) {
+        const tr = buildTemplateSpecRow(pomKey);
+        decorateCustomPomRow(tr, pomKey);
+        el.specBody.appendChild(tr);
+      }
+    }
+
+    // Any additional user-labeled annotations that fall outside 1..18
+    // (unregistered custom labels, renamed labels) render after the template
+    // block in POM-numerical order.
     const extras = anns
       .filter(a => !renderedAnnIds.has(a.id))
       .sort((a, b) => labelSortKey(a) - labelSortKey(b) || a.seq - b.seq);
@@ -248,6 +342,99 @@
       el.specBody.appendChild(buildSingleSpecRow(ann));
       renderedAnnIds.add(ann.id);
     }
+
+    el.specBody.appendChild(buildAddPomRow());
+
+    // Stored only after a COMPLETED rebuild — the focus-guard early return
+    // above must never mark a skipped rebuild as up to date.
+    lastSpecPanelFingerprint = fingerprint;
+  }
+
+  // Small × on a custom POM's template row: removing the registry entry is
+  // only offered while no drawn line carries the number (a row with a line
+  // renders as a normal annotation row, so this control never shows there).
+  function decorateCustomPomRow(tr, pomKey) {
+    tr.classList.add('custom-pom-row');
+    const pomTd = tr.querySelector('td');
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
+    removeBtn.title = 'Remove custom POM ' + pomKey + ' (no line uses it)';
+    removeBtn.style.cssText = 'margin-left:4px;border:0;background:none;color:#b91c1c;cursor:pointer;font-size:12px;';
+    removeBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      state.customPoms = (state.customPoms || []).filter(p => String(p.pom) !== String(pomKey));
+      if (state.pomSpecs) delete state.pomSpecs[String(pomKey)];
+      pushHistoryIfChanged();
+      renderSpecPanel();
+      showToast('Custom POM ' + pomKey + ' removed.');
+    });
+    pomTd.appendChild(removeBtn);
+  }
+
+  // Full-width "+ Add POM" row (US-011 S4): creates the next free number
+  // (17, 18, …) with a TD-entered English name (中文 optional). The new POM
+  // gets a template-style row with full Size L / L2 / TOL / grading / export
+  // parity; the 18-POM rule JSON is never touched (ADR 0018).
+  function buildAddPomRow() {
+    const tr = document.createElement('tr');
+    tr.className = 'add-pom-row';
+    const td = document.createElement('td');
+    td.colSpan = SPEC_COL_COUNT;
+    td.style.cssText = 'text-align:center;padding:6px;';
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'picker-btn';
+    addBtn.textContent = '+ Add POM';
+    addBtn.title = 'Add a style-specific POM beyond the standard 16';
+    addBtn.addEventListener('click', () => {
+      const nextNum = String(nextCustomPomNumber());
+      td.innerHTML = '';
+      const form = document.createElement('span');
+      form.style.cssText = 'display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;';
+      const label = document.createElement('span');
+      label.textContent = 'POM ' + nextNum + ':';
+      label.style.cssText = 'font-weight:600;font-size:12px;';
+      const enInput = document.createElement('input');
+      enInput.type = 'text';
+      enInput.placeholder = 'Description - English (required)';
+      enInput.style.cssText = 'width:220px;font-size:12px;padding:3px 6px;';
+      const zhInput = document.createElement('input');
+      zhInput.type = 'text';
+      zhInput.placeholder = '中文 (optional)';
+      zhInput.style.cssText = 'width:140px;font-size:12px;padding:3px 6px;';
+      const okBtn = document.createElement('button');
+      okBtn.type = 'button';
+      okBtn.className = 'picker-btn';
+      okBtn.textContent = 'Add';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.className = 'picker-btn';
+      cancelBtn.textContent = 'Cancel';
+      okBtn.addEventListener('click', () => {
+        const en = enInput.value.trim();
+        if (!en) { showToast('Enter an English description for the new POM.'); enInput.focus(); return; }
+        if (!Array.isArray(state.customPoms)) state.customPoms = [];
+        state.customPoms.push({ pom: nextNum, en, zh: zhInput.value.trim() });
+        pushHistoryIfChanged();
+        renderSpecPanel();
+        showToast('POM ' + nextNum + ' added — label a drawn line "' + nextNum + '" to measure it.');
+      });
+      cancelBtn.addEventListener('click', () => renderSpecPanel());
+      enInput.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') okBtn.click(); });
+      zhInput.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') okBtn.click(); });
+      form.appendChild(label);
+      form.appendChild(enInput);
+      form.appendChild(zhInput);
+      form.appendChild(okBtn);
+      form.appendChild(cancelBtn);
+      td.appendChild(form);
+      enInput.focus();
+    });
+    td.appendChild(addBtn);
+    tr.appendChild(td);
+    return tr;
   }
 
   // ---- Size L / TOL cell helpers ----
@@ -286,6 +473,41 @@
     return !!(s && s.median != null && s.n > 0);
   }
 
+  // ---- Mode B measured suggestions (ADR 0033, flagged OFF by default) ----
+  // When Mode B is on, a sketch-reliable POM's Size-L suggestion becomes the
+  // library×sketch FUSED value derived from the detected anchors (fusion.js) —
+  // still a suggestion, never assigned or persisted. Memoized by a cheap anchor
+  // signature so getPomSpec stays cheap across a full panel rebuild.
+  let _measuredCache = { sig: null, map: null };
+  function measuredSuggestionsMap() {
+    if (typeof modeBAnyEnabled !== 'function' || !modeBAnyEnabled()) return null;
+    const am = (state && state.autoMode) || {};
+    const anchors = Array.isArray(am.anchors) ? am.anchors : [];
+    const det = am.detection || null;
+    if (!anchors.length || !det) return null;
+    const first = anchors[0] || {};
+    const sig = anchors.length + ':' + (det.naturalWidth || 0) + 'x' + (det.naturalHeight || 0) + ':' + (first.kind || '') + first.x;
+    if (_measuredCache.sig === sig) return _measuredCache.map;
+    let map = null;
+    try { map = mbComputeMeasuredSuggestions(anchors, POM_SUGGESTIONS, { width: det.naturalWidth, height: det.naturalHeight }); }
+    catch (_e) { map = null; }
+    _measuredCache = { sig, map };
+    return map;
+  }
+  // Gated measured entry for a POM: only a coherent, positive numeric proposal
+  // surfaces; a conflicted (review/outlier) POM returns null so the panel falls
+  // back to the library value rather than showing a wrong number.
+  function measuredFor(pomKey) {
+    const key = String(pomKey == null ? '' : pomKey).trim();
+    // Per-POM roll-out gate (US-041): only a globally-flagged or promoted POM
+    // surfaces a measured value.
+    if (typeof modeBEnabledForPom === 'function' && !modeBEnabledForPom(key)) return null;
+    const map = measuredSuggestionsMap();
+    if (!map) return null;
+    const m = map[key];
+    return (m && m.decision === 'ESTIMATED_SUGGESTION' && Number.isFinite(Number(m.value_in)) && Number(m.value_in) > 0) ? m : null;
+  }
+
   // Corpus inches -> active display unit (no-op for the default 'in').
   function suggestionToDisplay(inchValue) {
     if (inchValue == null) return null;
@@ -299,6 +521,40 @@
     if (v == null) return '';
     return String(Math.round(v * 1000) / 1000);
   }
+
+  // ---- US-048: imperial fraction display for spec numbers ----
+  // Size L / Size L2 / TOL are shown (panel) and exported (TOL) as reduced
+  // fractions in INCH mode — the house spec convention (0.375 → 3/8, 5.5 →
+  // 5 1/2, 2.25 → 2 1/4). cm mode keeps decimals. A value is fractionised only
+  // when it lands EXACTLY on the 1/16 grid, so an odd/typed value (9.9, a raw
+  // median) is shown verbatim rather than misrepresented as a near fraction.
+  function gcdInt(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = b; b = a % b; a = t; } return a || 1; }
+  function decimalToFraction(value) {
+    const DEN = 16;
+    const v = Math.max(0, Number(value) || 0);
+    const whole = Math.floor(v + 1e-9);
+    const num = Math.round((v - whole) * DEN);
+    if (num >= DEN) return String(whole + 1);
+    if (num === 0) return String(whole);
+    const g = gcdInt(num, DEN);
+    const frac = (num / g) + '/' + (DEN / g);
+    return whole > 0 ? (whole + ' ' + frac) : frac;
+  }
+  // Display string for a stored spec value: a fraction when on-grid in inches,
+  // else the value verbatim. Preserves a leading "± " (TOL may carry one).
+  function inchesToFractionOrDecimal(str) {
+    const raw = String(str == null ? '' : str).trim();
+    if (!raw) return raw;
+    if (state.calibration.unit !== 'in') return raw; // cm → decimal as-is
+    const pm = /^±\s*/.test(raw) ? '± ' : '';
+    const body = raw.replace(/^±\s*/, '');
+    const n = parseSpecNumber(body);
+    if (n == null || n < 0) return raw;
+    const scaled = n * 16;
+    if (Math.abs(scaled - Math.round(scaled)) > 1e-6) return raw; // off 1/16 grid → decimal
+    return pm + decimalToFraction(n);
+  }
+  function specNumEq(a, b) { return a != null && b != null && Math.abs(a - b) < 1e-9; }
 
   // Parse a fraction / mixed-number / decimal string ('1/4', '5 1/2', '0.25').
   // TOL defaults arrive as fractions but the tool's inputs are decimal.
@@ -314,8 +570,12 @@
     return Number.isFinite(n) ? n : null;
   }
 
-  // Formatted Size L suggestion ('' when the POM has no library data).
+  // Formatted Size L suggestion ('' when the POM has no library data). With
+  // Mode B on, a gated measured (library×sketch fused) value takes precedence
+  // over the raw library median; both remain TD-owned suggestions.
   function suggestedSizeL(pomKey) {
+    const m = measuredFor(pomKey);
+    if (m) return formatSuggestion(m.value_in);
     const s = getPomSuggestion(pomKey);
     if (!s || s.median == null || !(s.n > 0)) return '';
     return formatSuggestion(s.median);
@@ -364,8 +624,11 @@
     // sizeL / tol store no override when blank OR equal to the library
     // suggestion, so an accepted suggestion stays live and a regenerated corpus
     // can still evolve it (matches en / zh handling above).
-    else if (field === 'sizeL') clears = (trimmed === '' || trimmed === suggestedSizeL(key));
-    else if (field === 'tol') clears = (trimmed === '' || trimmed === suggestedTol(key));
+    // US-048: compare NUMERICALLY, so accepting a suggestion still counts as
+    // "no override" whether the field shows it as a fraction (5 1/2) or a
+    // decimal (5.5) — both parse to the same number.
+    else if (field === 'sizeL') clears = (trimmed === '' || trimmed === suggestedSizeL(key) || specNumEq(parseSpecNumber(trimmed), parseSpecNumber(suggestedSizeL(key))));
+    else if (field === 'tol') clears = (trimmed === '' || trimmed === suggestedTol(key) || specNumEq(parseSpecNumber(trimmed), parseSpecNumber(suggestedTol(key))));
     else clears = (trimmed === '');
     if (clears) {
       if (next[field] == null) return false;
@@ -389,17 +652,78 @@
     return 'spec-td-tol';
   }
 
+  // US-031: rapid arrow-steps in a Size L / L2 / TOL field are one "burst" —
+  // each step writes the spec immediately (so the tolerance chip tracks it),
+  // but history commits once, after the last press. renderSpecPanel's
+  // editing-field guard keeps the commit from rebuilding under the caret.
+  const SPEC_STEP_COMMIT_MS = 700;
+  let specStepCommitTimer = null;
+
+  function scheduleSpecStepCommit() {
+    if (specStepCommitTimer) clearTimeout(specStepCommitTimer);
+    specStepCommitTimer = setTimeout(() => {
+      specStepCommitTimer = null;
+      pushHistoryIfChanged();
+    }, SPEC_STEP_COMMIT_MS);
+  }
+
   function buildSpecInputCell(pomKey, field, placeholder) {
     const td = document.createElement('td');
     td.className = specFieldTdClass(field);
     const input = document.createElement('input');
     input.type = 'text';
     input.className = field === 'zh' ? 'spec-zh' : 'spec-val';
-    input.value = getPomSpec(pomKey)[field];
+    // US-048: Size L / L2 / TOL display as imperial fractions (inch mode); zh
+    // is a name field, shown verbatim.
+    const rawFieldVal = getPomSpec(pomKey)[field];
+    input.value = (field === 'sizeL' || field === 'sizeL2' || field === 'tol')
+      ? inchesToFractionOrDecimal(rawFieldVal)
+      : rawFieldVal;
     input.placeholder = placeholder || '';
     input.addEventListener('change', () => {
       if (setPomSpec(pomKey, field, input.value)) pushHistoryIfChanged();
     });
+    // US-050: focusing selects the whole value, so one click + type REPLACES a
+    // pre-filled library value — no manual clearing. Deferred a tick so a click
+    // that positions the caret doesn't immediately deselect.
+    input.addEventListener('focus', () => { setTimeout(() => { try { input.select(); } catch (_) { /* noop */ } }, 0); });
+    // US-031: ArrowUp/Down steps the numeric spec fields by 1/8 — the Excel
+    // export's fraction grain — or 0.1 in cm mode; Shift = a whole unit.
+    if (field === 'sizeL' || field === 'sizeL2' || field === 'tol') {
+      // US-035: name the unit in the tooltip, and mark unparseable values
+      // instead of ignoring them silently. Refreshed live while typing.
+      const unitTitle = () => {
+        const u = state.calibration.unit || 'in';
+        if (field === 'tol') return 'Tolerance in ' + u + ' — allowed ± variance from Size L. Decimal (0.25) or fraction (1/4).';
+        if (field === 'sizeL2') return 'Optional Size L2 sample base in ' + u + ' for the depth tier — blank derives it from Size L.';
+        return 'Size L target in ' + u + '. Decimal (12.5) or fraction (12 1/2).';
+      };
+      const refreshValidity = () => {
+        const raw = input.value.trim();
+        const bad = raw !== '' && parseSpecNumber(raw) == null;
+        input.classList.toggle('spec-invalid', bad);
+        input.title = bad
+          ? 'Not a number — this value is ignored. Enter a decimal (12.5) or a fraction (12 1/2).'
+          : unitTitle();
+      };
+      input.addEventListener('input', refreshValidity);
+      refreshValidity();
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'ArrowUp' && ev.key !== 'ArrowDown') return;
+        ev.preventDefault();
+        const unitStep = state.calibration.unit === 'cm' ? 0.1 : 0.125;
+        const step = (ev.shiftKey ? 1 : unitStep) * (ev.key === 'ArrowUp' ? 1 : -1);
+        const base = parseSpecNumber(input.value);
+        const next = Math.max(0, Math.round(((base == null ? 0 : base) + step) * 1000) / 1000);
+        // Write the decimal to the store, but keep the field showing a fraction
+        // (inch mode) so stepping by 1/8 reads as 3/8 → 1/2 → 5/8, not decimals.
+        if (setPomSpec(pomKey, field, String(next))) scheduleSpecStepCommit();
+        input.value = inchesToFractionOrDecimal(String(next));
+        const tr = input.closest('tr');
+        if (tr && tr.dataset.annId) refreshMeasuredValueForAnnotation(Number(tr.dataset.annId));
+        refreshValidity();
+      });
+    }
     td.appendChild(input);
     return td;
   }
@@ -434,6 +758,14 @@
     const input = td.querySelector('input');
     if (input) input.classList.add('is-suggested');
     if (field === 'sizeL') {
+      // Mode B: a fused sketch measurement is a distinct, estimated suggestion.
+      const m = measuredFor(key);
+      if (m) {
+        appendSuggestBadge(td, 'measured · ' + (m.confidence || 'low'), 'library',
+          'Sketch measurement (Mode B, estimated) — detected anchors × view-local scale, fused toward the library median'
+          + ' (k ' + m.k + ', residual ' + (Math.round((m.residual || 0) * 1000) / 10) + '%, library ' + m.library_in + ' in). Type to override.');
+        return;
+      }
       const conf = sug.confidence || 'very_low';
       const rangeIn = (sug.min != null && sug.max != null) ? ' · range ' + sug.min + '–' + sug.max + ' in' : '';
       appendSuggestBadge(td, 'library · ' + conf, 'library',
@@ -565,9 +897,20 @@
 
   // Tolerant numeric parse for a Size L / TOL field (leading number wins;
   // blank / non-numeric → null so the caller can treat it as "not set").
+  // US-035: also accepts the fraction forms TDs actually type — "1/2",
+  // "12 1/2", "12-1/2" — so a typed fraction behaves like its decimal
+  // everywhere this parser is used (chip, readout, stepping, size run,
+  // Excel export L2).
   function parseSpecNumber(raw) {
     if (raw == null) return null;
-    const n = parseFloat(String(raw).trim());
+    const s = String(raw).trim();
+    if (!s) return null;
+    const frac = s.match(/^(\d+(?:\.\d+)?)?[\s-]*(\d+)\s*\/\s*(\d+)$/);
+    if (frac && parseInt(frac[3], 10) !== 0) {
+      const whole = frac[1] ? parseFloat(frac[1]) : 0;
+      return whole + parseInt(frac[2], 10) / parseInt(frac[3], 10);
+    }
+    const n = parseFloat(s);
     return Number.isFinite(n) ? n : null;
   }
 
@@ -593,6 +936,15 @@
     return out;
   }
 
+  // Signed Δ against Size L with its ✓ / ✗ verdict — one formatter shared by
+  // the panel's Value-cell chip and the on-canvas adjustment readout
+  // (US-029), so the two can never disagree.
+  function specDeltaText(ev) {
+    if (!ev || !ev.status) return '';
+    const signed = (ev.delta > 0 ? '+' : ev.delta < 0 ? '−' : '±') + formatMeasure(Math.abs(ev.delta));
+    return ev.status === 'in' ? signed + ' ✓' : ev.status === 'out' ? signed + ' ✗' : signed;
+  }
+
   function buildMeasuredValueCell(ann, pomKey) {
     const td = document.createElement('td');
     td.className = 'spec-td-value';
@@ -613,7 +965,7 @@
       const signed = (ev.delta > 0 ? '+' : ev.delta < 0 ? '−' : '±') + formatMeasure(Math.abs(ev.delta));
       const chip = document.createElement('span');
       chip.className = 'spec-delta spec-delta-' + (ev.status === 'in' ? 'in' : ev.status === 'out' ? 'out' : 'neutral');
-      chip.textContent = ev.status === 'in' ? signed + ' ✓' : ev.status === 'out' ? signed + ' ✗' : signed;
+      chip.textContent = specDeltaText(ev);
       td.appendChild(chip);
       if (ev.status === 'in') td.classList.add('spec-in');
       else if (ev.status === 'out') td.classList.add('spec-out');
@@ -856,6 +1208,217 @@
     el.specCal.innerHTML = note;
   }
 
+  // Read-only "Detected from sketch" summary (v1). Surfaces the construction
+  // facts the detector already knows — detected views, the front-closure
+  // placket signature (ADR 0023 junction tier), the cup model, and how many
+  // anchors are flagged for review — so the TD sees what the tool recognized
+  // before reading the 18 draft rows. Display-only in this slice; confirming
+  // these as library style-feature evidence (LIBRARY_CONSTRUCTION_TAXONOMY.md
+  // Tier A) is a later slice. Absence of the placket signature is reported as
+  // "not found", never as a claim about the back closure.
+  // ---- US-038: Anchors visibility manager (its OWN floating panel) -------
+  // Deliberately NOT part of the Measurements panel: measurements are the
+  // exported spec; anchors are a testing / accuracy-checking aid that never
+  // exports. The panel floats over the board (non-modal) and is opened from
+  // the Auto toolbar "Anchors" button. Offers Hide all / Show all, per-group
+  // hide, per-anchor hide, and Isolate ("show only one"); a row click selects
+  // the pin on the canvas.
+
+  function anchorGroupLabel(group) {
+    const map = {
+      axis: 'Center / cradle', band: 'Band', chest: 'Chest', 'inner-cup': 'Cup',
+      side: 'Side seam', apex: 'Apex', strap: 'Straps', back: 'Back',
+      neckline: 'Neckline (17)', armhole: 'Armhole (18)',
+    };
+    return map[group] || group;
+  }
+
+  function anchorMiniBtn(label, title, onClick, extraCss) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.title = title;
+    b.style.cssText = 'border:1px solid #cbd5e1;background:#fff;border-radius:5px;'
+      + 'cursor:pointer;font-size:11px;line-height:1;padding:2px 6px;color:#334155;'
+      + (extraCss || '');
+    b.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
+    return b;
+  }
+
+  function isAnchorManagerOpen() {
+    return !!(el.anchorManagerPanel && !el.anchorManagerPanel.hidden);
+  }
+
+  // Toolbar entry point: open the floating anchor panel (Auto Mode only).
+  function openAnchorManager() {
+    if (state.appMode !== 'auto') {
+      showToast('Anchor management is available in Auto Mode.');
+      return;
+    }
+    if (!state.autoMode.anchors.length) {
+      showToast('Run Detect Sketch first to place anchors.');
+      return;
+    }
+    if (!el.anchorManagerPanel) return;
+    el.anchorManagerPanel.hidden = false;
+    if (el.autoManageAnchorsBtn) el.autoManageAnchorsBtn.classList.add('active');
+    renderAnchorManagerPanel();
+  }
+
+  function closeAnchorManager() {
+    if (!el.anchorManagerPanel) return;
+    el.anchorManagerPanel.hidden = true;
+    if (el.autoManageAnchorsBtn) el.autoManageAnchorsBtn.classList.remove('active');
+  }
+
+  function toggleAnchorManager() {
+    if (isAnchorManagerOpen()) closeAnchorManager();
+    else openAnchorManager();
+  }
+
+  // Rebuild the floating panel body from the current anchor set + hidden
+  // state. Called on open, on every in-panel action, and from updateUI while
+  // open (so a fresh Detect / canvas pin selection stays in sync).
+  function renderAnchorManagerPanel() {
+    const panel = el.anchorManagerPanel;
+    const body = el.anchorManagerBody;
+    if (!panel || !body) return;
+    // Anchors only exist in Auto Mode; auto-close if we left it or lost them.
+    if (state.appMode !== 'auto' || !state.autoMode.anchors.length) {
+      closeAnchorManager();
+      return;
+    }
+    const anchors = state.autoMode.anchors;
+    const nameByKind = Object.create(null);
+    const groupByKind = Object.create(null);
+    const groupOrder = [];
+    for (const schema of ANCHOR_SCHEMA) {
+      nameByKind[schema.kind] = schema.name || schema.kind;
+      groupByKind[schema.kind] = schema.group || 'other';
+      if (groupOrder.indexOf(schema.group) === -1) groupOrder.push(schema.group);
+    }
+    const hidden = (k) => isAnchorHidden(k);
+    const visibleCount = anchors.filter(a => !hidden(a.kind)).length;
+    if (el.anchorManagerCount) {
+      el.anchorManagerCount.textContent = visibleCount + '/' + anchors.length + ' shown';
+    }
+
+    body.innerHTML = '';
+    for (const group of groupOrder) {
+      const groupAnchors = anchors.filter(a => groupByKind[a.kind] === group);
+      if (!groupAnchors.length) continue;
+      const groupKinds = groupAnchors.map(a => a.kind);
+      const groupAllHidden = groupKinds.every(hidden);
+
+      const gRow = document.createElement('div');
+      gRow.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 10px;'
+        + 'font-size:11.5px;color:#475569;background:#f8fafc;border-top:1px solid #eef2f7;';
+      const gName = document.createElement('span');
+      gName.style.fontWeight = '600';
+      gName.textContent = anchorGroupLabel(group) + ' (' + groupAnchors.length + ')';
+      gRow.appendChild(gName);
+      const gSpacer = document.createElement('span'); gSpacer.style.flex = '1'; gRow.appendChild(gSpacer);
+      gRow.appendChild(anchorMiniBtn(groupAllHidden ? 'Show' : 'Hide',
+        groupAllHidden ? 'Show this group' : 'Hide this group',
+        () => { toggleAnchorGroup(groupKinds); renderAnchorManagerPanel(); }));
+      body.appendChild(gRow);
+
+      for (const anchor of groupAnchors) {
+        const isHidden = hidden(anchor.kind);
+        const aRow = document.createElement('div');
+        aRow.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 10px 4px 22px;'
+          + 'font-size:12px;border-top:1px solid #f4f6fa;'
+          + (state.autoMode.anchorSelectedId === anchor.id ? 'background:#eff6ff;' : '')
+          + (isHidden ? 'opacity:.5;' : '');
+        const dot = document.createElement('span');
+        dot.style.cssText = 'width:8px;height:8px;border-radius:50%;flex:0 0 auto;'
+          + 'background:' + anchorFillForConfidence(anchor.confidence) + ';'
+          + 'border:1px solid rgba(15,23,42,.5);';
+        aRow.appendChild(dot);
+        const aName = document.createElement('span');
+        aName.textContent = nameByKind[anchor.kind] || anchor.kind;
+        aName.style.cssText = 'color:#0f172a;cursor:pointer;';
+        aName.title = anchor.name + ' — click to select on the sketch';
+        aRow.appendChild(aName);
+        if (anchor.reviewRequired) {
+          const flag = document.createElement('span');
+          flag.textContent = 'review';
+          flag.style.cssText = 'font-size:10px;color:#b45309;background:#fffbeb;'
+            + 'border:1px solid #fde68a;border-radius:4px;padding:0 4px;';
+          aRow.appendChild(flag);
+        }
+        const aSpacer = document.createElement('span'); aSpacer.style.flex = '1'; aRow.appendChild(aSpacer);
+        aRow.appendChild(anchorMiniBtn('◎', 'Isolate — show only this anchor',
+          () => { isolateAnchor(anchor.kind); renderAnchorManagerPanel(); }));
+        aRow.appendChild(anchorMiniBtn(isHidden ? '+' : '×',
+          isHidden ? 'Show this anchor' : 'Hide this anchor',
+          () => { toggleAnchorHidden(anchor.kind); renderAnchorManagerPanel(); },
+          isHidden ? 'color:#2563eb;' : 'color:#b91c1c;'));
+        aName.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (isHidden) return;
+          state.autoMode.anchorSelectedId = anchor.id;
+          updateUI();
+          requestRender();
+          renderAnchorManagerPanel();
+        });
+        body.appendChild(aRow);
+      }
+    }
+  }
+
+  function renderConstructionSummary() {
+    const det = state.autoMode.detection;
+    if (!det) return;
+
+    const parts = [];
+
+    const roleLabels = { front_outer: 'front outer', front_inner: 'front inner', back: 'back' };
+    const seen = [];
+    for (const v of (Array.isArray(det.views) ? det.views : [])) {
+      const label = roleLabels[v && (v.viewRole || v.role)];
+      if (label && !seen.includes(label)) seen.push(label);
+    }
+    if (seen.length) {
+      parts.push('<b>Views:</b> ' + escapeHtml(seen.join(' + '))
+        + (det.viewRoleReviewRequired
+          ? ' <span style="color:#b45309;font-weight:600">— roles need review</span>' : ''));
+    }
+
+    parts.push('<b>Closure:</b> ' + (det.cradleCfTopJunction
+      ? 'front-closure signature (placket interrupts the CF seam) — '
+        + '<span style="color:#b45309;font-weight:600">confirm</span>'
+      : 'no front-closure signature found'));
+
+    const cm = det.cupModel;
+    if (cm) {
+      const bits = [cm.side === 1 ? 'right cup' : (cm.side === -1 ? 'left cup' : 'cup')];
+      if (cm.visibility) bits.push(cm.visibility + ' visibility');
+      if (typeof cm.contourConfidence === 'number') bits.push('contour ' + cm.contourConfidence.toFixed(2));
+      if (typeof cm.seamConfidence === 'number') bits.push('seam ' + cm.seamConfidence.toFixed(2));
+      parts.push('<b>Cup:</b> ' + escapeHtml(bits.join(' · ')));
+    }
+
+    const anchors = state.autoMode.anchors;
+    if (anchors.length) {
+      const revCount = anchors.filter(a => a && a.reviewRequired).length;
+      parts.push('<b>Anchors:</b> ' + (revCount ? revCount + ' flagged for review' : 'none flagged'));
+    }
+
+    const tr = document.createElement('tr');
+    tr.className = 'draft-row';
+    tr.style.background = 'transparent';
+    const td = document.createElement('td');
+    td.colSpan = SPEC_COL_COUNT;
+    td.innerHTML = '<div class="construction-summary" style="background:#f0f9ff;'
+      + 'border:1px solid #bae6fd;color:#0c4a6e;border-radius:6px;padding:6px 8px;'
+      + 'margin:4px 0;font-size:12px;line-height:1.5">'
+      + '<b>Detected from sketch</b><br>' + parts.join('<br>')
+      + '</div>';
+    tr.appendChild(td);
+    el.specBody.appendChild(tr);
+  }
+
   function renderAutoReviewHeader() {
     const auto = state.autoMode;
     const drafts = auto.draftAnnotations;
@@ -1039,6 +1602,22 @@
     if (active && el.specBody.contains(active) && typeof active.blur === 'function') {
       active.blur();
     }
+  }
+
+  // US-028: live measured value. While an endpoint is dragged or key-nudged,
+  // replace just that line's Value cell — a full renderSpecPanel rebuild per
+  // mousemove/keystroke would steal focus from other panel fields and is
+  // needlessly heavy. buildMeasuredValueCell keeps value, tolerance chip,
+  // tooltip, and the 📏 re-calibrate button in one code path. The commit-time
+  // renderSpecPanel (via pushHistoryIfChanged → updateUI) stays the backstop.
+  function refreshMeasuredValueForAnnotation(annId) {
+    const ann = state.annotations.find(a => a.id === annId) || null;
+    if (!ann) return; // Auto-Mode drafts have no annotation spec row — no-op.
+    const tr = el.specBody.querySelector('tr[data-ann-id="' + ann.id + '"]');
+    if (!tr) return;
+    const oldTd = tr.querySelector('.spec-td-value');
+    if (!oldTd) return;
+    tr.replaceChild(buildMeasuredValueCell(ann, getLabelText(ann)), oldTd);
   }
 
   function updateSpecHighlightOnly() {

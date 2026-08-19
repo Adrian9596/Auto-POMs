@@ -109,8 +109,20 @@
 
     // ---- Edge: commit detection + seed anchors + notify ----
     state.autoMode.detection = detection;
-    maybePromptForViewRoles(detection);
-    state.autoMode.anchors = seedAnchorsFromDetection(detection, sourceImage);
+    // US-039: recognize EXTRA board photos (beyond the single detection source)
+    // as auxiliary views — e.g. a front-inner cutaway the TD added as its own
+    // image. Recognition + labeling ONLY: measurement stays on the source image
+    // and no POM moves to these views (ADR 0011).
+    detection.auxViews = await buildAuxViews(sourceImage);
+    // When view-role classification is uncertain — e.g. a 3-panel board where
+    // "back" vs "front_inner" is genuinely ambiguous from the sketch — let the
+    // TD confirm/correct the roles BEFORE anchors are seeded, so a corrected
+    // front/back/inner assignment places anchors on the right panels. Awaited so
+    // seeding uses the confirmed roles. In test/label modes it returns
+    // immediately (see maybePromptForViewRoles) and seeding proceeds with the
+    // auto roles, so headless suites are unaffected.
+    await maybePromptForViewRoles(detection, sourceImage);
+    seedAndRelocateAnchors(detection, sourceImage);
     recordAutoTelemetryEvent('anchor_seeded', {
       sourceImageId: sourceImage.id,
       count: state.autoMode.anchors.length,
@@ -118,6 +130,7 @@
     });
     state.autoMode.anchorSelectedId = null;
     state.autoMode.anchorsHidden = false;
+    state.autoMode.hiddenAnchorKinds = []; // US-038: fresh detect shows all anchors
     state.autoMode.status = 'detected';
     state.autoMode.lastError = null;
     recordAutoTelemetryEvent('detect_finished', {
@@ -133,6 +146,117 @@
       ? ' + ' + detection.contourCount + ' contours (' + detection.traceDurationMs + 'ms)'
       : '';
     showToast('Detected sketch (' + detection.durationMs + 'ms)' + traceInfo + '. Anchors seeded — drag any that look wrong, then Generate POM Drafts.');
+  }
+
+  // Seed anchors from the committed detection, then apply the US-049 relocation
+  // that moves the cup / neckline / armhole POMs (9/10/17/18) onto a SEPARATE
+  // front-inner PHOTO's own seeded anchors when one was recognized as an aux
+  // view. (An in-image front-inner PANEL — a 3-view board in a single photo — is
+  // handled inside seedAnchorsFromDetection itself, which transfers those anchors
+  // from the front-outer box onto the inner box.) Extracted so it can re-run
+  // after the TD confirms/corrects view roles, re-placing anchors to follow the
+  // corrected front/back/inner assignment.
+  function seedAndRelocateAnchors(detection, sourceImage) {
+    state.autoMode.anchors = seedAnchorsFromDetection(detection, sourceImage);
+    const innerViewSeed = (detection.auxViews || [])
+      .find(v => v && v.viewRole === 'front_inner' && Array.isArray(v.anchors) && v.anchors.length);
+    if (innerViewSeed) {
+      const MOVED_ANCHOR_KINDS = ['inner-cup-top', 'inner-cup-bottom', 'inner-cup-left', 'inner-cup-right', '171', '172', '181', '182'];
+      const innerByKind = Object.create(null);
+      for (const an of innerViewSeed.anchors) innerByKind[an.kind] = an;
+      state.autoMode.anchors = state.autoMode.anchors.map(an =>
+        (MOVED_ANCHOR_KINDS.indexOf(an.kind) >= 0 && innerByKind[an.kind]) ? innerByKind[an.kind] : an);
+    }
+  }
+
+  // US-039: recognize EXTRA board photos as auxiliary views. The main pipeline
+  // detects/measures ONE source image; a TD may add a front-inner cutaway (or
+  // other reference) as its OWN photo. Each such photo becomes one aux view: an
+  // ink bbox normalized to that photo (so it follows pans / zooms / resizes),
+  // with a display role. This is recognition + labeling only — no anchors, no
+  // POM placement, no change to the measurement detection (ADR 0011: the inner
+  // cutaway is a bonus, never a precondition). The primary image already holds
+  // front_outer + back, so the first extra photo defaults to the front-inner
+  // view; further extras stay 'unknown' for the TD to interpret.
+  async function buildAuxViews(sourceImage) {
+    if (!sourceImage) return [];
+    const others = state.images.filter(
+      (im) => im && im.id !== sourceImage.id && im.img && im.img.complete
+    );
+    const auxViews = [];
+    let innerAssigned = false;
+    for (const im of others) {
+      let box = { x: 0, y: 0, width: 1, height: 1 }; // fallback: whole photo
+      let det = null;
+      try {
+        // singleView: an aux photo is ONE garment view (front-inner cutaway),
+        // so detect it without the panel split — otherwise its gore/shading
+        // alleys split it into 3 boxes and the cup/neckline/armhole anchors
+        // seed off one cup instead of the whole, centered garment.
+        det = detectSketchFromImage(im, { debug: false, singleView: true });
+        // Union of every detected view box = the full drawn extent, so the
+        // label hugs the whole sketch even when an extra photo has more than
+        // one panel (or its cups split at the gore). detection.bbox alone is
+        // only the primary view's bounds, so it can undercover. Fall back to
+        // bbox, then to the whole photo.
+        const views = det && Array.isArray(det.viewBoxes) ? det.viewBoxes.filter(Boolean) : [];
+        if (views.length) {
+          const minX = Math.min(...views.map((v) => v.x));
+          const minY = Math.min(...views.map((v) => v.y));
+          const maxX = Math.max(...views.map((v) => v.x + v.width));
+          const maxY = Math.max(...views.map((v) => v.y + v.height));
+          if (maxX > minX && maxY > minY) box = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+        } else if (det && det.bbox && det.bbox.width > 0 && det.bbox.height > 0) {
+          box = { x: det.bbox.x, y: det.bbox.y, width: det.bbox.width, height: det.bbox.height };
+        }
+      } catch (err) {
+        console.warn('[Auto Mode] aux-view bbox failed; boxing whole image:', err);
+      }
+      const viewRole = innerAssigned ? 'unknown' : 'front_inner';
+      innerAssigned = true;
+      const auxView = {
+        sourceImageId: im.id,
+        aux: true,
+        viewRole,
+        x: box.x,
+        y: box.y,
+        width: box.width,
+        height: box.height,
+      };
+      // US-049: the front-inner view is a MEASUREMENT surface for the cup /
+      // neckline / armhole POMs (9, 10, 17, 18 — POM 8 stays on front-outer,
+      // ADR 0011 amendment). Persist its detection (minus the heavy ink mask,
+      // session-only) plus a full anchor set seeded on THIS photo, so
+      // generatePOMDraftsFromAnchors can run a second pass that places those
+      // POMs on the inner view.
+      if (viewRole === 'front_inner' && det && det.bbox) {
+        try {
+          det.sourceImageId = im.id;
+          // Mark the detection as a single-view (front-inner cutaway) so the
+          // anchor seeder drops the top-of-cup POMs (172/182/IC-top) to the
+          // strap→cup seam for this view — the front-outer strap-join fraction
+          // lands them up at the apex on a molded cutaway.
+          det.singleView = true;
+          // Trace this photo's contours BEFORE the mask is dropped. The primary
+          // pipeline traces only the SOURCE image, but seedAnchorsFromDetection's
+          // cup-width extremes (ADR 0036) require detection.contours — without
+          // them it silently fell back to the pre-ADR-0036 shared-row placement,
+          // so a 2-image board (primary + separate front-inner cutaway) kept the
+          // old narrow POM 10 while a single 3-view photo got the new one.
+          await applyPotraceContoursToDetection(det);
+          delete det._mask; delete det._maskW; delete det._maskH; delete det.debug;
+          // Keep the promise in the comment above buildAuxViews: the persisted aux
+          // detection carries no heavy raster payload.
+          delete det.inkMask; delete det.inkMaskW; delete det.inkMaskH;
+          auxView.detection = det;
+          auxView.anchors = seedAnchorsFromDetection(det, im);
+        } catch (err) {
+          console.warn('[Auto Mode] inner-view anchor seeding failed:', err);
+        }
+      }
+      auxViews.push(auxView);
+    }
+    return auxViews;
   }
 
   // Vector tracing pass — runs after the raster feature pass so curved
@@ -199,6 +323,12 @@
       }
     }
     syncDetectionRoleIndexes(detection);
+    // The TD may have moved the back role to a different panel than the auto
+    // pick. Back POM landmarks (POM 11/12/13/15) were detected on the auto back
+    // box, so re-run that detection on the confirmed back box before anchors are
+    // (re-)seeded. Cup/neckline/armhole (front-inner) anchors are box-relative
+    // and follow the corrected role without re-detection.
+    redetectBackLandmarks(detection);
     detection.viewRoleReviewRequired = false;
   }
 
@@ -632,6 +762,12 @@
       cv: cvAnalysis.inkBackend || null,
       params: activeDetectionParams(options),
       debug: !!(options && options.debug),
+      // singleView: treat the whole photo as ONE garment view — skip the
+      // front/back/inner panel split. Used for auxiliary photos (e.g. a
+      // front-inner cutaway added as its own image), which are a single view;
+      // the split otherwise carves the cutaway's gore/shading alleys into 3
+      // boxes and collapses the "front" onto one cup.
+      singleView: !!(options && options.singleView),
     });
   }
 
@@ -674,6 +810,7 @@
     // unchanged in this phase — it is availability, not forced consumption.
     const geometry = analyzeGeometry(seg, {
       detectionParams, mark, stageTimingsMs, contourEvidence: contours,
+      singleView: !!(opts && opts.singleView),
     });
     if (geometry.earlyReturn) return geometry.earlyReturn;
 
@@ -989,12 +1126,23 @@
 
     // ---- Stage: view-box grouping + role classification ----
     let viewBoxesPx = detectSketchViewBoxes(filtered.keptComponents, globalStats, w, h);
-    // If the component grouping returned a single wide bbox covering most of
-    // the canvas, that's usually two views merged by stray ink. Try to split
-    // it by finding the empty vertical alley in the middle.
-    if (viewBoxesPx.length === 1) {
-      const subdivided = splitMergedViewByVerticalValley(dark, w, h, viewBoxesPx[0]);
-      if (subdivided.length > 1) viewBoxesPx = subdivided;
+    if (ctx.singleView) {
+      // Auxiliary single-view photo (e.g. a front-inner cutaway): force ONE
+      // view spanning ALL ink and skip the panel split. The split + front/back/
+      // inner classifier is for multi-panel boards; on a lone cutaway the gore
+      // gap and cup shading read as vertical alleys and carve it into 3 boxes,
+      // so the "front" primary collapses onto a single cup and axis/apex/side
+      // land in the wrong tenth of the image. One whole-garment box keeps the
+      // symmetry axis centered and the cup/neckline/armhole landmarks correct.
+      viewBoxesPx = [statsToBounds(globalStats)];
+    } else {
+      // Component grouping keys off horizontal gaps, so unevenly-spaced panels
+      // can merge (a 3-panel board where two panels sit closer than the gap
+      // threshold collapses into one double-wide box). Split any over-wide box
+      // at its empty vertical alley so each garment panel gets its own view
+      // box; the single lone-box case (two views bridged by stray ink) is
+      // subsumed here.
+      viewBoxesPx = splitWideViewBoxes(viewBoxesPx, dark, w, h);
     }
     // Flexible view-role classification. Supports a two-view layout
     // (front_outer + back) and a three-view layout (front_outer + back +
@@ -1316,9 +1464,26 @@
 
     // ---- Stage: apex + strap landmarks ----
     const bounds = { minX, minY, maxX, maxY };
+
+    // POM 6 / POM 7 bottom anchors follow the drawn hem at their OWN column
+    // instead of the single flat bandY row (US-061). Normalized result, with
+    // the flat row as the fallback when that column carries no ink — so a
+    // straight-hem sketch is byte-identical to before.
+    const hemNormAtColumn = (colPx, flatY) => {
+      const row = hemRowAtColumn(dark, w, h, colPx, bandY * h, bboxH);
+      return row == null ? flatY : row / h;
+    };
+    // The CF column's hem — POM 6's (and, unavoidably, POM 5's) bottom.
+    const cfBottomHemY = hemNormAtColumn(axisPx, bandY);
     const apexLeftCandidate = findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, -1);
     const apexRightCandidate = findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, +1);
-    const apexPair = validateCupApexPair(apexLeftCandidate, apexRightCandidate, bounds, w, h);
+    // US-084: the two cup/strap joins are near-symmetric features, so a pair
+    // that disagrees sharply on row means one side locked onto the wrong ink —
+    // and the sides are found INDEPENDENTLY, so nothing above caught that. Give
+    // the outlier side a second look, anchored on the side we trust.
+    const apexRepaired = repairApexPairRow(
+      apexLeftCandidate, apexRightCandidate, dark, w, h, bounds, axisPx, chestRow);
+    const apexPair = validateCupApexPair(apexRepaired.left, apexRepaired.right, bounds, w, h);
     const apexLeftInfo = apexPair ? apexPair.left : null;
     const apexRightInfo = apexPair ? apexPair.right : null;
     const apexLeft = apexLeftInfo ? apexLeftInfo.point : null;
@@ -1736,6 +1901,74 @@
       }
     }
 
+    // Interrupted-seam junction tier (US-015 / ADR 0023): on front-closure
+    // styles the cradle/band seam is interrupted AT the CF axis by the
+    // placket, so the direct paths above (which need ink on the winning
+    // cradle row at the axis) miss — and on such styles the cradle ROW prior
+    // itself can lock onto the neckline far above the true seam (demo4: row
+    // 0.54, rejected 'too close to CF top' while the seam sits at 0.83).
+    // Recover it row-agnostically: scan rows below cf-top for the junction
+    // signature — a long horizontal seam run approaching the axis from BOTH
+    // sides, a narrow CF gap roughly centered on the axis, and VERTICAL
+    // closure-edge ink bounding the gap (the placket sides; a curved wire
+    // bounding a gore gap is locally horizontal and fails this). Topmost
+    // qualifying row wins (the seam's upper stitch line — where the TD arrow
+    // tip sits, per the amorafit correction). Seeds low-confidence +
+    // reviewRequired via the seamJunction provenance; never trusted further.
+    let cradleCfTopJunction = false;
+    if (!cradleCfTop && cfTopPx >= 0 && bandRow > 0) {
+      const jStart = Math.min(h - 1, cfTopPx + Math.max(4, Math.round(bboxH * 0.05)));
+      const jEnd = Math.max(jStart, (bandEdgeRow > 0 ? bandEdgeRow : bandRow) - Math.max(3, Math.round(bboxH * 0.02)));
+      const minRunPx = Math.max(10, Math.round(bboxW * 0.12));
+      const maxGapPx = Math.max(8, Math.round(bboxW * 0.18));
+      const maxHole = 1;                                   // tolerate anti-aliased seams
+      const vEdgeRun = Math.max(6, Math.round(bboxH * 0.10));
+      const inkAt = (x, y) => rawDark[y * w + x];
+      for (let y = jStart; y <= jEnd && !cradleCfTopJunction; y += 1) {
+        const rowInk = (x) => inkAt(x, y)
+          || (y > 0 && inkAt(x, y - 1))
+          || (y < h - 1 && inkAt(x, y + 1));
+        let leftEdge = -1;
+        for (let x = axisPx; x >= minX; x -= 1) { if (rowInk(x)) { leftEdge = x; break; } }
+        if (leftEdge < 0) continue;
+        let rightEdge = -1;
+        for (let x = axisPx + 1; x <= maxX; x += 1) { if (rowInk(x)) { rightEdge = x; break; } }
+        if (rightEdge < 0) continue;
+        // The junction signature REQUIRES an empty gap at the axis — the
+        // placket interior. Ink on/next to the axis cell means this row is a
+        // continuous structure (band interior, drawn CF line, gore ink), not
+        // an interrupted seam; the direct paths above own those cases.
+        if (leftEdge >= axisPx - 1 || rightEdge <= axisPx + 1) continue;
+        if (rightEdge - leftEdge > maxGapPx) continue;
+        if (Math.abs((leftEdge + rightEdge) / 2 - axisPx) > Math.max(4, bboxW * 0.04)) continue;
+        const runFrom = (x0, dir) => {
+          let run = 0, hole = 0, x = x0;
+          while (x >= minX && x <= maxX) {
+            if (rowInk(x)) { run += 1; hole = 0; }
+            else { hole += 1; if (hole > maxHole) break; }
+            x += dir;
+          }
+          return run;
+        };
+        if (runFrom(leftEdge, -1) < minRunPx) continue;
+        if (runFrom(rightEdge, +1) < minRunPx) continue;
+        const vRun = (x) => {
+          let run = 0;
+          for (let yy = Math.max(minY, y - vEdgeRun); yy <= Math.min(maxY, y + vEdgeRun); yy += 1) {
+            if (inkAt(x, yy)
+              || (x > 0 && inkAt(x - 1, yy))
+              || (x < w - 1 && inkAt(x + 1, yy))) run += 1;
+          }
+          return run;
+        };
+        if (vRun(leftEdge) < vEdgeRun) continue;
+        if (vRun(rightEdge) < vEdgeRun) continue;
+        cradleCfTop = { x: axisPx / w, y: y / h };
+        cradleCfTopJunction = true;
+        cradleCfTopReject = null;
+      }
+    }
+
     // ---- Cradle-at-bottom-cup (POM 7 endpoints) ----
     // POM 7 measures the cradle/cup-bottom seam height at the BOTTOM-CUP
     // position (away from the CF axis, inside the cup-side region). Its top
@@ -1755,6 +1988,11 @@
     let cradleCupTop = null;
     let cradleCupBottom = null;
     let cradleCupSide = 0;
+    // Provenance tier of the committed seam: 'strong' (vertical guide),
+    // 'seam' (pattern-3 seam+baseline), or 'guide' (sparse dashed guide —
+    // NEW relaxed tier; drawn for TD review but NEVER fed to the cupModel,
+    // see buildCupModel and ADR 0021).
+    let cradleCupTier = null;
     let cradleCupTopInkRatio = 0;
     let cradleCupBandInkRatio = 0;
     let cradleCupColInkRatio = 0;
@@ -1814,6 +2052,13 @@
       // qualify; for pattern 3 (no guide) we need actual seam ink at the
       // candidate column, not just a single grazing curve point.
       const cradleRatioNoGuide = 0.25;
+      // Guide tier (ADR 0021): a sparse dashed guide (gap ≥ ~8 px) hits every
+      // segment but its continuous colRatio sits below the strong floor. When
+      // BOTH today's acceptance paths fail, such a candidate may still commit
+      // at tier 'guide' — drawn low-confidence + reviewRequired, and ignored
+      // by the cupModel. 0.18 admits real sparse dashes (2px dash / 8px gap
+      // ≈ 0.25) while genuinely ambiguous patterns (gap 12 ≈ 0.17) stay out.
+      const dashedColMinRatio = 0.18;
       // Span between rows for the vertical check — strictly INSIDE the gap
       // so cradleRow / bandRow ink doesn't contribute.
       const vGapLo = Math.min(cradleRow + ySpan + 1, bandRow - yBandSpan - 1);
@@ -1827,6 +2072,7 @@
       const aboveHi = Math.max(0, cradleRow - ySpan - 1);
       const aboveMaxRatio = 0.35;
       const sideCandidates = [];
+      const guideCandidates = [];      // dashed-guide tier pool (ADR 0021)
       let anyPassedRows = false;       // ≥1 candidate passed cradle+band rows
       let anyPassedColumn = false;     // ≥1 candidate also had vertical ink
       let anyRejectedAsSideSeam = false;
@@ -1851,6 +2097,14 @@
         let bestColRatio = 0;
         let bestSegmentsHit = 0;
         let bestEdgePenalty = 1;
+        let bestTier = null;
+        let bestGuideX = -1;
+        let bestGuideScore = 0;
+        let bestGuideCradleInk = 0;
+        let bestGuideBandInk = 0;
+        let bestGuideColRatio = 0;
+        let bestGuideSegmentsHit = 0;
+        let bestGuideEdgePenalty = 1;
         for (let xc = xLo; xc <= xHi; xc += 1) {
           const cxLo = Math.max(0, xc - xWin);
           const cxHi = Math.min(w - 1, xc + xWin);
@@ -1915,9 +2169,23 @@
           // cup-bottom seam extends across the bottom-cup zone, whereas a
           // cup-outline arc tangent only piles ink at a single point).
           const verticalGuideStrong = (colRatio >= colMinRatio) && (segmentsHit >= segmentMin);
+          // Sparse dashed guide: every segment inked but the continuous ratio
+          // is below the strong floor. Only relevant when pattern 3 ALSO
+          // fails — then the candidate survives as guide-tier (ADR 0021)
+          // instead of being rejected outright.
+          const dashedGuidePresent = !verticalGuideStrong
+            && (segmentsHit >= segmentMin)
+            && (colRatio >= dashedColMinRatio);
+          // dashedOnly = this candidate exists only via the guide tier. Such
+          // candidates must not disturb today's reject-reason flags or score
+          // pool — the tier is strictly additive.
+          let dashedOnly = false;
           let seamHorizontalRun = 0;
           if (!verticalGuideStrong) {
-            if (cradleRatio < cradleRatioNoGuide) continue;
+            if (cradleRatio < cradleRatioNoGuide) {
+              if (!dashedGuidePresent) continue;
+              dashedOnly = true;
+            }
             // Horizontal seam extent: a real cradle/cup-bottom seam draws
             // ink continuously across the bottom-cup region; a cup-outline
             // arc tangent piles ink only in ~10-15 contiguous columns
@@ -1957,7 +2225,10 @@
             // continuous), OR a meaningful run at the exact cradleRow.
             const minBandRun = Math.max(28, Math.round(bboxW * 0.16));
             const minSingleRun = Math.max(18, Math.round(bboxW * 0.10));
-            if (seamHorizontalRun < minBandRun && singleRowRun < minSingleRun) continue;
+            if (!dashedOnly && seamHorizontalRun < minBandRun && singleRowRun < minSingleRun) {
+              if (!dashedGuidePresent) continue;
+              dashedOnly = true;
+            }
           }
           // Reject side-seam-like columns: a long, continuous vertical run of
           // ink ABOVE the cradle row in any column of the candidate window
@@ -1984,7 +2255,10 @@
           }
           const aboveRatio = aboveRows > 0 ? aboveMaxColRun / aboveRows : 0;
           if (aboveRatio > aboveMaxRatio) {
-            anyRejectedAsSideSeam = true;
+            // Guide-only candidates would have been rejected before reaching
+            // this guard under today's rules — keep the reject-reason flags
+            // (and therefore the user-facing messages) byte-identical.
+            if (!dashedOnly) anyRejectedAsSideSeam = true;
             continue;
           }
           // HARD reject candidates that sit within 5% of the side seam
@@ -2009,10 +2283,10 @@
             ? Math.max(3, Math.round(bboxW * 0.02))
             : minDistFromSide;
           if (distFromEdgePx < guardDistPx) {
-            anyRejectedAsSideSeam = true;
+            if (!dashedOnly) anyRejectedAsSideSeam = true;
             continue;
           }
-          anyPassedColumn = true;
+          if (!dashedOnly) anyPassedColumn = true;
           // Distance prior — reward being far from CF (≥ 20% of bbox width
           // earns full bonus). Apply a SOFT penalty for closeness to the
           // side seam: never below 0.5 even when adjacent, smoothly
@@ -2027,7 +2301,24 @@
           // Vertical-guide multiplier: candidates with a clear guide line
           // outscore those without. Floor at 0.35 so pattern-3 candidates
           // (no guide, but real cradle seam) can still win when no guide
-          // candidate exists.
+          // candidate exists. Guide-tier (dashed-only) candidates score into
+          // their OWN pool — they can never displace a candidate accepted by
+          // today's rules (ADR 0021 additivity).
+          if (dashedOnly) {
+            const guideScore = cradleRatio * (0.6 + 0.4 * bandRatio)
+              * (0.55 + 0.45 * farBonus) * edgePenalty
+              * (0.45 + 0.25 * colRatio * segmentBonus);
+            if (guideScore > bestGuideScore) {
+              bestGuideScore = guideScore;
+              bestGuideX = xc;
+              bestGuideCradleInk = cradleRatio;
+              bestGuideBandInk = bandRatio;
+              bestGuideColRatio = colRatio;
+              bestGuideSegmentsHit = segmentsHit;
+              bestGuideEdgePenalty = edgePenalty;
+            }
+            continue;
+          }
           const guideMultiplier = verticalGuideStrong
             ? (0.6 + 0.4 * colRatio * segmentBonus)
             : 0.35;
@@ -2041,6 +2332,7 @@
             bestColRatio = colRatio;
             bestSegmentsHit = segmentsHit;
             bestEdgePenalty = edgePenalty;
+            bestTier = verticalGuideStrong ? 'strong' : 'seam';
           }
         }
         if (bestX > 0) {
@@ -2049,10 +2341,25 @@
             cradleInk: bestCradleInk, bandInk: bestBandInk,
             colRatio: bestColRatio, segmentsHit: bestSegmentsHit,
             edgePenalty: bestEdgePenalty,
+            tier: bestTier,
+          });
+        }
+        if (bestGuideX > 0) {
+          guideCandidates.push({
+            side, x: bestGuideX, score: bestGuideScore,
+            cradleInk: bestGuideCradleInk, bandInk: bestGuideBandInk,
+            colRatio: bestGuideColRatio, segmentsHit: bestGuideSegmentsHit,
+            edgePenalty: bestGuideEdgePenalty,
+            tier: 'guide',
           });
         }
       }
-      if (!sideCandidates.length) {
+      // Guide-tier fallback (ADR 0021): considered ONLY when today's
+      // acceptance found nothing on either side, so images that detect today
+      // are byte-identical. A guide winner commits at tier 'guide' — seeded
+      // low-confidence + reviewRequired, and ignored by the cupModel.
+      const acceptedPool = sideCandidates.length ? sideCandidates : guideCandidates;
+      if (!acceptedPool.length) {
         if (anyRejectedAsSideSeam && !anyPassedColumn) {
           cradleCupReject = 'candidate column looks like the side seam, not a POM 7 line (ink extends above the cradle row)';
         } else if (anyPassedRows && !anyPassedColumn) {
@@ -2066,8 +2373,8 @@
           cradleCupReject = 'no cradle/band ink support in either bottom-cup region';
         }
       } else {
-        sideCandidates.sort((a, b) => b.score - a.score);
-        const winner = sideCandidates[0];
+        acceptedPool.sort((a, b) => b.score - a.score);
+        const winner = acceptedPool[0];
         cradleCupSide = winner.side;
         cradleCupTopInkRatio = winner.cradleInk;
         cradleCupBandInkRatio = winner.bandInk;
@@ -2076,7 +2383,92 @@
         cradleCupSegmentCount = segmentCount;
         cradleCupEdgePenalty = winner.edgePenalty;
         cradleCupTop = { x: winner.x / w, y: cradleRow / h };
-        cradleCupBottom = { x: winner.x / w, y: bandRow / h };
+        // POM 7's bottom is a BAND ANCHOR: it must land on the garment's drawn
+        // bottom edge, not on bandRow (the band ZONE used only to bound the
+        // cup/cradle searches above — US-060). It follows the hem at its OWN
+        // column so an arched or scalloped edge is tracked rather than averaged
+        // (US-061); bandY is the fallback when that column shows no ink.
+        cradleCupBottom = {
+          x: winner.x / w,
+          y: hemNormAtColumn(winner.x, bandY),
+        };
+        cradleCupTier = winner.tier || 'seam';
+      }
+    }
+
+    // POM 7 arc tier (US-014 / ADR 0022): when neither the seam tiers nor the
+    // dashed-guide tier committed, read the cup-bottom structure itself — the
+    // traced underwire/cup-bottom arc (the same evidence the cupModel already
+    // trusts for POM 9's bottom). Requires a validated apex on the same side.
+    // Commits at tier 'arc': seeded low-confidence + reviewRequired, ignored
+    // by the cupModel side-picker and bottom (only 'strong'/'seam' feed it).
+    // The right cup is preferred to match the TD labeling convention (demo3).
+    //
+    // A cup-bottom / underwire arc is a DIP: it descends from the gore, bottoms
+    // out near cup centre, and rises again toward the side seam. A curve whose
+    // lowest point sits hard against the CF axis is not a cup base at all — on
+    // a scoop-neck sketch it is the NECKLINE, which by construction reaches its
+    // lowest point at centre front. findCupBottomFromInk only insets its search
+    // band 20% off the axis, so such a curve is still descending when the
+    // window clips it and then "wins" at the band's own inner wall.
+    //
+    // Measured deepest-point clearance across the demo corpus, as a fraction of
+    // the CF -> side-seam half-width: committed seam/strong tiers land at
+    // 52-84%, legitimate arcs at 40% (demo4) to 71% (demo1), while the neckline
+    // mis-lock on "EvelynBliss vA 1.0" lands at 26% — where cradleY resolves to
+    // the chest row (chestY is null there), so the search window never reaches
+    // the real cradle seam ~0.15 further down. A 1/3 floor separates those with
+    // margin on both sides. It is deliberately a FRACTION, not an absolute
+    // normalized distance: the same garment feature then scores the same on a
+    // 3-view board as on a lone sketch.
+    //
+    // Scoped to the arc tier on purpose — it is the last-resort, review-flagged
+    // tier (ADR 0022); the seam tiers carry their own validation.
+    const ARC_MIN_CF_CLEARANCE = 1 / 3;
+    if (!cradleCupTop && cradleY != null && bandY != null) {
+      let arcClearanceReject = null;
+      for (const side of [+1, -1]) {
+        const apexPoint = side < 0 ? apexLeft : apexRight;
+        if (!apexPoint) continue;
+        const arcSideColPx = side < 0
+          ? (Number.isFinite(sideLeftX) ? Math.round(sideLeftX * w) : minX + Math.round(bboxW * 0.05))
+          : (Number.isFinite(sideRightX) ? Math.round(sideRightX * w) : maxX - Math.round(bboxW * 0.05));
+        const arc = findCupBottomFromInk(dark, w, h, bounds, axisPx, arcSideColPx, apexPoint.y, cradleY, side);
+        const arcHalfSpanPx = Math.abs(arcSideColPx - axisPx);
+        const arcCfClearance = (arc && arc.bottomX != null && arcHalfSpanPx > 0)
+          ? Math.abs(arc.bottomX * w - axisPx) / arcHalfSpanPx
+          : 0;
+        if (arc && arc.bottomX != null
+            && arc.support >= 0.30
+            && arc.bottomY > apexPoint.y + 0.08
+            && arc.bottomY >= cradleY - 0.05
+            && arc.bottomY < bandY - 0.01
+            && arcCfClearance >= ARC_MIN_CF_CLEARANCE) {
+          cradleCupTop = { x: arc.bottomX, y: arc.bottomY };
+          // Hem-following bottom, same rule as the seam/strong tier (US-061).
+          cradleCupBottom = { x: arc.bottomX, y: hemNormAtColumn(arc.bottomX * w, bandY) };
+          cradleCupSide = side;
+          cradleCupTier = 'arc';
+          cradleCupReject = null;
+          arcClearanceReject = null;
+          break;
+        }
+        if (arc && arc.bottomX != null
+            && arcCfClearance < ARC_MIN_CF_CLEARANCE
+            && !arcClearanceReject) {
+          arcClearanceReject = 'traced cup-bottom arc rejected: bottoms out '
+            + Math.round(arcCfClearance * 100) + '% of the way from CF to the side seam, '
+            + 'inside the ' + Math.round(ARC_MIN_CF_CLEARANCE * 100)
+            + '% cup-base floor (reads as the neckline curve, not a cup bottom)';
+        }
+      }
+      // Keep the seam-tier reason — it says why we reached the fallback at all —
+      // and append why the fallback also declined, so missingReason tells the
+      // whole story instead of only the last stage that ran.
+      if (!cradleCupTop && arcClearanceReject) {
+        cradleCupReject = cradleCupReject
+          ? (cradleCupReject + '; ' + arcClearanceReject)
+          : arcClearanceReject;
       }
     }
 
@@ -2097,7 +2489,7 @@
       cradleY,
       apexLeft, apexLeftConf: apexLeftInfo ? apexLeftInfo.confidence : 0,
       apexRight, apexRightConf: apexRightInfo ? apexRightInfo.confidence : 0,
-      cradleCupTop, cradleCupSide, cradleCupConfidence,
+      cradleCupTop, cradleCupSide, cradleCupTier, cradleCupConfidence,
       sideLeftX, sideRightX,
       hasFrontInner: viewClassification.frontInnerIndex >= 0,
     });
@@ -2117,79 +2509,16 @@
         .sort((a, b) => (b.view.count || 0) - (a.view.count || 0));
       if (candidates.length) backViewIndex = candidates[0].index;
     }
-    const backInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackCenterLandmarks(dark, w, h, viewBoxesPx[backViewIndex])
-      : null;
-    // Per-view feature pass for the back view. Gives the back view its OWN
-    // axis, chest/band rows, side seams, and ink endpoints so back-view
-    // anchors can snap to ink instead of view-box proportions. The legacy
-    // backInfo above is kept for the panel-top/panel-bottom signal it already
-    // produces — both feed seedAnchorsFromDetection.
-    const backFeatures = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? detectFeaturesInViewBox(dark, w, h, viewBoxesPx[backViewIndex])
-      : null;
-    // Back-panel top/bottom from contour-following at ~22% from the back-view
-    // left edge — replaces the hardcoded inView(b, 0.225, 0.439/1.005)
-    // (off-image) fallbacks for POM 13.
-    const backPanelInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackPanelEdges(dark, w, h, viewBoxesPx[backViewIndex])
-      : null;
-    // POM 13 back-panel height: strap-joining point → bottom band (vertical).
-    // Prefers the back chest row (panel top edge) and the solid band edge.
-    const backPanelHeightInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex] && backFeatures)
-      ? findBackPanelHeight(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures.bandY  != null ? Math.round(backFeatures.bandY  * h) : -1,
-          backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1
-        )
-      : null;
-    // Back-view strap-top: topmost ink in the back's left strap zone, just
-    // above the back chest row. Replaces the hardcoded inView(b, 0.187, 0.405)
-    // seed in the back-view seed block.
-    const backStrapTopInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackStrapTopFromInk(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures && backFeatures.chestY != null
-            ? Math.round(backFeatures.chestY * h)
-            : -1
-        )
-      : null;
-    // Back-view strap INNER edges (POM 15). Inner edge of each shoulder strap
-    // where it meets the back band — replaces the chestLeftX/chestRightX
-    // (panel OUTER corner) seed that placed the anchors on the wrong edge.
-    const backStrapInnerInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackStrapInnerEdges(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures && backFeatures.chestY != null
-            ? Math.round(backFeatures.chestY * h)
-            : -1,
-          backFeatures && backFeatures.axisX != null
-            ? Math.round(backFeatures.axisX * w)
-            : -1
-        )
-      : null;
-    // Back-view side-top: topmost ink at the left-edge column of the back
-    // panel. Fixes POM 11 — previously side-top Y came from bChestY (the
-    // strongest horizontal row in the back view's top 50%), which locks onto
-    // strap hardware rather than the true underarm seam top. Scanning the
-    // full height of the left-edge column finds the actual outline start.
-    const backSideTopInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findSideTopFromInk(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          viewBoxesPx[backViewIndex].minX + 1,  // left-edge column
-          -1,                                    // search full back bbox height
-          -1                                     // left side
-        )
-      : null;
-    const backSideBottomInfo = (backSideTopInfo && backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findSideBottomFromInk(dark, w, h, viewBoxesPx[backViewIndex], backSideTopInfo.point)
-      : null;
-    // Preferred POM-11 source: the outer-silhouette seam (top=armpit, bottom=hem
-    // corner). Falls back to the top-ink + downward-follow pair above.
-    const backSideInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackSideSeam(dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures && backFeatures.bandY != null ? Math.round(backFeatures.bandY * h) : -1)
-      : null;
+    const backBox = (backViewIndex >= 0 && viewBoxesPx[backViewIndex]) ? viewBoxesPx[backViewIndex] : null;
+    // All back-view landmarks (center axis, panel edges/height, strap top/inner,
+    // side seam) come from detectBackLandmarks so the identical pass can re-run
+    // if the TD reassigns the back role in the view-role dialog — needed on a
+    // 3-panel board where "back" vs "front_inner" was ambiguous and the auto
+    // pick was wrong (see maybePromptForViewRoles / redetectBackLandmarks).
+    const {
+      backInfo, backFeatures, backPanelInfo, backPanelHeightInfo,
+      backStrapTopInfo, backStrapInnerInfo, backSideTopInfo, backSideBottomInfo, backSideInfo,
+    } = detectBackLandmarks(dark, w, h, backBox);
 
     _stageMark('backFeatures');
 
@@ -2272,9 +2601,14 @@
       cradleCfTopSeamSingleRowRun,
       cradleCfTopMissingReason: cradleCfTopReject,
       cradleCfTopDipProjected,
+      cradleCfTopJunction,
       cradleCupTop,
       cradleCupBottom,
+      // Hem row at the CF column, for POM 6's bottom anchor (US-061). Equals
+      // bandY on a straight hem; rises above it on an arched / scalloped one.
+      cfBottomHemY,
       cradleCupSide,
+      cradleCupTier,
       cradleCupTopInkRatio: Number(cradleCupTopInkRatio.toFixed(4)),
       cradleCupBandInkRatio: Number(cradleCupBandInkRatio.toFixed(4)),
       cradleCupColInkRatio: Number(cradleCupColInkRatio.toFixed(4)),
@@ -2412,6 +2746,7 @@
         present: !!cradleCupTop,
         confidence: cradleCupTop ? sigConf(cradleStrength, rowNoiseFloor) : 0,
         side: cradleCupSide || 0,
+        tier: cradleCupTier,
         missingReason: cradleCupReject,
       },
       upperCupCfSeam: {
@@ -2484,9 +2819,11 @@
       geometryFacts.seamGeometry = {
         cradleCfTop: cradleCfTop || null,
         cradleCfDipProjected: !!cradleCfTopDipProjected,
+        cradleCfJunction: !!cradleCfTopJunction,
         cradleCupTop: cradleCupTop || null,
         cradleCupBottom: cradleCupBottom || null,
         cradleCupSide: cradleCupSide || 0,
+        cradleCupTier,
         upperCupCfSeamPresent: cfTopY != null,
       };
       geometryFacts.backPanelGeometry = {
@@ -2631,6 +2968,7 @@
           cradleCfTopSeamSingleRowRun,
           cradleCfTopMissingReason: cradleCfTopReject,
           cradleCfTopDipProjected,
+          cradleCfTopJunction,
           cradleCfSeamLeftReachPx,
           cradleCfSeamRightReachPx,
           cradleCupTop: cradleCupTop
@@ -2640,6 +2978,7 @@
             ? { x: safeNum(cradleCupBottom.x, 4), y: safeNum(cradleCupBottom.y, 4) }
             : null,
           cradleCupSide,
+          cradleCupTier,
           cradleCupTopInkRatio: safeNum(cradleCupTopInkRatio, 4),
           cradleCupBandInkRatio: safeNum(cradleCupBandInkRatio, 4),
           cradleCupColInkRatio: safeNum(cradleCupColInkRatio, 4),
@@ -3209,6 +3548,30 @@
     return -1;
   }
 
+  // Lowest inked row in a thin column band — the garment's drawn hem AT ONE x.
+  //
+  // bandY is a single horizontal row, which is right for a straight hem and
+  // wrong for a scalloped or arched one. Measured on Evelyn vA 3.0 (1830x711):
+  // the picot hem sits at 662px out at the sides and rises to 632px at centre
+  // front, a 30px arch, while bandY is a flat 659px — so the CF bottom anchor
+  // ends up 27px BELOW the artwork, floating in white space.
+  //
+  // Used ONLY by the POM 6 / POM 7 bottom anchors (US-061). band-left and
+  // band-right deliberately keep the flat row so POM 1 stays a level span.
+  //
+  // Scans UP from just below the band row and returns the first inked row.
+  // Returns null when the window holds no ink, so the caller keeps bandY and
+  // straight-hem sketches stay byte-identical.
+  function hemRowAtColumn(dark, w, h, colPx, bandRowPx, bboxH) {
+    if (!Number.isFinite(colPx) || !Number.isFinite(bandRowPx) || !(bboxH > 0)) return null;
+    const halfBand = Math.max(1, Math.round(bboxH * 0.006));
+    const fromY = Math.min(h - 1, Math.round(bandRowPx + bboxH * 0.06));
+    const toY = Math.max(0, Math.round(bandRowPx - bboxH * 0.12));
+    if (fromY < toY) return null;
+    const hit = findVerticalInkBound(dark, w, Math.round(colPx), halfBand, fromY, toY, -1);
+    return hit >= 0 ? hit : null;
+  }
+
   // Potrace vector tracer — wraps the singleton Potrace API (potrace.js) into
   // a Promise that takes the ink mask and returns normalized contour paths.
   //
@@ -3589,15 +3952,31 @@
     };
   }
 
-  function findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, side) {
+  // rowHintNorm (US-084, optional): when the other side's join is trusted, scan
+  // only a band around that row and score by PROXIMITY to it instead of by the
+  // topmost-run preference. The top preference is what takes the bait on a high
+  // stray feature, so a hinted retry must not reuse it — otherwise the retry
+  // simply re-picks the same wrong run inside a smaller window.
+  function findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, side, rowHintNorm) {
     const bboxW = bounds.maxX - bounds.minX + 1;
     const bboxH = bounds.maxY - bounds.minY + 1;
     const guard = Math.max(4, Math.round(bboxW * 0.075));
-    const y1 = bounds.minY + Math.round(bboxH * 0.08);
-    const y2 = Math.min(
+    let y1 = bounds.minY + Math.round(bboxH * 0.08);
+    let y2 = Math.min(
       bounds.maxY,
       chestRow > 0 ? chestRow + Math.round(bboxH * 0.05) : bounds.minY + Math.round(bboxH * 0.48)
     );
+    // Band half-height for a hinted retry. Wide enough to absorb a real
+    // left/right height difference (TD pairs slant at most 0.0548) plus the
+    // run-centre quantisation, narrow enough to exclude the stray that caused
+    // the disagreement.
+    const hinted = Number.isFinite(rowHintNorm);
+    if (hinted) {
+      const hintPx = rowHintNorm * h;
+      const band = Math.max(3, Math.round(bboxH * 0.06));
+      y1 = Math.max(y1, Math.round(hintPx - band));
+      y2 = Math.min(y2, Math.round(hintPx + band));
+    }
     const x1 = side < 0
       ? bounds.minX + Math.round(bboxW * 0.05)
       : axisPx + guard;
@@ -3663,8 +4042,19 @@
         // still requires real cup body below the pick, so this cannot snap onto
         // a thin strap-ribbon tick above the true cup seam.
         const topPref = 0.5 + 0.5 * highCupBias * highCupBias;
-        const score = support * topPref * (0.75 + edgeBias * 0.25);
-        if (!best || score > best.score || (Math.abs(score - best.score) < 1e-6 && y < best.y)) {
+        // A hinted retry scores by nearness to the trusted row instead of by
+        // height in the window — see the rowHintNorm note on this function.
+        const rowPref = hinted
+          ? 1 - Math.min(1, Math.abs(y - rowHintNorm * h) / Math.max(1, y2 - y1))
+          : topPref;
+        const score = support * rowPref * (0.75 + edgeBias * 0.25);
+        // Tie-break: normally the higher run wins (cup top, not a lower seam);
+        // on a hinted retry the run nearer the trusted row wins instead.
+        const tieBreakWins = best && Math.abs(score - best.score) < 1e-6
+          && (hinted
+            ? Math.abs(y - rowHintNorm * h) < Math.abs(best.y - rowHintNorm * h)
+            : y < best.y);
+        if (!best || score > best.score || tieBreakWins) {
           best = {
             x: cx,
             // Inner edge of the strap ribbon at the join row — the edge nearer
@@ -3699,6 +4089,68 @@
         count: best.support,
         verticalSpan: best.verticalSpan,
         score: Math.round(best.score * 100) / 100,
+      },
+    };
+  }
+
+  // US-084: cross-check the two cup/strap joins against each other.
+  //
+  // findCupStrapJoinFromInk runs once per side with no knowledge of the other,
+  // and it deliberately prefers the TOPMOST qualifying run so the pick lands on
+  // the strap join rather than a lower cup-body seam. When one side carries an
+  // extra high feature that clears the support gates (a strap ribbon tick, a
+  // trim line, a neckline binding crossing the search window), that preference
+  // takes the bait on that side only. The result is a pair straddling two
+  // different rows, which no per-side check can see: on demo7.png the left join
+  // is exactly on the TD-labelled row while the right sits 0.134 above it.
+  //
+  // The two joins are near-symmetric features on a flat sketch. TD-labelled
+  // pairs slant (dy/dx) by at most 0.0548, so a pair beyond APEX_SLANT_LIMIT is
+  // a detection disagreement, not a garment property. Re-run the losing side
+  // with the trusted side's row as a hint and keep the result only if it
+  // genuinely reconciles the pair — otherwise leave both candidates untouched
+  // and let validateCupApexPair / the POM 16 slant gate handle it, so a sketch
+  // this cannot repair degrades exactly as before rather than getting a
+  // fabricated anchor.
+  const APEX_SLANT_LIMIT = 0.06;
+
+  function apexPairSlant(left, right) {
+    if (!left || !right) return null;
+    const dx = Math.abs(right.point.x - left.point.x);
+    if (!(dx > 0)) return Infinity;
+    return Math.abs(left.point.y - right.point.y) / dx;
+  }
+
+  function repairApexPairRow(left, right, dark, w, h, bounds, axisPx, chestRow) {
+    const slant = apexPairSlant(left, right);
+    if (slant == null || slant <= APEX_SLANT_LIMIT) return { left, right, repaired: null };
+
+    // Trust the more confident side; on a tie prefer the LOWER row, since the
+    // failure mode this repairs is a pick that jumped UP off the cup.
+    const leftWins = left.confidence > right.confidence + 1e-9
+      || (Math.abs(left.confidence - right.confidence) <= 1e-9 && left.point.y >= right.point.y);
+    const keep = leftWins ? left : right;
+    const side = leftWins ? +1 : -1;   // re-search the OTHER side
+    const retry = findCupStrapJoinFromInk(
+      dark, w, h, bounds, axisPx, chestRow, side, keep.point.y);
+    if (!retry) return { left, right, repaired: null };
+
+    const next = leftWins ? { left, right: retry } : { left: retry, right };
+    const nextSlant = apexPairSlant(next.left, next.right);
+    // Only accept a retry that actually reconciles the pair.
+    if (nextSlant == null || nextSlant > APEX_SLANT_LIMIT || nextSlant >= slant) {
+      return { left, right, repaired: null };
+    }
+    return {
+      left: next.left,
+      right: next.right,
+      repaired: {
+        side: leftWins ? 'right' : 'left',
+        fromY: (leftWins ? right : left).point.y,
+        toY: retry.point.y,
+        hintY: keep.point.y,
+        slantBefore: slant,
+        slantAfter: nextSlant,
       },
     };
   }
@@ -4244,13 +4696,19 @@
           if (run >= 2) { low = y; break; }
         }
       }
-      if (low >= 0) { bottoms.push(low); hit += 1; }
+      if (low >= 0) { bottoms.push({ x, low }); hit += 1; }
     }
     if (hit < Math.max(3, Math.round(cols * 0.30))) return null; // not a coherent arc
-    bottoms.sort((a, b) => a - b);
+    const lows = bottoms.slice();  // (x, low) pairs preserved below
+    bottoms.sort((a, b) => a.low - b.low);
     // 80th percentile of per-column lowest points — robust to a few short cols.
     const idx = Math.min(bottoms.length - 1, Math.round(bottoms.length * 0.80));
-    return { bottomY: bottoms[idx] / h, support: hit / cols };
+    const chosenY = bottoms[idx].low;
+    // Arc-bottom column: median x of the columns within 2px of the deepest
+    // point — the flat center of the wire dip (used by the POM 7 arc tier).
+    const deep = lows.filter((b) => b.low >= chosenY - 2).map((b) => b.x).sort((a, b) => a - b);
+    const bottomX = deep.length ? deep[Math.floor(deep.length / 2)] / w : null;
+    return { bottomY: chosenY / h, bottomX, support: hit / cols };
   }
 
   // POM 9 / POM 10 share one cup model so they describe the same physical cup.
@@ -4275,7 +4733,7 @@
     const {
       bounds, w, h, dark, axisPx, cradleY,
       apexLeft, apexLeftConf, apexRight, apexRightConf,
-      cradleCupTop, cradleCupSide, cradleCupConfidence,
+      cradleCupTop, cradleCupSide, cradleCupTier, cradleCupConfidence,
       sideLeftX, sideRightX,
       hasFrontInner,
     } = ctx;
@@ -4283,6 +4741,11 @@
     const bboxW = maxX - minX + 1;
 
     // -------- 1. Pick cup side from positive structure evidence -------------
+    // Only trusted seam tiers may influence the cup side. 'guide'/'arc' tier
+    // commits (ADR 0021/0022) are review-grade POM 7 evidence and must leave
+    // the cupModel — including its side selection — byte-identical.
+    const trustedSeamTier = cradleCupTier === 'strong' || cradleCupTier === 'seam';
+    const seamSide = trustedSeamTier ? cradleCupSide : 0;
     let side = 0;
     let sideReason = '';
     const lConf = apexLeftConf || 0;
@@ -4291,14 +4754,14 @@
       // Symmetric apex evidence — pick the side whose cup-bottom seam was
       // accepted by the POM 7 detector. Fall back to left when neither side
       // dominates.
-      if (cradleCupSide === +1) { side = +1; sideReason = 'symmetric apex pair; cup-bottom seam confirms right cup'; }
-      else if (cradleCupSide === -1) { side = -1; sideReason = 'symmetric apex pair; cup-bottom seam confirms left cup'; }
+      if (seamSide === +1) { side = +1; sideReason = 'symmetric apex pair; cup-bottom seam confirms right cup'; }
+      else if (seamSide === -1) { side = -1; sideReason = 'symmetric apex pair; cup-bottom seam confirms left cup'; }
       else { side = -1; sideReason = 'symmetric apex pair without cup-bottom seam evidence; default left cup'; }
     } else if (lConf > 0 || rConf > 0) {
       side = lConf >= rConf ? -1 : +1;
       sideReason = `stronger ${side < 0 ? 'left' : 'right'} apex confidence (${lConf.toFixed(2)} vs ${rConf.toFixed(2)})`;
-    } else if (cradleCupSide === -1 || cradleCupSide === +1) {
-      side = cradleCupSide;
+    } else if (seamSide === -1 || seamSide === +1) {
+      side = seamSide;
       sideReason = `no apex; cup side taken from POM 7 cup-bottom seam (side=${side})`;
     } else {
       side = -1;
@@ -4338,7 +4801,12 @@
     let bottomFromInk = false;      // cup-bottom confirmed by a traced ink arc
     let bottomInkSupport = 0;
     let seamRawX = null;        // raw seam column (debug only)
-    if (cradleCupTop && cradleCupSide === side) {
+    if (cradleCupTop && cradleCupSide === side && trustedSeamTier) {
+      // Only strong/pattern-3 seams may relocate the cup bottom. Guide-tier
+      // (sparse dashed, ADR 0021) and arc-tier (traced underwire, ADR 0022)
+      // commits are weak evidence drawn for TD review — letting them in here
+      // is exactly what shifted inner-cup geometry and broke invariant B3 in
+      // the reverted 2026-07-09 prototype.
       seamY = cradleCupTop.y;
       seamRawX = cradleCupTop.x;
       bottomFromSeam = true;
@@ -4973,13 +5441,132 @@
   // looking for a low-density vertical alley in its middle and, if found,
   // split it into [leftSub, rightSub]. Returns [view] unchanged when no
   // confident alley is detected.
-  function splitMergedViewByVerticalValley(dark, w, h, view) {
+  // Compute every back-view landmark from a back view box (pixel-space
+  // {minX,minY,maxX,maxY}) against the ink mask. Extracted verbatim from
+  // detectLandmarks so the SAME pass can re-run when the TD reassigns the back
+  // role in the view-role dialog (redetectBackLandmarks). Returns null-valued
+  // fields when backBox is null.
+  function detectBackLandmarks(dark, w, h, backBox) {
+    if (!backBox) {
+      return {
+        backInfo: null, backFeatures: null, backPanelInfo: null, backPanelHeightInfo: null,
+        backStrapTopInfo: null, backStrapInnerInfo: null, backSideTopInfo: null,
+        backSideBottomInfo: null, backSideInfo: null,
+      };
+    }
+    const backInfo = findBackCenterLandmarks(dark, w, h, backBox);
+    // Per-view feature pass: the back view's OWN axis, chest/band rows, side
+    // seams, and ink endpoints so back anchors snap to ink, not box ratios.
+    const backFeatures = detectFeaturesInViewBox(dark, w, h, backBox);
+    // Back-panel top/bottom (POM 13) from contour-following near the left edge.
+    const backPanelInfo = findBackPanelEdges(dark, w, h, backBox);
+    // POM 13 back-panel height: strap-joining point → bottom band (vertical).
+    const backPanelHeightInfo = backFeatures
+      ? findBackPanelHeight(
+          dark, w, h, backBox,
+          backFeatures.bandY  != null ? Math.round(backFeatures.bandY  * h) : -1,
+          backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1
+        )
+      : null;
+    // Back-view strap-top: topmost ink in the back's left strap zone (POM 14 back).
+    const backStrapTopInfo = findBackStrapTopFromInk(
+      dark, w, h, backBox,
+      backFeatures && backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1
+    );
+    // Back-view strap INNER edges (POM 15) where each strap meets the back band.
+    const backStrapInnerInfo = findBackStrapInnerEdges(
+      dark, w, h, backBox,
+      backFeatures && backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1,
+      backFeatures && backFeatures.axisX  != null ? Math.round(backFeatures.axisX  * w) : -1
+    );
+    // Back-view side-top (POM 11): topmost ink at the left-edge column.
+    const backSideTopInfo = findSideTopFromInk(dark, w, h, backBox, backBox.minX + 1, -1, -1);
+    const backSideBottomInfo = backSideTopInfo
+      ? findSideBottomFromInk(dark, w, h, backBox, backSideTopInfo.point)
+      : null;
+    // Preferred POM-11 source: the outer-silhouette seam (top=armpit, bottom=hem).
+    const backSideInfo = findBackSideSeam(
+      dark, w, h, backBox,
+      backFeatures && backFeatures.bandY != null ? Math.round(backFeatures.bandY * h) : -1
+    );
+    return {
+      backInfo, backFeatures, backPanelInfo, backPanelHeightInfo,
+      backStrapTopInfo, backStrapInnerInfo, backSideTopInfo, backSideBottomInfo, backSideInfo,
+    };
+  }
+
+  // Re-run back-view landmark detection against the CURRENT detection.backViewIndex
+  // and overwrite the back-* fields, so a TD role correction (back moved to a
+  // different panel) re-places the back POMs (11/12/13/15) on the new panel. Uses
+  // the retained ink mask (detection.inkMask, dimensions inkMaskW/H). No-op when
+  // the mask or a back box is unavailable. Mirrors the field mapping in
+  // detectLandmarks' detection assembly.
+  function redetectBackLandmarks(detection) {
+    if (!detection || !detection.inkMask || !detection.inkMaskW || !detection.inkMaskH) return;
+    const views = detection.views || detection.viewBoxes || [];
+    const idx = detection.backViewIndex;
+    const vb = (Number.isFinite(idx) && idx >= 0) ? views[idx] : null;
+    if (!vb || !(vb.width > 0) || !(vb.height > 0)) return;
+    const mw = detection.inkMaskW;
+    const mh = detection.inkMaskH;
+    const backBox = {
+      minX: Math.max(0, Math.round(vb.x * mw)),
+      minY: Math.max(0, Math.round(vb.y * mh)),
+      maxX: Math.min(mw - 1, Math.round((vb.x + vb.width) * mw)),
+      maxY: Math.min(mh - 1, Math.round((vb.y + vb.height) * mh)),
+      count: 0,
+    };
+    const bl = detectBackLandmarks(detection.inkMask, mw, mh, backBox);
+    detection.back = bl.backInfo;
+    detection.backFeatures = bl.backFeatures;
+    detection.backPanel = bl.backPanelInfo;
+    detection.backPanelHeight = bl.backPanelHeightInfo;
+    detection.backStrapInner = bl.backStrapInnerInfo;
+    detection.backStrapTop = bl.backStrapTopInfo ? bl.backStrapTopInfo.point : null;
+    detection.backSideTop = bl.backSideTopInfo ? bl.backSideTopInfo.point : null;
+    detection.backSideBottom = bl.backSideBottomInfo ? bl.backSideBottomInfo.point : null;
+    detection.backSide = bl.backSideInfo;
+  }
+
+  // Split every view box wide enough to plausibly hold more than one panel at
+  // its internal vertical alley, recursing so a board whose panels merged in
+  // component-grouping separates into one box per panel. This generalizes the
+  // former lone-box-only special case: a box is split-eligible when it spans
+  // more than half the canvas (>0.50w). A single garment panel on a multi-panel
+  // board is never that wide — there would be no room for the others — so a box
+  // over that gate is a merge of >=2 panels (e.g. EvelynBliss's back+inner
+  // grouped into one 0.565w box). Correct 2-panel boards keep two sub-half
+  // boxes and are untouched, which is why golden is unaffected. The per-box
+  // sanity gates inside splitMergedViewByVerticalValley (empty-alley run length
+  // + >=20% ink share each side) additionally reject splitting a genuine single
+  // view (deep-V neckline, wide back panel).
+  function splitWideViewBoxes(boxes, dark, w, h) {
+    if (!boxes || boxes.length === 0) return boxes;
+    const out = [];
+    for (const box of boxes) {
+      const parts = splitMergedViewByVerticalValley(dark, w, h, box, 0.50);
+      if (parts.length > 1) {
+        // Recurse at the SAME 0.50 gate so a box holding 3+ merged panels keeps
+        // splitting while any resulting piece still spans more than half the
+        // canvas. The gate stays at 0.50 (never lower) because a lone wide
+        // single panel — demo1/demo2 group into one >0.50w box that the split
+        // separates into front+back — must not have its halves re-split; a
+        // lower gate over-splits those legitimate single panels (golden regress).
+        out.push(...splitWideViewBoxes(parts, dark, w, h));
+      } else {
+        out.push(box);
+      }
+    }
+    return out;
+  }
+
+  function splitMergedViewByVerticalValley(dark, w, h, view, minWidthRatio = 0.50) {
     const { minX, minY, maxX, maxY } = view;
     const bw = maxX - minX + 1;
     const bh = maxY - minY + 1;
     // Require a fairly wide bbox before we even try to split — narrow boxes
     // are almost certainly a single view that just happens to be off-center.
-    if (bw < w * 0.50 || bh < 16) return [view];
+    if (bw < w * minWidthRatio || bh < 16) return [view];
 
     // Column density restricted to the view's bbox.
     const colDark = new Uint32Array(bw);
@@ -5105,22 +5692,47 @@
     };
 
     const used = new Set();
-    let backIndex = assignBest('back', 'backScore', used);
-    if (backIndex >= 0) used.add(backIndex);
-
+    let backIndex = -1;
     let frontInnerIndex = -1;
-    if (eligible.length >= 3) {
-      frontInnerIndex = assignBest('front_inner', 'frontInnerScore', used);
-      if (frontInnerIndex >= 0) used.add(frontInnerIndex);
-    }
+    let frontOuterIndex = -1;
 
-    let frontOuterIndex = assignBest('front_outer', 'frontOuterScore', used);
-    if (frontOuterIndex < 0) {
-      const fallback = eligible
-        .filter(item => !used.has(item.index))
-        .sort((a, b) => a.score.centroidX - b.score.centroidX)[0] || eligible[0];
-      frontOuterIndex = fallback.index;
-      roles[frontOuterIndex] = 'front_outer';
+    if (eligible.length >= 3) {
+      // Panel order on a technical board is a fixed TD convention, left to
+      // right: front_outer, back, front_inner. Position is a far more reliable
+      // signal than the visual scores — a symmetric racerback back and a
+      // molded-cup inner cutaway score too alike to tell apart — so assign the
+      // three roles by centroidX order. Take the three highest-ink eligible
+      // views first so a stray 4th blob can't shift the mapping; any extra
+      // panel stays 'unknown' and trips reviewRequired below.
+      const trio = eligible
+        .slice()
+        .sort((a, b) => (b.view.count || 0) - (a.view.count || 0))
+        .slice(0, 3)
+        .sort((a, b) => a.score.centroidX - b.score.centroidX);
+      frontOuterIndex = trio[0].index; roles[frontOuterIndex] = 'front_outer';
+      backIndex       = trio[1].index; roles[backIndex] = 'back';
+      frontInnerIndex = trio[2].index; roles[frontInnerIndex] = 'front_inner';
+      used.add(frontOuterIndex); used.add(backIndex); used.add(frontInnerIndex);
+      // Position is authoritative for the 3-view layout, so assign a confident
+      // role score — the review dialog is NOT forced on a clean 3-panel board
+      // (the TD can still nudge anchors if a board ever breaks the convention).
+      for (const idx of [frontOuterIndex, backIndex, frontInnerIndex]) {
+        if (scores[idx]) scores[idx].roleConfidence = 0.75;
+      }
+    } else {
+      // Two panels (the common front + back board): back by best backScore, the
+      // remaining view is front_outer. Unchanged from the long-standing path.
+      backIndex = assignBest('back', 'backScore', used);
+      if (backIndex >= 0) used.add(backIndex);
+
+      frontOuterIndex = assignBest('front_outer', 'frontOuterScore', used);
+      if (frontOuterIndex < 0) {
+        const fallback = eligible
+          .filter(item => !used.has(item.index))
+          .sort((a, b) => a.score.centroidX - b.score.centroidX)[0] || eligible[0];
+        frontOuterIndex = fallback.index;
+        roles[frontOuterIndex] = 'front_outer';
+      }
     }
 
     const roleConfidence = (index, metric) => {
@@ -5132,9 +5744,13 @@
       const runnerUp = values.length ? values[0] : 0;
       return clamp01(0.45 + (scores[index][metric] - runnerUp) * 0.55);
     };
-    if (frontOuterIndex >= 0) scores[frontOuterIndex].roleConfidence = roleConfidence(frontOuterIndex, 'frontOuterScore');
-    if (backIndex >= 0) scores[backIndex].roleConfidence = roleConfidence(backIndex, 'backScore');
-    if (frontInnerIndex >= 0) scores[frontInnerIndex].roleConfidence = roleConfidence(frontInnerIndex, 'frontInnerScore');
+    // The ≤2-panel path derives confidence from the visual score margin. The
+    // 3-view path already set a fixed positional confidence above (position is
+    // authoritative there), so it is not recomputed from scores here.
+    if (eligible.length < 3) {
+      if (frontOuterIndex >= 0) scores[frontOuterIndex].roleConfidence = roleConfidence(frontOuterIndex, 'frontOuterScore');
+      if (backIndex >= 0) scores[backIndex].roleConfidence = roleConfidence(backIndex, 'backScore');
+    }
 
     const reviewRequired =
       eligible.length > 3 ||
@@ -5155,7 +5771,6 @@
     const bh = (view.maxY - view.minY + 1);
     const cx = (view.minX + view.maxX) / 2;
     const ink = view.count || 1;
-    let innerInk = 0;
     let edgeInk = 0;
     let centerVerticalInk = 0;
     if (dark && w && h && bw > 0 && bh > 0) {
@@ -5169,15 +5784,13 @@
           if (!dark[base + x]) continue;
           const inInner = x >= view.minX + insetX && x <= view.maxX - insetX
             && y >= view.minY + insetY && y <= view.maxY - insetY;
-          if (inInner) innerInk += 1;
-          else edgeInk += 1;
+          if (!inInner) edgeInk += 1;
           if (x >= centerLo && x <= centerHi) centerVerticalInk += 1;
         }
       }
     }
     const widthRatio = w > 0 ? bw / w : 0;
     const aspect = bh / Math.max(1, bw);
-    const innerRatio = innerInk / ink;
     const edgeRatio = edgeInk / ink;
     const centerVerticalRatio = centerVerticalInk / ink;
     const leftness = 1 - clamp01(cx / Math.max(1, w));
@@ -5203,23 +5816,15 @@
       edgeRatio * 0.20 +
       clamp01(aspect / 1.45) * 0.16 +
       (1 - symmetry) * 0.10;
-    const frontInnerScore =
-      innerRatio * 0.38 +
-      symmetry * 0.18 +
-      (1 - edgeRatio) * 0.18 +
-      (1 - rightness * 0.45) * 0.10 +
-      (1 - clamp01(Math.abs(aspect - 1.0))) * 0.16;
     return {
       centroidX: w > 0 ? cx / w : 0,
       widthRatio,
       count: view.count || 0,
-      innerRatio,
       edgeRatio,
       centerVerticalRatio,
       symmetry,
       frontOuterScore,
       backScore,
-      frontInnerScore,
       roleConfidence: 0,
     };
   }

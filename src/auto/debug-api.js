@@ -533,6 +533,16 @@
         width: image.width,
         height: image.height,
       })),
+      // US-082 toolbar test seam: add decoded Board image data without also
+      // invoking detection. This isolates the ready-state toolbar contract;
+      // the smoke/golden suites continue to own detection proof.
+      addBoardImages: async (dataURLs) => {
+        await addImagesFromDataURLs(Array.isArray(dataURLs) ? dataURLs : []);
+        return {
+          imageCount: state.images.length,
+          status: state.autoMode.status,
+        };
+      },
       getAnnotations: () => clone(state.annotations),
       // Test-only: set the review-time hidden POM lines by annotation id — the
       // same session-only state the panel's × toggle writes (state.hiddenAnnIds).
@@ -572,6 +582,11 @@
         if (!bounds) return null;
         return renderBoardRegionToCanvas(bounds).toDataURL('image/png');
       },
+      // Canvas view transform. Needed to drive REAL pointer events from world
+      // coordinates in a test (screenX = worldX * zoom + panX + canvasRect.left),
+      // which is the only way to exercise selection, drag and resize the way a TD
+      // does. Without it a UI test has to guess pixel positions.
+      getView: () => ({ zoom: state.zoom, panX: state.panX, panY: state.panY }),
       getAcceptanceStats: () => clone(getAutoAcceptanceStats()),
       clearAcceptanceStats: () => clearAutoAcceptanceStats(),
       getTelemetryLog: () => clone(getAutoTelemetryLog()),
@@ -592,6 +607,16 @@
         await new Promise((resolve) => setTimeout(resolve, 80));
         const sourceImage = state.images[state.images.length - 1] || null;
         if (!sourceImage) throw new Error('No image was added.');
+        // opts.auxDataURLs: add EXTRA board photos (e.g. a separate front-inner
+        // cutaway) before detection, so a suite can exercise the real 2-image board
+        // a TD uses. Until this existed every suite ran a single image, which is why
+        // the aux-view path could regress with all suites green (ADR 0036 follow-up).
+        // The primary image stays the detection source; extras become aux views.
+        const auxDataURLs = (opts && Array.isArray(opts.auxDataURLs)) ? opts.auxDataURLs : [];
+        if (auxDataURLs.length) {
+          await addImagesFromDataURLs(auxDataURLs);
+          await new Promise((resolve) => setTimeout(resolve, 80));
+        }
         state.selection = { kind: 'image', id: sourceImage.id };
         await runOfflineDetection();
         generatePOMDraftsFromAnchors({ keepDraftsForReview: true, suppressReplacePrompt: true });
@@ -616,6 +641,14 @@
       },
       applyApprovedDrafts: () => applyApprovedDraftsAtomically({ suppressPrompt: true }),
       exportProject: () => clone(buildProjectSnapshot()),
+      /* US-080: drives a MAIN PAGE sketch slot the way the upload/paste menu
+         does, and hands back the RAW runtime state.mainPage — the one history
+         clones — so a suite can prove the image bytes never land in it. */
+      setMainPageSketch: async (variant, index, dataURL) => {
+        if (typeof mpSetSketch !== 'function') return null;
+        await mpSetSketch(variant, index, dataURL);
+        return JSON.stringify(state.mainPage);
+      },
       loadProject: async (project) => {
         await loadProject(project);
         return window.__braAutoModeDebug.getState();
@@ -632,6 +665,7 @@
       },
       getState: () => ({
         appMode: state.appMode,
+        activePage: state.activePage,
         autoStatus: state.autoMode.status,
         lastError: state.autoMode.lastError,
         validation: clone(state.autoMode.validation),
@@ -785,13 +819,6 @@
         // through the shared IIFE scope (the bundle wraps every source
         // part in the same closure). Keeping them here keeps the test
         // surface in one namespace.
-        isPopoverOpen: () => pendingMeaningEval != null,
-        openPopoverForAnn: (ann) => {
-          const result = evaluateManualPomSample(ann);
-          if (result.status === 'needsConfirmation') openPomMeaningPopover(result);
-          return { status: result.status, pom: result.pom || null };
-        },
-        cancelPopover: () => { closePomMeaningPopover(); },
         getCanvasTool: () => state.tool,
         setAppMode: (mode) => { setAppMode(mode === 'auto' ? 'auto' : 'manual'); },
       },

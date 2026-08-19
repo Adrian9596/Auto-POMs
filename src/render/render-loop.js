@@ -116,7 +116,7 @@ function requestRender() {
 
     for (const ann of state.annotations) {
       if (isAnnHidden(ann.id)) continue;
-      drawAnnotation(ann);
+      drawAnnotation(ann, false); // line body only — numbers drawn in the label pass below
     }
 
     // Auto Mode draft layer — rendered above project annotations so reviewers
@@ -125,7 +125,7 @@ function requestRender() {
     if (state.appMode === 'auto') {
       for (const draft of state.autoMode.draftAnnotations) {
         if (isDraftHidden(draft.id)) continue;
-        drawAutoDraftAnnotation(draft);
+        drawAutoDraftAnnotation(draft, false); // line body only — number drawn in the label pass below
       }
     }
 
@@ -135,18 +135,57 @@ function requestRender() {
       drawAnchorLoupe();
     }
 
+    // Label pass — POM numbers are drawn LAST, above every line body and the
+    // anchor layer, so a line or anchor never covers a callout number (this was
+    // the "line over the number" clutter on crowded 3-view boards). Draw order
+    // only; hit-testing is separate, so anchors and lines stay grabbable.
+    for (const ann of state.annotations) {
+      if (isAnnHidden(ann.id)) continue;
+      drawAnnotationLabel(ann);
+    }
+    if (state.appMode === 'auto') {
+      for (const draft of state.autoMode.draftAnnotations) {
+        if (isDraftHidden(draft.id)) continue;
+        drawAutoDraftLabel(draft);
+      }
+    }
+
     if (state.drawSession) {
       drawPreview();
     }
 
-    const selectedImage = getSelectedImage();
-    if (selectedImage) {
-      drawImageSelection(selectedImage);
+    // Highlight every selected image. A single selection keeps its resize
+    // handles; a Cmd/Ctrl+click group shows outlines only (move-together).
+    const selectedImages = getSelectedImages();
+    const showImageHandles = selectedImages.length <= 1;
+    for (const selectedImage of selectedImages) {
+      drawImageSelection(selectedImage, showImageHandles);
+    }
+    // A group of 2+ images gets ONE set of resize handles on its bounding box, so
+    // dragging a corner scales the whole group about the opposite corner (photos
+    // keep their relative sizes and spacing). Per-image handles stay off — they
+    // would fight each other and give no group-relative anchor.
+    if (selectedImages.length > 1) {
+      const groupBox = getImagesGroupBox(selectedImages);
+      if (groupBox && !selectedImages.some(im => im.locked)) {
+        drawImageSelection(groupBox, true);
+      }
     }
 
-    const selectedAnnotation = getSelectedAnnotation();
-    if (selectedAnnotation && !isAnnHidden(selectedAnnotation.id)) {
-      drawSelectionHelpers(selectedAnnotation);
+    // Line selection: a single selection shows full endpoint/handle helpers; a
+    // multi-selection (Shift+click / marquee) shows a lighter per-line outline
+    // on each member so the group reads as one.
+    const selAnnIds = state.appMode !== 'auto' ? getSelectedAnnotationIds() : [];
+    if (selAnnIds.length > 1) {
+      for (const id of selAnnIds) {
+        const a = getAnnotationById(id);
+        if (a && !isAnnHidden(a.id)) drawAnnotationSelectedOutline(a);
+      }
+    } else {
+      const selectedAnnotation = getSelectedAnnotation();
+      if (selectedAnnotation && !isAnnHidden(selectedAnnotation.id)) {
+        drawSelectionHelpers(selectedAnnotation);
+      }
     }
 
     if (state.appMode === 'auto') {
@@ -163,6 +202,12 @@ function requestRender() {
     // they can size the line accurately without releasing to check the
     // measurement panel.
     drawLengthReadoutDuringHandleDrag();
+
+    // Rubber-band selection rectangle (drawn last, over everything, in world
+    // space so it tracks the sketch while zoomed/panned).
+    if (state.interaction && state.interaction.type === 'marquee' && state.interaction.moved) {
+      drawMarquee(state.interaction);
+    }
 
     ctx.restore();
     positionLabelEditor();

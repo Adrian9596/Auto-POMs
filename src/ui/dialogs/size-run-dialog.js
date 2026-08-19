@@ -106,8 +106,12 @@
     body.style.cssText = 'max-width:100%;overflow:auto;';
     const lead = document.createElement('p');
     lead.style.cssText = 'margin:0 0 8px;font-size:12px;color:#555;';
+    // US-011: this dialog is a read-only PREVIEW of the graded run. All
+    // grade-rule editing lives in the Grading dialog (one source of truth) —
+    // the review flagged that two editing surfaces over one persisted object
+    // silently disagree (per-size overrides beat steps with no UI signal).
     lead.innerHTML = 'Base = each POM’s <b>Size L</b>, or its calibrated measured value if Size L is blank. '
-      + 'Steps are seeded from the house rule (editable). Held POMs (straps) stay flat and are shaded.';
+      + 'Preview only — edit the rule via the <b>Grading</b> button. Held POMs (straps) stay flat and are shaded.';
     body.appendChild(lead);
 
     const scroller = document.createElement('div');
@@ -148,33 +152,21 @@
         nameTd.title = pomDisplayName(key) + (baseInfo.source ? ' · base from ' + baseInfo.source : ' · no base set');
         tr.appendChild(nameTd);
 
+        // Read-only step/hold display (US-011: editing moved to the Grading
+        // dialog; legacy step overrides remain honored and visible here).
         const stepTd = document.createElement('td');
-        stepTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;';
-        const stepInput = document.createElement('input');
-        stepInput.type = 'number';
-        stepInput.step = 'any';
-        stepInput.value = rule.hold ? '' : String(+rule.step.toFixed(3));
-        stepInput.disabled = rule.hold;
-        stepInput.style.cssText = 'width:64px;font-size:12px;padding:2px 4px;';
-        stepInput.addEventListener('change', () => {
-          const n = parseFloat(stepInput.value);
-          setGradeRule(key, { step: Number.isFinite(n) ? n : 0 });
-          renderTable();
-        });
-        stepTd.appendChild(stepInput);
+        stepTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;color:#555;';
+        stepTd.textContent = rule.hold ? '—' : String(+rule.step.toFixed(3));
+        if (rule.overridden) {
+          stepTd.style.fontWeight = '600';
+          stepTd.title = 'TD step override (edit or clear it in the Grading dialog)';
+        }
         tr.appendChild(stepTd);
 
         const holdTd = document.createElement('td');
-        holdTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;text-align:center;';
-        const holdBox = document.createElement('input');
-        holdBox.type = 'checkbox';
-        holdBox.checked = rule.hold;
-        holdBox.title = 'Hold constant across sizes (e.g. adjustable straps)';
-        holdBox.addEventListener('change', () => {
-          setGradeRule(key, { hold: holdBox.checked });
-          renderTable();
-        });
-        holdTd.appendChild(holdBox);
+        holdTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#555;';
+        holdTd.textContent = rule.hold ? 'held' : '';
+        holdTd.title = rule.hold ? 'Held constant across sizes (e.g. adjustable straps)' : '';
         tr.appendChild(holdTd);
 
         const run = baseInfo.value != null ? gradedRunForPom(baseInfo.value, rule) : null;
@@ -208,19 +200,8 @@
 
     const footer = document.createElement('div');
     footer.className = 'picker-footer';
-    const resetBtn = document.createElement('button');
-    resetBtn.type = 'button';
-    resetBtn.className = 'picker-btn';
-    resetBtn.textContent = 'Reset steps';
-    resetBtn.title = 'Discard step edits and restore the house-default increments.';
-    resetBtn.addEventListener('click', () => {
-      // Reset only the constant-step overrides this dialog edits; per-size
-      // deltas and depth offsets in the v2 container belong to other UIs.
-      state.gradeRules.steps = {};
-      pushHistoryIfChanged();
-      renderTable();
-      showToast('Grade steps reset to house defaults.');
-    });
+    // US-011: no reset here — this dialog is a preview; the Grading dialog
+    // owns every grade-rule edit (per-POM and global resets included).
     const spacer = document.createElement('span');
     spacer.style.flex = '1';
     const copyBtn = document.createElement('button');
@@ -243,7 +224,6 @@
     doneBtn.className = 'picker-btn primary';
     doneBtn.textContent = 'Done';
     doneBtn.addEventListener('click', dialog.close);
-    footer.appendChild(resetBtn);
     footer.appendChild(spacer);
     footer.appendChild(copyBtn);
     footer.appendChild(doneBtn);

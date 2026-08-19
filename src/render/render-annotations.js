@@ -8,8 +8,30 @@
 // state-aware tweaks (e.g. selection highlight, alpha) so the same
 // helpers serve hover, selected, and draft renderings.
 
-  function drawAnnotation(ann) {
+  // Feature sizes (stroke width, arrowheads, callout font) are divided by
+  // state.zoom so they hold a CONSTANT on-screen pixel size at any zoom. During
+  // export, though, "zoom" is the render density: copy-image and export-pdf set
+  // state.zoom to the native-resolution scale, which US-056 pushed well above the
+  // old flat 2x. Dividing features by that big scale pins them to a few absolute
+  // device pixels — hairline lines and microscopic callout numbers on a ~2000px+
+  // board (visible the moment Excel shrinks the pasted PNG). featureZoom() lets an
+  // export path override the divisor with a fixed reference (state.exportFeatureZoom)
+  // so features stay a constant FRACTION of the board while the image still renders
+  // at native resolution. Screen rendering never sets the override, so it is a
+  // no-op there (returns state.zoom unchanged).
+  function featureZoom() {
+    return state.exportFeatureZoom || state.zoom;
+  }
+
+  function drawAnnotation(ann, withLabel = true) {
     drawLineCore(ann, 1);
+    if (withLabel) drawAnnotationLabel(ann);
+  }
+
+  // The callout number is drawn in a SEPARATE pass (after every line body and
+  // the anchor layer — see render()) so a later line or anchor never paints
+  // over a POM number. Keeps each number readable on a crowded 3-view board.
+  function drawAnnotationLabel(ann) {
     if (state.editingLabelId === ann.id) return;
     if (!labelsVisible()) return;
     drawLabel(ann.label, getLabelText(ann), state.selection.kind === 'annotation' && ann.id === state.selection.id, 1, getAnnotationColor(ann));
@@ -33,8 +55,8 @@
     } else if (style === 'bartack') {
       drawBartackStitchLine(ann, color, lineWidth);
     } else {
-      ctx.lineWidth = lineWidth / state.zoom;
-      ctx.setLineDash(style === 'dashed' ? [10 / state.zoom, 7 / state.zoom] : []);
+      ctx.lineWidth = lineWidth / featureZoom();
+      ctx.setLineDash(style === 'dashed' ? [10 / featureZoom(), 7 / featureZoom()] : []);
       drawAnnotationPath(ann);
       ctx.stroke();
     }
@@ -63,7 +85,7 @@
   function drawArrowheadsForStraight(ann, color, lineWidth) {
     const arrowType = getArrowType(ann);
     if (arrowType === 'none') return;
-    const arrowSize = (10 + lineWidth * 0.55) / state.zoom;
+    const arrowSize = (10 + lineWidth * 0.55) / featureZoom();
     drawArrowhead(ann.end, Math.atan2(ann.end.y - ann.start.y, ann.end.x - ann.start.x), arrowSize, color);
     if (arrowType === 'double') {
       drawArrowhead(ann.start, Math.atan2(ann.start.y - ann.end.y, ann.start.x - ann.end.x), arrowSize, color);
@@ -73,7 +95,7 @@
   function drawArrowheadsForCurve(ann, color, lineWidth) {
     const arrowType = getArrowType(ann);
     if (arrowType === 'none') return;
-    const arrowSize = (10 + lineWidth * 0.55) / state.zoom;
+    const arrowSize = (10 + lineWidth * 0.55) / featureZoom();
     const endAngle = Math.atan2(ann.end.y - ann.control2.y, ann.end.x - ann.control2.x);
     drawArrowhead(ann.end, endAngle, arrowSize, color);
     if (arrowType === 'double') {
@@ -103,8 +125,8 @@
   }
 
   function drawLabel(pos, text, selected, alpha = 1, color = LINE_COLOR) {
-    const fontSize = 17 / state.zoom;
-    const halo = 3 / state.zoom;
+    const fontSize = 17 / featureZoom();
+    const halo = 3 / featureZoom();
     // White label fill is invisible on the white canvas — use a dark halo so
     // the callout number still reads when the line color is white.
     const isWhiteFill = String(color || '').toLowerCase() === '#ffffff';
@@ -116,8 +138,8 @@
     ctx.lineJoin = 'round';
     ctx.lineWidth = isWhiteFill ? halo * 1.4 : halo;
     ctx.shadowColor = 'rgba(17,24,39,.18)';
-    ctx.shadowBlur = 4 / state.zoom;
-    ctx.shadowOffsetY = 1 / state.zoom;
+    ctx.shadowBlur = 4 / featureZoom();
+    ctx.shadowOffsetY = 1 / featureZoom();
     ctx.strokeStyle = isWhiteFill ? '#111827' : '#ffffff';
     ctx.strokeText(String(text), pos.x, pos.y);
     ctx.fillStyle = color;
@@ -126,49 +148,143 @@
   }
 
   function drawSelectionHelpers(ann) {
+    // US-027: the part the arrow keys currently move (Tab / handle drag sets
+    // it) renders filled so the TD can see what a keypress will nudge.
+    const activePart = state.selection.kind === 'annotation' && state.selection.id === ann.id
+      ? state.selection.part || null : null;
     ctx.save();
 
     if (ann.type === 'curved') {
-      const twoSeg = !!(ann.midPoint && ann.midHandleIn && ann.midHandleOut);
+      // Single cubic: two control handles, each with a dashed guide line from
+      // its endpoint (control1 off start, control2 off end) — the pen-tool
+      // model. Drag an endpoint to move it (its handle follows), drag a handle
+      // to bend that end.
       ctx.setLineDash([6 / state.zoom, 5 / state.zoom]);
       ctx.strokeStyle = 'rgba(53,109,255,.45)';
       ctx.lineWidth = 1.2 / state.zoom;
       ctx.beginPath();
-      // Separate handle lines: one per endpoint, plus two at the middle anchor
-      // (one toward each end). Each handle bends only its own side of the curve.
       if (ann.control1) { ctx.moveTo(ann.start.x, ann.start.y); ctx.lineTo(ann.control1.x, ann.control1.y); }
       if (ann.control2) { ctx.moveTo(ann.end.x, ann.end.y); ctx.lineTo(ann.control2.x, ann.control2.y); }
-      if (twoSeg) {
-        ctx.moveTo(ann.midPoint.x, ann.midPoint.y); ctx.lineTo(ann.midHandleIn.x, ann.midHandleIn.y);
-        ctx.moveTo(ann.midPoint.x, ann.midPoint.y); ctx.lineTo(ann.midHandleOut.x, ann.midHandleOut.y);
-      }
       ctx.stroke();
       ctx.setLineDash([]);
-      if (ann.control1) drawHandle(ann.control1, false);
-      if (ann.control2) drawHandle(ann.control2, false);
-      if (twoSeg) {
-        drawHandle(ann.midHandleIn, false);
-        drawHandle(ann.midHandleOut, false);
-      }
-      if (ann.midPoint) drawHandle(ann.midPoint, false);
+      if (ann.control1) drawHandle(ann.control1, false, activePart === 'control1');
+      if (ann.control2) drawHandle(ann.control2, false, activePart === 'control2');
     }
 
-    drawHandle(ann.start, true);
-    drawHandle(ann.end, true);
+    drawHandle(ann.start, true, activePart === 'start');
+    drawHandle(ann.end, true, activePart === 'end');
     drawLabelHandle(ann.label, getAnnotationColor(ann));
+    ctx.restore();
+    drawAdjustmentReadout(ann);
+  }
+
+  // Lighter per-line marker for a MULTI-selection (Shift+click / marquee): just
+  // the endpoint dots, no control/label handles or readout — enough to show the
+  // line is in the group without the busy single-line editing apparatus.
+  function drawAnnotationSelectedOutline(ann) {
+    if (!ann || !ann.start || !ann.end) return;
+    ctx.save();
+    drawHandle(ann.start, true, false);
+    drawHandle(ann.end, true, false);
     ctx.restore();
   }
 
-  function drawHandle(point, emphasized) {
-    const r = (emphasized ? 7.5 : 6.0) / state.zoom;
+  // Rubber-band selection rectangle, in world coordinates.
+  function drawMarquee(m) {
+    if (!m || !m.startWorld || !m.currentWorld) return;
+    const x = Math.min(m.startWorld.x, m.currentWorld.x);
+    const y = Math.min(m.startWorld.y, m.currentWorld.y);
+    const w = Math.abs(m.currentWorld.x - m.startWorld.x);
+    const h = Math.abs(m.currentWorld.y - m.startWorld.y);
+    ctx.save();
+    ctx.fillStyle = 'rgba(53,109,255,0.10)';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = 'rgba(53,109,255,0.75)';
+    ctx.lineWidth = 1 / state.zoom;
+    ctx.setLineDash([5 / state.zoom, 4 / state.zoom]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.restore();
+  }
+
+  // US-029: floating measurement readout, shown only WHILE the line is being
+  // adjusted (endpoint/handle mouse-drag or an open key-nudge burst) so the
+  // TD can steer toward a target value without looking away to the panel.
+  // Same value text and Δ ✓/✗ verdict as the panel's Value cell
+  // (measuredValueText / specDeltaText), pinned near the moving point.
+  function drawAdjustmentReadout(ann) {
+    const interaction = state.interaction;
+    const dragging = !!(interaction && interaction.type === 'drag-handle' && interaction.id === ann.id);
+    const nudging = isLineNudgeActive(ann.id);
+    if (!dragging && !nudging) return;
+    const text = measuredValueText(ann);
+    if (!text) return;
+    const ev = evaluateSpecTolerance(ann, getLabelText(ann));
+    const deltaText = specDeltaText(ev);
+
+    const part = dragging ? interaction.part : state.selection.part;
+    const point = (part === 'start' && ann.start)
+      || (part === 'end' && ann.end)
+      || (part && ann[part])
+      || { x: (ann.start.x + ann.end.x) / 2, y: (ann.start.y + ann.end.y) / 2 };
+
+    const z = state.zoom;
+    const fontSize = 13 / z;
+    const padX = 7 / z;
+    const gap = 6 / z;
+    const pillH = 22 / z;
+    ctx.save();
+    ctx.font = '600 ' + fontSize + 'px system-ui, -apple-system, sans-serif';
+    const valueW = ctx.measureText(text).width;
+    const deltaW = deltaText ? ctx.measureText(deltaText).width + gap : 0;
+    const pillW = valueW + deltaW + padX * 2;
+    // Above-right of the moving point; the cursor/point stays unobscured.
+    const x = point.x + 14 / z;
+    const y = point.y - 16 / z - pillH;
+    ctx.beginPath();
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(x, y, pillW, pillH, 5 / z);
+    } else {
+      ctx.rect(x, y, pillW, pillH);
+    }
+    ctx.fillStyle = 'rgba(17,24,39,.88)';
+    ctx.shadowColor = 'rgba(17,24,39,.25)';
+    ctx.shadowBlur = 5 / z;
+    ctx.shadowOffsetY = 1 / z;
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(text, x + padX, y + pillH / 2);
+    if (deltaText) {
+      ctx.fillStyle = ev.status === 'in' ? '#4ade80' : ev.status === 'out' ? '#f87171' : '#d1d5db';
+      ctx.fillText(deltaText, x + padX + valueW + gap, y + pillH / 2);
+    }
+    ctx.restore();
+  }
+
+  function drawHandle(point, emphasized, active = false) {
+    const r = ((emphasized ? 7.5 : 6.0) + (active ? 1.5 : 0)) / state.zoom;
     ctx.save();
     ctx.beginPath();
     ctx.arc(point.x, point.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
+    // Active = the point the arrow keys move: filled blue with a white ring,
+    // the inverse of the normal hollow handle, so it reads at a glance.
+    ctx.fillStyle = active ? SELECT_COLOR : '#ffffff';
     ctx.fill();
     ctx.lineWidth = 2 / state.zoom;
-    ctx.strokeStyle = emphasized ? SELECT_COLOR : 'rgba(53,109,255,.72)';
+    ctx.strokeStyle = active ? '#ffffff' : (emphasized ? SELECT_COLOR : 'rgba(53,109,255,.72)');
     ctx.stroke();
+    if (active) {
+      // US-034: detached outer ring makes the active handle a bullseye —
+      // a shape cue that survives grayscale and any color-vision deficiency,
+      // instead of relying on the blue fill alone.
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, r + 4 / state.zoom, 0, Math.PI * 2);
+      ctx.lineWidth = 1.5 / state.zoom;
+      ctx.strokeStyle = SELECT_COLOR;
+      ctx.stroke();
+    }
     ctx.restore();
   }
 

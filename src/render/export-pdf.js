@@ -79,7 +79,12 @@ function getAnnotationBounds(ann) {
 
 function createExportCanvas(bounds) {
   const isLandscape = bounds.width > bounds.height;
-  const mmToPx = 150 / 25.4;
+  // 300 DPI (print standard). At the old 150 DPI the A4 page held too few
+  // pixels, so a photo fit to the page rendered below its native resolution and
+  // looked soft; 300 DPI lets a single/dual-photo board render at (or above)
+  // native. Doubling DPI quadruples the JPEG pixels — still well within a
+  // single-page PDF budget at quality 0.94.
+  const mmToPx = 300 / 25.4;
   const pageWidthMm = isLandscape ? 297 : 210;
   const pageHeightMm = isLandscape ? 210 : 297;
   const pageWidthPx = Math.round(pageWidthMm * mmToPx);
@@ -94,12 +99,19 @@ function createExportCanvas(bounds) {
   exportCanvas.width = pageWidthPx;
   exportCanvas.height = pageHeightPx;
   const exportCtx = exportCanvas.getContext('2d');
+  exportCtx.imageSmoothingEnabled = true;
+  exportCtx.imageSmoothingQuality = 'high';
   const oldCtx = ctx;
   const oldZoom = state.zoom;
   const oldPanX = state.panX;
   const oldPanY = state.panY;
   ctx = exportCtx;
   state.zoom = exportZoom;
+  // US-056 doubled the page density (150 -> 300 DPI), which doubled exportZoom and
+  // so halved the on-page size of the POM lines/labels (they divide by state.zoom).
+  // Size features against half the zoom to restore the pre-300-DPI proportions
+  // while the image keeps rendering at the higher resolution. See featureZoom().
+  state.exportFeatureZoom = exportZoom / 2;
   state.panX = exportPanX;
   state.panY = exportPanY;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -114,6 +126,7 @@ function createExportCanvas(bounds) {
   ctx.restore();
   ctx = oldCtx;
   state.zoom = oldZoom;
+  state.exportFeatureZoom = null;
   state.panX = oldPanX;
   state.panY = oldPanY;
   requestRender();

@@ -136,33 +136,76 @@
     }
   }
 
+  // Remove one image and purge everything tied to it (erase strokes, and in
+  // Auto Mode its anchors / drafts / detection or aux view — US-052). Returns
+  // true if an image was actually removed. Caller handles the lock check,
+  // selection reset, history commit, and re-render.
+  function deleteImageById(deletedId) {
+    const before = state.images.length;
+    state.images = state.images.filter(image => image.id !== deletedId);
+    if (state.images.length === before) return false;
+    state.eraseStrokes = state.eraseStrokes.filter(stroke => stroke.imageId !== deletedId);
+    const am = state.autoMode;
+    if (am) {
+      am.anchors = (am.anchors || []).filter(a => a.sourceImageId !== deletedId);
+      am.draftAnnotations = (am.draftAnnotations || []).filter(d => d.sourceImageId !== deletedId);
+      if (am.anchorSelectedId != null && !am.anchors.some(a => a.id === am.anchorSelectedId)) am.anchorSelectedId = null;
+      if (am.detection) {
+        if (am.detection.sourceImageId === deletedId) am.detection = null;
+        else if (Array.isArray(am.detection.auxViews)) {
+          am.detection.auxViews = am.detection.auxViews.filter(v => v.sourceImageId !== deletedId);
+        }
+      }
+      if (typeof ensureAutoModeStatus === 'function') ensureAutoModeStatus();
+    }
+    return true;
+  }
+
   function deleteSelected() {
     if (state.selection.kind == null) return;
 
     if (state.selection.kind === 'annotation') {
-      const selectedAnn = state.annotations.find(a => a.id === state.selection.id) || null;
+      // Delete every selected line (Shift+click / marquee group).
+      const ids = getSelectedAnnotationIds();
+      if (!ids.length) return;
+      const targets = ids.map(id => state.annotations.find(a => a.id === id)).filter(Boolean);
+      const idSet = new Set(ids);
       const before = state.annotations.length;
-      state.annotations = state.annotations.filter(a => a.id !== state.selection.id);
+      state.annotations = state.annotations.filter(a => !idSet.has(a.id));
       if (state.annotations.length === before) return;
-      // POM numbers are measurement identities, not list positions. Deleting
-      // POM 7 must leave a gap instead of turning POM 8 into POM 7.
-      if (selectedAnn && typeof markDeletedAutoAnnotationForEvidence === 'function') {
-        markDeletedAutoAnnotationForEvidence(selectedAnn);
+      if (!Array.isArray(state.deletedPomKeys)) state.deletedPomKeys = [];
+      for (const ann of targets) {
+        // POM numbers are measurement identities, not list positions. Deleting
+        // POM 7 must leave a gap instead of turning POM 8 into POM 7.
+        if (typeof markDeletedAutoAnnotationForEvidence === 'function') markDeletedAutoAnnotationForEvidence(ann);
+        // US-047: deleting a POM line excludes that POM from the exported spec,
+        // exactly like the review × Hide toggle (TD: "delete = hide"). The id is
+        // gone after this, so remember the POM label; the export drops the row
+        // unless a line with that label is later redrawn.
+        const label = String(getLabelText(ann));
+        if (label && !state.deletedPomKeys.includes(label)) state.deletedPomKeys.push(label);
       }
     } else if (state.selection.kind === 'image') {
-      const target = getImageById(state.selection.id);
-      if (target && target.locked) {
-        showToast('Image is locked. Click Unlock first.');
+      // Delete every selected photo (Cmd/Ctrl+click group), skipping locked
+      // ones. US-052: deleteImageById purges each photo's Auto Mode state.
+      const targets = getSelectedImageIds().map(getImageById).filter(Boolean);
+      const unlocked = targets.filter(im => !im.locked);
+      const lockedCount = targets.length - unlocked.length;
+      if (!unlocked.length) {
+        showToast(lockedCount ? 'Image is locked. Click Unlock first.' : 'Select an image first.');
         return;
       }
-      const before = state.images.length;
-      const deletedId = state.selection.id;
-      state.images = state.images.filter(image => image.id !== deletedId);
-      if (state.images.length === before) return;
-      state.eraseStrokes = state.eraseStrokes.filter(stroke => stroke.imageId !== deletedId);
+      let deletedAny = false;
+      for (const im of unlocked) { if (deleteImageById(im.id)) deletedAny = true; }
+      if (!deletedAny) return;
+      if (lockedCount) {
+        showToast(lockedCount + ' locked photo' + (lockedCount > 1 ? 's' : '') + ' kept — unlock to delete.');
+      }
     }
 
     state.selection = { kind: null, id: null };
+    state.selectedImageIds = [];
+    state.selectedAnnotationIds = [];
     pushHistoryIfChanged();
     updateUI();
     requestRender();
@@ -172,6 +215,7 @@
     if (!state.annotations.length) return;
     state.annotations = [];
     state.deletedAutoAnnotations = [];
+    state.deletedPomKeys = [];
     state.nextSequence = 1;
     if (state.selection.kind === 'annotation') {
       state.selection = { kind: null, id: null };
@@ -188,102 +232,125 @@
 
   function copySelectedAnnotation() {
     if (state.appMode === 'auto') return;
-    if (state.selection.kind !== 'annotation') {
+    const anns = getSelectedAnnotations();
+    if (!anns.length) {
       showToast('Select a line to copy first.');
       return;
     }
-    const ann = state.annotations.find(a => a.id === state.selection.id);
-    if (!ann) return;
-    lineClipboard = clone(ann);
+    lineClipboard = anns.map(clone);
+    // Claim the OS clipboard (best-effort) so a photo copied EARLIER no
+    // longer shadows this line copy on paste: onPasteEvent pastes an OS
+    // image when present, otherwise the internal line clipboard — writing
+    // this marker text replaces any stale image, so "last copy wins".
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      const marker = anns.length > 1 ? '[Bra Auto Measure] ' + anns.length + ' POM lines copied' : '[Bra Auto Measure] POM line copied';
+      navigator.clipboard.writeText(marker).catch(() => {});
+    }
     updateUI();
-    showToast('Line copied.');
+    showToast(anns.length > 1 ? anns.length + ' lines copied.' : 'Line copied.');
   }
 
   function pasteLineFromClipboard() {
     if (state.appMode === 'auto') return;
-    if (!lineClipboard) {
+    const clips = Array.isArray(lineClipboard) ? lineClipboard : (lineClipboard ? [lineClipboard] : []);
+    if (!clips.length) {
       showToast('Nothing to paste — copy a line first.');
       return;
     }
-    const src = clone(lineClipboard);
     const offset = 20 / state.zoom;
     const shift = (p) => (p ? { x: p.x + offset, y: p.y + offset } : null);
-    const start = shift(src.start);
-    const end = shift(src.end);
-    const isCurved = src.type === 'curved';
-    const midPoint = isCurved ? shift(src.midPoint) : null;
-    const midHandleIn = isCurved ? shift(src.midHandleIn) : null;
-    const midHandleOut = isCurved ? shift(src.midHandleOut) : null;
-    const control1 = isCurved ? shift(src.control1) : null;
-    const control2 = isCurved ? shift(src.control2) : null;
-    const ann = {
-      id: state.idCounter++,
-      seq: state.nextSequence,
-      type: src.type,
-      style: src.style,
-      color: src.color,
-      arrowType: src.arrowType,
-      lineWidth: src.lineWidth,
-      start,
-      end,
-      midPoint,
-      midHandleIn,
-      midHandleOut,
-      control1,
-      control2,
-      label: computeDefaultLabelPosition({ type: src.type, start, end, control1, control2, midPoint, midHandleIn, midHandleOut }),
-      labelManual: false,
-      text: src.text || null,
-      value: null,
-    };
-    if (isCurved) ensureCurveMidPoint(ann);
-    state.annotations.push(ann);
-    state.selection = { kind: 'annotation', id: ann.id };
-    state.nextSequence += 1;
+    const pastedIds = [];
+    for (const clip of clips) {
+      const src = clone(clip);
+      const isCurved = src.type === 'curved';
+      const start = shift(src.start);
+      const end = shift(src.end);
+      const midPoint = isCurved ? shift(src.midPoint) : null;
+      const midHandleIn = isCurved ? shift(src.midHandleIn) : null;
+      const midHandleOut = isCurved ? shift(src.midHandleOut) : null;
+      const control1 = isCurved ? shift(src.control1) : null;
+      const control2 = isCurved ? shift(src.control2) : null;
+      const ann = {
+        id: state.idCounter++,
+        seq: state.nextSequence,
+        type: src.type,
+        style: src.style,
+        color: src.color,
+        arrowType: src.arrowType,
+        lineWidth: src.lineWidth,
+        start,
+        end,
+        midPoint,
+        midHandleIn,
+        midHandleOut,
+        control1,
+        control2,
+        label: computeDefaultLabelPosition({ type: src.type, start, end, control1, control2, midPoint, midHandleIn, midHandleOut }),
+        labelManual: false,
+        text: src.text || null,
+        value: null,
+      };
+      if (isCurved) ensureCurveControls(ann);
+      state.annotations.push(ann);
+      state.nextSequence += 1;
+      pastedIds.push(ann.id);
+    }
+    // Select the pasted group so it can be moved/nudged as one immediately.
+    state.selectedAnnotationIds = pastedIds;
+    state.selection = { kind: 'annotation', id: pastedIds[pastedIds.length - 1] };
     pushHistoryIfChanged();
     updateUI();
     requestRender();
-    showToast('Line pasted.');
+    showToast(pastedIds.length > 1 ? pastedIds.length + ' lines pasted.' : 'Line pasted.');
   }
 
   function reflectSelectedAnnotation() {
     if (state.appMode === 'auto') return;
-    if (state.selection.kind !== 'annotation') {
+    const srcs = getSelectedAnnotations();
+    if (!srcs.length) {
       showToast('Select a line to reflect first.');
       return;
     }
-    const src = state.annotations.find(a => a.id === state.selection.id);
-    if (!src) return;
-    const axisX = findReflectionAxisX(src);
-    if (axisX == null) {
+    const reflectedIds = [];
+    let skipped = 0;
+    for (const src of srcs) {
+      // Each line mirrors across ITS OWN view-box / image axis, so a group that
+      // spans front + back reflects correctly per panel.
+      const axisX = findReflectionAxisX(src);
+      if (axisX == null) { skipped += 1; continue; }
+      const mirror = (p) => (p ? { x: 2 * axisX - p.x, y: p.y } : null);
+      const ann = {
+        ...clone(src),
+        id: state.idCounter++,
+        seq: state.nextSequence,
+        start: mirror(src.start),
+        end: mirror(src.end),
+        control1: mirror(src.control1),
+        control2: mirror(src.control2),
+        midPoint: mirror(src.midPoint),
+        midHandleIn: mirror(src.midHandleIn),
+        midHandleOut: mirror(src.midHandleOut),
+        label: mirror(src.label),
+        value: null,
+      };
+      // Mirroring is exact, so every handle carries over and the curve keeps its
+      // shape; backfill the anchor set for any older single-cubic source.
+      ensureCurveControls(ann);
+      state.annotations.push(ann);
+      state.nextSequence += 1;
+      reflectedIds.push(ann.id);
+    }
+    if (!reflectedIds.length) {
       showToast('Place the line over an image to reflect.');
       return;
     }
-    const mirror = (p) => (p ? { x: 2 * axisX - p.x, y: p.y } : null);
-    const ann = {
-      ...clone(src),
-      id: state.idCounter++,
-      seq: state.nextSequence,
-      start: mirror(src.start),
-      end: mirror(src.end),
-      control1: mirror(src.control1),
-      control2: mirror(src.control2),
-      midPoint: mirror(src.midPoint),
-      midHandleIn: mirror(src.midHandleIn),
-      midHandleOut: mirror(src.midHandleOut),
-      label: mirror(src.label),
-      value: null,
-    };
-    // Mirroring is exact, so every handle carries over and the curve keeps its
-    // shape; backfill the anchor set for any older single-cubic source.
-    ensureCurveMidPoint(ann);
-    state.annotations.push(ann);
-    state.selection = { kind: 'annotation', id: ann.id };
-    state.nextSequence += 1;
+    state.selectedAnnotationIds = reflectedIds;
+    state.selection = { kind: 'annotation', id: reflectedIds[reflectedIds.length - 1] };
     pushHistoryIfChanged();
     updateUI();
     requestRender();
-    showToast('Reflected copy added.');
+    const base = reflectedIds.length > 1 ? reflectedIds.length + ' reflected copies added.' : 'Reflected copy added.';
+    showToast(skipped ? base + ' (' + skipped + ' skipped — not over an image)' : base);
   }
 
   // Pick the vertical axis to mirror across: prefer the detected view box
@@ -319,5 +386,5 @@
   }
 
   function hasLineClipboard() {
-    return lineClipboard != null;
+    return Array.isArray(lineClipboard) ? lineClipboard.length > 0 : lineClipboard != null;
   }

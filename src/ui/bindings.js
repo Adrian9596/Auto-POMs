@@ -4,6 +4,7 @@
 // Source part for app.js. Run `npm run build` after editing.
 
   function bindUI() {
+    initBoardToolbar();
     el.toolSelect.addEventListener('click', () => setTool('select'));
     el.toolStraight.addEventListener('click', () => setTool('straight'));
     el.toolCurved.addEventListener('click', () => setTool('curved'));
@@ -52,10 +53,17 @@
     el.lockImageBtn.addEventListener('click', toggleSelectedImageLock);
     el.fitBtn.addEventListener('click', fitSelectionOrAll);
     el.togglePanelBtn.addEventListener('click', toggleSpecPanel);
+    // US-038: floating anchor manager (separate from the exported Measurements
+    // panel). Toolbar toggles it; header/action buttons drive visibility.
+    if (el.autoManageAnchorsBtn) el.autoManageAnchorsBtn.addEventListener('click', toggleAnchorManager);
+    if (el.anchorManagerCloseBtn) el.anchorManagerCloseBtn.addEventListener('click', closeAnchorManager);
+    if (el.anchorManagerHideAllBtn) el.anchorManagerHideAllBtn.addEventListener('click', () => { hideAllAnchors(); renderAnchorManagerPanel(); });
+    if (el.anchorManagerShowAllBtn) el.anchorManagerShowAllBtn.addEventListener('click', () => { showAllAnchors(); renderAnchorManagerPanel(); });
     el.toggleLabelsBtn.addEventListener('click', toggleLabels);
     el.setScaleBtn.addEventListener('click', setScaleFromSelection);
     el.clearScaleBtn.addEventListener('click', clearScale);
     el.sizeRunBtn.addEventListener('click', () => openSizeRunDialog());
+    el.gradingBtn.addEventListener('click', () => openGradingDialog());
     el.exportPdfBtn.addEventListener('click', exportPdf);
     el.copyImageBtn.addEventListener('click', copyBoardImageToClipboard);
     el.exportExcelBtn.addEventListener('click', exportSpecXlsx);
@@ -138,14 +146,6 @@
         resetPomMeanings('all');
       });
     }
-    if (el.manageMeaningsItem) {
-      el.manageMeaningsItem.addEventListener('click', () => {
-        closeAutoLearnMenu();
-        openManageMeaningsPicker();
-      });
-    }
-    if (el.pmpSkipBtn)  el.pmpSkipBtn.addEventListener('click', () => closePomMeaningPopover());
-    if (el.pmpOtherBtn) el.pmpOtherBtn.addEventListener('click', () => showPomMeaningOtherMode());
     if (el.styleIdInput) {
       el.styleIdInput.addEventListener('input', () => {
         state.styleId = el.styleIdInput.value.trim();
@@ -173,20 +173,31 @@
     el.canvas.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
     el.canvas.addEventListener('wheel', onWheel, { passive: false });
-    el.canvas.addEventListener('contextmenu', onCanvasContextMenu);
+    // US-036: touch/pen layer — routes into the mouse handlers above; mouse
+    // pointers are filtered out inside the handlers. Up/cancel bind on
+    // window, mirroring the mouseup precedent, so a finger lifted
+    // off-canvas still ends its drag.
+    el.canvas.addEventListener('pointerdown', onTouchPointerDown, { passive: false });
+    el.canvas.addEventListener('pointermove', onTouchPointerMove, { passive: false });
+    window.addEventListener('pointerup', onTouchPointerEnd);
+    window.addEventListener('pointercancel', onTouchPointerEnd);
 
-    if (el.annCtxReconfirm) {
-      el.annCtxReconfirm.addEventListener('click', () => {
-        const id = annContextMenuTargetId;
-        closeAnnContextMenu();
-        if (id != null) reconfirmAnnotationMeaning(id);
-      });
-    }
 
     document.addEventListener('click', (e) => {
       if (!el.lineStyleControl.contains(e.target)) closeLineStyleMenu();
       if (el.autoLearnMenuWrap && !el.autoLearnMenuWrap.contains(e.target)) closeAutoLearnMenu();
-      if (el.annContextMenu && !el.annContextMenu.contains(e.target)) closeAnnContextMenu();
+      // US-038: click outside the floating anchor panel closes it — but not
+      // when clicking the toolbar toggle (that has its own handler) or the
+      // canvas (dragging pins while it's open should stay open).
+      if (isAnchorManagerOpen()
+          && !el.anchorManagerPanel.contains(e.target)
+          && e.target !== el.autoManageAnchorsBtn
+          && e.target !== el.canvas) {
+        closeAnchorManager();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isAnchorManagerOpen()) closeAnchorManager();
     });
     document.addEventListener('paste', onPasteEvent);
     document.addEventListener('keydown', onKeyDown);
@@ -345,8 +356,6 @@
       if (evalResult.status === 'recorded') {
         showToast('POM ' + ann.learnSamplePom + ' learning sample saved');
         updateUI();
-      } else if (evalResult.status === 'needsConfirmation') {
-        openPomMeaningPopover(evalResult);
       }
     }
     updateUI();

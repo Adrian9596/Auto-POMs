@@ -152,15 +152,15 @@
       anchorKinds.add(kind);
     }
 
-    if (rows.length !== 16) {
-      throw new Error('Auto Mode POM template must define exactly 16 rows; found ' + rows.length + '.');
+    if (rows.length !== 18) {
+      throw new Error('Auto Mode POM template must define exactly 18 rows; found ' + rows.length + '.');
     }
 
     const ids = new Set();
     for (const row of rows) {
       const id = String(row && row.id);
-      if (!/^(?:[1-9]|1[0-6])$/.test(id)) {
-        throw new Error('Auto Mode POM row has invalid id "' + id + '" (expected 1..16).');
+      if (!/^(?:[1-9]|1[0-8])$/.test(id)) {
+        throw new Error('Auto Mode POM row has invalid id "' + id + '" (expected 1..18).');
       }
       if (ids.has(id)) throw new Error('Auto Mode POM template has duplicate id "' + id + '".');
       ids.add(id);
@@ -186,7 +186,7 @@
       }
     }
 
-    for (let n = 1; n <= 16; n += 1) {
+    for (let n = 1; n <= 18; n += 1) {
       if (!ids.has(String(n))) throw new Error('Auto Mode POM template is missing id "' + n + '".');
     }
   }

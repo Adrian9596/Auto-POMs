@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const BUILTIN_AUTO_MODE_RULE_JSON = {"version":{"pom_unit":"in","template_version":"fixed16-2026-07-10","rule_version":"offline-vision-rules-v3","anchor_version":"anchors-2026-07-10d","suggestions_version":"sizeL-suggestions-v1"},"pomTemplate":{"rows":[{"id":"1","name":"1/2 Bottom band - Relax","zh":"下围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"primary","partner":"2","groupName":"1/2 Bottom band","primaryLabel":"Relax","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"2","name":"1/2 Bottom band - Extend","zh":"下围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"secondary","primary":"1"},"expected_confidence_tier":"high"},{"id":"3","name":"1/2 chest - Measure straight","zh":"胸围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"primary","partner":"4","groupName":"1/2 Chest","primaryLabel":"Measure straight","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"4","name":"1/2 chest - Extend","zh":"胸围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"secondary","primary":"3"},"expected_confidence_tier":"high"},{"id":"5","name":"Center front height","zh":"前中高度","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"6","name":"Cradle height at center front","zh":"托架前中高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"7","name":"Cradle height at bottom cup","zh":"托架底杯高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cup-top","cradle-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"8","name":"Cup height at center front","zh":"前中杯高","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cradle-cf-top"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"9","name":"Cup height","zh":"杯高","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-top","inner-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"10","name":"Cup width","zh":"杯宽","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-left","inner-cup-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"11","name":"Side seam length","zh":"侧缝长度","view":"back","refL":null,"requiredAnchors":["side-top","side-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"12","name":"Back center length","zh":"后中高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"13","name":"Back panel height","zh":"后背片高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"optionalAnchors":["back-panel-top","back-panel-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"14","name":"Shoulder strap length","zh":"肩带长度","view":"front_to_back","placementViewRole":"back","refL":null,"requiredAnchors":["strap-top","strap-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"low"},{"id":"15","name":"Back strap distances","zh":"后肩带间距","view":"back","refL":null,"requiredAnchors":["back-strap-left","back-strap-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"16","name":"Front apex distance","zh":"乳点间距","view":"front_outer","refL":null,"requiredAnchors":["apex-left","apex-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"}]},"anchorSchema":{"anchors":[{"kind":"cf-top","name":"CF top","group":"axis","hint":"Top of the center-front, where the cradle meets the chest line."},{"kind":"cf-bottom","name":"CF bottom","group":"axis","hint":"Bottom of the center front, on the underbust band.","derivation":{"method":"drop_to_line","args":["cf-top","band-left","band-right"],"axis":"vertical"}},{"kind":"cradle-cf-top","name":"Cradle CF","group":"axis","hint":"Where the cradle / cup-bottom seam approaches the center front. POM 6 top."},{"kind":"cradle-cup-top","name":"Cradle cup top","group":"axis","hint":"Cradle / cup-bottom seam at the bottom-cup position (POM 7 top)."},{"kind":"cradle-cup-bottom","name":"Cradle cup btm","group":"axis","hint":"Band baseline directly below the bottom-cup cradle point (POM 7 bottom).","derivation":{"method":"drop_to_line","args":["cradle-cup-top","band-left","band-right"],"axis":"vertical"}},{"kind":"band-left","name":"Band L","group":"band","hint":"Leftmost end of the underbust band line."},{"kind":"band-right","name":"Band R","group":"band","hint":"Rightmost end of the underbust band line."},{"kind":"chest-left","name":"Chest L","group":"chest","hint":"Left end of the chest / overbust horizontal line."},{"kind":"chest-right","name":"Chest R","group":"chest","hint":"Right end of the chest / overbust horizontal line."},{"kind":"inner-cup-top","name":"IC top","group":"inner-cup","hint":"Top of the cup (apex) on the front (outer) view — POM 9 start."},{"kind":"inner-cup-bottom","name":"IC btm","group":"inner-cup","hint":"Bottom of the cup on the cup-bottom seam, front (outer) view — POM 9 end."},{"kind":"inner-cup-left","name":"IC L","group":"inner-cup","hint":"Cup width, gore-side edge at mid-height, front (outer) view — POM 10 start."},{"kind":"inner-cup-right","name":"IC R","group":"inner-cup","hint":"Cup width, armhole-side edge at mid-height, front (outer) view — POM 10 end."},{"kind":"side-top","name":"Side top","group":"side","hint":"Top of the side seam at the underarm."},{"kind":"side-bottom","name":"Side btm","group":"side","hint":"Bottom of the side seam at the band."},{"kind":"apex-left","name":"Apex L","group":"apex","hint":"Left shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"apex-right","name":"Apex R","group":"apex","hint":"Right shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"strap-top","name":"Front strap join","group":"strap","hint":"Strap join of the right shoulder strap (the strap adjacent to the back view) on the front view: the top seam of the stitched strap section, or where a plain strap attaches to the cup/neckline. Never the strap’s top cut edge — POM 14 start."},{"kind":"strap-bottom","name":"Back strap join","group":"strap","hint":"End of the shoulder strap at the back / back-panel join — POM 14 end."},{"kind":"back-top","name":"Back top","group":"back","hint":"Top edge of the back panel."},{"kind":"back-bottom","name":"Back btm","group":"back","hint":"Bottom edge of the back panel."},{"kind":"back-panel-top","name":"Panel top","group":"back","hint":"Upper point for back panel height."},{"kind":"back-panel-bottom","name":"Panel btm","group":"back","hint":"Lower point for back panel height."},{"kind":"back-strap-left","name":"Back strap L","group":"back","hint":"Left point of the back strap distance."},{"kind":"back-strap-right","name":"Back strap R","group":"back","hint":"Right point of the back strap distance."}]},"sizeLSuggestions":{"suggestions_version":"sizeL-suggestions-v1","unit":"in","provenance":{"corpus":"Measurements 2/library/_raw_intake/measurements_size_l.csv","conceptMap":"Measurements 2/library/pom_concepts.csv","tolDefaults":"Measurements 2/library/pom_tol_defaults.csv","sketchRatios":"Measurements 2/library/sketch_ratios.csv","generatedBy":"scripts/generate-sizeL-suggestions.mjs","corpusRows":2950,"styleVersions":225,"droppedRows":26,"note":"Derived from the approved Size-L corpus. Regenerate with the generator; never hand-edit. droppedRows = corpus rows whose concept is not yet canonicalized (raw_* intake phrases)."},"poms":{"1":{"concept":"band_relax","median":14,"min":12.74,"max":14.38,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"2":{"concept":"band_extended","median":19,"min":18,"max":19.25,"tol":"1/2","tolType":"min","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"3":{"concept":"chest_relax","median":17,"min":15.5,"max":17.5,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":198,"confidence":"medium","source":"library"},"4":{"concept":"chest_extended","median":22,"min":20,"max":22.77,"tol":"1/2","tolType":"min","sketchReliable":false,"n":197,"confidence":"medium","source":"library"},"5":{"concept":"cf_height","median":5.5,"min":1.32,"max":6.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":217,"confidence":"medium","source":"library"},"6":{"concept":"cradle_cf","median":2.25,"min":1.31,"max":3,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":163,"confidence":"medium","source":"library"},"7":{"concept":"cradle_under_cup","median":1.75,"min":1.11,"max":2.64,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":173,"confidence":"medium","source":"library"},"8":{"concept":"cup_height_cf","median":3,"min":1.75,"max":4,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":113,"confidence":"low","source":"library"},"9":{"concept":"cup_height","median":8,"min":5.805,"max":9.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":237,"confidence":"medium","source":"library"},"10":{"concept":"cup_width","median":8,"min":6.6,"max":9,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":221,"confidence":"medium","source":"library"},"11":{"concept":"sideseam_length","median":5.5,"min":4.5,"max":6,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":211,"confidence":"medium","source":"library"},"12":{"concept":"cb_height","median":3.75,"min":2,"max":7.24,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":239,"confidence":"medium","source":"library"},"13":{"concept":"back_panel_height","median":7.25,"min":3,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":181,"confidence":"medium","source":"library"},"14":{"concept":"strap_length","median":8,"min":4,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":155,"confidence":"low","source":"library"},"15":{"concept":"back_straps_distance","median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"},"16":{"concept":null,"median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"}}}};
+  const BUILTIN_AUTO_MODE_RULE_JSON = {"version":{"pom_unit":"in","template_version":"core18-2026-07-18b","rule_version":"offline-vision-rules-v3","anchor_version":"anchors-2026-07-26-cup-width-own-height","suggestions_version":"sizeL-suggestions-v1"},"pomTemplate":{"rows":[{"id":"1","name":"1/2 Bottom band - Relax","zh":"下围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"primary","partner":"2","groupName":"1/2 Bottom band","primaryLabel":"Relax","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"2","name":"1/2 Bottom band - Extend","zh":"下围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["band-left","band-right"],"derivation":null,"pairing":{"role":"secondary","primary":"1"},"expected_confidence_tier":"high"},{"id":"3","name":"1/2 chest - Measure straight","zh":"胸围半宽（放松量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"primary","partner":"4","groupName":"1/2 Chest","primaryLabel":"Measure straight","secondaryLabel":"Extend"},"expected_confidence_tier":"high"},{"id":"4","name":"1/2 chest - Extend","zh":"胸围半宽（延伸量）","view":"front_outer","refL":null,"requiredAnchors":["chest-left","chest-right"],"derivation":null,"pairing":{"role":"secondary","primary":"3"},"expected_confidence_tier":"high"},{"id":"5","name":"Center front height","zh":"前中高度","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"6","name":"Cradle height at center front","zh":"托架前中高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cf-top","cf-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"7","name":"Cradle height at bottom cup","zh":"托架底杯高度","view":"front_outer","refL":null,"requiredAnchors":["cradle-cup-top","cradle-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"8","name":"Cup height at center front","zh":"前中杯高","view":"front_outer","refL":null,"requiredAnchors":["cf-top","cradle-cf-top"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"9","name":"Cup height","zh":"杯高","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-top","inner-cup-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"10","name":"Cup width","zh":"杯宽","view":"front_outer","refL":null,"requiredAnchors":["inner-cup-left","inner-cup-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"11","name":"Side seam length","zh":"侧缝长度","view":"back","refL":null,"requiredAnchors":["side-top","side-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"12","name":"Back center length","zh":"后中高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"13","name":"Back panel height","zh":"后背片高度","view":"back","refL":null,"requiredAnchors":["back-top","back-bottom"],"optionalAnchors":["back-panel-top","back-panel-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"14","name":"Shoulder strap length","zh":"肩带长度","view":"front_to_back","placementViewRole":"back","refL":null,"requiredAnchors":["strap-top","strap-bottom"],"derivation":null,"pairing":null,"expected_confidence_tier":"low"},{"id":"15","name":"Back strap distances","zh":"后肩带间距","view":"back","refL":null,"requiredAnchors":["back-strap-left","back-strap-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"16","name":"Front apex distance","zh":"乳点间距","view":"front_outer","refL":null,"requiredAnchors":["apex-left","apex-right"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"17","name":"Neckline length","zh":"领口长","view":"front_outer","refL":null,"requiredAnchors":["171","172"],"derivation":null,"pairing":null,"expected_confidence_tier":"medium"},{"id":"18","name":"Armhole curve length","zh":"袖窿弧长","view":"front_outer","refL":null,"requiredAnchors":["181","182"],"derivation":null,"pairing":null,"expected_confidence_tier":"low"}]},"anchorSchema":{"anchors":[{"kind":"cf-top","name":"CF top","group":"axis","hint":"Top of the center-front, where the cradle meets the chest line."},{"kind":"cf-bottom","name":"CF bottom","group":"axis","hint":"Bottom of the center front, on the underbust band.","derivation":{"method":"drop_to_line","args":["cf-top","band-left","band-right"],"axis":"vertical"}},{"kind":"cradle-cf-top","name":"Cradle CF","group":"axis","hint":"Where the cradle / cup-bottom seam approaches the center front. POM 6 top."},{"kind":"cradle-cup-top","name":"Cradle cup top","group":"axis","hint":"Cradle / cup-bottom seam at the bottom-cup position (POM 7 top)."},{"kind":"cradle-cup-bottom","name":"Cradle cup btm","group":"axis","hint":"Band baseline directly below the bottom-cup cradle point (POM 7 bottom).","derivation":{"method":"drop_to_line","args":["cradle-cup-top","band-left","band-right"],"axis":"vertical"}},{"kind":"band-left","name":"Band L","group":"band","hint":"Leftmost end of the underbust band line."},{"kind":"band-right","name":"Band R","group":"band","hint":"Rightmost end of the underbust band line."},{"kind":"chest-left","name":"Chest L","group":"chest","hint":"Left end of the chest / overbust horizontal line."},{"kind":"chest-right","name":"Chest R","group":"chest","hint":"Right end of the chest / overbust horizontal line."},{"kind":"inner-cup-top","name":"IC top","group":"inner-cup","hint":"Top of the cup (apex) on the front (outer) view — POM 9 start."},{"kind":"inner-cup-bottom","name":"IC btm","group":"inner-cup","hint":"Bottom of the cup on the cup-bottom seam, front (outer) view — POM 9 end."},{"kind":"inner-cup-left","name":"IC L","group":"inner-cup","hint":"Cup width, gore-side edge — the cup's gore contact through its mid-section, front (outer) view. Sits at its own height (typically lower than IC R); the two endpoints do not share a row. POM 10 start."},{"kind":"inner-cup-right","name":"IC R","group":"inner-cup","hint":"Cup width, armhole-side edge — the cup's wire/side-seam end through its mid-section, front (outer) view. Sits at its own height (typically higher than IC L); the two endpoints do not share a row. POM 10 end."},{"kind":"side-top","name":"Side top","group":"side","hint":"Top of the side seam at the underarm."},{"kind":"side-bottom","name":"Side btm","group":"side","hint":"Bottom of the side seam at the band."},{"kind":"apex-left","name":"Apex L","group":"apex","hint":"Left shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"apex-right","name":"Apex R","group":"apex","hint":"Right shoulder-strap/cup joining seam, the highest point of the cup when present."},{"kind":"strap-top","name":"Front strap join","group":"strap","hint":"Strap join of the right shoulder strap (the strap adjacent to the back view) on the front view: the top seam of the stitched strap section, or where a plain strap attaches to the cup/neckline. Never the strap’s top cut edge — POM 14 start."},{"kind":"strap-bottom","name":"Back strap join","group":"strap","hint":"End of the shoulder strap at the back / back-panel join — POM 14 end."},{"kind":"back-top","name":"Back top","group":"back","hint":"Top edge of the back panel."},{"kind":"back-bottom","name":"Back btm","group":"back","hint":"Bottom edge of the back panel."},{"kind":"back-panel-top","name":"Panel top","group":"back","hint":"Upper point for back panel height."},{"kind":"back-panel-bottom","name":"Panel btm","group":"back","hint":"Lower point for back panel height."},{"kind":"back-strap-left","name":"Back strap L","group":"back","hint":"Left point of the back strap distance."},{"kind":"back-strap-right","name":"Back strap R","group":"back","hint":"Right point of the back strap distance."},{"kind":"171","name":"171","group":"neckline","hint":"Left upper neckline corner, where the cup/gore top edge meets the strap base."},{"kind":"172","name":"172","group":"neckline","hint":"Right upper neckline corner (mirror of Neckline L)."},{"kind":"181","name":"181","group":"armhole","hint":"Underarm side point at the bottom of the arm opening."},{"kind":"182","name":"182","group":"armhole","hint":"Strap/shoulder junction at the top of the arm opening."}]},"sizeLSuggestions":{"suggestions_version":"sizeL-suggestions-v1","unit":"in","provenance":{"corpus":"Measurements 2/library/_raw_intake/measurements_size_l.csv","conceptMap":"Measurements 2/library/pom_concepts.csv","tolDefaults":"Measurements 2/library/pom_tol_defaults.csv","sketchRatios":"Measurements 2/library/sketch_ratios.csv","generatedBy":"scripts/generate-sizeL-suggestions.mjs","corpusRows":2950,"styleVersions":225,"droppedRows":26,"note":"Derived from the approved Size-L corpus. Regenerate with the generator; never hand-edit. droppedRows = corpus rows whose concept is not yet canonicalized (raw_* intake phrases)."},"poms":{"1":{"concept":"band_relax","median":14,"min":12.74,"max":14.38,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"2":{"concept":"band_extended","median":19,"min":18,"max":19.25,"tol":"1/2","tolType":"min","sketchReliable":false,"n":225,"confidence":"medium","source":"library"},"3":{"concept":"chest_relax","median":17,"min":15.5,"max":17.5,"tol":"3/8","tolType":"symmetric","sketchReliable":false,"n":198,"confidence":"medium","source":"library"},"4":{"concept":"chest_extended","median":22,"min":20,"max":22.77,"tol":"1/2","tolType":"min","sketchReliable":false,"n":197,"confidence":"medium","source":"library"},"5":{"concept":"cf_height","median":5.5,"min":1.32,"max":6.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":217,"confidence":"medium","source":"library"},"6":{"concept":"cradle_cf","median":2.25,"min":1.31,"max":3,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":163,"confidence":"medium","source":"library"},"7":{"concept":"cradle_under_cup","median":1.75,"min":1.11,"max":2.64,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":173,"confidence":"medium","source":"library"},"8":{"concept":"cup_height_cf","median":3,"min":1.75,"max":4,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":113,"confidence":"low","source":"library"},"9":{"concept":"cup_height","median":8,"min":5.805,"max":9.5,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":237,"confidence":"medium","source":"library"},"10":{"concept":"cup_width","median":8,"min":6.6,"max":9,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":221,"confidence":"medium","source":"library"},"11":{"concept":"sideseam_length","median":5.5,"min":4.5,"max":6,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":211,"confidence":"medium","source":"library"},"12":{"concept":"cb_height","median":3.75,"min":2,"max":7.24,"tol":"1/8","tolType":"symmetric","sketchReliable":true,"n":239,"confidence":"medium","source":"library"},"13":{"concept":"back_panel_height","median":7.25,"min":3,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":181,"confidence":"medium","source":"library"},"14":{"concept":"strap_length","median":8,"min":4,"max":12,"tol":"1/4","tolType":"symmetric","sketchReliable":true,"n":155,"confidence":"low","source":"library"},"15":{"concept":"back_straps_distance","median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"},"16":{"concept":null,"median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"},"17":{"concept":null,"median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"},"18":{"concept":null,"median":null,"min":null,"max":null,"tol":null,"tolType":null,"sketchReliable":null,"n":0,"confidence":"very_low","source":"none"}}}};
 
   // ---- src/auto/rules/load-rules.js ----
 // Loads TD-editable Auto Mode rules from auto_mode_rules/*.json.
@@ -159,15 +159,15 @@
       anchorKinds.add(kind);
     }
 
-    if (rows.length !== 16) {
-      throw new Error('Auto Mode POM template must define exactly 16 rows; found ' + rows.length + '.');
+    if (rows.length !== 18) {
+      throw new Error('Auto Mode POM template must define exactly 18 rows; found ' + rows.length + '.');
     }
 
     const ids = new Set();
     for (const row of rows) {
       const id = String(row && row.id);
-      if (!/^(?:[1-9]|1[0-6])$/.test(id)) {
-        throw new Error('Auto Mode POM row has invalid id "' + id + '" (expected 1..16).');
+      if (!/^(?:[1-9]|1[0-8])$/.test(id)) {
+        throw new Error('Auto Mode POM row has invalid id "' + id + '" (expected 1..18).');
       }
       if (ids.has(id)) throw new Error('Auto Mode POM template has duplicate id "' + id + '".');
       ids.add(id);
@@ -193,7 +193,7 @@
       }
     }
 
-    for (let n = 1; n <= 16; n += 1) {
+    for (let n = 1; n <= 18; n += 1) {
       if (!ids.has(String(n))) throw new Error('Auto Mode POM template is missing id "' + n + '".');
     }
   }
@@ -287,6 +287,7 @@
     setScaleBtn: document.getElementById('setScaleBtn'),
     clearScaleBtn: document.getElementById('clearScaleBtn'),
     sizeRunBtn: document.getElementById('sizeRunBtn'),
+    gradingBtn: document.getElementById('gradingBtn'),
     exportPdfBtn: document.getElementById('exportPdfBtn'),
     exportExcelBtn: document.getElementById('exportExcelBtn'),
     copyImageBtn: document.getElementById('copyImageBtn'),
@@ -309,6 +310,13 @@
     autoModeBar: document.getElementById('autoModeBar'),
     autoDetectBtn: document.getElementById('autoDetectBtn'),
     autoResetAnchorsBtn: document.getElementById('autoResetAnchorsBtn'),
+    autoManageAnchorsBtn: document.getElementById('autoManageAnchorsBtn'),
+    anchorManagerPanel: document.getElementById('anchorManagerPanel'),
+    anchorManagerBody: document.getElementById('anchorManagerBody'),
+    anchorManagerCount: document.getElementById('anchorManagerCount'),
+    anchorManagerCloseBtn: document.getElementById('anchorManagerCloseBtn'),
+    anchorManagerHideAllBtn: document.getElementById('anchorManagerHideAllBtn'),
+    anchorManagerShowAllBtn: document.getElementById('anchorManagerShowAllBtn'),
     autoGenerateBtn: document.getElementById('autoGenerateBtn'),
     autoApproveBtn: document.getElementById('autoApproveBtn'),
     autoReviewOnlyBtn: document.getElementById('autoReviewOnlyBtn'),
@@ -325,19 +333,11 @@
     resetResidualsItem: document.getElementById('resetResidualsItem'),
     resetMeaningsCurrentItem: document.getElementById('resetMeaningsCurrentItem'),
     resetMeaningsAllItem: document.getElementById('resetMeaningsAllItem'),
-    manageMeaningsItem: document.getElementById('manageMeaningsItem'),
     learningToolbarBtn: document.getElementById('learningToolbarBtn'),
     learningToolbarChip: document.getElementById('learningToolbarChip'),
     autoStatusChip: document.getElementById('autoStatusChip'),
     autoStepIndicator: document.getElementById('autoStepIndicator'),
     visionEngineChip: document.getElementById('visionEngineChip'),
-    pomMeaningPopover: document.getElementById('pomMeaningPopover'),
-    pmpPomLabel: document.getElementById('pmpPomLabel'),
-    pmpSuggestions: document.getElementById('pmpSuggestions'),
-    pmpOtherBtn: document.getElementById('pmpOtherBtn'),
-    pmpSkipBtn: document.getElementById('pmpSkipBtn'),
-    annContextMenu: document.getElementById('annContextMenu'),
-    annCtxReconfirm: document.getElementById('annCtxReconfirm'),
     styleIdInput: document.getElementById('styleIdInput'),
   };
 
@@ -393,6 +393,31 @@
     return out;
   }
 
+  // Custom POM registry lookup (US-011 S4). Custom POMs (17+) live in
+  // state.customPoms — never in the 18-POM rule JSON (ADR 0018).
+  function customPomEntry(pomKey) {
+    const key = String(pomKey == null ? '' : pomKey).trim();
+    if (!key) return null;
+    return (state.customPoms || []).find(p => String(p.pom) === key) || null;
+  }
+
+  // Next free custom POM number: one past the highest of 16 and any
+  // existing custom or annotation label number.
+  function nextCustomPomNumber() {
+    // Core template now reserves 1..18 (US-037: neckline 17, armhole 18);
+    // custom POMs start at 19. See ADR 0032.
+    let max = 18;
+    for (const p of state.customPoms || []) {
+      const n = Number(p.pom);
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+    for (const ann of state.annotations || []) {
+      const n = Number(ann.text != null ? ann.text : NaN);
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+    return max + 1;
+  }
+
   const state = {
     tool: 'select',
     drawStyle: 'solid',
@@ -401,12 +426,26 @@
     lineWidth: DEFAULT_LINE_WIDTH,
     annotations: [],
     deletedAutoAnnotations: [],
+    // US-047: POM labels whose drawn line the TD deleted. Excluded from the
+    // exported spec exactly like a hidden line (TD: "delete = hide"), until a
+    // line with that label is redrawn. Persisted with the project + history.
+    deletedPomKeys: [],
     images: [],
     eraseStrokes: [],
     brushSize: 24,
     showLabels: true,
     nextSequence: 1,
     selection: { kind: null, id: null },
+    // Cmd/Ctrl+click multi-selection of images. Always includes the primary
+    // `selection` when that is an image; empty otherwise. The primary stays the
+    // resize/spec anchor — this set only widens what a group drag / delete acts
+    // on. Session-only (not part of the project snapshot).
+    selectedImageIds: [],
+    // Shift+click / marquee-drag multi-selection of POM lines (annotations).
+    // Same derive-through-primary contract as selectedImageIds — always
+    // includes the primary `selection` when it is an annotation. Widens what
+    // group copy / reflect / delete / drag act on. Session-only.
+    selectedAnnotationIds: [],
 
     zoom: 1,
     panX: 0,
@@ -463,7 +502,7 @@
 
     // TD-defined POMs beyond the standard 16 (US-011, ADR 0018). Array of
     // { pom: '17', en, zh, tol }. Numbering continues from 17 per project.
-    // Lives in project state — the 16-POM rule JSON is never touched.
+    // Lives in project state — the 18-POM rule JSON is never touched.
     // Persisted with the project and captured in history.
     customPoms: [],
 
@@ -472,6 +511,44 @@
     // Persisted with the project (not in history — an export preference,
     // not board content).
     sizeSelection: null,
+
+    // US-068 / ADR 0037: tech pack MAIN PAGE sheet — style metadata (13
+    // fields), off-list values the TD typed (fieldExtra), colorways, and the
+    // Color Master List copy this project was saved against. Style metadata
+    // only: no anchor, no POM, no view, so detection never reads it. Seeded
+    // lazily by ensureMainPage() in src/ui/main-page.js, which owns the field
+    // roster and the colour data — null here so state.js does not carry 47
+    // colour rows. Persisted with the project and captured in history so
+    // undo/redo covers MAIN PAGE edits.
+    mainPage: null,
+
+    // US-078 / ADR 0045: two Construction sheets (Solid/Lace), each with
+    // independently-owned Outer/Inner working-view images, editable operation
+    // rows, and row-owned multi-leader callouts. Image bytes live outside
+    // history and are injected only for project save/autosave. No anchor or
+    // POM consumes this metadata, so detection remains isolated.
+    construction: null,
+
+    // US-072 / ADR 0041: BOM page — editable material table rows
+    // { id, section:'FABRIC'|'TRIM', scope:'BOTH'|'SOLID'|'LACE', cells:{...},
+    // cwOverride:{} }, variant-owned Material Key image metadata under
+    // images.solid/images.lace, plus callouts { id, rowId, imageId, variant,
+    // targets:[{nx,ny},...], textPos:{nx,ny} }. BOM image bytes live outside
+    // history state and are materialized only for project save/autosave.
+    // mod-bom module on this tool's own primitives; no anchor, no POM, so
+    // detection never reads it. Seeded lazily by ensureBom() in
+    // src/ui/bom.js — a first-time BOM materializes as the reference
+    // sheet's exact 12-row BOM (BM_SEED_ROWS, US-074), guarded by
+    // bom.seedId so an emptied table stays empty. Null here so state.js
+    // does not carry row/callout data by default. Persisted with the
+    // project and captured in history so undo/redo covers BOM edits.
+    bom: null,
+
+    // src/ui/preview-page.js — Preview & Export page-inclusion checkboxes
+    // ({ enabledPages: { <sheetKey>: boolean } }, US-079/ADR 0046). Null here;
+    // initPreviewPage materializes the all-enabled default before seedHistory.
+    // Persisted with the project and captured in history.
+    preview: null,
 
     // Review-time per-POM visibility toggles. When an annotation / draft id
     // is in these lists it is skipped by the canvas renderer and hit-test
@@ -513,6 +590,11 @@
       // After a successful apply the anchor pins are hidden so the applied
       // POM lines stay readable. Detect / Reset Anchors show them again.
       anchorsHidden: false,
+      // US-038: per-anchor visibility (session-only view state, not
+      // persisted, not in history). An anchor is visible iff
+      // !anchorsHidden && !hiddenAnchorKinds.includes(kind). Reset on
+      // re-seed. Managed from the Anchors section of the Measurements panel.
+      hiddenAnchorKinds: [],
       // CV debug capture. When enabled (via window.__braAutoModeDebug.cv
       // .setEnabled(true) or ?cvDebug=1), runOfflineDetection asks the pure
       // pipeline to attach an intermediate-state object to the returned
@@ -532,6 +614,11 @@
     // and the readiness chip never stalls silently on the first Detect.
     warmupVisionEngine();
     bindUI();
+    initMainPage();
+    initConstruction();
+    initBom();
+    initPreviewPage();
+    initPageNav();
     // Auto-only build: boot straight into Auto Mode (sets body class,
     // status chip, and locks manual editing paths).
     setAppMode('auto');
@@ -965,21 +1052,6 @@
     return [{ p0: ann.start, p1: ann.control1, p2: ann.control2, p3: ann.end }];
   }
 
-  // Split a single cubic (start,c1,c2,end) at t=0.5 via De Casteljau. The two
-  // resulting segments trace the IDENTICAL curve, but now there is a real
-  // middle anchor with its own in/out handles. Used to seed new curves and to
-  // migrate old ones without changing how they look.
-  function deriveMidAnchor(start, c1, c2, end) {
-    const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-    const p01 = mid(start, c1);
-    const p12 = mid(c1, c2);
-    const p23 = mid(c2, end);
-    const p012 = mid(p01, p12);
-    const p123 = mid(p12, p23);
-    const p0123 = mid(p012, p123);
-    return { control1: p01, midHandleIn: p012, midPoint: p0123, midHandleOut: p123, control2: p23 };
-  }
-
   // Build a smooth two-segment curve that PASSES THROUGH start, mid, end (the
   // three clicked points). Catmull-Rom with reflected endpoints: the tangent at
   // the middle is parallel to the start→end chord, so the joint stays smooth.
@@ -1017,26 +1089,19 @@
 
   function createCurvedAnnotation(start, end, style, color = 'red', arrowType = 'double', lineWidth = DEFAULT_LINE_WIDTH, mid = null) {
     const id = state.idCounter++;
-    // With an explicit middle point (3-click draw) build a smooth curve through
-    // all three points; otherwise seed a default bow and split it at the middle
-    // so the line still ships with a real center anchor + its two handles.
-    let m;
-    if (mid) {
-      m = curveControlsThroughThreePoints(start, mid, end);
-    } else {
-      const midRaw = defaultCurveMidPoint(start, end);
-      const single = controlsFromMidPoint(start, end, midRaw);
-      m = deriveMidAnchor(start, single.control1, single.control2, end);
-    }
+    // A curve is ONE cubic Bézier: two endpoints + two control handles
+    // (control1 off start, control2 off end) — TD 2026-07-18, edited like a
+    // standard pen tool. No middle anchor. A 3-click draw fits the single cubic
+    // so it passes through the middle click at t=0.5; otherwise seed a default
+    // bow. `midPoint`/`midHandleIn`/`midHandleOut` stay null.
+    const midRaw = mid || defaultCurveMidPoint(start, end);
+    const c = controlsFromMidPoint(start, end, midRaw);
     const label = computeDefaultLabelPosition({
       type: 'curved',
       start,
       end,
-      control1: m.control1,
-      control2: m.control2,
-      midPoint: m.midPoint,
-      midHandleIn: m.midHandleIn,
-      midHandleOut: m.midHandleOut,
+      control1: c.control1,
+      control2: c.control2,
     });
     return {
       id,
@@ -1048,11 +1113,11 @@
       lineWidth: normalizeLineWidth(lineWidth),
       start: clonePoint(start),
       end: clonePoint(end),
-      midPoint: m.midPoint,
-      midHandleIn: m.midHandleIn,
-      midHandleOut: m.midHandleOut,
-      control1: m.control1,
-      control2: m.control2,
+      midPoint: null,
+      midHandleIn: null,
+      midHandleOut: null,
+      control1: c.control1,
+      control2: c.control2,
       label,
       labelManual: false,
       text: null,
@@ -1096,28 +1161,34 @@
     };
   }
 
-  // Back-compat + upgrade: ensure every curved line has the two-segment anchor
-  // set (midPoint + midHandleIn/Out). Older saves and auto-draft rows store
-  // only control1/control2 (a single cubic); split that at t=0.5 so the middle
-  // handle UI has something to grab, without changing the curve's shape.
-  function ensureCurveMidPoint(ann) {
+  // Normalize a curved line to the SINGLE-CUBIC model (two endpoints + two
+  // control handles) — TD 2026-07-18. New curves are born single-cubic; this
+  // also collapses any legacy two-segment curve (midPoint + mid handles) from
+  // older saves back to one cubic. The collapse is EXACT for curves that were
+  // split by deriveMidAnchor (all auto POM curves): that split set
+  // control1 = mid(start, origC1), so origC1 = 2·control1 − start (and
+  // symmetrically for control2), which this inverts. Then it drops the middle
+  // anchor + its handles.
+  function ensureCurveControls(ann) {
     if (!ann || ann.type !== 'curved' || !ann.start || !ann.end) return;
-    const ready = ann.midPoint && ann.midHandleIn && ann.midHandleOut &&
-      [ann.midPoint, ann.midHandleIn, ann.midHandleOut].every(
-        (p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
-    if (ready) return;
-    let c1 = ann.control1, c2 = ann.control2;
-    if (!c1 || !c2) {
+    if (ann.midPoint) {
+      if (ann.control1) {
+        ann.control1 = { x: 2 * ann.control1.x - ann.start.x, y: 2 * ann.control1.y - ann.start.y };
+      }
+      if (ann.control2) {
+        ann.control2 = { x: 2 * ann.control2.x - ann.end.x, y: 2 * ann.control2.y - ann.end.y };
+      }
+      ann.midPoint = null;
+      ann.midHandleIn = null;
+      ann.midHandleOut = null;
+    }
+    if (!ann.control1 || !ann.control2 ||
+        !Number.isFinite(ann.control1.x) || !Number.isFinite(ann.control2.x)) {
       const m0 = defaultCurveMidPoint(ann.start, ann.end);
       const c = controlsFromMidPoint(ann.start, ann.end, m0);
-      c1 = c.control1; c2 = c.control2;
+      ann.control1 = c.control1;
+      ann.control2 = c.control2;
     }
-    const m = deriveMidAnchor(ann.start, c1, c2, ann.end);
-    ann.control1 = m.control1;
-    ann.control2 = m.control2;
-    ann.midPoint = m.midPoint;
-    ann.midHandleIn = m.midHandleIn;
-    ann.midHandleOut = m.midHandleOut;
   }
 
   // ---- src/geometry/math.js ----
@@ -1153,14 +1224,75 @@
   // ---- src/ui/toast.js ----
 // Lightweight on-screen toast helper.
 // Source part for app.js. Run `npm run build` after editing.
+//
+// US-032: one visible toast plus a short queue. A toast that arrives while
+// the current one hasn't had a fair reading window queues instead of
+// overwriting, then the queue drains on an early-advance cadence. Callers
+// whose messages are a live STATUS (Tab part-cycling, brush size) pass
+// { replace: true } — latest wins there, since replaying stale states after
+// a keyboard burst would be worse than the old overwrite behaviour.
+// The second positional argument still accepts a number (duration in ms)
+// for the existing long-error call sites.
 
-  function showToast(message, duration = 2600) {
-    el.toast.textContent = message;
+  const TOAST_DEFAULT_MS = 2600;
+  const TOAST_MIN_VISIBLE_MS = 900; // fair reading window before a swap
+  const TOAST_QUEUE_MAX = 3;
+  let toastQueue = [];
+  let toastShownAt = 0;
+  let toastAdvanceTimer = null;
+
+  function showToast(message, opts) {
+    const options = typeof opts === 'number' ? { duration: opts } : (opts || {});
+    const entry = { message, duration: options.duration || TOAST_DEFAULT_MS };
+    const visible = el.toast.classList.contains('show');
+    if (options.replace) {
+      toastQueue = [];
+      displayToast(entry);
+      return;
+    }
+    if (visible && el.toast.textContent === message) {
+      displayToast(entry); // same message again — extend, don't queue
+      return;
+    }
+    const shownFor = performance.now() - toastShownAt;
+    if (visible && shownFor < TOAST_MIN_VISIBLE_MS) {
+      if (!toastQueue.some(q => q.message === message)) {
+        toastQueue.push(entry);
+        if (toastQueue.length > TOAST_QUEUE_MAX) toastQueue.shift();
+        scheduleToastAdvance(TOAST_MIN_VISIBLE_MS - shownFor);
+      }
+      return;
+    }
+    displayToast(entry);
+  }
+
+  function displayToast(entry) {
+    if (toastAdvanceTimer) {
+      clearTimeout(toastAdvanceTimer);
+      toastAdvanceTimer = null;
+    }
+    el.toast.textContent = entry.message;
     el.toast.classList.add('show');
+    toastShownAt = performance.now();
     clearTimeout(state.toastTimer);
     state.toastTimer = setTimeout(() => {
       el.toast.classList.remove('show');
-    }, duration);
+      advanceToastQueue();
+    }, entry.duration);
+    if (toastQueue.length) scheduleToastAdvance(TOAST_MIN_VISIBLE_MS);
+  }
+
+  function scheduleToastAdvance(delay) {
+    if (toastAdvanceTimer) return; // an advance is already on its way
+    toastAdvanceTimer = setTimeout(() => {
+      toastAdvanceTimer = null;
+      advanceToastQueue();
+    }, Math.max(0, delay));
+  }
+
+  function advanceToastQueue() {
+    const next = toastQueue.shift();
+    if (next) displayToast(next);
   }
 
   // ---- src/ui/dialogs/core.js ----
@@ -1291,14 +1423,21 @@
         <div class="help-row"><span>Select tool</span><span class="help-keys"><span class="kbd">S</span></span></div>
         <div class="help-row"><span>Straight line</span><span class="help-keys"><span class="kbd">0</span></span></div>
         <div class="help-row"><span>Curved line</span><span class="help-keys"><span class="kbd">C</span></span></div>
-        <div class="help-row"><span>Eraser</span><span class="help-keys"><span class="kbd">E</span></span></div>
+        <div class="help-row"><span>Eraser</span><span class="help-keys"><span class="kbd">X</span></span></div>
         <div class="help-row"><span>Lock / unlock all images</span><span class="help-keys"><span class="kbd">L</span></span></div>
         <div class="help-row"><span>Fit to view</span><span class="help-keys"><span class="kbd">F</span></span></div>
         <div class="help-row"><span>Hide / show numbers</span><span class="help-keys"><span class="kbd">N</span></span></div>
+        <div class="help-row"><span>Hide / show the Measurements panel</span><span class="help-keys"><span class="kbd">H</span></span></div>
+        <div class="help-row"><span>Add an image</span><span class="help-keys"><span class="kbd">A</span></span></div>
+        <div class="help-row"><span>Open the Grading dialog</span><span class="help-keys"><span class="kbd">G</span></span></div>
+        <div class="help-row"><span>Export Excel spec</span><span class="help-keys"><span class="kbd">E</span></span></div>
         <div class="help-row"><span>Reset board (photo + all lines)</span><span class="help-keys"><span class="kbd">R</span></span></div>
         <div class="help-row"><span>Delete all lines (keep photo)</span><span class="help-keys"><span class="kbd">D</span></span></div>
         <div class="help-row"><span>Nudge selected anchor pin 1 px (10 px with <span class="kbd">⇧</span>)</span><span class="help-keys"><span class="kbd">←</span><span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">→</span></span></div>
         <div class="help-row"><span>Drop anchor without snapping to ink</span><span class="help-keys">Hold <span class="kbd">⌥</span> on release</span></div>
+        <div class="help-row"><span>Nudge selected line / active point 1 px (10 px with <span class="kbd">⇧</span>)</span><span class="help-keys"><span class="kbd">←</span><span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">→</span></span></div>
+        <div class="help-row"><span>Pick the point the arrows move (line → start → mid → end → bend handles)</span><span class="help-keys"><span class="kbd">Tab</span></span></div>
+        <div class="help-row"><span>Step a focused Size L / L2 / TOL field by ⅛ (whole unit with <span class="kbd">⇧</span>)</span><span class="help-keys"><span class="kbd">↑</span><span class="kbd">↓</span></span></div>
         <div class="help-row"><span>Undo / Redo</span><span class="help-keys"><span class="kbd">⌘</span><span class="kbd">Z</span> / <span class="kbd">⇧</span><span class="kbd">⌘</span><span class="kbd">Z</span></span></div>
         <div class="help-row"><span>Delete selected</span><span class="help-keys"><span class="kbd">Delete</span></span></div>
         <div class="help-row"><span>Pan the board</span><span class="help-keys">Hold <span class="kbd">Space</span> + drag</span></div>
@@ -3460,8 +3599,12 @@
     body.style.cssText = 'max-width:100%;overflow:auto;';
     const lead = document.createElement('p');
     lead.style.cssText = 'margin:0 0 8px;font-size:12px;color:#555;';
+    // US-011: this dialog is a read-only PREVIEW of the graded run. All
+    // grade-rule editing lives in the Grading dialog (one source of truth) —
+    // the review flagged that two editing surfaces over one persisted object
+    // silently disagree (per-size overrides beat steps with no UI signal).
     lead.innerHTML = 'Base = each POM’s <b>Size L</b>, or its calibrated measured value if Size L is blank. '
-      + 'Steps are seeded from the house rule (editable). Held POMs (straps) stay flat and are shaded.';
+      + 'Preview only — edit the rule via the <b>Grading</b> button. Held POMs (straps) stay flat and are shaded.';
     body.appendChild(lead);
 
     const scroller = document.createElement('div');
@@ -3502,33 +3645,21 @@
         nameTd.title = pomDisplayName(key) + (baseInfo.source ? ' · base from ' + baseInfo.source : ' · no base set');
         tr.appendChild(nameTd);
 
+        // Read-only step/hold display (US-011: editing moved to the Grading
+        // dialog; legacy step overrides remain honored and visible here).
         const stepTd = document.createElement('td');
-        stepTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;';
-        const stepInput = document.createElement('input');
-        stepInput.type = 'number';
-        stepInput.step = 'any';
-        stepInput.value = rule.hold ? '' : String(+rule.step.toFixed(3));
-        stepInput.disabled = rule.hold;
-        stepInput.style.cssText = 'width:64px;font-size:12px;padding:2px 4px;';
-        stepInput.addEventListener('change', () => {
-          const n = parseFloat(stepInput.value);
-          setGradeRule(key, { step: Number.isFinite(n) ? n : 0 });
-          renderTable();
-        });
-        stepTd.appendChild(stepInput);
+        stepTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;color:#555;';
+        stepTd.textContent = rule.hold ? '—' : String(+rule.step.toFixed(3));
+        if (rule.overridden) {
+          stepTd.style.fontWeight = '600';
+          stepTd.title = 'TD step override (edit or clear it in the Grading dialog)';
+        }
         tr.appendChild(stepTd);
 
         const holdTd = document.createElement('td');
-        holdTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;text-align:center;';
-        const holdBox = document.createElement('input');
-        holdBox.type = 'checkbox';
-        holdBox.checked = rule.hold;
-        holdBox.title = 'Hold constant across sizes (e.g. adjustable straps)';
-        holdBox.addEventListener('change', () => {
-          setGradeRule(key, { hold: holdBox.checked });
-          renderTable();
-        });
-        holdTd.appendChild(holdBox);
+        holdTd.style.cssText = 'padding:4px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#555;';
+        holdTd.textContent = rule.hold ? 'held' : '';
+        holdTd.title = rule.hold ? 'Held constant across sizes (e.g. adjustable straps)' : '';
         tr.appendChild(holdTd);
 
         const run = baseInfo.value != null ? gradedRunForPom(baseInfo.value, rule) : null;
@@ -3562,19 +3693,8 @@
 
     const footer = document.createElement('div');
     footer.className = 'picker-footer';
-    const resetBtn = document.createElement('button');
-    resetBtn.type = 'button';
-    resetBtn.className = 'picker-btn';
-    resetBtn.textContent = 'Reset steps';
-    resetBtn.title = 'Discard step edits and restore the house-default increments.';
-    resetBtn.addEventListener('click', () => {
-      // Reset only the constant-step overrides this dialog edits; per-size
-      // deltas and depth offsets in the v2 container belong to other UIs.
-      state.gradeRules.steps = {};
-      pushHistoryIfChanged();
-      renderTable();
-      showToast('Grade steps reset to house defaults.');
-    });
+    // US-011: no reset here — this dialog is a preview; the Grading dialog
+    // owns every grade-rule edit (per-POM and global resets included).
     const spacer = document.createElement('span');
     spacer.style.flex = '1';
     const copyBtn = document.createElement('button');
@@ -3597,7 +3717,6 @@
     doneBtn.className = 'picker-btn primary';
     doneBtn.textContent = 'Done';
     doneBtn.addEventListener('click', dialog.close);
-    footer.appendChild(resetBtn);
     footer.appendChild(spacer);
     footer.appendChild(copyBtn);
     footer.appendChild(doneBtn);
@@ -3740,297 +3859,652 @@
     dlg.open();
   }
 
-  // ---- src/ui/meaning-popover.js ----
-// POM meaning confirmation popover, reconfirm-meaning context menu,
-// and the manage POM meanings picker.
-// Source part for app.js. Run `npm run build` after editing.
-//
-// The popover opens once per (POM 6+ × machine) when the TD labels a line
-// whose meaning is not yet confirmed for the current style. Picking a
-// suggestion (or naming a new measurement) records a learning sample and
-// remembers the POM→meaning binding. The reconfirm context menu lets the
-// TD forget the current binding so the popover re-opens; the manage picker
-// is the bulk view of every confirmed binding for the current style.
+  // ---- src/ui/dialogs/grading-dialog.js ----
+// Grading dialog (US-011 S3): view and edit the grade rule inside the tool.
+// One row per POM (the 18 + any custom POMs), one column per size. Cells show
+// the EFFECTIVE per-size delta — per-size TD override, else constant-step
+// override (Size Run dialog), else the built-in SPEC_* tables — and edits
+// write per-size overrides into gradeRules v2 (stored in inches). The L
+// column is the alpha base (always 0); the L2 column edits the L2−L offset
+// (gradeRules.depthOffsets, project unit). Source part for app.js — run
+// `npm run build` after editing. SPEC_* tables live in export-xlsx.js and
+// are referenced at call time only (shared IIFE scope).
 
-  // ---- POM meaning confirmation popover ----
-  // Opens once per (POM 6+ × machine) when the TD labels a line whose
-  // meaning hasn't been confirmed. Picking a suggestion (or naming a
-  // brand-new measurement) records the learning sample and remembers
-  // the POM→meaning binding for every future file. Skip drops the
-  // sample without poisoning the bucket.
-
-  let pendingMeaningEval = null;
-  let pmpOtherInputEl = null;
-
-  function openPomMeaningPopover(evalResult) {
-    if (!el.pomMeaningPopover) return;
-    closeAnnContextMenu();
-    pendingMeaningEval = evalResult;
-    el.pmpPomLabel.textContent = 'POM ' + evalResult.pom;
-    renderPomMeaningSuggestions(evalResult);
-    resetPomMeaningOtherMode();
-    const screen = worldToScreen(evalResult.ann.label.x, evalResult.ann.label.y);
-    el.pomMeaningPopover.style.left = screen.x + 'px';
-    el.pomMeaningPopover.style.top  = screen.y + 'px';
-    el.pomMeaningPopover.style.display = 'block';
-  }
-
-  function closePomMeaningPopover() {
-    if (!el.pomMeaningPopover) return;
-    el.pomMeaningPopover.style.display = 'none';
-    el.pmpSuggestions.innerHTML = '';
-    resetPomMeaningOtherMode();
-    pendingMeaningEval = null;
-  }
-
-  function renderPomMeaningSuggestions(evalResult) {
-    el.pmpSuggestions.innerHTML = '';
-    for (const m of evalResult.suggestions) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'pmp-suggestion';
-      const top = document.createElement('span');
-      top.textContent = m.label;
-      const sub = document.createElement('span');
-      sub.className = 'pmp-anchors';
-      sub.textContent = m.start + ' → ' + m.end;
-      btn.appendChild(top);
-      btn.appendChild(sub);
-      btn.addEventListener('click', () => choosePomMeaning(m.id));
-      el.pmpSuggestions.appendChild(btn);
+  // Fraction parsing/formatting for grade deltas. fractionToNumber
+  // (spec-panel.js) rejects negatives; deltas are frequently negative, so the
+  // dialog has its own signed parser and a formatter that renders clean
+  // fractions ("-1 1/4") and falls back to decimals for oddballs.
+  function gradeDeltaToNumber(text) {
+    const raw = String(text == null ? '' : text).trim();
+    if (!raw) return null;
+    const neg = raw.startsWith('-');
+    const body = raw.replace(/^[+-]/, '').trim();
+    // STRICT shapes only — fractionToNumber's parseFloat fallback would
+    // silently truncate typos ("3 /4" → 3, a 4× grade error). Accept exactly:
+    // decimal, fraction a/b, or mixed "w a/b" (single space).
+    let n = null;
+    let m;
+    if ((m = body.match(/^(\d+)\s+(\d+)\/(\d+)$/))) {
+      const den = parseInt(m[3], 10);
+      if (den > 0) n = parseInt(m[1], 10) + parseInt(m[2], 10) / den;
+    } else if ((m = body.match(/^(\d+)\/(\d+)$/))) {
+      const den = parseInt(m[2], 10);
+      if (den > 0) n = parseInt(m[1], 10) / den;
+    } else if (/^\d*\.?\d+$/.test(body)) {
+      n = parseFloat(body);
     }
-    if (evalResult.suggestions.length === 0) {
-      const note = document.createElement('div');
-      note.className = 'pmp-anchors';
-      note.textContent = 'No close matches — add a new measurement below.';
-      el.pmpSuggestions.appendChild(note);
-    }
+    if (n == null || !isFinite(n)) return null;
+    return neg ? -n : n;
   }
 
-  function choosePomMeaning(meaningId) {
-    if (!pendingMeaningEval) return;
-    const evalResult = pendingMeaningEval;
-    const ok = commitMeaningChoice(evalResult, meaningId);
-    if (ok) showToast('POM ' + evalResult.ann.learnSamplePom + ' learning sample saved');
-    closePomMeaningPopover();
-    updateUI();
-    requestRender();
-  }
-
-  function submitCustomPomMeaning(label) {
-    if (!pendingMeaningEval) return;
-    const cleanLabel = String(label || '').trim();
-    if (!cleanLabel) return;
-    const evalResult = pendingMeaningEval;
-    const ok = commitMeaningChoiceCustom(evalResult, cleanLabel);
-    if (ok) showToast('POM ' + evalResult.ann.learnSamplePom + ' learning sample saved');
-    else showToast('Could not match the line to anchors — skipped.');
-    closePomMeaningPopover();
-    updateUI();
-    requestRender();
-  }
-
-  function resetPomMeaningOtherMode() {
-    if (pmpOtherInputEl) {
-      pmpOtherInputEl.remove();
-      pmpOtherInputEl = null;
-    }
-    if (el.pmpOtherBtn) el.pmpOtherBtn.style.display = '';
-  }
-
-  function showPomMeaningOtherMode() {
-    if (!el.pmpOtherBtn) return;
-    el.pmpOtherBtn.style.display = 'none';
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'pmp-other-input';
-    input.placeholder = 'Name this measurement…';
-    input.autocomplete = 'off';
-    input.spellcheck = false;
-    input.addEventListener('keydown', (e) => {
-      e.stopPropagation();
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        submitCustomPomMeaning(input.value);
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        closePomMeaningPopover();
+  function numberToGradeFraction(value) {
+    if (value == null || !isFinite(value)) return '';
+    const sign = value < 0 ? '-' : '';
+    let v = Math.abs(Math.round(value * 10000) / 10000);
+    const whole = Math.floor(v);
+    const frac = v - whole;
+    if (frac < 1e-9) return sign + String(whole);
+    // Try the sewing-friendly denominators; fall back to a plain decimal.
+    for (const den of [2, 4, 8, 16]) {
+      const num = Math.round(frac * den);
+      if (num > 0 && Math.abs(frac - num / den) < 1e-9) {
+        const fracText = num + '/' + den;
+        return sign + (whole ? whole + ' ' + fracText : fracText);
       }
-    });
-    el.pmpOtherBtn.parentNode.appendChild(input);
-    pmpOtherInputEl = input;
-    requestAnimationFrame(() => input.focus());
-  }
-
-  // ---- Reconfirm Meaning context menu ----
-  // Right-clicking an annotation in Manual Mode opens a small menu with
-  // "Reconfirm Meaning". Picking it forgets the current (style, POM)
-  // binding, clears the per-annotation dedup hash so the same line can be
-  // re-evaluated, then re-runs evaluateManualPomSample which surfaces the
-  // popover again. The line itself is never touched. Disabled for POMs
-  // 1/3/5 (fixed) and 2/4 (extension lines) — there is nothing to
-  // reconfirm in either case.
-
-  let annContextMenuTargetId = null;
-
-  function isReconfirmableAnn(ann) {
-    if (!ann || ann.auto === true) return false;
-    if (state.appMode === 'auto') return false;
-    const pom = parsePomNumberFromLabel(ann.text);
-    if (!pom) return false;
-    const n = Number(pom);
-    return n >= 6 && n <= POM_LABEL_MAX;
-  }
-
-  function onCanvasContextMenu(e) {
-    e.preventDefault();
-    // Auto Mode owns the canvas — no manual meaning workflow available.
-    if (state.appMode === 'auto') { closeAnnContextMenu(); return; }
-    // Don't stack a context menu on top of the meaning popover —
-    // the popover already owns the next click and the keyboard.
-    if (pendingMeaningEval) { closeAnnContextMenu(); return; }
-    const screen = getMousePos(e);
-    const world = screenToWorld(screen.x, screen.y);
-    const hit = hitTestAnnotations(world);
-    if (!hit) { closeAnnContextMenu(); return; }
-    const ann = getAnnotationById(hit.id);
-    if (!ann) { closeAnnContextMenu(); return; }
-    setSelection('annotation', ann.id);
-    openAnnContextMenu(ann, e.clientX, e.clientY);
-  }
-
-  function openAnnContextMenu(ann, clientX, clientY) {
-    if (!el.annContextMenu || !el.annCtxReconfirm) return;
-    annContextMenuTargetId = ann.id;
-    const reconfirmable = isReconfirmableAnn(ann);
-    el.annCtxReconfirm.disabled = !reconfirmable;
-    el.annCtxReconfirm.title = reconfirmable
-      ? 'Forget the current meaning for this POM and re-open the picker.'
-      : 'Reconfirm only applies to POM 6+ labelled lines in Manual Mode.';
-    // Position relative to the canvas wrapper (which is positioned).
-    const wrap = el.annContextMenu.offsetParent || document.body;
-    const rect = wrap.getBoundingClientRect();
-    el.annContextMenu.style.left = (clientX - rect.left) + 'px';
-    el.annContextMenu.style.top  = (clientY - rect.top)  + 'px';
-    el.annContextMenu.style.display = 'block';
-  }
-
-  function closeAnnContextMenu() {
-    if (!el.annContextMenu) return;
-    el.annContextMenu.style.display = 'none';
-    annContextMenuTargetId = null;
-  }
-
-  function reconfirmAnnotationMeaning(annId) {
-    const ann = getAnnotationById(annId);
-    if (!ann) return;
-    if (!isReconfirmableAnn(ann)) {
-      showToast('Reconfirm Meaning only applies to POM 6+ lines in Manual Mode.');
-      return;
     }
-    const pom = parsePomNumberFromLabel(ann.text);
-    if (!pom) return;
-    // Drop the (currentStyle, POM) binding so resolvePomMeaning returns
-    // null and evaluateManualPomSample falls through to the popover path.
-    forgetPomMeaning(pom);
-    // Clear the per-annotation dedup hash. Without this the next eval
-    // short-circuits because endpoint coords haven't changed since the
-    // last commit, and the picker would never re-open.
-    ann.learnSampleHash = null;
-    const evalResult = evaluateManualPomSample(ann);
-    if (evalResult.status === 'needsConfirmation') {
-      openPomMeaningPopover(evalResult);
-    } else if (evalResult.status === 'recorded') {
-      // Shouldn't happen for POM 6+ (we just forgot the binding) but
-      // covered for safety: the sample was re-recorded because the
-      // meaning is fixed. POM 1/3/5 hit this branch in theory, but
-      // isReconfirmableAnn already rejected them above.
-      showToast('POM ' + evalResult.pom + ' meaning re-confirmed.');
-    } else {
-      showToast('Re-open the line on a sketch image to reconfirm its meaning.');
-    }
+    return sign + String(v);
   }
 
-  // ---- Manage POM meanings picker ----
-  // Lists every confirmed (POM N → meaning) for the current style. Each
-  // row has a dropdown to switch to a different meaning, and a Forget
-  // button that wipes the binding so the next commit re-asks. Lets the
-  // TD recover from a wrong confirmation without nuking everything.
-  function openManageMeaningsPicker() {
-    const styleId = currentStyleId();
-    const styleLabel = styleId === '__default__'
-      ? 'default bucket (no style code)'
-      : 'style "' + styleId + '"';
-    const dialog = buildDialog({
-      title: 'POM meanings — ' + styleLabel,
-      sub: 'Change a wrong confirmation or forget it so the next POM commit re-asks.',
+  // Effective delta for a cell, in the PROJECT UNIT (what the sheet shows).
+  // tier 1: delta vs Size L. tier 2 (except L2): delta vs L2.
+  function effectiveGradeDeltaUnit(pomKey, col) {
+    const key = String(pomKey);
+    const unitScale = inchesToUnit(state.calibration.unit);
+    const perSize = getPerSizeGradeDelta(col.tier, key, col.label);
+    if (perSize != null) return perSize * unitScale;
+    const rule = getGradeRule(key);
+    if (rule.hold) return 0;
+    const baseIdx = GRADE_SIZES.indexOf(GRADE_BASE_SIZE);
+    if (col.tier === 1) {
+      const alphaDeltas = SPEC_ALPHA_DELTA_L_IN[key] || null;
+      const i = GRADE_SIZES.indexOf(col.label);
+      if (rule.overridden || !alphaDeltas) return (i - baseIdx) * rule.step;
+      return alphaDeltas[i] * unitScale;
+    }
+    const depthDeltas = SPEC_DEPTH_DELTA_L2_IN[key] || null;
+    const depthLabels = SPEC_SIZE_RUN.filter(c => c.tier === 2).map(c => c.label);
+    if (rule.overridden || !depthDeltas) {
+      return (GRADE_SIZES.indexOf(col.base) - baseIdx) * rule.step;
+    }
+    return depthDeltas[depthLabels.indexOf(col.label)] * unitScale;
+  }
+
+  // Built-in (house default) delta for a cell, in the project unit — the
+  // value "Reset to standard" restores and the reference for deciding
+  // whether an edit is an override at all.
+  function builtinGradeDeltaUnit(pomKey, col) {
+    const key = String(pomKey);
+    const unitScale = inchesToUnit(state.calibration.unit);
+    const house = HOUSE_GRADE_INCHES[key] || { step: 0, hold: false };
+    if (house.hold) return 0;
+    if (col.tier === 1) {
+      const alphaDeltas = SPEC_ALPHA_DELTA_L_IN[key] || null;
+      const i = GRADE_SIZES.indexOf(col.label);
+      const baseIdx = GRADE_SIZES.indexOf(GRADE_BASE_SIZE);
+      if (!alphaDeltas) return (i - baseIdx) * house.step * unitScale;
+      return alphaDeltas[i] * unitScale;
+    }
+    const depthDeltas = SPEC_DEPTH_DELTA_L2_IN[key] || null;
+    const depthLabels = SPEC_SIZE_RUN.filter(c => c.tier === 2).map(c => c.label);
+    const baseIdx = GRADE_SIZES.indexOf(GRADE_BASE_SIZE);
+    if (!depthDeltas) return (GRADE_SIZES.indexOf(col.base) - baseIdx) * house.step * unitScale;
+    return depthDeltas[depthLabels.indexOf(col.label)] * unitScale;
+  }
+
+  function ensureGradeRulesV2() {
+    if (!state.gradeRules || state.gradeRules.version !== 2) {
+      state.gradeRules = migrateGradeRulesV2(state.gradeRules, null);
+    }
+    return state.gradeRules;
+  }
+
+  function gradingPomKeys() {
+    const template = Object.keys(POM_TEMPLATE).sort((a, b) => Number(a) - Number(b));
+    const custom = (state.customPoms || []).map(p => String(p.pom))
+      .sort((a, b) => Number(a) - Number(b));
+    return template.concat(custom);
+  }
+
+  function openGradingDialog() {
+    const dlg = buildDialog({
+      title: 'Grading rules',
+      sub: 'Per-size deltas: alpha sizes vs Size L, depth sizes vs L2. The L2 column is the L2−L offset. Edits are saved with the project.',
     });
 
     const body = document.createElement('div');
-    body.className = 'dialog-body manage-meanings-body';
+    body.className = 'dialog-body';
+    body.style.cssText = 'max-height:60vh;overflow:auto;min-width:720px;';
 
-    const rows = listConfirmedMeanings(styleId);
-    if (rows.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'mm-empty';
-      empty.textContent = 'No POM meanings confirmed for this style yet. Label a manual POM 6+ line to add one.';
-      body.appendChild(empty);
-    } else {
-      const list = document.createElement('div');
-      list.className = 'mm-list';
-      const catalog = getAllCatalogMeanings();
-      for (const row of rows) {
-        list.appendChild(buildManageMeaningRow(row, catalog, styleId, dialog, list));
+    const unit = state.calibration.unit || 'in';
+    const table = document.createElement('table');
+    table.style.cssText = 'border-collapse:collapse;font-size:11px;width:100%;';
+
+    const renderTable = () => {
+      const rules = ensureGradeRulesV2();
+      const rows = ['<tr><th style="position:sticky;top:0;background:#f2f2f2;padding:4px 6px;text-align:left;">POM</th>'
+        + SPEC_SIZE_RUN.map(c => '<th style="position:sticky;top:0;background:'
+          + (c.tier === 1 ? '#fcd5b4' : '#c4d79b') + ';padding:4px 6px;">' + escapeHtml(c.label) + '</th>').join('')
+        + '<th style="position:sticky;top:0;background:#f2f2f2;"></th></tr>'];
+      for (const key of gradingPomKeys()) {
+        const custom = (state.customPoms || []).find(p => String(p.pom) === key);
+        const name = custom ? (custom.en || 'Custom POM')
+          : ((POM_TEMPLATE[key] && POM_TEMPLATE[key].name) || '');
+        const cells = SPEC_SIZE_RUN.map(col => {
+          if (col.tier === 1 && col.label === GRADE_BASE_SIZE) {
+            return '<td style="border:1px solid #ddd;padding:2px;text-align:center;color:#999;">base</td>';
+          }
+          if (col.label === 'L2') {
+            const off = getDepthRule(key);
+            const overridden = off.overridden;
+            return '<td style="border:1px solid #ddd;padding:0;">'
+              + '<input data-pom="' + escapeHtml(key) + '" data-size="L2" data-kind="offset" value="'
+              + escapeHtml(numberToGradeFraction(off.offset)) + '" title="L2 − L offset'
+              + (overridden ? ' (TD override)' : ' (standard)') + '"'
+              + ' style="width:52px;border:0;padding:3px 4px;text-align:center;'
+              + (overridden ? 'background:#fff3d6;font-weight:600;' : '') + '"/></td>';
+          }
+          const eff = effectiveGradeDeltaUnit(key, col);
+          const overridden = getPerSizeGradeDelta(col.tier, key, col.label) != null;
+          const provenance = (key === '7' && col.label === '4XL2' && !overridden)
+            ? ' — interpolated standard value, TD to confirm' : '';
+          return '<td style="border:1px solid #ddd;padding:0;">'
+            + '<input data-pom="' + escapeHtml(key) + '" data-size="' + escapeHtml(col.label)
+            + '" data-kind="' + (col.tier === 1 ? 'alpha' : 'depth') + '" value="'
+            + escapeHtml(numberToGradeFraction(eff)) + '" title="'
+            + (overridden ? 'TD override' : 'standard') + provenance + '"'
+            + ' style="width:52px;border:0;padding:3px 4px;text-align:center;'
+            + (overridden ? 'background:#fff3d6;font-weight:600;' : '') + '"/></td>';
+        }).join('');
+        rows.push('<tr><td style="border:1px solid #ddd;padding:3px 6px;white-space:nowrap;" title="'
+          + escapeHtml(name) + '">' + escapeHtml(key) + '</td>' + cells
+          + '<td style="border:1px solid #ddd;padding:0;"><button type="button" class="picker-btn" data-reset="'
+          + escapeHtml(key) + '" style="font-size:10px;padding:2px 6px;" title="Restore this POM to the standard rule">Reset</button></td></tr>');
+        void rules;
       }
-      body.appendChild(list);
-    }
+      table.innerHTML = rows.join('');
+    };
 
-    dialog.panel.appendChild(body);
-    dialog.open();
+    const commitCell = (input) => {
+      const key = String(input.dataset.pom);
+      const size = input.dataset.size;
+      const kind = input.dataset.kind;
+      const rules = ensureGradeRulesV2();
+      const unitScale = inchesToUnit(state.calibration.unit);
+      const trimmed = String(input.value).trim();
+      // Empty = "back to standard" for this cell (delete the override).
+      // Pinning a size flat is an explicit act: type 0.
+      if (trimmed === '') {
+        if (kind === 'offset') delete rules.depthOffsets[key];
+        else {
+          const bucket = kind === 'alpha' ? rules.alpha : rules.depth;
+          if (bucket[key]) { delete bucket[key][size]; if (!Object.keys(bucket[key]).length) delete bucket[key]; }
+        }
+        pushHistoryIfChanged();
+        renderTable();
+        if (typeof renderSpecPanel === 'function') renderSpecPanel();
+        return;
+      }
+      const parsed = gradeDeltaToNumber(trimmed);
+      if (parsed == null) {
+        showToast('Could not read "' + input.value + '" — use a number or fraction like -1 1/4.', 3600);
+        renderTable();
+        return;
+      }
+      const valueUnit = parsed;
+      if (kind === 'offset') {
+        const house = (SPEC_DEPTH_OFFSET_IN[key] || 0) * unitScale;
+        if (Math.abs(valueUnit - house) < 1e-9) delete rules.depthOffsets[key];
+        else rules.depthOffsets[key] = { offset: valueUnit };
+      } else {
+        const bucket = kind === 'alpha' ? rules.alpha : rules.depth;
+        const builtin = builtinGradeDeltaUnit(key, SPEC_SIZE_RUN.find(c => c.label === size));
+        if (Math.abs(valueUnit - builtin) < 1e-9) {
+          if (bucket[key]) { delete bucket[key][size]; if (!Object.keys(bucket[key]).length) delete bucket[key]; }
+        } else {
+          if (!bucket[key]) bucket[key] = {};
+          bucket[key][size] = valueUnit / unitScale;   // stored in inches
+        }
+      }
+      pushHistoryIfChanged();
+      renderTable();
+      if (typeof renderSpecPanel === 'function') renderSpecPanel();
+    };
+
+    table.addEventListener('change', (ev) => {
+      const input = ev.target.closest('input[data-pom]');
+      if (input) commitCell(input);
+    });
+    table.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button[data-reset]');
+      if (!btn) return;
+      const key = String(btn.dataset.reset);
+      const rules = ensureGradeRulesV2();
+      delete rules.alpha[key];
+      delete rules.depth[key];
+      delete rules.depthOffsets[key];
+      delete rules.steps[key];
+      pushHistoryIfChanged();
+      renderTable();
+      showToast('POM ' + key + ' grading reset to the standard rule.');
+    });
+
+    body.appendChild(table);
+
+    const footer = document.createElement('div');
+    footer.className = 'picker-footer';
+    footer.style.cssText = 'display:flex;gap:8px;align-items:center;';
+    const note = document.createElement('span');
+    note.style.cssText = 'font-size:11px;color:#666;flex:1;';
+    note.textContent = 'Values in ' + unit + '. Highlighted cells are TD overrides; they drive the Excel export formulas.';
+    const resetAllBtn = document.createElement('button');
+    resetAllBtn.type = 'button';
+    resetAllBtn.className = 'picker-btn';
+    resetAllBtn.textContent = 'Reset all to standard';
+    resetAllBtn.addEventListener('click', () => {
+      if (!window.confirm('Discard every grading override and restore the standard rule?')) return;
+      state.gradeRules = makeEmptyGradeRulesV2();
+      pushHistoryIfChanged();
+      renderTable();
+      showToast('All grading rules reset to standard.');
+    });
+    const doneBtn = document.createElement('button');
+    doneBtn.type = 'button';
+    doneBtn.className = 'picker-btn picker-btn-primary';
+    doneBtn.textContent = 'Done';
+    doneBtn.addEventListener('click', () => dlg.close());
+    footer.appendChild(note);
+    footer.appendChild(resetAllBtn);
+    footer.appendChild(doneBtn);
+
+    renderTable();
+    dlg.panel.appendChild(body);
+    dlg.panel.appendChild(footer);
+    dlg.open();
   }
 
-  function buildManageMeaningRow(row, catalog, styleId, dialog, listEl) {
-    const node = document.createElement('div');
-    node.className = 'mm-row';
+  // ---- src/ui/dialogs/view-roles-dialog.js ----
+// View-role confirmation dialog: replaces the old window.prompt letter-code
+// flow (F/B/I/U) after Detect Sketch when the classifier is unsure.
+// Source part for app.js. Run `npm run build` after editing.
+//
+// openViewRolesDialog({ views, sourceImage }) resolves with an array of role
+// strings (one per view, in the same order) when the TD confirms, or null
+// when they dismiss (Esc / click-outside / "Keep as detected") — null means
+// "leave the detection untouched", matching the old cancelled-prompt path.
 
-    const pomEl = document.createElement('div');
-    pomEl.className = 'mm-pom';
-    pomEl.textContent = 'POM ' + row.pom;
-    node.appendChild(pomEl);
+  const VIEW_ROLE_CHOICES = [
+    { role: 'front_outer', label: 'Front Outer' },
+    { role: 'back', label: 'Back' },
+    { role: 'front_inner', label: 'Front Inner' },
+    { role: 'unknown', label: 'Unknown' },
+  ];
 
-    const select = document.createElement('select');
-    select.className = 'mm-select';
-    for (const m of catalog) {
-      const opt = document.createElement('option');
-      opt.value = m.id;
-      opt.textContent = m.label;
-      if (m.id === row.meaning.id) opt.selected = true;
-      select.appendChild(opt);
-    }
-    select.addEventListener('change', () => {
-      confirmPomMeaning(row.pom, select.value);
-      showToast('POM ' + row.pom + ' meaning changed.');
-      updateUI();
-    });
-    node.appendChild(select);
-
-    const forgetBtn = document.createElement('button');
-    forgetBtn.type = 'button';
-    forgetBtn.className = 'mm-forget';
-    forgetBtn.textContent = 'Forget';
-    forgetBtn.title = 'Forget this binding. Next POM ' + row.pom + ' commit will re-ask.';
-    forgetBtn.addEventListener('click', () => {
-      if (!window.confirm('Forget POM ' + row.pom + ' meaning? Next time you label a POM ' + row.pom + ' line, the picker will appear again.')) return;
-      forgetPomMeaning(row.pom, styleId);
-      node.remove();
-      showToast('POM ' + row.pom + ' meaning forgotten.');
-      updateUI();
-      if (listEl && listEl.children.length === 0) dialog.close();
-    });
-    node.appendChild(forgetBtn);
-
-    return node;
+  function viewRoleDisplayName(role) {
+    const hit = VIEW_ROLE_CHOICES.find(c => c.role === role
+      || (role === 'front' && c.role === 'front_outer'));
+    return hit ? hit.label : 'Unknown';
   }
+
+  // Crop one detected view box out of the source sketch into a small canvas
+  // thumbnail. Returns null when anything is missing (e.g. Node tests) so the
+  // dialog degrades to text-only rows.
+  function buildViewThumbnail(sourceImage, view, size) {
+    try {
+      const img = sourceImage && sourceImage.img;
+      if (!img || typeof document === 'undefined') return null;
+      const iw = img.naturalWidth || img.width;
+      const ih = img.naturalHeight || img.height;
+      if (!iw || !ih) return null;
+      const sx = Math.max(0, Math.floor((view.x || 0) * iw));
+      const sy = Math.max(0, Math.floor((view.y || 0) * ih));
+      const sw = Math.max(1, Math.floor((view.width || 0) * iw));
+      const sh = Math.max(1, Math.floor((view.height || 0) * ih));
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      ctx.fillStyle = '#f5f5f7';
+      ctx.fillRect(0, 0, size, size);
+      const scale = Math.min(size / sw, size / sh);
+      const dw = Math.max(1, Math.round(sw * scale));
+      const dh = Math.max(1, Math.round(sh * scale));
+      ctx.drawImage(img, sx, sy, sw, sh,
+        Math.round((size - dw) / 2), Math.round((size - dh) / 2), dw, dh);
+      return canvas;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function openViewRolesDialog({ views, sourceImage }) {
+    return new Promise((resolve) => {
+      const dialog = buildDialog({
+        title: 'Confirm view roles',
+        sub: 'Tell Auto Mode which detected view is which before it places anchors.',
+      });
+
+      let settled = false;
+      const finish = (value) => {
+        if (settled) return;
+        settled = true;
+        dialog.close();
+        resolve(value);
+      };
+      // buildDialog's own close paths (Esc, ×, click-outside) bypass finish(),
+      // so watch the overlay leaving the DOM and treat it as "keep detected".
+      const observer = new MutationObserver(() => {
+        if (!document.body.contains(dialog.overlay)) {
+          observer.disconnect();
+          if (!settled) { settled = true; resolve(null); }
+        }
+      });
+
+      const body = document.createElement('div');
+      body.className = 'dialog-body';
+
+      const intro = document.createElement('p');
+      intro.style.margin = '0 0 12px';
+      intro.style.fontSize = '12.5px';
+      intro.style.color = 'var(--muted)';
+      intro.textContent = 'Detection was not sure about these views. Wrong roles put POM lines on the wrong sketch — fix any that look off.';
+      body.appendChild(intro);
+
+      const chosen = views.map(v => {
+        const role = v.viewRole || v.role || 'unknown';
+        return role === 'front' ? 'front_outer' : role;
+      });
+
+      views.forEach((view, index) => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.gap = '12px';
+        row.style.alignItems = 'center';
+        row.style.padding = '10px 0';
+        if (index > 0) row.style.borderTop = '1px solid #ececf0';
+
+        const thumb = buildViewThumbnail(sourceImage, view, 72);
+        if (thumb) {
+          thumb.style.flex = '0 0 72px';
+          thumb.style.borderRadius = '8px';
+          thumb.style.border = '1px solid #e0e0e6';
+          row.appendChild(thumb);
+        }
+
+        const info = document.createElement('div');
+        info.style.flex = '0 0 auto';
+        info.style.minWidth = '86px';
+        const name = document.createElement('div');
+        name.style.fontSize = '13px';
+        name.style.fontWeight = '600';
+        name.textContent = 'View ' + (index + 1);
+        info.appendChild(name);
+        const detected = document.createElement('div');
+        detected.style.fontSize = '11.5px';
+        detected.style.color = 'var(--muted)';
+        const confidence = view.roleConfidence != null
+          ? ' · ' + Math.round(view.roleConfidence * 100) + '%'
+          : '';
+        detected.textContent = 'Detected: ' + viewRoleDisplayName(chosen[index]) + confidence;
+        info.appendChild(detected);
+        row.appendChild(info);
+
+        const group = document.createElement('div');
+        group.setAttribute('role', 'radiogroup');
+        group.setAttribute('aria-label', 'Role for view ' + (index + 1));
+        group.style.display = 'flex';
+        group.style.gap = '4px';
+        group.style.flexWrap = 'wrap';
+        group.style.marginLeft = 'auto';
+
+        const buttons = VIEW_ROLE_CHOICES.map(choice => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = choice.label;
+          btn.setAttribute('role', 'radio');
+          btn.style.padding = '5px 10px';
+          btn.style.fontSize = '12px';
+          btn.style.borderRadius = '999px';
+          btn.style.border = '1px solid #d4d4d8';
+          btn.style.cursor = 'pointer';
+          btn.addEventListener('click', () => {
+            chosen[index] = choice.role;
+            paint();
+          });
+          group.appendChild(btn);
+          return { btn, role: choice.role };
+        });
+
+        function paint() {
+          buttons.forEach(({ btn, role }) => {
+            const on = chosen[index] === role;
+            btn.style.background = on ? '#1f2937' : '#fff';
+            btn.style.color = on ? '#fff' : 'var(--text)';
+            btn.style.borderColor = on ? '#1f2937' : '#d4d4d8';
+            btn.setAttribute('aria-checked', on ? 'true' : 'false');
+          });
+        }
+        paint();
+
+        row.appendChild(group);
+        body.appendChild(row);
+      });
+
+      dialog.panel.appendChild(body);
+
+      const footer = document.createElement('div');
+      footer.className = 'picker-footer';
+      const spacer = document.createElement('span');
+      spacer.style.flex = '1';
+      const keepBtn = document.createElement('button');
+      keepBtn.type = 'button';
+      keepBtn.className = 'picker-btn';
+      keepBtn.textContent = 'Keep as detected';
+      keepBtn.addEventListener('click', () => finish(null));
+      const confirmBtn = document.createElement('button');
+      confirmBtn.type = 'button';
+      confirmBtn.className = 'picker-btn primary';
+      confirmBtn.textContent = 'Confirm roles';
+      confirmBtn.addEventListener('click', () => finish(chosen.slice()));
+      footer.appendChild(spacer);
+      footer.appendChild(keepBtn);
+      footer.appendChild(confirmBtn);
+      dialog.panel.appendChild(footer);
+
+      dialog.open();
+      observer.observe(document.body, { childList: true });
+      confirmBtn.focus();
+    });
+  }
+
+  // ---- src/auto/measure/fusion.js ----
+// Mode B measurement: library × sketch fusion (ADR 0033), ported to production
+// from the validated lab engine (test/engine.js) via US-039 Stage 1.
+//
+// Pure + side-effect-free: this part only DEFINES functions and one flag const.
+// It is FLAGGED OFF by default — getPomSpec only consults it when Mode B is on
+// (compile-time MODE_B_DEFAULT or the ?modeB=1 URL pin) — so with the flag off
+// production behaviour is bit-identical to Tier-0 (docs/decisions/0009).
+//
+// The value for each sketch-reliable POM is a precision-weighted SHRINKAGE of
+// the sketch measurement (detected anchor pixel distance × a view-local scale)
+// toward the library median — never a blind average, and never assigned: it is a
+// suggestion the TD accepts or overrides (ADR 0009), and a conflicted POM falls
+// back to the library value rather than showing a wrong number.
+
+// Off by default. Turn on for a build by flipping this, or per-session with
+// ?modeB=1 (mirrors the ?freeCv=1 / ?label=1 harness pins).
+const MODE_B_DEFAULT = false;
+
+function modeBEnabled() {
+  if (MODE_B_DEFAULT) return true;
+  try {
+    if (typeof window !== 'undefined' && window.location) {
+      return new URLSearchParams(window.location.search || '').get('modeB') === '1';
+    }
+  } catch (_e) { /* non-browser / restricted context */ }
+  return false;
+}
+
+// Per-POM roll-out set (US-041). Empty by default — with the global flag off and
+// this list empty, Mode B is fully inert. A POM id is added here ONLY after
+// `npm run measurement-accuracy --promote` shows its fused value beats
+// library-only on TD-confirmed ground truth; editing this list is the reviewed
+// promotion step (mirrors golden/accuracy --update). Governance, not learning:
+// it never mutates the versioned contract JSON.
+const MODE_B_ENABLED_POMS = [];
+
+// Mode B is live for a POM when the global flag is on OR the POM is promoted.
+function modeBEnabledForPom(pom) {
+  if (modeBEnabled()) return true;
+  return MODE_B_ENABLED_POMS.indexOf(String(pom == null ? '' : pom).trim()) !== -1;
+}
+// True when ANY Mode B path is live (global flag or a promoted POM) — used to
+// skip the whole measured-suggestion computation when nothing is enabled.
+function modeBAnyEnabled() {
+  return modeBEnabled() || MODE_B_ENABLED_POMS.length > 0;
+}
+
+// POM -> [startAnchor, endAnchor], from auto_mode_rules/pom-template.json
+// requiredAnchors. Only the corpus sketchReliable POMs (5-13) are fusable; POM
+// 1-4 are schematic, 14 is front-to-back (unmeasurable from 2D views, ADR 0026),
+// 15/16/17/18 have no corpus median.
+const MODE_B_POM_ANCHORS = {
+  '5': ['cf-top', 'cf-bottom'],
+  '6': ['cradle-cf-top', 'cf-bottom'],
+  '7': ['cradle-cup-top', 'cradle-cup-bottom'],
+  '8': ['cf-top', 'cradle-cf-top'],
+  '9': ['inner-cup-top', 'inner-cup-bottom'],
+  '10': ['inner-cup-left', 'inner-cup-right'],
+  '11': ['side-top', 'side-bottom'],
+  '12': ['back-top', 'back-bottom'],
+  '13': ['back-top', 'back-bottom'],
+};
+const MODE_B_POM_VIEW = {
+  '5': 'front_outer', '6': 'front_outer', '7': 'front_outer', '8': 'front_outer',
+  '9': 'front_outer', '10': 'front_outer', '11': 'back', '12': 'back', '13': 'back',
+};
+
+function mbClamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function mbRound(v, p) { const m = Math.pow(10, p == null ? 3 : p); return Math.round(v * m) / m; }
+function mbMedian(xs) {
+  const s = xs.slice().sort((a, b) => a - b);
+  if (!s.length) return 0;
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+}
+
+// Coherent, view-wide style offset (kept, not shrunk): robust median of
+// (sketch/median - 1). MAD is the in-distribution / scale-trust signal.
+function mbStyleOffset(pairs) {
+  const ratios = (pairs || []).filter(p => p && p.median > 0 && p.sketch > 0).map(p => p.sketch / p.median - 1);
+  if (ratios.length < 2) return { offset: 0, dispersion: null, n: ratios.length };
+  const offset = mbMedian(ratios);
+  const dispersion = mbMedian(ratios.map(r => Math.abs(r - offset)));
+  return { offset: mbRound(mbClamp(offset, -0.25, 0.25), 4), dispersion: mbRound(dispersion, 4), n: ratios.length };
+}
+
+// Precision-weighted shrinkage toward the style-adjusted median.
+//   styleExpected = median · (1 + styleOffset)
+//   fused         = styleExpected + k · (sketch − styleExpected),  k = σL²/(σL²+σs²)
+function mbFuseValue(args) {
+  const sketch = Number(args.sketch), median = Number(args.median);
+  const styleOffset = Number(args.styleOffset) || 0;
+  const sL = Math.max(1e-6, Number(args.priorSpreadFrac) || 0.08);
+  const sS = Math.max(1e-6, Number(args.sketchSigmaFrac) || 0.08);
+  const k = (sL * sL) / (sL * sL + sS * sS);
+  const styleExpected = median * (1 + styleOffset);
+  const fused = styleExpected + k * (sketch - styleExpected);
+  const residual = median > 0 ? (sketch / median - 1 - styleOffset) : 0;
+  return { fused: mbRound(fused, 3), k: mbRound(k, 3), residual: mbRound(residual, 4) };
+}
+
+function mbDiagnose(residual, dispersion) {
+  const r = Math.abs(Number(residual) || 0);
+  const d = Number(dispersion);
+  if (Number.isFinite(d) && d > 0.12) return 'scale_suspect';
+  if (r > 0.15) return 'anchor_outlier';
+  return 'coherent';
+}
+
+// Sketch noise fraction: lower (more trust) for ink-confirmed anchors and
+// independent (TD/construction) scale; higher for short POMs and inferred scale.
+function mbSketchSigmaFrac(scaleIndependent, anchorConfirmed, shortPom) {
+  return (scaleIndependent ? 0.03 : 0.08) * (anchorConfirmed ? 1.0 : 1.8) * (shortPom ? 1.5 : 1.0);
+}
+
+// Build { pom: { value_in, sketch_in, library_in, k, residual, diagnosis,
+// confidence, decision, scaleSource } } from detected anchors + library medians.
+// anchors: array of { kind, x, y (normalized 0..1), viewRole, confidence, source, reviewRequired }
+// suggestions: POM_SUGGESTIONS ({ median, sketchReliable } per POM id)
+// dims: { width, height } source-image px (aspect matters for pixel-length ratios)
+function mbComputeMeasuredSuggestions(anchors, suggestions, dims) {
+  const out = {};
+  if (!Array.isArray(anchors) || !anchors.length || !suggestions) return out;
+  const W = Number(dims && dims.width) || 1;
+  const H = Number(dims && dims.height) || 1;
+  const byKind = {};
+  for (const a of anchors) if (a && a.kind) byKind[a.kind] = a;
+
+  const rank = { high: 3, medium: 2, low: 1, very_low: 0 };
+  const inkSourced = s => /ink|silhouette|opencv/i.test(String(s || ''));
+
+  // Per-POM sketch geometry (source-px pixel distance) + library median.
+  const rows = {};
+  for (const pom of Object.keys(MODE_B_POM_ANCHORS)) {
+    const sug = suggestions[pom];
+    if (!sug || !(Number(sug.median) > 0) || sug.sketchReliable === false) continue;
+    const [kA, kB] = MODE_B_POM_ANCHORS[pom];
+    const a = byKind[kA], b = byKind[kB];
+    if (!a || !b || !Number.isFinite(Number(a.x)) || !Number.isFinite(Number(b.x))) continue;
+    const dx = (Number(a.x) - Number(b.x)) * W, dy = (Number(a.y) - Number(b.y)) * H;
+    const px = Math.hypot(dx, dy);
+    if (!(px > 0)) continue;
+    const confirmed = !a.reviewRequired && !b.reviewRequired && inkSourced(a.source) && inkSourced(b.source);
+    const conf = rank[a.confidence] <= rank[b.confidence] ? (a.confidence || 'low') : (b.confidence || 'low');
+    rows[pom] = { pom, view: MODE_B_POM_VIEW[pom], px, median: Number(sug.median), confirmed, confidence: conf };
+  }
+
+  // One robust view-local scale from all that view's sketch-reliable POMs
+  // (candidate scale = median/px). Dispersion = trust; front never shares back.
+  const views = {};
+  for (const pom of Object.keys(rows)) {
+    const r = rows[pom];
+    (views[r.view] = views[r.view] || []).push(r);
+  }
+  for (const view of Object.keys(views)) {
+    const vr = views[view];
+    const candidates = vr.map(r => r.median / r.px);
+    if (candidates.length < 2) continue;                 // need >=2 POMs to fit a scale
+    const scale = mbMedian(candidates);
+    const styleOffset = mbStyleOffset(vr.map(r => ({ sketch: r.px * scale, median: r.median })));
+    for (const r of vr) {
+      const sketch = r.px * scale;
+      const spreadFrac = 0.06;                            // corpus between-style spread (provisional; tuned by the accuracy gate)
+      const sigmaFrac = mbSketchSigmaFrac(false, r.confirmed, r.pom === '7' || r.pom === '8');
+      const f = mbFuseValue({ sketch, median: r.median, priorSpreadFrac: spreadFrac, sketchSigmaFrac: sigmaFrac, styleOffset: styleOffset.offset });
+      const diagnosis = mbDiagnose(f.residual, styleOffset.dispersion);
+      out[r.pom] = {
+        value_in: f.fused, sketch_in: mbRound(sketch, 3), library_in: r.median,
+        k: f.k, residual: f.residual, styleOffset: styleOffset.offset, dispersion: styleOffset.dispersion,
+        diagnosis, confidence: diagnosis === 'coherent' ? (r.confidence === 'high' ? 'medium' : 'low') : 'low',
+        decision: diagnosis === 'coherent' ? 'ESTIMATED_SUGGESTION' : 'REVIEW_REQUIRED',
+        scaleSource: 'library_multi_anchor_inference',
+      };
+    }
+  }
+  return out;
+}
 
   // ---- src/ui/spec-panel.js ----
 // Measurement / spec panel rendering and the calibration commands it owns.
@@ -4038,7 +4512,7 @@
 //
 // renderSpecPanel rebuilds the table on the right side of the board. It
 // renders the Auto Mode draft review section (if drafts are present),
-// then walks the 16 POM template slots in order — using a drawn
+// then walks the 18 POM template slots in order — using a drawn
 // annotation when the label matches, or a read-only template row when
 // nothing has been drawn yet — pairing primary/secondary POMs into one
 // row where the schema defines a pair. Every row exposes editable Size L
@@ -4202,8 +4676,69 @@
   // (M2–5XL2) in the Excel export — blank derives L2 = L + offset.
   const SPEC_COL_COUNT = 7;
 
+  // ---- US-033: rebuild-skip fingerprint -----------------------------------
+  // renderSpecPanel runs on every updateUI (every click), but most calls
+  // change nothing the table renders from — only the selection moved. The
+  // fingerprint captures the table's actual data inputs; when it matches the
+  // one stored after the last full rebuild, we refresh highlight classes and
+  // stop. Selection is deliberately NOT fingerprinted.
+  //
+  // If you add a panel feature that renders from state not listed here, add
+  // its input to this fingerprint or the panel will go stale.
+  let lastSpecPanelFingerprint = null;
+  const specDepIds = new WeakMap();
+  let specDepNext = 1;
+
+  // Identity marker for heavyweight objects that are replaced wholesale
+  // (detection) rather than mutated — cheaper than stringifying them.
+  function specDepId(obj) {
+    if (!obj || typeof obj !== 'object') return 0;
+    if (!specDepIds.has(obj)) specDepIds.set(obj, specDepNext++);
+    return specDepIds.get(obj);
+  }
+
+  function specPanelFingerprint() {
+    const r = (p) => (p ? [Math.round(p.x * 1000), Math.round(p.y * 1000)] : 0);
+    const annBits = state.annotations.map(a => [
+      a.id, a.seq, a.text, a.type,
+      r(a.start), r(a.end), r(a.midPoint),
+      r(a.control1), r(a.control2), r(a.midHandleIn), r(a.midHandleOut),
+    ]);
+    const draftBits = state.autoMode.draftAnnotations.map(d => [
+      d.id, d.seq, d.text, !!d.tdApproved, !!d.tdEdited, !!d.tdTouched,
+      d.drawability, d.confidence, d.reason, d.uncertainty, d.reviewNotes,
+    ]);
+    const anchors = state.autoMode.anchors;
+    return JSON.stringify([
+      state.appMode,
+      annBits,
+      draftBits,
+      state.pomSpecs,
+      state.customPoms,
+      state.calibration.unitsPerPx, state.calibration.unit,
+      state.hiddenAnnIds, state.hiddenDraftIds,
+      state.images.length,
+      specDepId(state.autoMode.detection),
+      anchors.length, anchors.filter(a => a && a.reviewRequired).length,
+      // US-038 anchor visibility lives in its OWN floating panel, not the
+      // exported Measurements panel — so it is deliberately NOT fingerprinted
+      // here.
+    ]);
+  }
+
+  // US-035: the three numeric column headers name the board's active unit.
+  // Runs before the US-033 fingerprint skip — it's three textContent sets,
+  // and calibration is fingerprinted so full rebuilds stay correct too.
+  function updateSpecUnitHeaders() {
+    const u = '(' + (state.calibration.unit || 'in') + ')';
+    document.querySelectorAll('.specPanel thead .th-unit').forEach((elm) => {
+      if (elm.textContent !== u) elm.textContent = u;
+    });
+  }
+
   function renderSpecPanel() {
     renderSpecCalNote();
+    updateSpecUnitHeaders();
     // Only preserve focus when the user is mid-edit in a text field inside
     // the panel — annotation rows, template rows, and paired rows all
     // qualify. Draft rows have no editable inputs, so Approve / R/O buttons
@@ -4214,11 +4749,22 @@
     const editingPanelField = active
       && el.specBody.contains(active)
       && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')
-      && !!(active.closest('tr[data-ann-id]') || active.closest('tr[data-pom-key]'));
+      // The Add-POM inline form (US-011) also counts: rebuilding while the
+      // TD types the new POM's name would destroy the half-typed entry.
+      && !!(active.closest('tr[data-ann-id]') || active.closest('tr[data-pom-key]')
+        || active.closest('tr.add-pom-row'));
     if (editingPanelField) {
       updateSpecHighlightOnly();
       return;
     }
+
+    // US-033: nothing the table renders from changed — selection-only call.
+    const fingerprint = specPanelFingerprint();
+    if (fingerprint === lastSpecPanelFingerprint) {
+      updateSpecHighlightOnly();
+      return;
+    }
+
     el.specBody.innerHTML = '';
 
     // Sticky visibility control row: renders whenever there is at least one
@@ -4229,8 +4775,13 @@
       el.specBody.appendChild(buildVisibilityControlRow());
     }
 
-    // Auto Mode: render the 16-row draft review section first.
+    // Auto Mode: render the 18-row draft review section first.
     const draftPomKeys = new Set();
+    // Construction summary renders whenever a detection exists — the TD
+    // lands in Manual mode after Apply (ADR 0008) and still needs to see
+    // what the detector recognized. No-op on pure manual projects.
+    renderConstructionSummary();
+
     if (state.appMode === 'auto') {
       renderAutoReviewHeader();
       const drafts = state.autoMode.draftAnnotations
@@ -4243,7 +4794,7 @@
       }
     }
 
-    // Panel is now pre-populated with the 16 POM template rows, so the
+    // Panel is now pre-populated with the 18 POM template rows, so the
     // "No measurements yet" placeholder is redundant.
     el.specEmpty.style.display = 'none';
 
@@ -4272,9 +4823,26 @@
       }
     }
 
-    // Any additional user-labeled annotations that fall outside 1..16
-    // (custom POMs, renamed labels) render after the template block in
-    // POM-numerical order.
+    // Registered custom POMs (19+, US-011) render template-style rows right
+    // after the core 18 — with or without a drawn line — so a TD can spec them
+    // before drawing. A row with a line behaves exactly like a template POM.
+    const customKeys = (state.customPoms || []).map(p => String(p.pom))
+      .sort((a, b) => Number(a) - Number(b));
+    for (const pomKey of customKeys) {
+      const ann = annByPom.get(pomKey) || null;
+      if (ann) {
+        el.specBody.appendChild(buildSingleSpecRow(ann));
+        renderedAnnIds.add(ann.id);
+      } else if (!draftPomKeys.has(pomKey)) {
+        const tr = buildTemplateSpecRow(pomKey);
+        decorateCustomPomRow(tr, pomKey);
+        el.specBody.appendChild(tr);
+      }
+    }
+
+    // Any additional user-labeled annotations that fall outside 1..18
+    // (unregistered custom labels, renamed labels) render after the template
+    // block in POM-numerical order.
     const extras = anns
       .filter(a => !renderedAnnIds.has(a.id))
       .sort((a, b) => labelSortKey(a) - labelSortKey(b) || a.seq - b.seq);
@@ -4283,6 +4851,99 @@
       el.specBody.appendChild(buildSingleSpecRow(ann));
       renderedAnnIds.add(ann.id);
     }
+
+    el.specBody.appendChild(buildAddPomRow());
+
+    // Stored only after a COMPLETED rebuild — the focus-guard early return
+    // above must never mark a skipped rebuild as up to date.
+    lastSpecPanelFingerprint = fingerprint;
+  }
+
+  // Small × on a custom POM's template row: removing the registry entry is
+  // only offered while no drawn line carries the number (a row with a line
+  // renders as a normal annotation row, so this control never shows there).
+  function decorateCustomPomRow(tr, pomKey) {
+    tr.classList.add('custom-pom-row');
+    const pomTd = tr.querySelector('td');
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
+    removeBtn.title = 'Remove custom POM ' + pomKey + ' (no line uses it)';
+    removeBtn.style.cssText = 'margin-left:4px;border:0;background:none;color:#b91c1c;cursor:pointer;font-size:12px;';
+    removeBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      state.customPoms = (state.customPoms || []).filter(p => String(p.pom) !== String(pomKey));
+      if (state.pomSpecs) delete state.pomSpecs[String(pomKey)];
+      pushHistoryIfChanged();
+      renderSpecPanel();
+      showToast('Custom POM ' + pomKey + ' removed.');
+    });
+    pomTd.appendChild(removeBtn);
+  }
+
+  // Full-width "+ Add POM" row (US-011 S4): creates the next free number
+  // (17, 18, …) with a TD-entered English name (中文 optional). The new POM
+  // gets a template-style row with full Size L / L2 / TOL / grading / export
+  // parity; the 18-POM rule JSON is never touched (ADR 0018).
+  function buildAddPomRow() {
+    const tr = document.createElement('tr');
+    tr.className = 'add-pom-row';
+    const td = document.createElement('td');
+    td.colSpan = SPEC_COL_COUNT;
+    td.style.cssText = 'text-align:center;padding:6px;';
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'picker-btn';
+    addBtn.textContent = '+ Add POM';
+    addBtn.title = 'Add a style-specific POM beyond the standard 16';
+    addBtn.addEventListener('click', () => {
+      const nextNum = String(nextCustomPomNumber());
+      td.innerHTML = '';
+      const form = document.createElement('span');
+      form.style.cssText = 'display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;';
+      const label = document.createElement('span');
+      label.textContent = 'POM ' + nextNum + ':';
+      label.style.cssText = 'font-weight:600;font-size:12px;';
+      const enInput = document.createElement('input');
+      enInput.type = 'text';
+      enInput.placeholder = 'Description - English (required)';
+      enInput.style.cssText = 'width:220px;font-size:12px;padding:3px 6px;';
+      const zhInput = document.createElement('input');
+      zhInput.type = 'text';
+      zhInput.placeholder = '中文 (optional)';
+      zhInput.style.cssText = 'width:140px;font-size:12px;padding:3px 6px;';
+      const okBtn = document.createElement('button');
+      okBtn.type = 'button';
+      okBtn.className = 'picker-btn';
+      okBtn.textContent = 'Add';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.className = 'picker-btn';
+      cancelBtn.textContent = 'Cancel';
+      okBtn.addEventListener('click', () => {
+        const en = enInput.value.trim();
+        if (!en) { showToast('Enter an English description for the new POM.'); enInput.focus(); return; }
+        if (!Array.isArray(state.customPoms)) state.customPoms = [];
+        state.customPoms.push({ pom: nextNum, en, zh: zhInput.value.trim() });
+        pushHistoryIfChanged();
+        renderSpecPanel();
+        showToast('POM ' + nextNum + ' added — label a drawn line "' + nextNum + '" to measure it.');
+      });
+      cancelBtn.addEventListener('click', () => renderSpecPanel());
+      enInput.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') okBtn.click(); });
+      zhInput.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') okBtn.click(); });
+      form.appendChild(label);
+      form.appendChild(enInput);
+      form.appendChild(zhInput);
+      form.appendChild(okBtn);
+      form.appendChild(cancelBtn);
+      td.appendChild(form);
+      enInput.focus();
+    });
+    td.appendChild(addBtn);
+    tr.appendChild(td);
+    return tr;
   }
 
   // ---- Size L / TOL cell helpers ----
@@ -4321,6 +4982,41 @@
     return !!(s && s.median != null && s.n > 0);
   }
 
+  // ---- Mode B measured suggestions (ADR 0033, flagged OFF by default) ----
+  // When Mode B is on, a sketch-reliable POM's Size-L suggestion becomes the
+  // library×sketch FUSED value derived from the detected anchors (fusion.js) —
+  // still a suggestion, never assigned or persisted. Memoized by a cheap anchor
+  // signature so getPomSpec stays cheap across a full panel rebuild.
+  let _measuredCache = { sig: null, map: null };
+  function measuredSuggestionsMap() {
+    if (typeof modeBAnyEnabled !== 'function' || !modeBAnyEnabled()) return null;
+    const am = (state && state.autoMode) || {};
+    const anchors = Array.isArray(am.anchors) ? am.anchors : [];
+    const det = am.detection || null;
+    if (!anchors.length || !det) return null;
+    const first = anchors[0] || {};
+    const sig = anchors.length + ':' + (det.naturalWidth || 0) + 'x' + (det.naturalHeight || 0) + ':' + (first.kind || '') + first.x;
+    if (_measuredCache.sig === sig) return _measuredCache.map;
+    let map = null;
+    try { map = mbComputeMeasuredSuggestions(anchors, POM_SUGGESTIONS, { width: det.naturalWidth, height: det.naturalHeight }); }
+    catch (_e) { map = null; }
+    _measuredCache = { sig, map };
+    return map;
+  }
+  // Gated measured entry for a POM: only a coherent, positive numeric proposal
+  // surfaces; a conflicted (review/outlier) POM returns null so the panel falls
+  // back to the library value rather than showing a wrong number.
+  function measuredFor(pomKey) {
+    const key = String(pomKey == null ? '' : pomKey).trim();
+    // Per-POM roll-out gate (US-041): only a globally-flagged or promoted POM
+    // surfaces a measured value.
+    if (typeof modeBEnabledForPom === 'function' && !modeBEnabledForPom(key)) return null;
+    const map = measuredSuggestionsMap();
+    if (!map) return null;
+    const m = map[key];
+    return (m && m.decision === 'ESTIMATED_SUGGESTION' && Number.isFinite(Number(m.value_in)) && Number(m.value_in) > 0) ? m : null;
+  }
+
   // Corpus inches -> active display unit (no-op for the default 'in').
   function suggestionToDisplay(inchValue) {
     if (inchValue == null) return null;
@@ -4334,6 +5030,40 @@
     if (v == null) return '';
     return String(Math.round(v * 1000) / 1000);
   }
+
+  // ---- US-048: imperial fraction display for spec numbers ----
+  // Size L / Size L2 / TOL are shown (panel) and exported (TOL) as reduced
+  // fractions in INCH mode — the house spec convention (0.375 → 3/8, 5.5 →
+  // 5 1/2, 2.25 → 2 1/4). cm mode keeps decimals. A value is fractionised only
+  // when it lands EXACTLY on the 1/16 grid, so an odd/typed value (9.9, a raw
+  // median) is shown verbatim rather than misrepresented as a near fraction.
+  function gcdInt(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = b; b = a % b; a = t; } return a || 1; }
+  function decimalToFraction(value) {
+    const DEN = 16;
+    const v = Math.max(0, Number(value) || 0);
+    const whole = Math.floor(v + 1e-9);
+    const num = Math.round((v - whole) * DEN);
+    if (num >= DEN) return String(whole + 1);
+    if (num === 0) return String(whole);
+    const g = gcdInt(num, DEN);
+    const frac = (num / g) + '/' + (DEN / g);
+    return whole > 0 ? (whole + ' ' + frac) : frac;
+  }
+  // Display string for a stored spec value: a fraction when on-grid in inches,
+  // else the value verbatim. Preserves a leading "± " (TOL may carry one).
+  function inchesToFractionOrDecimal(str) {
+    const raw = String(str == null ? '' : str).trim();
+    if (!raw) return raw;
+    if (state.calibration.unit !== 'in') return raw; // cm → decimal as-is
+    const pm = /^±\s*/.test(raw) ? '± ' : '';
+    const body = raw.replace(/^±\s*/, '');
+    const n = parseSpecNumber(body);
+    if (n == null || n < 0) return raw;
+    const scaled = n * 16;
+    if (Math.abs(scaled - Math.round(scaled)) > 1e-6) return raw; // off 1/16 grid → decimal
+    return pm + decimalToFraction(n);
+  }
+  function specNumEq(a, b) { return a != null && b != null && Math.abs(a - b) < 1e-9; }
 
   // Parse a fraction / mixed-number / decimal string ('1/4', '5 1/2', '0.25').
   // TOL defaults arrive as fractions but the tool's inputs are decimal.
@@ -4349,8 +5079,12 @@
     return Number.isFinite(n) ? n : null;
   }
 
-  // Formatted Size L suggestion ('' when the POM has no library data).
+  // Formatted Size L suggestion ('' when the POM has no library data). With
+  // Mode B on, a gated measured (library×sketch fused) value takes precedence
+  // over the raw library median; both remain TD-owned suggestions.
   function suggestedSizeL(pomKey) {
+    const m = measuredFor(pomKey);
+    if (m) return formatSuggestion(m.value_in);
     const s = getPomSuggestion(pomKey);
     if (!s || s.median == null || !(s.n > 0)) return '';
     return formatSuggestion(s.median);
@@ -4399,8 +5133,11 @@
     // sizeL / tol store no override when blank OR equal to the library
     // suggestion, so an accepted suggestion stays live and a regenerated corpus
     // can still evolve it (matches en / zh handling above).
-    else if (field === 'sizeL') clears = (trimmed === '' || trimmed === suggestedSizeL(key));
-    else if (field === 'tol') clears = (trimmed === '' || trimmed === suggestedTol(key));
+    // US-048: compare NUMERICALLY, so accepting a suggestion still counts as
+    // "no override" whether the field shows it as a fraction (5 1/2) or a
+    // decimal (5.5) — both parse to the same number.
+    else if (field === 'sizeL') clears = (trimmed === '' || trimmed === suggestedSizeL(key) || specNumEq(parseSpecNumber(trimmed), parseSpecNumber(suggestedSizeL(key))));
+    else if (field === 'tol') clears = (trimmed === '' || trimmed === suggestedTol(key) || specNumEq(parseSpecNumber(trimmed), parseSpecNumber(suggestedTol(key))));
     else clears = (trimmed === '');
     if (clears) {
       if (next[field] == null) return false;
@@ -4424,17 +5161,78 @@
     return 'spec-td-tol';
   }
 
+  // US-031: rapid arrow-steps in a Size L / L2 / TOL field are one "burst" —
+  // each step writes the spec immediately (so the tolerance chip tracks it),
+  // but history commits once, after the last press. renderSpecPanel's
+  // editing-field guard keeps the commit from rebuilding under the caret.
+  const SPEC_STEP_COMMIT_MS = 700;
+  let specStepCommitTimer = null;
+
+  function scheduleSpecStepCommit() {
+    if (specStepCommitTimer) clearTimeout(specStepCommitTimer);
+    specStepCommitTimer = setTimeout(() => {
+      specStepCommitTimer = null;
+      pushHistoryIfChanged();
+    }, SPEC_STEP_COMMIT_MS);
+  }
+
   function buildSpecInputCell(pomKey, field, placeholder) {
     const td = document.createElement('td');
     td.className = specFieldTdClass(field);
     const input = document.createElement('input');
     input.type = 'text';
     input.className = field === 'zh' ? 'spec-zh' : 'spec-val';
-    input.value = getPomSpec(pomKey)[field];
+    // US-048: Size L / L2 / TOL display as imperial fractions (inch mode); zh
+    // is a name field, shown verbatim.
+    const rawFieldVal = getPomSpec(pomKey)[field];
+    input.value = (field === 'sizeL' || field === 'sizeL2' || field === 'tol')
+      ? inchesToFractionOrDecimal(rawFieldVal)
+      : rawFieldVal;
     input.placeholder = placeholder || '';
     input.addEventListener('change', () => {
       if (setPomSpec(pomKey, field, input.value)) pushHistoryIfChanged();
     });
+    // US-050: focusing selects the whole value, so one click + type REPLACES a
+    // pre-filled library value — no manual clearing. Deferred a tick so a click
+    // that positions the caret doesn't immediately deselect.
+    input.addEventListener('focus', () => { setTimeout(() => { try { input.select(); } catch (_) { /* noop */ } }, 0); });
+    // US-031: ArrowUp/Down steps the numeric spec fields by 1/8 — the Excel
+    // export's fraction grain — or 0.1 in cm mode; Shift = a whole unit.
+    if (field === 'sizeL' || field === 'sizeL2' || field === 'tol') {
+      // US-035: name the unit in the tooltip, and mark unparseable values
+      // instead of ignoring them silently. Refreshed live while typing.
+      const unitTitle = () => {
+        const u = state.calibration.unit || 'in';
+        if (field === 'tol') return 'Tolerance in ' + u + ' — allowed ± variance from Size L. Decimal (0.25) or fraction (1/4).';
+        if (field === 'sizeL2') return 'Optional Size L2 sample base in ' + u + ' for the depth tier — blank derives it from Size L.';
+        return 'Size L target in ' + u + '. Decimal (12.5) or fraction (12 1/2).';
+      };
+      const refreshValidity = () => {
+        const raw = input.value.trim();
+        const bad = raw !== '' && parseSpecNumber(raw) == null;
+        input.classList.toggle('spec-invalid', bad);
+        input.title = bad
+          ? 'Not a number — this value is ignored. Enter a decimal (12.5) or a fraction (12 1/2).'
+          : unitTitle();
+      };
+      input.addEventListener('input', refreshValidity);
+      refreshValidity();
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'ArrowUp' && ev.key !== 'ArrowDown') return;
+        ev.preventDefault();
+        const unitStep = state.calibration.unit === 'cm' ? 0.1 : 0.125;
+        const step = (ev.shiftKey ? 1 : unitStep) * (ev.key === 'ArrowUp' ? 1 : -1);
+        const base = parseSpecNumber(input.value);
+        const next = Math.max(0, Math.round(((base == null ? 0 : base) + step) * 1000) / 1000);
+        // Write the decimal to the store, but keep the field showing a fraction
+        // (inch mode) so stepping by 1/8 reads as 3/8 → 1/2 → 5/8, not decimals.
+        if (setPomSpec(pomKey, field, String(next))) scheduleSpecStepCommit();
+        input.value = inchesToFractionOrDecimal(String(next));
+        const tr = input.closest('tr');
+        if (tr && tr.dataset.annId) refreshMeasuredValueForAnnotation(Number(tr.dataset.annId));
+        refreshValidity();
+      });
+    }
     td.appendChild(input);
     return td;
   }
@@ -4469,6 +5267,14 @@
     const input = td.querySelector('input');
     if (input) input.classList.add('is-suggested');
     if (field === 'sizeL') {
+      // Mode B: a fused sketch measurement is a distinct, estimated suggestion.
+      const m = measuredFor(key);
+      if (m) {
+        appendSuggestBadge(td, 'measured · ' + (m.confidence || 'low'), 'library',
+          'Sketch measurement (Mode B, estimated) — detected anchors × view-local scale, fused toward the library median'
+          + ' (k ' + m.k + ', residual ' + (Math.round((m.residual || 0) * 1000) / 10) + '%, library ' + m.library_in + ' in). Type to override.');
+        return;
+      }
       const conf = sug.confidence || 'very_low';
       const rangeIn = (sug.min != null && sug.max != null) ? ' · range ' + sug.min + '–' + sug.max + ' in' : '';
       appendSuggestBadge(td, 'library · ' + conf, 'library',
@@ -4600,9 +5406,20 @@
 
   // Tolerant numeric parse for a Size L / TOL field (leading number wins;
   // blank / non-numeric → null so the caller can treat it as "not set").
+  // US-035: also accepts the fraction forms TDs actually type — "1/2",
+  // "12 1/2", "12-1/2" — so a typed fraction behaves like its decimal
+  // everywhere this parser is used (chip, readout, stepping, size run,
+  // Excel export L2).
   function parseSpecNumber(raw) {
     if (raw == null) return null;
-    const n = parseFloat(String(raw).trim());
+    const s = String(raw).trim();
+    if (!s) return null;
+    const frac = s.match(/^(\d+(?:\.\d+)?)?[\s-]*(\d+)\s*\/\s*(\d+)$/);
+    if (frac && parseInt(frac[3], 10) !== 0) {
+      const whole = frac[1] ? parseFloat(frac[1]) : 0;
+      return whole + parseInt(frac[2], 10) / parseInt(frac[3], 10);
+    }
+    const n = parseFloat(s);
     return Number.isFinite(n) ? n : null;
   }
 
@@ -4628,6 +5445,15 @@
     return out;
   }
 
+  // Signed Δ against Size L with its ✓ / ✗ verdict — one formatter shared by
+  // the panel's Value-cell chip and the on-canvas adjustment readout
+  // (US-029), so the two can never disagree.
+  function specDeltaText(ev) {
+    if (!ev || !ev.status) return '';
+    const signed = (ev.delta > 0 ? '+' : ev.delta < 0 ? '−' : '±') + formatMeasure(Math.abs(ev.delta));
+    return ev.status === 'in' ? signed + ' ✓' : ev.status === 'out' ? signed + ' ✗' : signed;
+  }
+
   function buildMeasuredValueCell(ann, pomKey) {
     const td = document.createElement('td');
     td.className = 'spec-td-value';
@@ -4648,7 +5474,7 @@
       const signed = (ev.delta > 0 ? '+' : ev.delta < 0 ? '−' : '±') + formatMeasure(Math.abs(ev.delta));
       const chip = document.createElement('span');
       chip.className = 'spec-delta spec-delta-' + (ev.status === 'in' ? 'in' : ev.status === 'out' ? 'out' : 'neutral');
-      chip.textContent = ev.status === 'in' ? signed + ' ✓' : ev.status === 'out' ? signed + ' ✗' : signed;
+      chip.textContent = specDeltaText(ev);
       td.appendChild(chip);
       if (ev.status === 'in') td.classList.add('spec-in');
       else if (ev.status === 'out') td.classList.add('spec-out');
@@ -4891,6 +5717,217 @@
     el.specCal.innerHTML = note;
   }
 
+  // Read-only "Detected from sketch" summary (v1). Surfaces the construction
+  // facts the detector already knows — detected views, the front-closure
+  // placket signature (ADR 0023 junction tier), the cup model, and how many
+  // anchors are flagged for review — so the TD sees what the tool recognized
+  // before reading the 18 draft rows. Display-only in this slice; confirming
+  // these as library style-feature evidence (LIBRARY_CONSTRUCTION_TAXONOMY.md
+  // Tier A) is a later slice. Absence of the placket signature is reported as
+  // "not found", never as a claim about the back closure.
+  // ---- US-038: Anchors visibility manager (its OWN floating panel) -------
+  // Deliberately NOT part of the Measurements panel: measurements are the
+  // exported spec; anchors are a testing / accuracy-checking aid that never
+  // exports. The panel floats over the board (non-modal) and is opened from
+  // the Auto toolbar "Anchors" button. Offers Hide all / Show all, per-group
+  // hide, per-anchor hide, and Isolate ("show only one"); a row click selects
+  // the pin on the canvas.
+
+  function anchorGroupLabel(group) {
+    const map = {
+      axis: 'Center / cradle', band: 'Band', chest: 'Chest', 'inner-cup': 'Cup',
+      side: 'Side seam', apex: 'Apex', strap: 'Straps', back: 'Back',
+      neckline: 'Neckline (17)', armhole: 'Armhole (18)',
+    };
+    return map[group] || group;
+  }
+
+  function anchorMiniBtn(label, title, onClick, extraCss) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.title = title;
+    b.style.cssText = 'border:1px solid #cbd5e1;background:#fff;border-radius:5px;'
+      + 'cursor:pointer;font-size:11px;line-height:1;padding:2px 6px;color:#334155;'
+      + (extraCss || '');
+    b.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
+    return b;
+  }
+
+  function isAnchorManagerOpen() {
+    return !!(el.anchorManagerPanel && !el.anchorManagerPanel.hidden);
+  }
+
+  // Toolbar entry point: open the floating anchor panel (Auto Mode only).
+  function openAnchorManager() {
+    if (state.appMode !== 'auto') {
+      showToast('Anchor management is available in Auto Mode.');
+      return;
+    }
+    if (!state.autoMode.anchors.length) {
+      showToast('Run Detect Sketch first to place anchors.');
+      return;
+    }
+    if (!el.anchorManagerPanel) return;
+    el.anchorManagerPanel.hidden = false;
+    if (el.autoManageAnchorsBtn) el.autoManageAnchorsBtn.classList.add('active');
+    renderAnchorManagerPanel();
+  }
+
+  function closeAnchorManager() {
+    if (!el.anchorManagerPanel) return;
+    el.anchorManagerPanel.hidden = true;
+    if (el.autoManageAnchorsBtn) el.autoManageAnchorsBtn.classList.remove('active');
+  }
+
+  function toggleAnchorManager() {
+    if (isAnchorManagerOpen()) closeAnchorManager();
+    else openAnchorManager();
+  }
+
+  // Rebuild the floating panel body from the current anchor set + hidden
+  // state. Called on open, on every in-panel action, and from updateUI while
+  // open (so a fresh Detect / canvas pin selection stays in sync).
+  function renderAnchorManagerPanel() {
+    const panel = el.anchorManagerPanel;
+    const body = el.anchorManagerBody;
+    if (!panel || !body) return;
+    // Anchors only exist in Auto Mode; auto-close if we left it or lost them.
+    if (state.appMode !== 'auto' || !state.autoMode.anchors.length) {
+      closeAnchorManager();
+      return;
+    }
+    const anchors = state.autoMode.anchors;
+    const nameByKind = Object.create(null);
+    const groupByKind = Object.create(null);
+    const groupOrder = [];
+    for (const schema of ANCHOR_SCHEMA) {
+      nameByKind[schema.kind] = schema.name || schema.kind;
+      groupByKind[schema.kind] = schema.group || 'other';
+      if (groupOrder.indexOf(schema.group) === -1) groupOrder.push(schema.group);
+    }
+    const hidden = (k) => isAnchorHidden(k);
+    const visibleCount = anchors.filter(a => !hidden(a.kind)).length;
+    if (el.anchorManagerCount) {
+      el.anchorManagerCount.textContent = visibleCount + '/' + anchors.length + ' shown';
+    }
+
+    body.innerHTML = '';
+    for (const group of groupOrder) {
+      const groupAnchors = anchors.filter(a => groupByKind[a.kind] === group);
+      if (!groupAnchors.length) continue;
+      const groupKinds = groupAnchors.map(a => a.kind);
+      const groupAllHidden = groupKinds.every(hidden);
+
+      const gRow = document.createElement('div');
+      gRow.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 10px;'
+        + 'font-size:11.5px;color:#475569;background:#f8fafc;border-top:1px solid #eef2f7;';
+      const gName = document.createElement('span');
+      gName.style.fontWeight = '600';
+      gName.textContent = anchorGroupLabel(group) + ' (' + groupAnchors.length + ')';
+      gRow.appendChild(gName);
+      const gSpacer = document.createElement('span'); gSpacer.style.flex = '1'; gRow.appendChild(gSpacer);
+      gRow.appendChild(anchorMiniBtn(groupAllHidden ? 'Show' : 'Hide',
+        groupAllHidden ? 'Show this group' : 'Hide this group',
+        () => { toggleAnchorGroup(groupKinds); renderAnchorManagerPanel(); }));
+      body.appendChild(gRow);
+
+      for (const anchor of groupAnchors) {
+        const isHidden = hidden(anchor.kind);
+        const aRow = document.createElement('div');
+        aRow.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 10px 4px 22px;'
+          + 'font-size:12px;border-top:1px solid #f4f6fa;'
+          + (state.autoMode.anchorSelectedId === anchor.id ? 'background:#eff6ff;' : '')
+          + (isHidden ? 'opacity:.5;' : '');
+        const dot = document.createElement('span');
+        dot.style.cssText = 'width:8px;height:8px;border-radius:50%;flex:0 0 auto;'
+          + 'background:' + anchorFillForConfidence(anchor.confidence) + ';'
+          + 'border:1px solid rgba(15,23,42,.5);';
+        aRow.appendChild(dot);
+        const aName = document.createElement('span');
+        aName.textContent = nameByKind[anchor.kind] || anchor.kind;
+        aName.style.cssText = 'color:#0f172a;cursor:pointer;';
+        aName.title = anchor.name + ' — click to select on the sketch';
+        aRow.appendChild(aName);
+        if (anchor.reviewRequired) {
+          const flag = document.createElement('span');
+          flag.textContent = 'review';
+          flag.style.cssText = 'font-size:10px;color:#b45309;background:#fffbeb;'
+            + 'border:1px solid #fde68a;border-radius:4px;padding:0 4px;';
+          aRow.appendChild(flag);
+        }
+        const aSpacer = document.createElement('span'); aSpacer.style.flex = '1'; aRow.appendChild(aSpacer);
+        aRow.appendChild(anchorMiniBtn('◎', 'Isolate — show only this anchor',
+          () => { isolateAnchor(anchor.kind); renderAnchorManagerPanel(); }));
+        aRow.appendChild(anchorMiniBtn(isHidden ? '+' : '×',
+          isHidden ? 'Show this anchor' : 'Hide this anchor',
+          () => { toggleAnchorHidden(anchor.kind); renderAnchorManagerPanel(); },
+          isHidden ? 'color:#2563eb;' : 'color:#b91c1c;'));
+        aName.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (isHidden) return;
+          state.autoMode.anchorSelectedId = anchor.id;
+          updateUI();
+          requestRender();
+          renderAnchorManagerPanel();
+        });
+        body.appendChild(aRow);
+      }
+    }
+  }
+
+  function renderConstructionSummary() {
+    const det = state.autoMode.detection;
+    if (!det) return;
+
+    const parts = [];
+
+    const roleLabels = { front_outer: 'front outer', front_inner: 'front inner', back: 'back' };
+    const seen = [];
+    for (const v of (Array.isArray(det.views) ? det.views : [])) {
+      const label = roleLabels[v && (v.viewRole || v.role)];
+      if (label && !seen.includes(label)) seen.push(label);
+    }
+    if (seen.length) {
+      parts.push('<b>Views:</b> ' + escapeHtml(seen.join(' + '))
+        + (det.viewRoleReviewRequired
+          ? ' <span style="color:#b45309;font-weight:600">— roles need review</span>' : ''));
+    }
+
+    parts.push('<b>Closure:</b> ' + (det.cradleCfTopJunction
+      ? 'front-closure signature (placket interrupts the CF seam) — '
+        + '<span style="color:#b45309;font-weight:600">confirm</span>'
+      : 'no front-closure signature found'));
+
+    const cm = det.cupModel;
+    if (cm) {
+      const bits = [cm.side === 1 ? 'right cup' : (cm.side === -1 ? 'left cup' : 'cup')];
+      if (cm.visibility) bits.push(cm.visibility + ' visibility');
+      if (typeof cm.contourConfidence === 'number') bits.push('contour ' + cm.contourConfidence.toFixed(2));
+      if (typeof cm.seamConfidence === 'number') bits.push('seam ' + cm.seamConfidence.toFixed(2));
+      parts.push('<b>Cup:</b> ' + escapeHtml(bits.join(' · ')));
+    }
+
+    const anchors = state.autoMode.anchors;
+    if (anchors.length) {
+      const revCount = anchors.filter(a => a && a.reviewRequired).length;
+      parts.push('<b>Anchors:</b> ' + (revCount ? revCount + ' flagged for review' : 'none flagged'));
+    }
+
+    const tr = document.createElement('tr');
+    tr.className = 'draft-row';
+    tr.style.background = 'transparent';
+    const td = document.createElement('td');
+    td.colSpan = SPEC_COL_COUNT;
+    td.innerHTML = '<div class="construction-summary" style="background:#f0f9ff;'
+      + 'border:1px solid #bae6fd;color:#0c4a6e;border-radius:6px;padding:6px 8px;'
+      + 'margin:4px 0;font-size:12px;line-height:1.5">'
+      + '<b>Detected from sketch</b><br>' + parts.join('<br>')
+      + '</div>';
+    tr.appendChild(td);
+    el.specBody.appendChild(tr);
+  }
+
   function renderAutoReviewHeader() {
     const auto = state.autoMode;
     const drafts = auto.draftAnnotations;
@@ -5076,6 +6113,22 @@
     }
   }
 
+  // US-028: live measured value. While an endpoint is dragged or key-nudged,
+  // replace just that line's Value cell — a full renderSpecPanel rebuild per
+  // mousemove/keystroke would steal focus from other panel fields and is
+  // needlessly heavy. buildMeasuredValueCell keeps value, tolerance chip,
+  // tooltip, and the 📏 re-calibrate button in one code path. The commit-time
+  // renderSpecPanel (via pushHistoryIfChanged → updateUI) stays the backstop.
+  function refreshMeasuredValueForAnnotation(annId) {
+    const ann = state.annotations.find(a => a.id === annId) || null;
+    if (!ann) return; // Auto-Mode drafts have no annotation spec row — no-op.
+    const tr = el.specBody.querySelector('tr[data-ann-id="' + ann.id + '"]');
+    if (!tr) return;
+    const oldTd = tr.querySelector('.spec-td-value');
+    if (!oldTd) return;
+    tr.replaceChild(buildMeasuredValueCell(ann, getLabelText(ann)), oldTd);
+  }
+
   function updateSpecHighlightOnly() {
     const rows = el.specBody.querySelectorAll('tr');
     rows.forEach((tr) => {
@@ -5087,6 +6140,8044 @@
     });
   }
 
+  // ---- src/ui/main-page.js ----
+// MAIN PAGE sheet: style metadata fields + colorways (US-068, ADR 0037).
+// Source part for app.js. Run `npm run build` after editing.
+//
+// Rebuilt on this tool's primitives from the tech pack's mod-main module —
+// the Pack.* runtime does not exist here (ADR 0037). The data is carried
+// across verbatim: the 13-row field roster, the suggestion rosters mined
+// from 52 historical packs, and the 47-entry Color Master List.
+//
+// Style metadata only: no anchor, no POM, no view, so detection never reads
+// it. state.mainPage is seeded lazily by ensureMainPage() so state.js does
+// not carry 47 colour rows.
+
+  /* House colour master list — the 47 entries of Color_Master_List.xlsx,
+     verbatim (Pantone code + TCX + name + CP suffix exactly as recorded), so
+     what prints on the colorway row is the name the factory list already
+     uses. */
+  const MP_COLOR_MASTER = [
+    'Default White', 'Default Black', '11-0110 TCX Buttercream (SonaShape Beige) CP',
+    '11-0601 TCX Bright White CP', '11-1408 TCX Light Pink CP', '12-0811 TCX Dawn',
+    '12-1007 TCX Pastel Rose Tan (SonaShape Almond)', '12-1110 TCX Nude Pink CP',
+    '12-1304 TCX Light Pink CP', '12-4302 TCX Light Blue CP', '13-1010 TCX Light Beige CP',
+    '13-1408 TCX Chintz Rose', '13-4200 TCX Omphadoles', '13-4202 TCX Light Blue CP',
+    '13-5907 TCX Light Green CP', '14-0217 TCX Sage', '14-1212 TCX Nude Tan CP',
+    '14-1712 TCX Dusty Rose', '14-1904 TCX Pink', '14-3206 TCX Light Purple CP',
+    '14-3812 TCX Lilac Mist', '14-3926 TCX Lavender CP', '14-4202 TCX Light Blue CP',
+    '14-4306 TCX Coral Blue CP', '15-1515 TCX Dusty Pink CP', '15-3207 TCX Mauve Mist',
+    '16-3205 TCX Mauve Purple CP', '16-4121 TCX Blissful Blue', '16-5304 TCX Light Teal CP',
+    '17-1230 TCX Moccha Mouse', '17-1328 TCX Tanzine', '18-1229 TCX Coffee CP',
+    '18-3025 TCX Purple CP', '18-3211 TCX Dusty Purple CP', '18-4016 TCX Dark Gray CP',
+    '19-1555 TCX Burgundy', '19-2524 TCX Magenta Purple CP', '19-3832 TCX French Navy',
+    '19-3911 TCX Black Beauty CP', '19-4029 TCX Navy Blue CP', 'Moona Purple', 'Nude Beige',
+    'Taupe (Zenalift Brown)', 'Zenchic Beige', 'Zenchic Blue', 'Zenchic Pink', 'Zenchic White',
+  ];
+
+  /* The master list carries no hex, and a Pantone TCX reference must not be
+     guessed, so the chip is only a rough on-screen cue read off the colour
+     words in the name. Names with no recognisable shade word (Dawn,
+     Omphadoles, Tanzine) get a blank chip rather than an invented one. Never
+     treat these as Pantone values. */
+  const MP_SHADE_WORDS = [
+    ['bright white', '#fdfdfd'], ['black beauty', '#15151a'], ['pastel rose tan', '#e3bfae'],
+    ['light pink', '#f2c6cd'], ['nude pink', '#e8c0b4'], ['dusty pink', '#d69ba2'],
+    ['dusty rose', '#c08a8c'], ['chintz rose', '#c98b8b'], ['light beige', '#e8dcc6'],
+    ['nude beige', '#e0c9ae'], ['nude tan', '#d9b391'], ['light blue', '#bdd4e7'],
+    ['coral blue', '#a8c3cf'], ['blissful blue', '#4a6f9c'], ['navy blue', '#1d2b4a'],
+    ['french navy', '#22304f'], ['light green', '#c9dcbe'], ['light teal', '#a9cdcb'],
+    ['light purple', '#cbb8dc'], ['dusty purple', '#8d7594'], ['mauve purple', '#8c6b81'],
+    ['magenta purple', '#7c2f5a'], ['mauve mist', '#b99aa8'], ['lilac mist', '#cbbdd8'],
+    ['dark gray', '#4a4a4f'], ['moccha mouse', '#8a7263'], ['buttercream', '#f4e9c8'],
+    ['lavender', '#c3b3d9'], ['burgundy', '#6b1f2e'], ['coffee', '#5a4034'],
+    ['taupe', '#8f8071'], ['sage', '#9aa887'], ['magenta', '#a02360'], ['purple', '#6a4a8c'],
+    ['navy', '#1d2b4a'], ['beige', '#ddc9ab'], ['nude', '#d8ad8a'], ['tan', '#c99b73'],
+    ['pink', '#e9b7bd'], ['rose', '#c98b8b'], ['teal', '#3f8f8b'], ['blue', '#3269a8'],
+    ['green', '#557c57'], ['gray', '#8c8c8c'], ['grey', '#8c8c8c'], ['white', '#ffffff'],
+    ['black', '#111111'], ['brown', '#70483c'], ['red', '#b82025'],
+  ];
+
+  // Whole words only — a substring match reads "tan" inside "Tanzine".
+  const MP_SHADE_RE = MP_SHADE_WORDS.map(([w, hex]) =>
+    [new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b'), hex]);
+
+  function mpShadeOf(name) {
+    const s = String(name || '').toLowerCase();
+    const hit = MP_SHADE_RE.find(([re]) => re.test(s));
+    return hit ? hit[1] : '';
+  }
+
+  /* Bumped when the master list changes, so a project saved against an older
+     library picks the new list up on open instead of keeping a stale one. */
+  const MP_COLOR_LIB_ID = 'color-master-list-47';
+
+  /* The shipped field roster, verbatim from the tech pack's own default
+     mainpage island. Labels are editable, hence the bind-once-by-regex rule
+     below. "Block Reference" is a row here (US-080/ADR 0047) — the layout FD
+     works from prints it, so ADR 0037's "strip it like the source module
+     does" no longer holds. */
+  const MP_DEFAULT_FIELDS = [
+    { label: 'Brand - 品牌', value: 'Crossian' },
+    { label: 'Fashion Designer', value: 'TBC' },
+    { label: 'Tech Pack Designer', value: 'TBC' },
+    { label: 'Technical Designer', value: 'TBC' },
+    { label: 'Product Type - 品类', value: 'Bra' },
+    { label: 'Style No Breakdown - 风格号码分解', value: '' },
+    { label: 'Base Size - 基础尺码', value: 'TBC' },
+    { label: 'Size Range - 尺寸范围', value: 'TBC' },
+    { label: 'Style No - 风格号码', value: 'TBC' },
+    { label: 'Garment Description - 文胸分类', value: 'TBC' },
+    { label: 'Range Name - 产品名', value: 'TBC' },
+    { label: 'Season/Year - 季节/年', value: 'TBC' },
+    { label: 'Tech Pack Creation date', value: '' },
+    { label: 'Block Reference - 原版品', value: 'TBC' },
+  ];
+
+  /* US-080/ADR 0047: the breakdown row is not one value. The factory layout
+     splits it under three headers, and `parts` is what a TD types into;
+     `value` is kept in sync as the composite so every existing reader (the
+     preview sheet, the workbook, anything later) keeps working off `value`
+     alone. */
+  const MP_BREAKDOWN_PARTS = [
+    { key: 'prefix', head: 'style prefix' },
+    { key: 'category', head: 'category #:' },
+    { key: 'rangeNo', head: 'range no:' },
+  ];
+  const MP_BREAKDOWN_SEP = ' · ';
+
+  /* Version sketches (US-080/ADR 0047). Two fixed slots per version, in the
+     order the factory layout prints them. TD-supplied: the tool never adopts
+     a Board photo (those carry POM lines) or a Construction image (annotated)
+     on its own. */
+  const MP_SKETCH_VARIANTS = ['lace', 'solid'];
+  const MP_SKETCH_SLOTS = [
+    { key: 'front', label: 'FRONT' },
+    { key: 'back', label: 'BACK' },
+  ];
+
+  /* Bytes deliberately live outside state.mainPage, like BOM board images:
+     history clones state.mainPage on every field edit, and four
+     full-resolution flats cloned 120 deep is a different order of memory.
+     Every import mints a NEW id and nothing is ever evicted, so undo across a
+     replaced slot still finds the previous image's bytes here. */
+  const mpSketchDataById = new Map();
+  let mpSketchSeq = 0;
+
+  /* ---- Field suggestion rosters -------------------------------------------
+     Lists live HERE, in code, not copied into the saved project the way
+     colorLibrary is. colorLibrary has to be copied because each entry carries
+     a derived hex; these carry nothing, so changing a roster means shipping a
+     new build and every project opened in it sees the change at once — with
+     no colorLibId-style migration guard and no way for a project to sit on a
+     stale list. What a TD types that is NOT on a list is remembered per
+     project in state.mainPage.fieldExtra: the rosters were inferred from 52
+     historical packs and are known to be incomplete, so a list must never be
+     a wall. */
+  const MP_RANGE_NAMES = ['SofieLift', 'TrulySofty', 'Airnix', 'AmoraFit', 'CherishShape',
+    'FormaLift', 'VeraComfort', 'JuliaLace', 'BiancaBra', 'AuraZip', 'MilaEase',
+    'FeliciaBra', 'KiraForm'];
+  const MP_ALPHA_SIZES = ['S', 'M', 'M2', 'L', 'L2', 'XL', '2XL', '3XL', '4XL', '5XL', '5XL2'];
+
+  /* The 3 size-column sets found in the "Size Chart & Grading Rule-2026"
+     sheet of the historical grading workbook, each tied to a different
+     size-chart revision. shortLabel is derived (not hand-typed twice) so it
+     can never drift from the sizes array it describes. Picking one here only
+     writes the field — it does not reflow this tool's size run, which is
+     owned by the Grading dialog (ADR 0037 non-goal). */
+  const MP_SIZE_RANGE_PRESETS = [
+    { id: 'sc2d-3a',
+      sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', 'M2', 'L2', '2XL2', '3XL2', '4XL2', '5XL2', 'L3', '2XL3', '3XL3', '4XL3'] },
+    { id: '22jun2026',
+      sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', 'M2', 'L2', 'XL2', '2XL2', '3XL2', '4XL2', '5XL2'] },
+    { id: 'sc1b',
+      sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', 'M2', 'L2', '2XL2', '3XL2', '4XL2', '5XL2', '6XL2'] },
+  ];
+  MP_SIZE_RANGE_PRESETS.forEach(p => { p.shortLabel = 'S–' + p.sizes[p.sizes.length - 1]; });
+
+  /* Season and Style No are composed from what the project already knows, so
+     the drift the historical scan found (bare year with no season, "1. 0",
+     vA/VA, missing V) cannot be reintroduced by hand. */
+  function mpSeasonOpts() {
+    const y = new Date().getFullYear() % 100;
+    return [0, 1, -1].flatMap(d => ['SS', 'AW']
+      .map(s => s + String(((y + d) % 100 + 100) % 100).padStart(2, '0')));
+  }
+  function mpStyleNoOpts() {
+    const nm = String(state.styleId || '').trim().replace(/\s+/g, '');
+    return nm ? ['VA', 'VB'].map(v => nm + v + '-1.0') : [];
+  }
+
+  /* Bound to rows ONCE, by regex, never per render: the labels are
+     contenteditable, so re-matching every render would unbind a row the
+     moment someone retypes its label. Order matters — 'Style No Breakdown'
+     must claim its row before the looser /Style No/.
+
+     Breakdown suggests RANGE NAMES ONLY. In the source, offering the
+     composite strings the old packs used ("Airnix · VB · 1.0") pushed that
+     whole string into the style name and corrupted every sheet header — the
+     roster stays narrow here for the same reason. */
+  const MP_FIELD_SPEC = [
+    // Writes the `style prefix` sub-cell, never the whole composite.
+    { key: 'breakdown', re: /Style No Breakdown/i, part: 'prefix', values: () => MP_RANGE_NAMES },
+    { key: 'fashionDes', re: /Fashion Designer/i, values: ['Diep Ngoc Do', 'Linh Tung Nguyen', 'Dung Phuong Vu', 'Linh Phuong Le Trinh', 'Phong Dong Nguyen', 'Tam Thien Duc Nguyen'] },
+    { key: 'tpDes', re: /Tech Pack Designer/i, values: ['Linh Khanh Nguyen', 'Khanh Linh Nguyen', 'Nguyễn Thị Hồng Hạnh', 'Phong Dong Nguyen', 'Vy Truc Ngoc Vang'] },
+    { key: 'techDes', re: /Technical Designer/i, values: ['Tuyen Van Bui', 'Nishani Kadupitige', 'Selly Pham', 'Nga Hang Thi Hoang'] },
+    { key: 'productType', re: /Product Type/i, values: ['Bra'] },
+    { key: 'baseSize', re: /Base Size/i, values: MP_ALPHA_SIZES },
+    { key: 'sizeRange', re: /Size Range/i, values: () => MP_SIZE_RANGE_PRESETS.map(p => p.shortLabel) },
+    { key: 'styleNo', re: /Style No/i, values: mpStyleNoOpts },
+    { key: 'garmentDesc', re: /Garment Description/i, values: ['Front Closure Bra', 'Back Closure Bra', '2-in-1 Bra', 'Front Closure Comfort Bra', 'Breathable Side Opening Bra', 'Front Zip Closure Bra'] },
+    { key: 'rangeName', re: /Range Name/i, extras: 'breakdown', values: () => MP_RANGE_NAMES },
+    { key: 'season', re: /Season/i, values: mpSeasonOpts },
+  ];
+
+  // Parallel to state.mainPage.fields; null where a row has no spec.
+  let mpFieldSpec = [];
+  let mpSpecRowCount = -1;
+  let mpColorWrap = null;
+  let mpColorMenu = null;
+  let mpFldMenu = null;   // the one shared field picker, parked on <body>
+  let mpFldOpen = null;   // {i, sp, btn} while a picker is open
+  let mpFldFlat = [];     // options currently listed, indexed by data-mp-opt
+
+  function mpIsoToday() {
+    const d = new Date(), p = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+
+  function mpDefaultColorLibrary() {
+    return MP_COLOR_MASTER.map(n => ({ name: n, hex: mpShadeOf(n) }));
+  }
+
+  /* Composite kept in sync from the parts, never typed directly. Empty parts
+     drop out, so a breakdown with only a prefix reads "LiftyBliss" and not
+     "LiftyBliss ·  · ". */
+  function mpBreakdownValue(parts) {
+    return MP_BREAKDOWN_PARTS
+      .map(p => String((parts || {})[p.key] || '').trim())
+      .filter(Boolean)
+      .join(MP_BREAKDOWN_SEP);
+  }
+
+  function mpSyncBreakdown(field) {
+    if (!field) return;
+    field.value = mpBreakdownValue(field.parts);
+  }
+
+  /* A project saved before US-080 has one free-text breakdown value. It
+     becomes the prefix — the historical packs put the range name there — and
+     the placeholder 'TBC' is dropped rather than carried into a sub-cell. */
+  function mpEnsureBreakdown(mp) {
+    const i = mp.fields.findIndex(f => /Style No Breakdown/i.test((f && f.label) || ''));
+    if (i === -1) return;
+    const f = mp.fields[i];
+    if (!f.parts || typeof f.parts !== 'object') {
+      const legacy = String(f.value || '').trim();
+      f.parts = {
+        prefix: /^tbc$/i.test(legacy) ? '' : legacy,
+        category: '',
+        rangeNo: '',
+      };
+    }
+    MP_BREAKDOWN_PARTS.forEach(p => {
+      if (typeof f.parts[p.key] !== 'string') f.parts[p.key] = '';
+    });
+    mpSyncBreakdown(f);
+  }
+
+  // Seeds state.mainPage in place and migrates a project saved against an
+  // older colour library. Safe to call repeatedly.
+  function ensureMainPage() {
+    const mp = state.mainPage && typeof state.mainPage === 'object'
+      ? state.mainPage
+      : (state.mainPage = {});
+    if (!Array.isArray(mp.fields) || !mp.fields.length) {
+      mp.fields = MP_DEFAULT_FIELDS.map(f => ({ ...f }));
+    }
+    /* Appended, not inserted by index: labels are editable, so a project can
+       carry a reordered or renamed roster and there is no position to trust
+       beyond "not present yet". */
+    if (!mp.fields.some(f => /^Block Reference\b/i.test(String((f && f.label) || '').trim()))) {
+      mp.fields.push({ ...MP_DEFAULT_FIELDS[MP_DEFAULT_FIELDS.length - 1] });
+    }
+    mpEnsureBreakdown(mp);
+    if (!mp.sketches || typeof mp.sketches !== 'object') mp.sketches = {};
+    MP_SKETCH_VARIANTS.forEach(v => {
+      const slots = Array.isArray(mp.sketches[v]) ? mp.sketches[v] : [];
+      mp.sketches[v] = MP_SKETCH_SLOTS.map((_, i) => {
+        const s = slots[i];
+        return s && typeof s === 'object' && s.id
+          ? { id: String(s.id), aspect: Math.max(0.01, Number(s.aspect) || 1) }
+          : null;
+      });
+    });
+    const brand = mp.fields.find(f => /^\s*Brand\b/i.test(f.label || ''));
+    if (brand) brand.value = 'Crossian';
+    const created = mp.fields.find(f => /Tech Pack Creation date/i.test(f.label || ''));
+    if (created && !/^\d{4}-\d{2}-\d{2}$/.test(String(created.value || '').trim())) {
+      created.value = mpIsoToday();
+    }
+    if (!mp.fieldExtra || typeof mp.fieldExtra !== 'object') mp.fieldExtra = {};
+    if (!Array.isArray(mp.colorways) || !mp.colorways.length) {
+      mp.colorways = [
+        { col: 'COL 1', value: 'Default White', hex: mpShadeOf('Default White') },
+        { col: 'COL 2', value: 'Default Black', hex: mpShadeOf('Default Black') },
+      ];
+    }
+    if (mp.colorLibId !== MP_COLOR_LIB_ID || !Array.isArray(mp.colorLibrary)) {
+      mp.colorLibrary = mpDefaultColorLibrary();
+      mp.colorLibId = MP_COLOR_LIB_ID;
+    }
+    if (typeof mp.provenance !== 'string') mp.provenance = '';
+    mpResolveSpecs();
+    return mp;
+  }
+
+  function mpResolveSpecs() {
+    const f = (state.mainPage && state.mainPage.fields) || [];
+    const taken = new Set();
+    mpFieldSpec = f.map(() => null);
+    MP_FIELD_SPEC.forEach(sp => {
+      const i = f.findIndex((row, idx) => !taken.has(idx) && sp.re.test((row && row.label) || ''));
+      if (i === -1) return;
+      taken.add(i);
+      mpFieldSpec[i] = sp;
+    });
+    mpSpecRowCount = f.length;
+  }
+
+  function mpFieldsEl() { return document.getElementById('mp-fields'); }
+  function mpCwTables() { return Array.from(document.querySelectorAll('table.mp-cwx')); }
+
+  /* ---- Version sketches -------------------------------------------------- */
+
+  function mpSketchVariant(variant) {
+    return String(variant || '').toLowerCase() === 'lace' ? 'lace' : 'solid';
+  }
+
+  function mpSketchSlot(variant, i) {
+    const mp = state.mainPage;
+    if (!mp || !mp.sketches) return null;
+    const slots = mp.sketches[mpSketchVariant(variant)] || [];
+    return slots[i] || null;
+  }
+
+  function mpSketchDataURL(variant, i) {
+    const slot = mpSketchSlot(variant, i);
+    return (slot && mpSketchDataById.get(slot.id)) || '';
+  }
+
+  // Injects the bytes back for save; the runtime state stays byte-free.
+  function mpSerializeForProject() {
+    const out = state.mainPage ? clone(state.mainPage) : null;
+    if (!out || !out.sketches) return out;
+    MP_SKETCH_VARIANTS.forEach(v => {
+      out.sketches[v] = (out.sketches[v] || []).map(slot => (slot && slot.id
+        ? { ...slot, dataURL: mpSketchDataById.get(slot.id) || null }
+        : null));
+    });
+    return out;
+  }
+
+  // The mirror of the above, on open: bytes into the map, state left clean.
+  function mpLoadProjectState(rawMainPage) {
+    state.mainPage = rawMainPage && typeof rawMainPage === 'object' ? clone(rawMainPage) : null;
+    mpSketchDataById.clear();
+    const raw = (rawMainPage && rawMainPage.sketches) || {};
+    MP_SKETCH_VARIANTS.forEach(v => {
+      (raw[v] || []).forEach(slot => {
+        if (slot && slot.id && slot.dataURL) mpSketchDataById.set(String(slot.id), slot.dataURL);
+      });
+    });
+    return ensureMainPage();   // drops the injected dataURLs from state again
+  }
+
+  async function mpSetSketch(variant, i, dataURL) {
+    const mp = ensureMainPage();
+    const key = mpSketchVariant(variant);
+    if (!dataURL) {
+      mp.sketches[key][i] = null;
+    } else {
+      /* aspect is measured once here, not at render time: the preview sheet
+         and the workbook both need it before an <img> exists. */
+      let aspect = 1;
+      try {
+        const img = await loadImageFromDataURL(dataURL);
+        aspect = Math.max(0.01, (img.naturalWidth || 1) / (img.naturalHeight || 1));
+      } catch (err) { /* unreadable image still gets a slot, at 1:1 */ }
+      const id = 'mp-sk-' + key + '-' + i + '-' + (++mpSketchSeq);
+      mpSketchDataById.set(id, dataURL);
+      mp.sketches[key][i] = { id, aspect };
+    }
+    mpCloseSketchMenu();
+    mpRenderSketches();
+    // The Preview & Export sheet shows the same slots; repaint it if that is
+    // the page in view (same rule restoreSnapshot follows).
+    if (state.activePage === 'preview' && typeof renderPreviewPage === 'function') renderPreviewPage();
+    pushHistoryIfChanged();
+  }
+
+  /* One builder for the page and the Preview & Export sheet, so the two can
+     never disagree about what a version panel shows (ADR 0046 rule 5).
+     `editable` adds the screen-only clear button and the empty-slot prompt. */
+  function mpSketchRowHtml(variant, editable) {
+    const key = mpSketchVariant(variant);
+    return MP_SKETCH_SLOTS.map((slot, i) => {
+      const dataURL = mpSketchDataURL(key, i);
+      const ref = key + ':' + i;
+      const body = dataURL
+        ? '<img class="mp-sk-img" src="' + escapeHtml(dataURL) + '" alt="' + slot.label + ' sketch">'
+        : '<span class="mp-sk-empty">' + (editable ? '＋ ' : '') + slot.label + '</span>';
+      return '<div class="mp-sketch' + (dataURL ? ' mp-sk-filled' : '') + '"'
+        + (editable ? ' data-mp-sk="' + ref + '" title="Upload or paste the '
+          + slot.label.toLowerCase() + ' technical flat"' : '')
+        + '>' + body
+        + '<span class="mp-sk-tag">' + slot.label + '</span>'
+        + (editable && dataURL
+          ? '<button type="button" class="mp-sk-x mp-screen-only" data-mp-sk-clear="' + ref
+            + '" title="Remove this sketch">×</button>'
+          : '')
+        + '</div>';
+    }).join('');
+  }
+
+  function mpRenderSketches() {
+    Array.from(document.querySelectorAll('#mainPageOverlay .mp-sketchrow')).forEach(row => {
+      row.innerHTML = mpSketchRowHtml(row.dataset.mpVariant, true);
+    });
+  }
+
+  function renderMainPage() {
+    if (!state.mainPage) return;
+    mpRenderFields();
+    mpRenderCw();
+    mpRenderSketches();
+    const prov = document.getElementById('mp-provenance');
+    if (prov && prov !== document.activeElement) prov.textContent = state.mainPage.provenance || '';
+  }
+
+  function mpRenderFields() {
+    const host = mpFieldsEl();
+    if (!host) return;
+    const fields = (state.mainPage && state.mainPage.fields) || [];
+    if (fields.length !== mpSpecRowCount) mpResolveSpecs();
+    host.innerHTML = fields.map((f, i) => {
+      const isBrand = /^\s*Brand\b/i.test(f.label || '');
+      const isDate = /Tech Pack Creation date/i.test(f.label || '');
+      const isBreakdown = !!(mpFieldSpec[i] && mpFieldSpec[i].part && f.parts);
+      const fixed = isBrand ? 'mp-fixed mp-brand-value' : (isDate ? 'mp-fixed mp-date-value' : '');
+      const valueMarkup = isBrand ? '<strong>' + escapeHtml(f.value) + '</strong>' : escapeHtml(f.value);
+      /* The sub-headers ride in their own row above the value, exactly as the
+         factory layout prints them — they are captions, not data, so they are
+         not editable and carry no data-i. */
+      const headRow = isBreakdown
+        ? '<tr class="mp-bd-headrow"><th class="mp-bd-blank"></th>'
+          + '<td class="mp-bdhead">'
+          + MP_BREAKDOWN_PARTS.map(p => '<span>' + escapeHtml(p.head) + '</span>').join('')
+          + '</td><td class="act mp-screen-only mp-act"></td></tr>'
+        : '';
+      const valueCell = isBreakdown
+        ? '<td class="mp-bdcell">'
+          + MP_BREAKDOWN_PARTS.map(p => '<span class="mp-bd-sub" contenteditable spellcheck="false"'
+            + ' data-i="' + i + '" data-f="part" data-part="' + p.key + '">'
+            + escapeHtml(String(f.parts[p.key] || '')) + '</span>').join('')
+          + '</td>'
+        : '<td' + (fixed ? ' class="' + fixed + '" aria-readonly="true"' : ' contenteditable spellcheck="false"')
+          + ' data-i="' + i + '" data-f="value">' + valueMarkup + '</td>';
+      return headRow
+        + '<tr><th contenteditable spellcheck="false" data-i="' + i + '" data-f="label">'
+        + escapeHtml(f.label) + '</th>'
+        + valueCell
+        /* The trigger gets its own cell and never goes inside the value td:
+           the input listener below stores the value cell's whole textContent,
+           so a button living in it would be typed into the field. */
+        + '<td class="act mp-screen-only mp-act">'
+        + (mpFieldSpec[i]
+          ? '<button type="button" class="mp-dd" data-mp-dd="' + i + '" tabindex="-1"'
+            + ' title="Suggestions — you can still type straight into the cell"></button>'
+          : '')
+        + '</td></tr>';
+    }).join('');
+  }
+
+  function mpRenderCw() {
+    const rows = (state.mainPage && state.mainPage.colorways) || [];
+    mpCwTables().forEach(t => {
+      t.innerHTML = rows.map((c, i) =>
+        '<tr><th>' + escapeHtml(c.col || ('COL ' + (i + 1))) + '</th>'
+        + '<td contenteditable spellcheck="false" data-cw="' + i + '">' + escapeHtml(c.value) + '</td>'
+        + '<td class="act mp-screen-only"><button type="button" data-rm="' + i + '" title="Remove this colorway">×</button></td></tr>').join('');
+    });
+    mpRenderColorMenu();   // keeps the "already used" marks in the picker honest
+  }
+
+  /* Every token of the query has to appear somewhere in the entry, so
+     "14-38 lilac" and "lilac 14-38" both find 14-3812 TCX Lilac Mist. */
+  function mpColorMatches(name, query) {
+    const s = String(name).toLowerCase();
+    return query.every(t => s.includes(t));
+  }
+
+  function mpRenderColorMenu() {
+    if (!mpColorMenu) return;
+    const box = mpColorMenu.querySelector('.cm-list');
+    const foot = mpColorMenu.querySelector('.cm-foot');
+    const raw = (mpColorMenu.querySelector('.cm-q').value || '').trim();
+    const query = raw.toLowerCase().split(/\s+/).filter(Boolean);
+    const lib = (state.mainPage && state.mainPage.colorLibrary) || [];
+    const used = new Set(((state.mainPage && state.mainPage.colorways) || [])
+      .map(c => String(c.value || '').toLowerCase()));
+    const hits = lib.map((c, i) => ({ c, i })).filter(h => mpColorMatches(h.c.name, query));
+    box.innerHTML = hits.map(({ c, i }) =>
+      '<button type="button" data-color-choice="' + i + '"'
+      + (used.has(String(c.name).toLowerCase()) ? ' class="cm-on" title="Already in the colorway list"' : '') + '>'
+      + '<span class="mp-chip" style="--chip:' + escapeHtml(c.hex || 'transparent') + '"></span>'
+      + '<span class="cm-name">' + escapeHtml(c.name || 'TBC') + '</span></button>').join('')
+      // anything not on the house list can still be added by hand
+      || (raw
+        ? '<button type="button" class="cm-new" data-color-free>'
+          + '<span class="mp-chip" style="--chip:transparent"></span>'
+          + '<span class="cm-name">＋ Add “' + escapeHtml(raw) + '” (off the master list)</span></button>'
+        : '<div class="cm-empty">No colour matches</div>');
+    foot.textContent = raw
+      ? hits.length + '/' + lib.length + ' colours match · Enter picks the first'
+      : lib.length + ' colours in the Color Master List · type to search';
+  }
+
+  function mpAddColor(choice) {
+    const mp = ensureMainPage();
+    const picked = choice || { name: 'TBC', hex: '' };
+    mp.colorways.push({
+      col: 'COL ' + (mp.colorways.length + 1),
+      value: picked.name || 'TBC',
+      hex: picked.hex || '',
+    });
+    if (mpColorWrap) mpColorWrap.classList.remove('open');
+    if (mpColorMenu) mpColorMenu.querySelector('.cm-q').value = '';
+    mpRenderCw();
+    pushHistoryIfChanged();
+    showToast('Added ' + mp.colorways[mp.colorways.length - 1].col + ': ' + (picked.name || 'TBC'));
+  }
+
+  /* US-072/ADR 0041: BOM table columns now read state.mainPage.colorways
+     directly (col/value), so removing a colorway does change what BOM
+     shows — but col labels are renumbered below, and a BOM row's
+     cwOverride is keyed by col label, not by a stable colorway id, so an
+     override keyed 'COL 2' stays orphaned under the old label if a
+     colorway ahead of it is removed. Accepted limitation: no remap pass
+     exists, same as this function never remapped anything before BOM
+     existed. */
+  function mpRemoveColor(i) {
+    const mp = ensureMainPage();
+    if (!mp.colorways[i]) return;
+    mp.colorways.splice(i, 1);
+    mp.colorways.forEach((c, j) => { c.col = 'COL ' + (j + 1); });
+    mpRenderCw();
+    pushHistoryIfChanged();
+  }
+
+  /* ---- Field picker ------------------------------------------------------ */
+
+  function mpCurrentValue(i) {
+    const f = (state.mainPage && state.mainPage.fields) || [];
+    const row = f[i] || {};
+    const part = mpFieldSpec[i] && mpFieldSpec[i].part;
+    if (part) return String((row.parts || {})[part] || '');
+    return String(row.value || '');
+  }
+
+  /* Diacritic-folded, so "nguyen thi hong hanh" finds "Nguyễn Thị Hồng Hạnh".
+     Every token must appear somewhere, as in mpColorMatches(), so word order
+     and the Vietnamese habit of reordering name parts both stop mattering. */
+  function mpFold(s) {
+    return String(s).toLowerCase().normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '').replace(/\u0111/g, 'd');
+  }
+
+  function mpOptionsFor(sp) {
+    const base = (typeof sp.values === 'function' ? sp.values() : (sp.values || [])).map(String);
+    const key = sp.extras || sp.key;
+    const seen = new Set(base.map(v => v.toLowerCase()));
+    const extra = ((state.mainPage.fieldExtra || {})[key] || [])
+      .filter(v => !seen.has(String(v).toLowerCase()));
+    return base.concat(extra);
+  }
+
+  function mpRememberExtra(sp, v) {
+    const key = sp.extras || sp.key;
+    const store = state.mainPage.fieldExtra || (state.mainPage.fieldExtra = {});
+    const list = store[key] || (store[key] = []);
+    if (v && !list.some(x => String(x).toLowerCase() === v.toLowerCase())) list.push(v);
+  }
+
+  function mpRenderFldMenu() {
+    if (!mpFldOpen || !mpFldMenu) return;
+    const box = mpFldMenu.querySelector('.mm-list');
+    const foot = mpFldMenu.querySelector('.mm-foot');
+    const raw = (mpFldMenu.querySelector('.mm-q').value || '').trim();
+    const q = mpFold(raw).split(/\s+/).filter(Boolean);
+    const cur = mpCurrentValue(mpFldOpen.i).toLowerCase();
+    mpFldFlat = mpOptionsFor(mpFldOpen.sp).filter(v => q.every(t => mpFold(v).includes(t)));
+    // Indices only in the attribute; the raw query is read back off .mm-q at
+    // click time, never round-tripped through markup.
+    let html = mpFldFlat.map((v, n) =>
+      '<button type="button" data-mp-opt="' + n + '"' + (cur === v.toLowerCase() ? ' class="mm-on"' : '') + '>'
+      + '<span class="mm-name">' + escapeHtml(v) + '</span></button>').join('');
+    /* Looser than the colour menu, which only offers the free row when
+       nothing matched: these rosters are known-incomplete, so typing "Selly"
+       must still be able to mean a NEW Selly instead of being swallowed by
+       "Selly Pham". */
+    if (raw && !mpFldFlat.some(v => v.toLowerCase() === raw.toLowerCase())) {
+      html += '<button type="button" data-mp-free><span class="mm-name">＋ Add “'
+        + escapeHtml(raw) + '” (off the list)</span></button>';
+    }
+    html += '<button type="button" data-mp-clear><span class="mm-name">－ Leave blank</span></button>';
+    box.innerHTML = html;
+    foot.textContent = raw
+      ? mpFldFlat.length + ' match · Enter picks the first'
+      : mpFldFlat.length + ' suggestions · type to filter, or type a new value';
+  }
+
+  function mpOpenFldMenu(i, btn) {
+    const sp = mpFieldSpec[i];
+    if (!sp || !mpFldMenu) return;
+    // Only one picker at a time: the overlay's click handler returns early on
+    // a trigger hit, so it never reaches the close-the-colour-menu branch.
+    if (mpColorWrap) mpColorWrap.classList.remove('open');
+    mpFldOpen = { i, sp, btn };
+    mpFldMenu.querySelector('.mm-q').value = '';
+    mpRenderFldMenu();
+    const r = btn.getBoundingClientRect();     // fixed positioning — no scroll maths
+    const width = 300;
+    mpFldMenu.style.left = Math.max(6, Math.min(r.right - width, window.innerWidth - width - 6)) + 'px';
+    mpFldMenu.classList.add('open');
+    const h = mpFldMenu.offsetHeight;
+    const below = window.innerHeight - r.bottom;
+    mpFldMenu.style.top = (below > h + 8 || r.top < h + 8 ? r.bottom + 4 : r.top - h - 4) + 'px';
+    mpFldMenu.querySelector('.mm-q').focus();
+  }
+
+  function mpCloseFldMenu(refocus) {
+    if (!mpFldMenu) return;
+    mpFldMenu.classList.remove('open');
+    const b = mpFldOpen && mpFldOpen.btn;
+    mpFldOpen = null;
+    if (refocus && b && document.contains(b)) b.focus();
+  }
+
+  function mpApplyFld(v) {
+    if (!mpFldOpen) return;
+    const i = mpFldOpen.i;
+    const row = (state.mainPage.fields || [])[i] || {};
+    const part = mpFldOpen.sp && mpFldOpen.sp.part;
+    const label = (row.label || '') + (part ? ' · ' + part : '');
+    if (part) {
+      row.parts = row.parts || {};
+      row.parts[part] = v;
+      mpSyncBreakdown(row);
+    } else {
+      row.value = v;
+    }
+    mpRenderFields();
+    pushHistoryIfChanged();
+    mpCloseFldMenu(true);
+    showToast(label + ': ' + (v || '(blank)') + ' · Ctrl/Cmd+Z to undo');
+  }
+
+  /* ---- Sketch slot menu (forked from the BOM material-photo trigger) ------
+     Upload or paste only: offline, no catalog, no auto-adoption. */
+
+  let mpSketchOpen = null;   // 'lace:0' while a slot menu is open
+
+  function mpSketchMenuEl() {
+    let menu = document.getElementById('mpSketchMenu');
+    if (menu) return menu;
+    menu = document.createElement('div');
+    menu.id = 'mpSketchMenu';
+    menu.className = 'mp-menu mp-sketch-menu';
+    menu.hidden = true;
+    menu.innerHTML = '<div class="mp-sk-hint">Technical flat for this version — prints on the MAIN PAGE sheet.</div>'
+      + '<div class="mp-sk-actions">'
+      + '<button type="button" data-mp-sk-upload title="Or Cmd/Ctrl+V to paste a copied image">Upload&hellip; / Paste</button>'
+      + '<button type="button" data-mp-sk-remove>Remove</button></div>';
+    document.body.appendChild(menu);
+    const filePick = document.createElement('input');
+    filePick.type = 'file';
+    filePick.accept = 'image/*';
+    filePick.hidden = true;
+    menu.appendChild(filePick);
+    const applyFile = (f, ref) => {
+      if (!f || !ref || !/^image\//i.test(f.type)) return;
+      const [variant, i] = ref.split(':');
+      const rd = new FileReader();
+      rd.onload = () => mpSetSketch(variant, +i, rd.result);
+      rd.readAsDataURL(f);
+    };
+    filePick.addEventListener('change', () => {
+      const f = filePick.files && filePick.files[0];
+      const ref = mpSketchOpen;
+      filePick.value = '';
+      applyFile(f, ref);
+    });
+    menu.addEventListener('click', e => {
+      if (!mpSketchOpen) return;
+      if (e.target.closest('[data-mp-sk-upload]')) { filePick.click(); return; }
+      if (e.target.closest('[data-mp-sk-remove]')) {
+        const [variant, i] = mpSketchOpen.split(':');
+        mpSetSketch(variant, +i, null);
+      }
+    });
+    /* stopPropagation keeps the app's document-level paste router from also
+       adopting the image as a Board sketch. */
+    menu.addEventListener('paste', e => {
+      if (!mpSketchOpen || !e.clipboardData) return;
+      const it = Array.from(e.clipboardData.items)
+        .find(x => x.kind === 'file' && /^image\//i.test(x.type));
+      if (!it) return;
+      const f = it.getAsFile();
+      if (!f) return;
+      e.preventDefault();
+      e.stopPropagation();
+      applyFile(f, mpSketchOpen);
+    });
+    menu.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { mpCloseSketchMenu(); return; }
+      if (e.key !== 'Tab') e.stopPropagation();
+    });
+    return menu;
+  }
+
+  function mpOpenSketchMenu(ref, box) {
+    mpCloseFldMenu();
+    if (mpColorWrap) mpColorWrap.classList.remove('open');
+    mpSketchOpen = ref;
+    const menu = mpSketchMenuEl();
+    menu.hidden = false;
+    menu.tabIndex = -1;   // focusable, so the paste event targets the menu
+    const r = box.getBoundingClientRect();
+    menu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 260)) + 'px';
+    menu.style.top = Math.min(r.bottom + 4, window.innerHeight - 110) + 'px';
+    menu.focus();
+  }
+
+  function mpCloseSketchMenu() {
+    const menu = document.getElementById('mpSketchMenu');
+    if (menu) menu.hidden = true;
+    mpSketchOpen = null;
+  }
+
+  /* ---- Wiring ------------------------------------------------------------ */
+  // Sheet open/close now belongs to page-nav.js's setActivePage('mainpage' |
+  // 'board') — the MAIN PAGE sheet is a peer page of the Board, not a modal
+  // this file owns the visibility of.
+
+  function initMainPage() {
+    ensureMainPage();
+
+    const overlay = document.getElementById('mainPageOverlay');
+    if (!overlay) return;
+
+    const printBtn = document.getElementById('mainPagePrintBtn');
+    if (printBtn) printBtn.addEventListener('click', () => window.print());
+
+    // Colour picker, hung off the "Add colour" button in the sheet bar.
+    const addBtn = document.getElementById('mainPageAddColorBtn');
+    if (addBtn) {
+      mpColorWrap = addBtn.closest('.color-add-wrap');
+      mpColorMenu = mpColorWrap && mpColorWrap.querySelector('.color-menu');
+      if (mpColorMenu) {
+        mpColorMenu.innerHTML = '<input type="search" class="cm-q" spellcheck="false" '
+          + 'placeholder="Search colour — name or Pantone code (e.g. 14-38, dusty pink)">'
+          + '<div class="cm-list"></div><div class="cm-foot"></div>';
+        const q = mpColorMenu.querySelector('.cm-q');
+        q.addEventListener('input', mpRenderColorMenu);
+        /* The board's global keydown handler treats plain keys as tool
+           shortcuts; a search input is not contenteditable, so without this a
+           Backspace typed to fix a typo would reach the board. */
+        q.addEventListener('keydown', e => {
+          if (e.key !== 'Tab') e.stopPropagation();
+          if (e.key === 'Escape') { mpColorWrap.classList.remove('open'); addBtn.focus(); return; }
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          const first = mpColorMenu.querySelector('.cm-list button');
+          if (first) first.click();
+        });
+      }
+      addBtn.addEventListener('click', () => {
+        if (!mpColorWrap) return;
+        mpCloseFldMenu();
+        const open = mpColorWrap.classList.toggle('open');
+        if (open && mpColorMenu) {
+          const q = mpColorMenu.querySelector('.cm-q');
+          q.value = '';
+          mpRenderColorMenu();
+          q.focus();
+        }
+      });
+    }
+
+    /* Parked on <body>, not inside the sheet, so it is never clipped by the
+       scrolling sheet column. */
+    mpFldMenu = document.createElement('div');
+    mpFldMenu.id = 'mp-menu';
+    mpFldMenu.className = 'mp-menu';
+    mpFldMenu.setAttribute('role', 'menu');
+    mpFldMenu.innerHTML =
+      '<input type="search" class="mm-q" spellcheck="false" placeholder="Type to filter — or type a new value and press Enter">'
+      + '<div class="mm-list"></div><div class="mm-foot"></div>';
+    document.body.appendChild(mpFldMenu);
+    mpFldMenu.addEventListener('keydown', e => { if (e.key !== 'Tab') e.stopPropagation(); });
+    mpFldMenu.querySelector('.mm-q').addEventListener('input', mpRenderFldMenu);
+    mpFldMenu.querySelector('.mm-q').addEventListener('keydown', e => {
+      if (e.key === 'Escape') { mpCloseFldMenu(true); return; }
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const first = mpFldMenu.querySelector('.mm-list button');
+      if (first) first.click();
+    });
+    /* mousedown-preventDefault so the click never moves focus off the value
+       cell before the option is applied. */
+    mpFldMenu.addEventListener('mousedown', e => {
+      if (e.target.closest('.mm-list button')) e.preventDefault();
+    });
+    mpFldMenu.addEventListener('click', e => {
+      if (!mpFldOpen) return;
+      const opt = e.target.closest('[data-mp-opt]');
+      if (opt) { mpApplyFld(mpFldFlat[+opt.dataset.mpOpt]); return; }
+      if (e.target.closest('[data-mp-free]')) {
+        const raw = mpFldMenu.querySelector('.mm-q').value.trim();
+        if (!raw) return;
+        mpRememberExtra(mpFldOpen.sp, raw);
+        mpApplyFld(raw);
+        return;
+      }
+      if (e.target.closest('[data-mp-clear]')) mpApplyFld('');
+    });
+    window.addEventListener('resize', () => { if (mpFldOpen) mpCloseFldMenu(); });
+
+    /* Delegated on the overlay, which survives every re-render — a listener
+       on a cell or button would die on the next render. */
+    overlay.addEventListener('input', e => {
+      const cell = e.target.closest('#mp-fields [data-i]');
+      if (cell) {
+        const row = state.mainPage.fields[+cell.dataset.i];
+        if (cell.dataset.f === 'part') {
+          row.parts = row.parts || {};
+          row.parts[cell.dataset.part] = cell.textContent.trim();
+          mpSyncBreakdown(row);   // composite is derived, never typed
+        } else {
+          row[cell.dataset.f] = cell.textContent.trim();
+        }
+        return;
+      }
+      const cw = e.target.closest('table.mp-cwx [data-cw]');
+      if (cw) {
+        const idx = +cw.dataset.cw;
+        state.mainPage.colorways[idx].value = cw.textContent.trim();
+        // Both version panels show the same colorway list; mirror the edit
+        // into the table the TD is not typing in.
+        mpCwTables().forEach(t => {
+          if (t.contains(cw)) return;
+          const other = t.querySelector('[data-cw="' + idx + '"]');
+          if (other) other.textContent = cw.textContent;
+        });
+        return;
+      }
+      if (e.target.id === 'mp-provenance') state.mainPage.provenance = e.target.textContent;
+    });
+    /* One history entry per field, not per keystroke: mutate on input, push
+       on blur. pushHistoryIfChanged dedups by fingerprint, so a focus/blur
+       with no edit is a no-op. */
+    overlay.addEventListener('focusout', e => {
+      if (e.target.closest('[contenteditable]')) pushHistoryIfChanged();
+    });
+    overlay.addEventListener('click', e => {
+      const dd = e.target.closest('[data-mp-dd]');
+      if (dd) {
+        if (mpFldOpen && mpFldOpen.btn === dd) mpCloseFldMenu();
+        else mpOpenFldMenu(+dd.dataset.mpDd, dd);
+        return;
+      }
+      const rm = e.target.closest('table.mp-cwx [data-rm]');
+      if (rm) { mpRemoveColor(+rm.dataset.rm); return; }
+      // The clear button sits inside the slot box, so it has to win first.
+      const skClear = e.target.closest('[data-mp-sk-clear]');
+      if (skClear) {
+        const [variant, i] = skClear.dataset.mpSkClear.split(':');
+        mpSetSketch(variant, +i, null);
+        return;
+      }
+      const sk = e.target.closest('[data-mp-sk]');
+      if (sk) {
+        if (mpSketchOpen === sk.dataset.mpSk) mpCloseSketchMenu();
+        else mpOpenSketchMenu(sk.dataset.mpSk, sk);
+        return;
+      }
+      if (mpSketchOpen && !e.target.closest('#mpSketchMenu')) mpCloseSketchMenu();
+      const choice = e.target.closest('[data-color-choice]');
+      if (choice) { mpAddColor(state.mainPage.colorLibrary[+choice.dataset.colorChoice]); return; }
+      if (e.target.closest('[data-color-free]')) {
+        const raw = mpColorMenu ? mpColorMenu.querySelector('.cm-q').value.trim() : '';
+        if (raw) mpAddColor({ name: raw, hex: mpShadeOf(raw) });
+        return;
+      }
+      if (mpColorWrap && !e.target.closest('.color-add-wrap')) mpColorWrap.classList.remove('open');
+      if (mpFldOpen && !e.target.closest('#mp-menu,[data-mp-dd]')) mpCloseFldMenu();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || state.activePage !== 'mainpage') return;
+      if (mpSketchOpen) { mpCloseSketchMenu(); return; }
+      if (mpFldOpen) { mpCloseFldMenu(true); return; }
+      if (mpColorWrap && mpColorWrap.classList.contains('open')) {
+        mpColorWrap.classList.remove('open');
+        return;
+      }
+      setActivePage('board');
+    }, true);
+
+    renderMainPage();
+  }
+
+  // ---- src/ui/construction-phrase-data.js ----
+// Ported from the sibling "Bra construction" project (construction.html) per ADR 0039.
+// Verbatim data — do not hand-edit without checking the source stays in sync.
+
+const CONSTRUCTION_TERM_LIBRARY = [
+    // Cup & pad
+    { en: 'Molded foam cup' },
+    { en: 'Molded foam cup – 2 piece' },
+    { en: 'Cover foam (molded shell)' },
+    { en: 'Set-in cup' },
+    { en: 'Cookie – tear drop' },
+    { en: 'Cookie (insert pad)' },
+    { en: 'Outer cup panel' },
+    { en: 'Inner / liner cup' },
+    { en: 'Top cup panel' },
+    { en: 'Bottom cup panel' },
+    { en: 'Sling' },
+    { en: 'Undercup' },
+    { en: 'Front apex' },
+    { en: 'Back apex' },
+    { en: 'Adjustable panel' },
+    { en: 'Cushion pad' },
+    // Cup layer stacks
+    { en: 'Cup: allover lace + cover foam + molded foam' },
+    { en: 'Cup: galloon lace + shell + molded foam' },
+    { en: 'Cup: shell + molded foam (2-layer)' },
+    { en: 'Cup: power mesh + cover foam + molded foam' },
+    // Body & band
+    { en: 'Cradle' },
+    { en: 'Center gore (CF bridge)' },
+    { en: 'Underband (UB)', aliases: ['UB'] },
+    { en: 'Bottom band' },
+    { en: 'Back panel – upper' },
+    { en: 'Back panel – lower' },
+    { en: 'Side panel' },
+    { en: 'Center Front (CF)', aliases: ['CF'] },
+    { en: 'Center Back (CB)', aliases: ['CB'] },
+    { en: 'Neckline' },
+    { en: 'Armhole (A/H)', aliases: ['A/H'] },
+    // Closures
+    { en: 'Guard placket' },
+    { en: 'Zipper guard' },
+    { en: 'Zipper garage' },
+    { en: 'Hook and eye (H&E)', aliases: ['H&E'] },
+    { en: 'H&E 4 rows × 4 columns' },
+    { en: 'H&E 5 rows × 4 columns' },
+    { en: 'H&E 2 rows × 2 columns' },
+    { en: 'Open-end zipper' },
+    { en: 'Invisible zipper #4' },
+    { en: 'Zipper puller' },
+    { en: 'Snap button – female 9mm' },
+    { en: 'Snap button – male 9mm' },
+    { en: 'Velcro patch' },
+    // Straps
+    { en: 'Shoulder strap' },
+    { en: 'Front strap – 2-layer laminated' },
+    { en: 'Back strap (elastic)' },
+    { en: 'Folded elastic strap' },
+    { en: 'Strap elastic with slider' },
+    { en: 'Adjustable velcro strap' },
+    // Fabrics
+    { en: 'Shell fabric' },
+    { en: 'Allover lace' },
+    { en: 'Galloon lace' },
+    { en: 'Power mesh' },
+    { en: 'Non-stretch mesh' },
+    { en: 'Microfiber mesh' },
+    { en: 'Jacquard mesh' },
+    { en: 'Satin fabric' },
+    { en: 'Thin foam' },
+    // Elastics & tapes
+    { en: 'UB plush elastic – 1.5cm' },
+    { en: 'UB plush elastic – 2cm' },
+    { en: 'V-fold elastic' },
+    { en: 'Strap elastic – 2cm' },
+    { en: 'Strap elastic – 2.5cm' },
+    { en: 'Floating elastic tape' },
+    { en: 'Rigid tape – 2cm' },
+    { en: 'Cotton tape (strap loop)' },
+    { en: 'Stretch tape (ready-made)' },
+    { en: 'Binding tape – 8mm' },
+    { en: 'Wireless casing – 1cm' },
+    { en: 'Bonding tape' },
+    // Hardware
+    { en: '8-shaped ring – 2cm' },
+    { en: '8-shaped ring – 2.5cm' },
+    { en: 'Slider' },
+    { en: 'Swan hook' },
+    { en: 'Stabilizer – 6mm' },
+    // Stitches & seams
+    { en: 'Overlock (O/L)', aliases: ['O/L'] },
+    { en: 'Coverstitch' },
+    { en: 'Zigzag stitch (ZZ)', aliases: ['ZZ'] },
+    { en: '2R zigzag' },
+    { en: 'Lockstitch (1NDL / 2NDL)', aliases: ['1NDL', '2NDL', '2NDLS'] },
+    { en: 'Flatlock 3NST', aliases: ['3N5T'] },
+    { en: 'Topstitch' },
+    { en: 'Bartack' },
+    { en: 'Double-bartack' },
+    { en: 'ZZ bartack' },
+    { en: 'Spot tack' },
+    { en: 'Flat seam' },
+    // Edge finishes
+    { en: 'Bagout (clean finish)' },
+    { en: 'Inner binding' },
+    { en: 'V-fold binding – 8mm' },
+    { en: 'V-fold binding – 6mm' },
+    { en: 'Self-fold bonded' },
+    { en: 'Free-cut / clean-cut edge' },
+    { en: 'Side seam – natural placement' },
+    { en: 'Side seam – shifted to front' },
+    // Forming & bonding
+    { en: 'Lamination (2-layer)' },
+    { en: 'Molded panel' },
+    { en: 'Dot glue bonding' },
+    { en: 'Brush glue' },
+    { en: 'Heat-press bonding' },
+    { en: 'Darted panel' },
+    { en: '2-in-1 construction' },
+  ];
+
+const CONSTRUCTION_STARTER_PHRASES = [
+    {
+      id: 'strap-ring-slider',
+      category: 'Strap',
+      text: 'Adjustable strap with ring and slider',
+      aliases: ['adj', 'adjustable', 'strap', 'ring', 'slider', 'strap slider'],
+      favorite: true,
+    },
+    {
+      id: 'cup-clean-neckline',
+      category: 'Cup',
+      text: 'Molded foam cup with clean neckline edge',
+      aliases: ['cup', 'molded', 'foam cup', 'clean neckline', 'neckline edge'],
+      favorite: true,
+    },
+    {
+      id: 'lace-back-overlock',
+      category: 'Lace',
+      text: 'Back lace panel joined with overlock seam',
+      aliases: ['back lace', 'lace panel', 'overlock', 'over lock', 'ol', 'back panel'],
+      favorite: true,
+    },
+    {
+      id: 'underband-lace-cradle-zigzag',
+      category: 'Underband',
+      text: 'Lace cradle joined to underband with zigzag stitch',
+      aliases: ['lace cradle', 'underband', 'under band', 'ub', 'zigzag', 'zig zag', 'zz', 'cradle'],
+      favorite: true,
+    },
+    {
+      id: 'neckline-clean-edge',
+      category: 'Seam',
+      text: 'Clean neckline edge',
+      aliases: ['clean', 'neckline', 'neck edge', 'edge finish'],
+      favorite: true,
+    },
+    {
+      id: 'underband-zigzag',
+      category: 'Underband',
+      text: 'Zigzag stitch at underband',
+      aliases: ['zigzag', 'zig zag', 'zz', 'underband', 'under band', 'ub stitch'],
+      favorite: true,
+    },
+    {
+      id: 'lace-panel-overlock',
+      category: 'Lace',
+      text: 'Overlock seam at lace panel',
+      aliases: ['overlock', 'over lock', 'ol', 'lace', 'lace seam'],
+      favorite: true,
+    },
+    {
+      id: 'bartack-reinforcement',
+      category: 'Seam',
+      text: 'Bartack reinforcement',
+      aliases: ['bartack', 'bar tack', 'reinforcement', 'tack'],
+      favorite: true,
+    },
+    {
+      id: 'elastic-fold-over-edge',
+      category: 'Elastic',
+      text: 'Fold-over elastic edge',
+      aliases: ['fold over', 'fold-over', 'foe', 'elastic edge', 'elastic'],
+      favorite: true,
+    },
+    {
+      id: 'closure-hook-eye',
+      category: 'Closure',
+      text: 'Hook-and-eye closure',
+      aliases: ['hook', 'eye', 'hook eye', 'hook-and-eye', 'h&e', 'h and e', 'closure'],
+      favorite: true,
+    },
+    {
+      id: 'wing-power-mesh',
+      category: 'Wing',
+      text: 'Power mesh wing panel',
+      aliases: ['wing', 'power mesh', 'back wing', 'mesh wing'],
+      favorite: false,
+    },
+    {
+      id: 'label-care',
+      category: 'Label',
+      text: 'Care label at inner wing',
+      aliases: ['label', 'care label', 'inner wing', 'brand label'],
+      favorite: false,
+    },
+    {
+      id: 'closure-front-zipper',
+      category: 'Closure',
+      text: 'Front zipper with inner zipper guard',
+      aliases: ['zipper', 'front closure', 'zip guard', 'zipper guard'],
+      favorite: false,
+    },
+    {
+      id: 'strap-bartack',
+      category: 'Strap',
+      text: 'Strap attached with double bartack',
+      aliases: ['strap bartack', 'double bartack', 'strap attach'],
+      favorite: false,
+    },
+    {
+      id: 'cup-lace-overlay',
+      category: 'Cup',
+      text: 'Lace overlay on molded foam cup',
+      aliases: ['lace overlay', 'cup lace', 'foam cup lace', 'overlay cup'],
+      favorite: false,
+    },
+    {
+      id: 'seam-topstitch',
+      category: 'Seam',
+      text: 'Topstitch along seam allowance',
+      aliases: ['topstitch', 'seam allowance', 'stitch seam'],
+      favorite: false,
+    },
+  ];
+
+const CONSTRUCTION_GENERATED_PHRASES = [
+    {
+        "category": "Strap",
+        "text": "2R Bartack attach front strap w/ back elastic strap",
+        "aliases": [
+            "strap",
+            "elastic",
+            "bartack",
+            "front",
+            "back",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Adjustable back strap with 8 - shaped ring & slider",
+        "aliases": [
+            "strap",
+            "ring",
+            "hardware",
+            "slider",
+            "back",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Adjustable elastic straps with 8 shape ring - 2cm to 2.5cm",
+        "aliases": [
+            "strap",
+            "ring",
+            "hardware",
+            "elastic",
+            "2cm",
+            "5cm",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Adjustable strap with velcro & 8 - shaped ring",
+        "aliases": [
+            "strap",
+            "ring",
+            "hardware",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Adjustable strap with velcro & 8 - shaped ring Double - bartack",
+        "aliases": [
+            "strap",
+            "ring",
+            "hardware",
+            "bartack",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Distance from center of 1st snap to strap joint: 1 cm 1 cm",
+        "aliases": [
+            "strap",
+            "snap",
+            "snap button",
+            "hardware",
+            "1cm",
+            "1 cm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Double layer shell fabric laminated at front strap. Attached to velcro by V - fold (5mm folded width contrast color) - 1NDL top stitch Strap width: 2cm for all sizes",
+        "aliases": [
+            "strap",
+            "shell fabric",
+            "fabric",
+            "1ndl",
+            "topstitch",
+            "laminated",
+            "lamination",
+            "folded width",
+            "width",
+            "5mm",
+            "2cm",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Double layer shell fabric laminated at front strap. Attached to velcro by V - fold (5mm folded width) 1NDL top stitch Strap width: 2cm for all sizes",
+        "aliases": [
+            "strap",
+            "shell fabric",
+            "fabric",
+            "1ndl",
+            "topstitch",
+            "laminated",
+            "lamination",
+            "folded width",
+            "width",
+            "5mm",
+            "2cm",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Elastic strap attached to back panel by double - bartack Double - layered cup panel Outer: Molded shell cup (One - piece) Inner: Molded foam cup (Two - piece)",
+        "aliases": [
+            "strap",
+            "cup",
+            "back panel",
+            "back",
+            "elastic",
+            "molded foam",
+            "foam cup",
+            "bartack",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Folded elastic strap attached to back panel by double - bartack",
+        "aliases": [
+            "strap",
+            "back panel",
+            "back",
+            "elastic",
+            "bartack",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Front & back strap attached together by clean finish",
+        "aliases": [
+            "strap",
+            "front",
+            "back",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Front apex self fold with zigzag stitch to create loop",
+        "aliases": [
+            "strap",
+            "zigzag",
+            "zz",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Front strap continue from front to back",
+        "aliases": [
+            "strap",
+            "front",
+            "back",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "front UB outer, Back panel, outer strap zipper guard",
+        "aliases": [
+            "strap",
+            "ub",
+            "underband",
+            "back panel",
+            "back",
+            "zipper",
+            "closure",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Inner foam cup & shell cup bagout at upper edgeclean finish. (This edge floating) Front apex self fold with zigzag stitch to create loop Two - piece molded foam cup attached together at CF by stabilizer",
+        "aliases": [
+            "strap",
+            "cup",
+            "cf",
+            "center front",
+            "molded foam",
+            "foam cup",
+            "zigzag",
+            "zz",
+            "bagout",
+            "clean finish",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Loop elastic strap construction with swan hook & 8 - shaped ring adjuster Number of loops: 15 loops for all sizes Strap width: XS - XL= 2cm 2XL - above = 2.5cm",
+        "aliases": [
+            "strap",
+            "hook - and - eye",
+            "h & e",
+            "closure",
+            "ring",
+            "hardware",
+            "swan hook",
+            "elastic",
+            "width",
+            "2cm",
+            "5cm",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Loops on front strap",
+        "aliases": [
+            "strap",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Nylon coated swan hook (front strap)",
+        "aliases": [
+            "strap",
+            "hook - and - eye",
+            "h & e",
+            "closure",
+            "swan hook",
+            "hardware",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Shoulder strap in 2 layers: Outer: Shell fabric Liner: Power mesh 8 shape ring at the end of the strap (Inner width XS - XL: 2.5cm 2XL and above: 3cm",
+        "aliases": [
+            "strap",
+            "ring",
+            "hardware",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "width",
+            "5cm",
+            "3cm",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Shoulder Strap panel length",
+        "aliases": [
+            "strap",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Side panel continue to strap",
+        "aliases": [
+            "strap",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Snap button (female side) attached to strap elastic - 1NDL topstitch Diameter: 1 cm all sizes Number of snap (female): 2",
+        "aliases": [
+            "strap",
+            "snap",
+            "snap button",
+            "hardware",
+            "elastic",
+            "1ndl",
+            "topstitch",
+            "1cm",
+            "1 cm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Strap construction: Rigid tape (as overlaid on top strap elastic with bartack to create loops 6 loops. 1cm/loops Hook at 2nd loop",
+        "aliases": [
+            "strap",
+            "hook - and - eye",
+            "h & e",
+            "closure",
+            "elastic",
+            "tape",
+            "bartack",
+            "1cm",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Strap elastic with slider attached to cushion pad - edgestitch vertical bartack at cushion pad end Width: 2 cm all sizes 8 - shaped ring attached at back apex - self - folded and bartack to create loop",
+        "aliases": [
+            "strap",
+            "ring",
+            "hardware",
+            "slider",
+            "elastic",
+            "cushion pad",
+            "pad",
+            "bartack",
+            "width",
+            "2cm",
+            "2 cm",
+            "back",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Strap panel attached to cup panel by double bartack",
+        "aliases": [
+            "strap",
+            "cup",
+            "bartack",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Strap Width at Shoulder seam",
+        "aliases": [
+            "strap",
+            "width",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Straps (cushion pad and strap elastic) attached inner front cup panel at front apex - O/L, bartack at front apex Strap width: 3.5 cm all sizes",
+        "aliases": [
+            "strap",
+            "cup",
+            "elastic",
+            "cushion pad",
+            "pad",
+            "bartack",
+            "overlock",
+            "o/l",
+            "ol",
+            "width",
+            "5cm",
+            "5 cm",
+            "front",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "Two layers at cushion pad - laminated 1st layer: Shell fabric 2nd layer: Thin foam",
+        "aliases": [
+            "strap",
+            "shell fabric",
+            "fabric",
+            "cushion pad",
+            "pad",
+            "laminated",
+            "lamination",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "V - fold binding w/ Coverstitch along strap edges",
+        "aliases": [
+            "strap",
+            "binding",
+            "binding tape",
+            "coverstitch",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Strap",
+        "text": "V - fold elastic all around cushion pad - coverstitch Folded width: 6 mm all sizes",
+        "aliases": [
+            "strap",
+            "elastic",
+            "cushion pad",
+            "pad",
+            "coverstitch",
+            "folded width",
+            "width",
+            "6mm",
+            "6 mm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Clean finish - middle shell with cup at neckline",
+        "aliases": [
+            "cup",
+            "neckline",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Cup construction: Outer - molded shell fabric Liner - set in cup attached to mesh by flat seam",
+        "aliases": [
+            "cup",
+            "shell fabric",
+            "fabric",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Cup construction: Outer layer: Darted galloon lace with ZZ on top lowest scallop Middle layer: Molded shell Liner: Molded foam cup/2 pieces",
+        "aliases": [
+            "cup",
+            "lace",
+            "galloon lace",
+            "molded foam",
+            "foam cup",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Cup construction: Outer layer: Molded shell Liner: Molded foam cup/2 pieces",
+        "aliases": [
+            "cup",
+            "molded foam",
+            "foam cup",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Cup in single layer molded shell fabric Overlaid on inner set in foam cup",
+        "aliases": [
+            "cup",
+            "shell fabric",
+            "fabric",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Cup in single layer of molded shell fabric overlaid on molded foam cup",
+        "aliases": [
+            "cup",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Cup Panel height at Center Front",
+        "aliases": [
+            "cup",
+            "center front",
+            "cf",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Double layer at cup panel: 1st: Molded shell fabric 2nd: Molded foam cup Double layered UB panel: Outer: Shell Fabric (Synthetic) Inner: Power Mesh",
+        "aliases": [
+            "cup",
+            "ub",
+            "underband",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Foam cup +shell at front neckline bagout - clean finish",
+        "aliases": [
+            "cup",
+            "neckline",
+            "bagout",
+            "clean finish",
+            "front",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Foam cups joined together with stabilizer (2NDLS lockstitch) at inner CF",
+        "aliases": [
+            "cup",
+            "cf",
+            "center front",
+            "2ndls",
+            "lockstitch",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "front cup middle",
+        "aliases": [
+            "cup",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Front Neckline cup panel bagout - clean finish",
+        "aliases": [
+            "cup",
+            "neckline",
+            "bagout",
+            "clean finish",
+            "front",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Full panel power mesh at inner UB, attached to foam cup by flatlock 3N5T",
+        "aliases": [
+            "cup",
+            "ub",
+            "underband",
+            "power mesh",
+            "mesh",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Inner binding at under cup seam + side seam 2NDLS lockstitch",
+        "aliases": [
+            "cup",
+            "side seam",
+            "binding",
+            "binding tape",
+            "2ndls",
+            "lockstitch",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Inner binding by stabilizer to join 2 piece cup Inner cup binding with 2NDLS lockstitch",
+        "aliases": [
+            "cup",
+            "binding",
+            "binding tape",
+            "2ndls",
+            "lockstitch",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Inner binding tape at under cup and side seam - 2NDLS stitch Width: 1 cm all sizes",
+        "aliases": [
+            "cup",
+            "side seam",
+            "binding",
+            "binding tape",
+            "tape",
+            "2ndls",
+            "lockstitch",
+            "width",
+            "1cm",
+            "1 cm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Inner cup binding at Under cup seam + inner side seam - 2NDLS lockstitch",
+        "aliases": [
+            "cup",
+            "side seam",
+            "binding",
+            "binding tape",
+            "2ndls",
+            "lockstitch",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Inner cup binding with 2NDLS lockstitch",
+        "aliases": [
+            "cup",
+            "binding",
+            "binding tape",
+            "2ndls",
+            "lockstitch",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Inner foam cup & shell cup attached to inner power mesh by flatlock 3N5T Inner neckline piece attached together at CF by O/LClean finish",
+        "aliases": [
+            "cup",
+            "neckline",
+            "cf",
+            "center front",
+            "power mesh",
+            "mesh",
+            "overlock",
+            "o/l",
+            "ol",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Lace trim overlaid on cup seam attach by zigzag stitch",
+        "aliases": [
+            "cup",
+            "lace",
+            "zigzag",
+            "zz",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Molded fixed cup - 2 piece",
+        "aliases": [
+            "cup",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Molded foam cup",
+        "aliases": [
+            "cup",
+            "molded foam",
+            "foam cup",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "natural placement Satin piping at front side panel and top cup (width - 4mm at outer Encased elastic at UB continue view) from front to back (3cm - for all Front Back",
+        "aliases": [
+            "cup",
+            "lace",
+            "ub",
+            "underband",
+            "elastic",
+            "width",
+            "4mm",
+            "3cm",
+            "front",
+            "back",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Neckline in single layer of microfiber with small elastic in 6mm along neckline edge attach by zigzag stitch Neckline panel attach with cup panel by inner binding along neckline foam",
+        "aliases": [
+            "cup",
+            "neckline",
+            "elastic",
+            "binding",
+            "binding tape",
+            "zigzag",
+            "zz",
+            "6mm",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "OL attach singel - layer of power mesh with shell, ZZ attach OL seam to inner molded foam cup Shell fabric Foam cup",
+        "aliases": [
+            "cup",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Outer Cup height",
+        "aliases": [
+            "cup",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Outer cup width",
+        "aliases": [
+            "cup",
+            "width",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Outer front cup",
+        "aliases": [
+            "cup",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Outer shell 2 - Alloverlace Outer cup",
+        "aliases": [
+            "cup",
+            "lace",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Ready made soft tape along foam cup and neckline attach by 2NDLS",
+        "aliases": [
+            "cup",
+            "neckline",
+            "tape",
+            "2ndls",
+            "lockstitch",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Ready made soft tape along under cup and neckline attach by 2 needle stitch",
+        "aliases": [
+            "cup",
+            "neckline",
+            "tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Set in cup Power mesh liner end at foam cup attach with foam cup by flat seam",
+        "aliases": [
+            "cup",
+            "power mesh",
+            "mesh",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Shell cup attached with foam cup by 1NDL - lockstitch at armhole, then outer lace will O/L & bagout - clean finish",
+        "aliases": [
+            "cup",
+            "lace",
+            "armhole",
+            "a/h",
+            "overlock",
+            "o/l",
+            "ol",
+            "1ndl",
+            "topstitch",
+            "bagout",
+            "clean finish",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Shell cup attached with foam cup by 1NDL - lockstitch at armhole, then outer mesh will O/L & bagout - clean finish",
+        "aliases": [
+            "cup",
+            "armhole",
+            "a/h",
+            "overlock",
+            "o/l",
+            "ol",
+            "1ndl",
+            "topstitch",
+            "bagout",
+            "clean finish",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Single - layered molded power mesh front cup panel Clean finished at molded foam cup neckline and armhole O/L and bagout",
+        "aliases": [
+            "cup",
+            "neckline",
+            "armhole",
+            "a/h",
+            "power mesh",
+            "mesh",
+            "molded foam",
+            "foam cup",
+            "overlock",
+            "o/l",
+            "ol",
+            "bagout",
+            "clean finish",
+            "front",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Spot tacks attach lace to cup panel",
+        "aliases": [
+            "cup",
+            "lace",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Stabilizer at CF inner cup attach by 2NDLS stitch",
+        "aliases": [
+            "cup",
+            "cf",
+            "center front",
+            "2ndls",
+            "lockstitch",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Stabilizer attached to inner molded cup at CF with 2NDLS stabilizer width = 6mm all sizes",
+        "aliases": [
+            "cup",
+            "cf",
+            "center front",
+            "2ndls",
+            "lockstitch",
+            "width",
+            "6mm",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Three layer at cup panel: 1st: Molded galloon lace 2nd: Molded shell fabric 3rd: Molded foam cup",
+        "aliases": [
+            "cup",
+            "lace",
+            "galloon lace",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Three layer at front cup: 1st: Molded allover lace 2nd: One panel molded shell (cover foam) 3rd: Molded foam cup Non - stretch mesh at outer front keyhole, attached to outer shell UB by O/L - 1NDL top stitch",
+        "aliases": [
+            "cup",
+            "lace",
+            "ub",
+            "underband",
+            "molded foam",
+            "foam cup",
+            "overlock",
+            "o/l",
+            "ol",
+            "1ndl",
+            "topstitch",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Three layer at front cup: 1st: Molded power mesh 2nd: One panel molded contrast fabric (cover foam cup) 3rd: Set - in molded foam cup",
+        "aliases": [
+            "cup",
+            "power mesh",
+            "mesh",
+            "molded foam",
+            "foam cup",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Three layer at front cup: 1st: Molded power mesh 2nd: One panel molded shell (cover foam) 3rd: Molded foam cup Non - stretch mesh at outer front keyhole, attached to outer shell UB by O/L - 1NDL top stitch",
+        "aliases": [
+            "cup",
+            "ub",
+            "underband",
+            "power mesh",
+            "mesh",
+            "molded foam",
+            "foam cup",
+            "overlock",
+            "o/l",
+            "ol",
+            "1ndl",
+            "topstitch",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Three layer at front cup: 1st: Molded power mesh 2nd: One panel molded Shell fabric (cover foam cup) 3rd: Set - in molded foam cup",
+        "aliases": [
+            "cup",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Three layers at sling (only attached to CF under cup and side seam) 1st layer: Molded allover lace 2nd layer: Molded shell fabric (synthetic) 3rd layer: Molded foam cup",
+        "aliases": [
+            "cup",
+            "sling",
+            "lace",
+            "side seam",
+            "cf",
+            "center front",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Top cup panel in 1 layer jacquard mesh attach to shell/cup bottom piece with piping between by O/L and top stitch",
+        "aliases": [
+            "cup",
+            "overlock",
+            "o/l",
+            "ol",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Two - piece molded foam cup",
+        "aliases": [
+            "cup",
+            "molded foam",
+            "foam cup",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf; TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Two - piece molded foam cup attached together at CF by stabilizer - 2NDLS lock stitch",
+        "aliases": [
+            "cup",
+            "cf",
+            "center front",
+            "molded foam",
+            "foam cup",
+            "2ndls",
+            "lockstitch",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Two - pieces molded foam cup",
+        "aliases": [
+            "cup",
+            "molded foam",
+            "foam cup",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Two layers at sling (only attached to CF under cup and side seam) 1st layer: Molded shell fabric (synthetic) 2nd layer: Molded foam cup",
+        "aliases": [
+            "cup",
+            "sling",
+            "side seam",
+            "cf",
+            "center front",
+            "shell fabric",
+            "fabric",
+            "molded foam",
+            "foam cup",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "under cup outer binding",
+        "aliases": [
+            "cup",
+            "binding",
+            "binding tape",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "V - fold binding w/ Coverstitch along neckline & A/H of cup panel",
+        "aliases": [
+            "cup",
+            "neckline",
+            "binding",
+            "binding tape",
+            "coverstitch",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "V - fold elastic at front & back neckline front & back armhole of inner front cup panel - coverstitch Folded width: 1 cm all sizes",
+        "aliases": [
+            "cup",
+            "neckline",
+            "armhole",
+            "a/h",
+            "elastic",
+            "coverstitch",
+            "folded width",
+            "width",
+            "1cm",
+            "1 cm",
+            "front",
+            "back",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Cup",
+        "text": "Wireless Casing 1 cm all sizes Glue Brush glue Glue Outer cup",
+        "aliases": [
+            "cup",
+            "1cm",
+            "1 cm",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Sling",
+        "text": "Double - layered at outer sling: Outer: Galloon lace Liner: Power mesh",
+        "aliases": [
+            "sling",
+            "lace",
+            "galloon lace",
+            "power mesh",
+            "mesh",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Sling",
+        "text": "Double - layered at outer sling: Outer: Shell fabric Liner: Power mesh",
+        "aliases": [
+            "sling",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Sling",
+        "text": "Sling edges finished by inner mobilon tape (6mm) - zigzag stitch",
+        "aliases": [
+            "sling",
+            "tape",
+            "zigzag",
+            "zz",
+            "6mm",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Sling",
+        "text": "Sling: One layer of molded shell fabric free cut at AH and neckline edge",
+        "aliases": [
+            "sling",
+            "neckline",
+            "shell fabric",
+            "fabric",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Sling",
+        "text": "Snap button (male side) with folded rigid tape to cover sling apex - 1NDL topstitch all around rigid tape Diameter: 1 cm all sizes Number of snap (male): 1",
+        "aliases": [
+            "sling",
+            "snap",
+            "snap button",
+            "hardware",
+            "tape",
+            "1ndl",
+            "topstitch",
+            "1cm",
+            "1 cm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Allover lace layer attached to outer shell UB by outer binding - 2NDLS lock stitch",
+        "aliases": [
+            "lace",
+            "ub",
+            "underband",
+            "binding",
+            "binding tape",
+            "2ndls",
+            "lockstitch",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Back panel in 1 layer shell with lace panel on top attached by ZZ",
+        "aliases": [
+            "lace",
+            "back panel",
+            "back",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Contrast fabric (Under lace)",
+        "aliases": [
+            "lace",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Inner plush elastic at back hem placed on bonding area",
+        "aliases": [
+            "lace",
+            "elastic",
+            "back",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Loop elastic attached to left lace with double bartacks; elastic passes through an 8 - shaped ring on right side & looped onto itself with a swan hook",
+        "aliases": [
+            "lace",
+            "hook - and - eye",
+            "h & e",
+            "closure",
+            "ring",
+            "hardware",
+            "swan hook",
+            "elastic",
+            "bartack",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Outer lace layer attached together at CF by O/L. Topstitch + bartack on WL side",
+        "aliases": [
+            "lace",
+            "cf",
+            "center front",
+            "bartack",
+            "overlock",
+            "o/l",
+            "ol",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Shell fabric and lace are approved",
+        "aliases": [
+            "lace",
+            "shell fabric",
+            "fabric",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "side seam at natural placement",
+        "aliases": [
+            "lace",
+            "side seam",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "side seam at natural placement Finished with inner binding",
+        "aliases": [
+            "lace",
+            "side seam",
+            "binding",
+            "binding tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "side seam at natural placement Inner binding side seam",
+        "aliases": [
+            "lace",
+            "side seam",
+            "binding",
+            "binding tape",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Side seam shifted to front Two layers at top back panel: Outer: Allover lace Liner: Power mesh",
+        "aliases": [
+            "lace",
+            "side seam",
+            "back panel",
+            "back",
+            "power mesh",
+            "mesh",
+            "front",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Side Seam: Natural Placement Cradle hem: 1cm self - fold bonded",
+        "aliases": [
+            "lace",
+            "side seam",
+            "1cm",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Lace",
+        "text": "Technical Detail Sheet - Lace version Outer Construction",
+        "aliases": [
+            "lace",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "1cm shell self fold at inner UB",
+        "aliases": [
+            "underband",
+            "ub",
+            "1cm",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Bartack at UB binding end",
+        "aliases": [
+            "underband",
+            "ub",
+            "binding",
+            "binding tape",
+            "bartack",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Double - layered at front UB: Outer: Shell fabric Liner: Power mesh",
+        "aliases": [
+            "underband",
+            "ub",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "front",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Double layered UB panel: Outer: Shell Fabric (Synthetic) Inner: Power Mesh Center gore O/L + bagout 1NDL topstitch at inner mesh",
+        "aliases": [
+            "underband",
+            "ub",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "overlock",
+            "o/l",
+            "ol",
+            "1ndl",
+            "topstitch",
+            "bagout",
+            "clean finish",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Inner binding to attach Plush elastic along front and back UB zipper and zipper guard Inner left side seam opening hem attach by zigzag stitch open end zipper with laminated zipper XS - XL 1.5cm guard 2XL and above - 2cm",
+        "aliases": [
+            "underband",
+            "ub",
+            "side seam",
+            "zipper",
+            "closure",
+            "elastic",
+            "binding",
+            "binding tape",
+            "zigzag",
+            "zz",
+            "laminated",
+            "lamination",
+            "5cm",
+            "2cm",
+            "front",
+            "back",
+            "open end",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Inner plush elastic at Front + Back UB, attached with zigzag stitch XS - XL: 1.5cm 2XL - above: 2cm",
+        "aliases": [
+            "underband",
+            "ub",
+            "elastic",
+            "zigzag",
+            "zz",
+            "5cm",
+            "2cm",
+            "front",
+            "back",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf; KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Inner plush elastic at UB Elastic height: 1.5cm for all sizes",
+        "aliases": [
+            "underband",
+            "ub",
+            "elastic",
+            "5cm",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Laser - cut holes on outer front shell UB Power mesh panel attached to outer shell UB by inner binding - 2NDLS lock stitch",
+        "aliases": [
+            "underband",
+            "ub",
+            "binding",
+            "binding tape",
+            "power mesh",
+            "mesh",
+            "2ndls",
+            "lockstitch",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Please increase the back underband to 2 cm, in line with the default sample, for better support, while reducing the center back side to 2 cm only",
+        "aliases": [
+            "underband",
+            "ub",
+            "2cm",
+            "2 cm",
+            "back",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Plush elastic along front and back UB hem attach by zigzag stitch Elastic in 1.5 cm for XS - XL 2XL and above: 2cm",
+        "aliases": [
+            "underband",
+            "ub",
+            "elastic",
+            "zigzag",
+            "zz",
+            "5cm",
+            "5 cm",
+            "2cm",
+            "front",
+            "back",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Power mesh layer attached to outer shell UB by outer binding - 2NDLS lock stitch",
+        "aliases": [
+            "underband",
+            "ub",
+            "binding",
+            "binding tape",
+            "power mesh",
+            "mesh",
+            "2ndls",
+            "lockstitch",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "Sample fitted and below are the comments accordingly Overall fit is good. The front underband is loose. Please reduce the front underband length by 1\" in total The shape should be maintained as per the default sample (Image 2)",
+        "aliases": [
+            "underband",
+            "ub",
+            "front",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "UB has double layer of shell fabric self folded bonding together by dot glue, at CF of UB there is a heat press artwork (same technic as Armourlift but in diferrent shape)",
+        "aliases": [
+            "underband",
+            "ub",
+            "cf",
+            "center front",
+            "shell fabric",
+            "fabric",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "UB plush elastic",
+        "aliases": [
+            "underband",
+            "ub",
+            "elastic",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf; SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Underband",
+        "text": "UB plush elastic at front & back - zigzag stitch Width: XS - XL: 1.5 cm 2XL and above: 2 cm",
+        "aliases": [
+            "underband",
+            "ub",
+            "elastic",
+            "zigzag",
+            "zz",
+            "width",
+            "5cm",
+            "5 cm",
+            "2cm",
+            "2 cm",
+            "front",
+            "back",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "1cm inner plush elastic with ZZ stitch at AH and back neckline",
+        "aliases": [
+            "neckline",
+            "elastic",
+            "1cm",
+            "back",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "Center front neckline drop*",
+        "aliases": [
+            "neckline",
+            "center front",
+            "cf",
+            "front",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "Inner elastic (1cm) at armhole & neckline - zigzag stitch",
+        "aliases": [
+            "neckline",
+            "armhole",
+            "a/h",
+            "elastic",
+            "zigzag",
+            "zz",
+            "1cm",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "Inner plush elastic at armhole & back neckline - zigzag stitch 6mm width for all sizes",
+        "aliases": [
+            "neckline",
+            "armhole",
+            "a/h",
+            "elastic",
+            "zigzag",
+            "zz",
+            "width",
+            "6mm",
+            "back",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "Neckline & armholes finish",
+        "aliases": [
+            "neckline",
+            "armhole",
+            "a/h",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "V - fold binding at front neckline armhole, back neckline - coverstitch 8mm folded width for all sizes",
+        "aliases": [
+            "neckline",
+            "armhole",
+            "a/h",
+            "binding",
+            "binding tape",
+            "coverstitch",
+            "folded width",
+            "width",
+            "8mm",
+            "front",
+            "back",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "V - fold binding at front neckline armhole, back neckline - coverstitch 8mm folded width for all sizes V - fold binding in contrast color",
+        "aliases": [
+            "neckline",
+            "armhole",
+            "a/h",
+            "binding",
+            "binding tape",
+            "coverstitch",
+            "folded width",
+            "width",
+            "8mm",
+            "front",
+            "back",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "V - fold binding attach by zz stitch (8mm fold width) along neckline and A/H",
+        "aliases": [
+            "neckline",
+            "binding",
+            "binding tape",
+            "width",
+            "8mm",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Neckline",
+        "text": "V - fold binding w/ Coverstitch along neckline & A/H of adjustable panel; continues to A/H of cradle and back panel",
+        "aliases": [
+            "neckline",
+            "back panel",
+            "back",
+            "binding",
+            "binding tape",
+            "coverstitch",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Armhole",
+        "text": "Inner elastic (1cm) at armholezigzag stitch",
+        "aliases": [
+            "armhole",
+            "a/h",
+            "elastic",
+            "zigzag",
+            "zz",
+            "1cm",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Binding side seam move to the front",
+        "aliases": [
+            "side seam",
+            "binding",
+            "binding tape",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Eyes side attach with side seam binding",
+        "aliases": [
+            "side seam",
+            "binding",
+            "binding tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Inner right side seam have H & E opening 1 column, 3 rows (6cm height customize H & E)",
+        "aliases": [
+            "side seam",
+            "6cm",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "LEFT side seam OPENING",
+        "aliases": [
+            "side seam",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "One side of the zipper tape attach with side seam binding",
+        "aliases": [
+            "side seam",
+            "zipper",
+            "closure",
+            "binding",
+            "binding tape",
+            "tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "RIGHT side seam OPENING Loops side attach with front panel",
+        "aliases": [
+            "side seam",
+            "front panel",
+            "front",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Side seam length",
+        "aliases": [
+            "side seam",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Side seam shifted to",
+        "aliases": [
+            "side seam",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf; TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Side seam shifted to front",
+        "aliases": [
+            "side seam",
+            "front",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Side Seam",
+        "text": "Side seam shifted to front Double - layered power mesh top back panel",
+        "aliases": [
+            "side seam",
+            "back panel",
+            "back",
+            "power mesh",
+            "mesh",
+            "front",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "(with zipper guard)",
+        "aliases": [
+            "closure",
+            "zipper",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "(without zipper guard for easier visualization)",
+        "aliases": [
+            "closure",
+            "zipper",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "1/2 Bottom band (closest hook) - relax",
+        "aliases": [
+            "closure",
+            "hook - and - eye",
+            "h & e",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Another side of zipper tape attach by binding and bartack at top and bottom end 6cm",
+        "aliases": [
+            "closure",
+            "zipper",
+            "binding",
+            "binding tape",
+            "tape",
+            "bartack",
+            "6cm",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Back closure with H & E 4 rows, 4 columns for S - XL 5 rows, 4 columns for 2XL - above",
+        "aliases": [
+            "closure",
+            "back closure",
+            "back",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Back closure with H & E: 4 rows, 4 columns for all sizes",
+        "aliases": [
+            "closure",
+            "back closure",
+            "back",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Binding tape at front closure - 2NDLS stitch, self - folded with bartacks at 2 ends Width: 8 mm all sizes",
+        "aliases": [
+            "closure",
+            "front closure",
+            "cf",
+            "binding",
+            "binding tape",
+            "tape",
+            "bartack",
+            "2ndls",
+            "lockstitch",
+            "width",
+            "8mm",
+            "8 mm",
+            "front",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Center Back Height (Hook - and - eye)",
+        "aliases": [
+            "closure",
+            "hook - and - eye",
+            "h & e",
+            "back",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Double - layered shell fabric guard placket (no garage) - laminated Width: 3 cm all sizes",
+        "aliases": [
+            "closure",
+            "placket",
+            "shell fabric",
+            "fabric",
+            "laminated",
+            "lamination",
+            "width",
+            "3cm",
+            "3 cm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Front closure with H & E 2 rows, 2 columns for all sizes",
+        "aliases": [
+            "closure",
+            "front closure",
+            "cf",
+            "front",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Front closure with invisible open end zipper (#4) with puller",
+        "aliases": [
+            "closure",
+            "front closure",
+            "cf",
+            "zipper",
+            "front",
+            "open end",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "H & E closure 4 rows, 4 columns for all sizes",
+        "aliases": [
+            "closure",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Hook and eye",
+        "aliases": [
+            "closure",
+            "hook - and - eye",
+            "h & e",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Inner elastic loop with swan hook - 1cm",
+        "aliases": [
+            "closure",
+            "hook - and - eye",
+            "h & e",
+            "swan hook",
+            "hardware",
+            "elastic",
+            "1cm",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Laminated fabric as zipper guard",
+        "aliases": [
+            "closure",
+            "zipper",
+            "laminated",
+            "lamination",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Nylon coated swan hook (placket inner loop)",
+        "aliases": [
+            "closure",
+            "hook - and - eye",
+            "h & e",
+            "swan hook",
+            "hardware",
+            "placket",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Open end zipper at the CF with zipper guard on the inside, continued out as a zipper garage (laminated) at the top & bottom",
+        "aliases": [
+            "closure",
+            "cf",
+            "center front",
+            "zipper",
+            "laminated",
+            "lamination",
+            "open end",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Self - fold w/ bartack create loop to hold swan hook Rigid tape w/ bartacks create 3 loops for swan hook",
+        "aliases": [
+            "closure",
+            "hook - and - eye",
+            "h & e",
+            "swan hook",
+            "hardware",
+            "tape",
+            "bartack",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Single layered shell fabric at back panel Back closure with H & E 5 rows, 4 column for all sizes",
+        "aliases": [
+            "closure",
+            "back panel",
+            "back",
+            "back closure",
+            "shell fabric",
+            "fabric",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Zipper guard - double layered fabric laminated continued as zipper garage at the top & bottom",
+        "aliases": [
+            "closure",
+            "zipper",
+            "laminated",
+            "lamination",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Closure",
+        "text": "Zipper guard on the inside, continued out as a zipper garage at the top & bottom edges",
+        "aliases": [
+            "closure",
+            "zipper",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "5 loops for all sizes, 1cm each loop Elastic width: 2cm full sizes",
+        "aliases": [
+            "elastic",
+            "width",
+            "1cm",
+            "2cm",
+            "feliciabra"
+        ],
+        "source": "FeliciaBra/FeliciaBra-vB-3.0.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Bar tacks BIGGER SIZE: add loops and elastic",
+        "aliases": [
+            "elastic",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Chanel plush tape (inside)",
+        "aliases": [
+            "elastic",
+            "tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Fusing (inside) V - fold elastic",
+        "aliases": [
+            "elastic",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "H & E Chanel plush tape",
+        "aliases": [
+            "elastic",
+            "tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Inner elastic loop",
+        "aliases": [
+            "elastic",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Inner plush elastic at back panel attached by ZZ - 1.5cm to 2cm",
+        "aliases": [
+            "elastic",
+            "back panel",
+            "back",
+            "5cm",
+            "2cm",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Light weight elastic inner loops",
+        "aliases": [
+            "elastic",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "Opening for elastic tape insertion, elastic continues H & E edge (inner view) Shell fabric lap bonded 1cm on inner side",
+        "aliases": [
+            "elastic",
+            "tape",
+            "shell fabric",
+            "fabric",
+            "1cm",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Elastic",
+        "text": "V - fold elastic",
+        "aliases": [
+            "elastic",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf; SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "2NDLS stitch at outer binding will sew through inner mesh",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "2ndls",
+            "lockstitch",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "CB panel in single layer of power mesh Under: 2 shell fabric tape crossed in 2 layers laminated free edge cut 2.5cm width",
+        "aliases": [
+            "binding",
+            "tape",
+            "power mesh",
+            "mesh",
+            "shell fabric",
+            "fabric",
+            "laminated",
+            "lamination",
+            "width",
+            "5cm",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Double bartack V fold bindingcover stitch",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "bartack",
+            "coverstitch",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Inner binding only attached to outer shell layer (Not visible at inner view)",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Inner binding tape",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "tape",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Inner binding to attach 2 back panel and shell fabric tape",
+        "aliases": [
+            "binding",
+            "back panel",
+            "back",
+            "binding tape",
+            "tape",
+            "shell fabric",
+            "fabric",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Inner binding with stretch tape & 2NDLS",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "tape",
+            "2ndls",
+            "lockstitch",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Ready - made soft stretch tape",
+        "aliases": [
+            "binding",
+            "tape",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Rigid tape at inner apex point",
+        "aliases": [
+            "binding",
+            "tape",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Rigid tape attached at inner apex of adjustable panel",
+        "aliases": [
+            "binding",
+            "tape",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "Underbust: inner binding w/ stretch tape & 2NDLS",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "tape",
+            "2ndls",
+            "lockstitch",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Binding",
+        "text": "V - fold binding - ZZ stitch 8mm (folded width)",
+        "aliases": [
+            "binding",
+            "binding tape",
+            "folded width",
+            "width",
+            "8mm",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Back panel heig",
+        "aliases": [
+            "back panel",
+            "back",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Back panel height at Center",
+        "aliases": [
+            "back panel",
+            "back",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Back panel height at the attachment*",
+        "aliases": [
+            "back panel",
+            "back",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Back panel in 1 layer shell",
+        "aliases": [
+            "back panel",
+            "back",
+            "veralifting"
+        ],
+        "source": "Veralifting/VeraLifting vB 1.0 Sketch.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Back panel in single layer of shell fabric",
+        "aliases": [
+            "back panel",
+            "back",
+            "shell fabric",
+            "fabric",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm v.A 1.0.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Single - layered shell fabric bottom back panel",
+        "aliases": [
+            "back panel",
+            "back",
+            "shell fabric",
+            "fabric",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Single layer shell fabric at back panel",
+        "aliases": [
+            "back panel",
+            "back",
+            "shell fabric",
+            "fabric",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Single layer shell fabric with dart at outer front + back panel",
+        "aliases": [
+            "back panel",
+            "back",
+            "shell fabric",
+            "fabric",
+            "front",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Single layered shell fabric at back panels",
+        "aliases": [
+            "back panel",
+            "back",
+            "shell fabric",
+            "fabric",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Top back panels joined with bottom back panel - O/L, bagout",
+        "aliases": [
+            "back panel",
+            "back",
+            "overlock",
+            "o/l",
+            "ol",
+            "bagout",
+            "clean finish",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Back Panel",
+        "text": "Upper back panel: 2 layers of Power mesh",
+        "aliases": [
+            "back panel",
+            "back",
+            "power mesh",
+            "mesh",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Stitching",
+        "text": "Center gore O/L + bagout 1NDL topstitch at inner mesh",
+        "aliases": [
+            "stitching",
+            "overlock",
+            "o/l",
+            "ol",
+            "1ndl",
+            "topstitch",
+            "bagout",
+            "clean finish",
+            "trulysofty"
+        ],
+        "source": "TrulySofty/TrulySofty-vB-1.0.pdf"
+    },
+    {
+        "category": "Stitching",
+        "text": "Cradle in 2 layers: Outer in 2 panels: side panel in shell fabric attach with CF microfiber mesh panel by O/L then top stitch on shell panel Liner: Full 1 panel of microfiber mesh",
+        "aliases": [
+            "stitching",
+            "cf",
+            "center front",
+            "shell fabric",
+            "fabric",
+            "overlock",
+            "o/l",
+            "ol",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Stitching",
+        "text": "Cradle in 2 layers: Outer: Full 1 panel of microfiber mesh Liner: in 2 panels: side panel in shell fabric attach with CF p.m panel by O/L then top stitch on shell panel",
+        "aliases": [
+            "stitching",
+            "cf",
+            "center front",
+            "shell fabric",
+            "fabric",
+            "overlock",
+            "o/l",
+            "ol",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Stitching",
+        "text": "Outer mesh attached together at CF by O/L. Topstitch on WL side",
+        "aliases": [
+            "stitching",
+            "cf",
+            "center front",
+            "overlock",
+            "o/l",
+            "ol",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-1.0.pdf; KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Stitching",
+        "text": "Single layer of shell fabric attach with p.m panel by O/L then zigzag stitch on shell panel",
+        "aliases": [
+            "stitching",
+            "shell fabric",
+            "fabric",
+            "zigzag",
+            "zz",
+            "overlock",
+            "o/l",
+            "ol",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Stitching",
+        "text": "sizes) by coverstitch",
+        "aliases": [
+            "stitching",
+            "coverstitch",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Hardware",
+        "text": "1 male snap button on adjustable panel Size: 9mm all sizes",
+        "aliases": [
+            "hardware",
+            "snap",
+            "snap button",
+            "9mm",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Hardware",
+        "text": "5 cm Distance from center between snaps: 1.5 cm",
+        "aliases": [
+            "hardware",
+            "snap",
+            "snap button",
+            "5cm",
+            "5 cm",
+            "amorafit"
+        ],
+        "source": "AmoraFit/AmoraFit VA 1.0.pdf"
+    },
+    {
+        "category": "Hardware",
+        "text": "Nylon coated 8 - shaped ring",
+        "aliases": [
+            "hardware",
+            "ring",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Fabric Layers",
+        "text": "Double layered shell laminated at front side panel",
+        "aliases": [
+            "fabric layers",
+            "laminated",
+            "lamination",
+            "front",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift vB 2.0.pdf"
+    },
+    {
+        "category": "Fabric Layers",
+        "text": "Power mesh ZZ",
+        "aliases": [
+            "fabric layers",
+            "power mesh",
+            "mesh",
+            "veralifting"
+        ],
+        "source": "Veralifting/Veralifting vA 1.0 sketch 5.12.2026.pdf"
+    },
+    {
+        "category": "Fabric Layers",
+        "text": "Shell fabric (Synthetic)",
+        "aliases": [
+            "fabric layers",
+            "shell fabric",
+            "fabric",
+            "kiraform"
+        ],
+        "source": "KiraForm/KiraForm-vB-2.0 (1).pdf"
+    },
+    {
+        "category": "Fabric Layers",
+        "text": "Shell fabric - Contrast",
+        "aliases": [
+            "fabric layers",
+            "shell fabric",
+            "fabric",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Fabric Layers",
+        "text": "Shell fabric - Solid",
+        "aliases": [
+            "fabric layers",
+            "shell fabric",
+            "fabric",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "0cm(inner width)",
+        "aliases": [
+            "measurement",
+            "width",
+            "0cm",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "16 mm (full width)",
+        "aliases": [
+            "measurement",
+            "width",
+            "16mm",
+            "16 mm",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "1cm(inner width)",
+        "aliases": [
+            "measurement",
+            "width",
+            "1cm",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "4 rows + 4 columns All size",
+        "aliases": [
+            "measurement",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "5cm(inner width)",
+        "aliases": [
+            "measurement",
+            "width",
+            "5cm",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "H & E at CB 5 rows, 4 columns for all sizes",
+        "aliases": [
+            "measurement",
+            "cassielift"
+        ],
+        "source": "CassieLift/CassieLift v.A 2.0.pdf"
+    },
+    {
+        "category": "Measurement",
+        "text": "Width 2.5cm All sizes",
+        "aliases": [
+            "measurement",
+            "width",
+            "5cm",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Other",
+        "text": "Bottom panel height at Center Front",
+        "aliases": [
+            "other",
+            "center front",
+            "cf",
+            "front",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Other",
+        "text": "Center Front Height",
+        "aliases": [
+            "other",
+            "center front",
+            "cf",
+            "front",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf; SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Other",
+        "text": "Cradle Height at Center Front*",
+        "aliases": [
+            "other",
+            "center front",
+            "cf",
+            "front",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Other",
+        "text": "Measurement Spec 3597_ Measurement Spec_21.Apr.2026_ Size set",
+        "aliases": [
+            "other",
+            "measurement",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    },
+    {
+        "category": "Other",
+        "text": "Measurement Spec SofieLift 3.0 - 15.May.26 Description - English POM Bottom band relax 1/2",
+        "aliases": [
+            "other",
+            "measurement",
+            "sofielift",
+            "sofylift"
+        ],
+        "source": "SofyLift/Copy of SofieLift 3.0 (initially SofyLift v.B 4.0) - 12.5.2026.xlsx.pdf"
+    },
+    {
+        "category": "Other",
+        "text": "Please make the 1st proto sample in size S and L so that it meets the measurement chart S L",
+        "aliases": [
+            "other",
+            "measurement",
+            "mesh",
+            "bounce"
+        ],
+        "source": "3597 Mesh Bounce-Control Bra/3597. (ATD) Full coverage Mesh Bounce-control Bra - Google Sheets.pdf"
+    }
+];
+
+  // ---- src/ui/construction.js ----
+// Construction working sheets (US-078, ADR 0045).
+// Source part for app.js. Run `npm run build` after editing.
+//
+// state.construction is:
+// {
+//   schemaVersion:2, seedId,
+//   rows:[{id,sheet:'solid'|'lace',view:'outer'|'inner',area,detail}],
+//   images:{solid:{outer:[],inner:[]},lace:{outer:[],inner:[]}},
+//   callouts:[{id,rowId,sheet,view,imageId,targets:[{nx,ny}],textPos:{nx,ny}}]
+// }
+//
+// One row owns at most one callout. Callout number/area/detail are derived
+// live from the row; only label and target geometry is independently edited.
+// Image bytes live outside history state and are injected only for save/
+// autosave, matching BOM's image ownership model.
+
+  const CC_SCHEMA_VERSION = 2;
+  const CC_SEED_ID = 'construction-working-sheets-v1';
+  const CC_SHEETS = ['solid', 'lace'];
+  const CC_VIEWS = ['outer', 'inner'];
+  const CC_SEED_AREAS = ['CUP', 'SLING', 'CRADLE', 'SIDE_SEAM', 'BACK_CLOSURE', 'FRONT_CLOSURE'];
+  const CC_AREAS = [
+    'CUP', 'SLING', 'CRADLE', 'SIDE_SEAM', 'BACK_CLOSURE', 'FRONT_CLOSURE',
+    'NECKLINE', 'ARMHOLE', 'UNDERBAND', 'STRAP', 'BACK',
+  ];
+  const CC_AREA_LABELS = {
+    CUP: 'Cup', SLING: 'Sling', CRADLE: 'Cradle', SIDE_SEAM: 'Side seam',
+    BACK_CLOSURE: 'Back closure', FRONT_CLOSURE: 'Front closure',
+    NECKLINE: 'Neckline', ARMHOLE: 'Armhole', UNDERBAND: 'Underband',
+    STRAP: 'Strap', BACK: 'Back',
+  };
+  const CC_PIN_RADIUS = 9;
+  const CC_ANCHOR_RADIUS = 4;
+  const CC_HIT_RADIUS = 11;
+  const CC_ARROW_SIZE = 7;
+  const CC_TEXT_WIDTH = 175;
+  const CC_LINE_HEIGHT = 16;
+  const CC_CALLOUT_COLOR = '#1c6dd0';
+
+  let ccSheet = 'solid';
+  let ccActiveView = 'outer';
+  let ccSelectedRowId = null;
+  let ccSelectedCalloutId = null;
+  let ccSelectedImageId = null;
+  let ccTool = 'select';
+  let ccDrag = null;
+  let ccPanelLayouts = {};
+  let ccBoxCache = {};
+  let ccPhraseRowId = null;
+  let ccPhraseHits = [];
+  const ccImageDataById = new Map();
+  const ccImageElementById = new Map();
+
+  const CONSTRUCTION_PHRASES = (function () {
+    const seen = new Set();
+    const out = [];
+    function add(text, extra) {
+      const clean = String(text || '').trim();
+      const key = clean.toLowerCase();
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      out.push(Object.assign({ text: clean }, extra || {}));
+    }
+    CONSTRUCTION_STARTER_PHRASES.forEach(p => add(p.text, { favorite: !!p.favorite }));
+    CONSTRUCTION_TERM_LIBRARY.forEach(t => add(t.en));
+    CONSTRUCTION_GENERATED_PHRASES.forEach(p => add(p.text));
+    return out;
+  })();
+
+  function ccSheetKey(value) {
+    return String(value || ccSheet).toLowerCase() === 'lace' ? 'lace' : 'solid';
+  }
+
+  function ccViewKey(value) {
+    return String(value || ccActiveView).toLowerCase() === 'inner' ? 'inner' : 'outer';
+  }
+
+  function ccEmptyImages() {
+    return { solid: { outer: [], inner: [] }, lace: { outer: [], inner: [] } };
+  }
+
+  function ccStripImageForState(image) {
+    return {
+      id: image.id,
+      x: Number(image.x) || 0,
+      y: Number(image.y) || 0,
+      width: Math.max(1, Number(image.width) || 1),
+      height: Math.max(1, Number(image.height) || 1),
+      aspect: Math.max(0.01, Number(image.aspect) || ((Number(image.width) || 1) / (Number(image.height) || 1))),
+      locked: !!image.locked,
+    };
+  }
+
+  function ccNormalizeArea(value) {
+    const raw = String(value || '').trim().toUpperCase().replace(/[\s-]+/g, '_');
+    if (CC_AREAS.includes(raw)) return raw;
+    if (raw === 'SIDE' || raw === 'SIDE_WING') return 'SIDE_SEAM';
+    if (raw === 'CLOSURE' || raw === 'HOOK_EYE') return 'BACK_CLOSURE';
+    return 'CUP';
+  }
+
+  function ccInferLegacyArea(note) {
+    const explicit = ccNormalizeArea(note && note.zone);
+    if (note && CC_AREAS.includes(String(note.zone || '').toUpperCase())) return explicit;
+    const text = String((note && note.note) || '').toLowerCase();
+    if (/front closure/.test(text)) return 'FRONT_CLOSURE';
+    if (/back closure|hook|eye/.test(text)) return 'BACK_CLOSURE';
+    if (/side seam/.test(text)) return 'SIDE_SEAM';
+    if (/sling/.test(text)) return 'SLING';
+    if (/underband|bottom band|\bub\b/.test(text)) return 'UNDERBAND';
+    if (/cradle|gore/.test(text)) return 'CRADLE';
+    if (/armhole|underarm|a\/h|wing/.test(text)) return 'ARMHOLE';
+    if (/neckline|yoke/.test(text)) return 'NECKLINE';
+    if (/strap|ring|slider/.test(text)) return 'STRAP';
+    if (/back/.test(text)) return 'BACK';
+    return 'CUP';
+  }
+
+  function ccHasModelContent(cc) {
+    if (!cc || typeof cc !== 'object') return false;
+    if (Array.isArray(cc.notes) && cc.notes.length) return true;
+    if (Array.isArray(cc.rows) && cc.rows.length) return true;
+    if (Array.isArray(cc.callouts) && cc.callouts.length) return true;
+    const images = cc.images || {};
+    return CC_SHEETS.some(sheet => CC_VIEWS.some(view =>
+      images[sheet] && Array.isArray(images[sheet][view]) && images[sheet][view].length));
+  }
+
+  function ccLegacyView(note, boardMeta) {
+    const role = String((boardMeta && (boardMeta.viewRole || boardMeta.role)) || note.viewRole || '').toLowerCase();
+    return role.includes('inner') ? 'inner' : 'outer';
+  }
+
+  function ccMigrateLegacyModel(legacy, rawBoardImages) {
+    const model = {
+      schemaVersion: CC_SCHEMA_VERSION,
+      seedId: 'legacy-migrated',
+      rows: [],
+      images: ccEmptyImages(),
+      callouts: [],
+    };
+    const boardMetas = Array.isArray(rawBoardImages) ? rawBoardImages : [];
+    const copied = new Map();
+    (legacy.notes || []).forEach(note => {
+      const sheet = ccSheetKey(note.variant);
+      const boardMeta = boardMetas.find(image => image && image.id === note.imageId)
+        || (state.images || []).find(image => image && image.id === note.imageId)
+        || null;
+      const view = ccLegacyView(note, boardMeta || {});
+      const copyKey = sheet + ':' + view + ':' + note.imageId;
+      let imageId = copied.get(copyKey);
+      if (imageId == null) {
+        imageId = state.idCounter++;
+        copied.set(copyKey, imageId);
+        const width = Math.max(1, Number(boardMeta && boardMeta.width) || 400);
+        const height = Math.max(1, Number(boardMeta && boardMeta.height) || 300);
+        model.images[sheet][view].push({
+          id: imageId, x: 0, y: 0, width, height,
+          aspect: width / height, locked: false,
+        });
+        const dataURL = (boardMeta && boardMeta.dataURL) || null;
+        const runtime = (state.images || []).find(image => image && image.id === note.imageId);
+        if (dataURL) ccImageDataById.set(imageId, dataURL);
+        if (runtime && runtime.img) ccImageElementById.set(imageId, runtime.img);
+      }
+      const rowId = state.idCounter++;
+      const calloutId = state.idCounter++;
+      model.rows.push({
+        id: rowId,
+        sheet,
+        view,
+        area: ccInferLegacyArea(note),
+        detail: String(note.note || ''),
+      });
+      model.callouts.push({
+        id: calloutId,
+        rowId,
+        sheet,
+        view,
+        imageId,
+        targets: Array.isArray(note.targets) && note.targets.length
+          ? clone(note.targets)
+          : [clone(note.target || { nx: 0.5, ny: 0.5 })],
+        textPos: clone(note.textPos || { nx: 0.58, ny: 0.45 }),
+        color: note.color || CC_CALLOUT_COLOR,
+        textRed: !!note.textRed,
+      });
+    });
+    CC_SHEETS.forEach(sheet => CC_VIEWS.forEach(view => ccReflowImagesIn(model, sheet, view)));
+    state.construction = model;
+    return model;
+  }
+
+  function ccSeedRows(cc) {
+    CC_SHEETS.forEach(sheet => {
+      CC_VIEWS.forEach(view => {
+        CC_SEED_AREAS.forEach(area => {
+          cc.rows.push({ id: state.idCounter++, sheet, view, area, detail: '' });
+        });
+      });
+    });
+    cc.seedId = CC_SEED_ID;
+  }
+
+  function ensureConstruction(rawBoardImages) {
+    let cc = state.construction && typeof state.construction === 'object'
+      ? state.construction
+      : (state.construction = {});
+    if (Array.isArray(cc.notes) && !Array.isArray(cc.rows)) {
+      cc = ccMigrateLegacyModel(cc, rawBoardImages);
+    }
+    if (!Array.isArray(cc.rows)) cc.rows = [];
+    if (!Array.isArray(cc.callouts)) cc.callouts = [];
+    if (!cc.images || typeof cc.images !== 'object') cc.images = ccEmptyImages();
+    CC_SHEETS.forEach(sheet => {
+      if (!cc.images[sheet] || typeof cc.images[sheet] !== 'object') cc.images[sheet] = { outer: [], inner: [] };
+      CC_VIEWS.forEach(view => {
+        if (!Array.isArray(cc.images[sheet][view])) cc.images[sheet][view] = [];
+        // Normalize in place. Runtime interactions keep direct references to
+        // image/row objects while dragging or changing a select; replacing
+        // those objects on every ensureConstruction() call would stale the
+        // reference between hit-test and mutation.
+        cc.images[sheet][view].forEach(image => {
+          Object.assign(image, ccStripImageForState(image));
+          // Bitmap bytes are held in ccImageDataById, never in history state.
+          // ccLoadProjectState extracts dataURL before this normalization.
+          delete image.dataURL;
+          delete image.img;
+        });
+      });
+    });
+    cc.rows.forEach(row => {
+      row.sheet = ccSheetKey(row.sheet || row.variant);
+      row.view = ccViewKey(row.view);
+      row.area = ccNormalizeArea(row.area || row.zone);
+      row.detail = String(row.detail != null ? row.detail : (row.note || ''));
+      delete row.variant;
+      delete row.zone;
+      delete row.note;
+    });
+    const rowIds = new Set(cc.rows.map(row => row.id));
+    const owned = new Set();
+    cc.callouts = cc.callouts.filter(callout => {
+      if (!rowIds.has(callout.rowId) || owned.has(callout.rowId)) return false;
+      owned.add(callout.rowId);
+      const row = cc.rows.find(item => item.id === callout.rowId);
+      callout.sheet = row.sheet;
+      callout.view = row.view;
+      if (!Array.isArray(callout.targets) || !callout.targets.length) callout.targets = [{ nx: 0.5, ny: 0.5 }];
+      if (!callout.textPos) callout.textPos = { nx: 0.58, ny: 0.45 };
+      return true;
+    });
+    if (!cc.seedId && !ccHasModelContent(cc)) ccSeedRows(cc);
+    cc.schemaVersion = CC_SCHEMA_VERSION;
+    delete cc.notes;
+    return cc;
+  }
+
+  function ccSerializeForProject() {
+    const out = state.construction ? clone(state.construction) : null;
+    if (!out || !out.images) return out;
+    CC_SHEETS.forEach(sheet => CC_VIEWS.forEach(view => {
+      out.images[sheet][view] = (out.images[sheet][view] || []).map(image => ({
+        ...ccStripImageForState(image),
+        dataURL: ccImageDataById.get(image.id) || null,
+      }));
+    }));
+    return out;
+  }
+
+  async function ccLoadProjectState(rawConstruction, rawBoardImages) {
+    ccImageDataById.clear();
+    ccImageElementById.clear();
+    const embedded = new Map();
+    const rawImages = rawConstruction && rawConstruction.images;
+    if (rawImages) {
+      CC_SHEETS.forEach(sheet => CC_VIEWS.forEach(view => {
+        const list = rawImages[sheet] && rawImages[sheet][view];
+        (list || []).forEach(image => { if (image && image.dataURL) embedded.set(image.id, image.dataURL); });
+      }));
+    }
+    state.construction = rawConstruction && typeof rawConstruction === 'object' ? clone(rawConstruction) : null;
+    const cc = ensureConstruction(rawBoardImages);
+    const loads = [];
+    CC_SHEETS.forEach(sheet => CC_VIEWS.forEach(view => {
+      cc.images[sheet][view].forEach(image => {
+        const dataURL = embedded.get(image.id) || ccImageDataById.get(image.id);
+        if (!dataURL) return;
+        ccImageDataById.set(image.id, dataURL);
+        loads.push(loadImageFromDataURL(dataURL)
+          .then(img => ccImageElementById.set(image.id, img))
+          .catch(() => {}));
+      });
+    }));
+    await Promise.all(loads);
+    return cc;
+  }
+
+  function ccExpectedSeedRows() {
+    const out = [];
+    CC_SHEETS.forEach(sheet => CC_VIEWS.forEach(view => CC_SEED_AREAS.forEach(area => {
+      out.push({ sheet, view, area, detail: '' });
+    })));
+    return out;
+  }
+
+  function hasMeaningfulConstructionWork() {
+    const cc = ensureConstruction();
+    if (cc.callouts.length) return true;
+    if (CC_SHEETS.some(sheet => CC_VIEWS.some(view => cc.images[sheet][view].length))) return true;
+    const comparable = cc.rows.map(row => ({ sheet: row.sheet, view: row.view, area: row.area, detail: row.detail }));
+    return JSON.stringify(comparable) !== JSON.stringify(ccExpectedSeedRows());
+  }
+
+  function ccRows(sheet) {
+    const key = ccSheetKey(sheet);
+    const rows = ensureConstruction().rows.filter(row => row.sheet === key);
+    return rows.slice().sort((a, b) => {
+      const va = CC_VIEWS.indexOf(a.view), vb = CC_VIEWS.indexOf(b.view);
+      if (va !== vb) return va - vb;
+      return ensureConstruction().rows.indexOf(a) - ensureConstruction().rows.indexOf(b);
+    });
+  }
+
+  function ccRowsForView(view, sheet) {
+    const key = ccViewKey(view);
+    return ccRows(sheet).filter(row => row.view === key);
+  }
+
+  function ccRowById(id) {
+    return ensureConstruction().rows.find(row => row.id === id) || null;
+  }
+
+  function ccRowSeq(id, sheet) {
+    const index = ccRows(sheet).findIndex(row => row.id === id);
+    return index === -1 ? '' : String(index + 1);
+  }
+
+  function ccCalloutForRow(rowId) {
+    return ensureConstruction().callouts.find(callout => callout.rowId === rowId) || null;
+  }
+
+  function ccVisibleCallouts() {
+    return ensureConstruction().callouts.filter(callout => callout.sheet === ccSheet);
+  }
+
+  function ccSelectedCallout() {
+    return ccVisibleCallouts().find(callout => callout.id === ccSelectedCalloutId) || null;
+  }
+
+  function ccImages(sheet, view) {
+    return ensureConstruction().images[ccSheetKey(sheet)][ccViewKey(view)];
+  }
+
+  function ccImageById(id, sheet, view) {
+    const views = view ? [ccViewKey(view)] : CC_VIEWS;
+    for (const candidate of views) {
+      const found = ccImages(sheet, candidate).find(image => image.id === id);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function ccImageRuntime(id) {
+    return ccImageElementById.get(id) || null;
+  }
+
+  function ccReflowImagesIn(model, sheet, view) {
+    const images = model.images[sheet][view];
+    const commonHeight = 300;
+    const gap = 28;
+    let x = 0;
+    images.forEach(image => {
+      image.height = commonHeight;
+      image.width = commonHeight * (image.aspect || 1);
+      image.x = x;
+      image.y = 0;
+      x += image.width + gap;
+    });
+  }
+
+  function ccReflowImages(sheet, view) {
+    ccReflowImagesIn(ensureConstruction(), ccSheetKey(sheet), ccViewKey(view));
+  }
+
+  async function ccAddImagesFromDataURLs(dataURLs, sheet, view) {
+    const sheetKey = ccSheetKey(sheet);
+    const viewKey = ccViewKey(view);
+    const images = ccImages(sheetKey, viewKey);
+    let added = 0;
+    for (const dataURL of dataURLs || []) {
+      if (!dataURL) continue;
+      const img = await loadImageFromDataURL(dataURL);
+      const id = state.idCounter++;
+      const aspect = img.height > 0 ? img.width / img.height : 1;
+      images.push({ id, x: 0, y: 0, width: 300 * aspect, height: 300, aspect, locked: false });
+      ccImageDataById.set(id, dataURL);
+      ccImageElementById.set(id, img);
+      added += 1;
+    }
+    if (!added) return 0;
+    ccReflowImages(sheetKey, viewKey);
+    ccActiveView = viewKey;
+    ccSelectedImageId = null;
+    ccSelectedCalloutId = null;
+    ccSetTool('select');
+    renderConstruction();
+    pushHistoryIfChanged();
+    showToast(added + ' image' + (added === 1 ? '' : 's') + ' added to ' + sheetKey.toUpperCase() + ' · ' + viewKey.toUpperCase());
+    return added;
+  }
+
+  async function ccAddImageFiles(files, sheet, view) {
+    const imageFiles = Array.from(files || []).filter(file => file && /^image\//i.test(file.type || ''));
+    if (!imageFiles.length) {
+      showToast('Add PNG, JPEG, or WebP images to the Construction working board.');
+      return 0;
+    }
+    const dataURLs = [];
+    for (const file of imageFiles) dataURLs.push(await blobToDataURL(file));
+    return ccAddImagesFromDataURLs(dataURLs, sheet, view);
+  }
+
+  function ccDeleteSelectedImage() {
+    const image = ccImageById(ccSelectedImageId, ccSheet, ccActiveView);
+    if (!image) { showToast('Select an image in the active Construction panel first.'); return; }
+    const linked = ccVisibleCallouts().filter(callout => callout.imageId === image.id);
+    if (linked.length && !window.confirm('Delete this image and its ' + linked.length + ' linked callout(s)?\n\nUndo restores both.')) return;
+    const images = ccImages(ccSheet, ccActiveView);
+    images.splice(images.indexOf(image), 1);
+    if (linked.length) {
+      const ids = new Set(linked.map(callout => callout.id));
+      state.construction.callouts = state.construction.callouts.filter(callout => !ids.has(callout.id));
+    }
+    ccSelectedImageId = null;
+    ccSelectedCalloutId = null;
+    ccReflowImages(ccSheet, ccActiveView);
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccZoomSelectedImage(factor) {
+    const image = ccImageById(ccSelectedImageId, ccSheet, ccActiveView);
+    if (!image) { showToast('Select an image in the active Construction panel first.'); return; }
+    const nextWidth = clamp(image.width * factor, 60, 1800);
+    const nextHeight = nextWidth / (image.aspect || 1);
+    const cx = image.x + image.width / 2, cy = image.y + image.height / 2;
+    image.width = nextWidth;
+    image.height = nextHeight;
+    image.x = cx - nextWidth / 2;
+    image.y = cy - nextHeight / 2;
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccAddRow(view) {
+    const row = {
+      id: state.idCounter++, sheet: ccSheet, view: ccViewKey(view), area: 'CUP', detail: '',
+    };
+    ensureConstruction().rows.push(row);
+    ccSelectedRowId = row.id;
+    ccActiveView = row.view;
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccDeleteRow(rowId) {
+    const cc = ensureConstruction();
+    const index = cc.rows.findIndex(row => row.id === rowId);
+    if (index === -1) return;
+    const callout = ccCalloutForRow(rowId);
+    cc.rows.splice(index, 1);
+    if (callout) cc.callouts = cc.callouts.filter(item => item.id !== callout.id);
+    if (ccSelectedRowId === rowId) ccSelectedRowId = null;
+    if (callout && ccSelectedCalloutId === callout.id) ccSelectedCalloutId = null;
+    if (ccTool === 'leader' && !ccSelectedCallout()) ccTool = 'select';
+    renderConstruction();
+    pushHistoryIfChanged();
+    showToast('Construction row deleted · Ctrl/Cmd+Z to undo');
+  }
+
+  function ccMoveRowView(row, nextView) {
+    const view = ccViewKey(nextView);
+    if (!row || row.view === view) return;
+    const callout = ccCalloutForRow(row.id);
+    if (callout) {
+      state.construction.callouts = state.construction.callouts.filter(item => item.id !== callout.id);
+      if (ccSelectedCalloutId === callout.id) ccSelectedCalloutId = null;
+    }
+    row.view = view;
+    ccActiveView = view;
+    if (ccTool === 'leader') ccTool = 'select';
+    renderConstruction();
+    pushHistoryIfChanged();
+    showToast(callout ? 'Row moved to ' + view.toUpperCase() + '; old-view callout removed · Undo restores both' : 'Row moved to ' + view.toUpperCase());
+  }
+
+  function ccMissingRows() {
+    return ccRows(ccSheet).filter(row => !ccCalloutForRow(row.id));
+  }
+
+  function ccNextMissingRow(afterId) {
+    const rows = ccRows(ccSheet);
+    const start = Math.max(-1, rows.findIndex(row => row.id === afterId));
+    for (let step = 1; step <= rows.length; step += 1) {
+      const row = rows[(start + step) % rows.length];
+      if (!ccCalloutForRow(row.id)) return row;
+    }
+    return null;
+  }
+
+  function ccArmRowCallout(rowId) {
+    const row = ccRowById(rowId);
+    if (!row || row.sheet !== ccSheet) return;
+    ccSelectedRowId = row.id;
+    ccActiveView = row.view;
+    const callout = ccCalloutForRow(row.id);
+    if (callout) {
+      ccSelectedCalloutId = callout.id;
+      ccSelectedImageId = null;
+      ccSetTool('select');
+      showToast('Selected the existing callout for Construction row ' + ccRowSeq(row.id));
+    } else {
+      ccSelectedCalloutId = null;
+      ccSelectedImageId = null;
+      ccSetTool('callout');
+      showToast('Click an image in ' + row.view.toUpperCase() + ' to place row ' + ccRowSeq(row.id));
+    }
+    renderConstruction();
+  }
+
+  function ccStartCalloutTool(preferredRowId) {
+    const missing = ccMissingRows();
+    if (!missing.length) {
+      ccSetTool('select');
+      showToast('Every Construction row on this sheet already has a callout');
+      return;
+    }
+    const row = missing.find(item => item.id === preferredRowId)
+      || missing.find(item => item.id === ccSelectedRowId)
+      || missing[0];
+    ccSelectedRowId = row.id;
+    ccSelectedCalloutId = null;
+    ccSelectedImageId = null;
+    ccActiveView = row.view;
+    ccSetTool('callout');
+    renderConstruction();
+  }
+
+  function ccSetTool(tool) {
+    if (!['select', 'callout', 'leader'].includes(tool)) tool = 'select';
+    if (tool === 'leader' && !ccSelectedCallout()) {
+      showToast('Select a Construction callout before adding leaders');
+      tool = 'select';
+    }
+    ccTool = tool;
+    ccSyncUi();
+  }
+
+  function ccDeleteSelectedCallout() {
+    const callout = ccSelectedCallout();
+    if (!callout) return;
+    state.construction.callouts = state.construction.callouts.filter(item => item.id !== callout.id);
+    ccSelectedCalloutId = null;
+    if (ccTool === 'leader') ccTool = 'select';
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccImageBounds(sheet, view) {
+    const images = ccImages(sheet, view);
+    if (!images.length) return { x: 0, y: 0, width: 1, height: 1 };
+    const minX = Math.min(...images.map(image => image.x));
+    const minY = Math.min(...images.map(image => image.y));
+    const maxX = Math.max(...images.map(image => image.x + image.width));
+    const maxY = Math.max(...images.map(image => image.y + image.height));
+    return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
+  }
+
+  function ccBuildPanelLayout(view, x, y, width, height) {
+    const content = { x: x + 12, y: y + 36, width: width - 24, height: height - 48 };
+    const bounds = ccImageBounds(ccSheet, view);
+    const hasImages = ccImages(ccSheet, view).length > 0;
+    const scale = hasImages ? Math.min(content.width / bounds.width, content.height / bounds.height, 2) : 1;
+    return {
+      view, x, y, width, height, content,
+      offX: content.x + (content.width - bounds.width * scale) / 2 - bounds.x * scale,
+      offY: content.y + (content.height - bounds.height * scale) / 2 - bounds.y * scale,
+      scale,
+    };
+  }
+
+  function ccWorldToCanvas(layout, point) {
+    return { x: point.x * layout.scale + layout.offX, y: point.y * layout.scale + layout.offY };
+  }
+
+  function ccCanvasToWorld(layout, point) {
+    return { x: (point.x - layout.offX) / layout.scale, y: (point.y - layout.offY) / layout.scale };
+  }
+
+  function ccWorldOf(image, norm) {
+    return { x: image.x + norm.nx * image.width, y: image.y + norm.ny * image.height };
+  }
+
+  function ccNormalize(image, point) {
+    return {
+      nx: clamp((point.x - image.x) / image.width, 0, 1),
+      ny: clamp((point.y - image.y) / image.height, 0, 1),
+    };
+  }
+
+  function ccPanelAt(point) {
+    return CC_VIEWS.map(view => ccPanelLayouts[view]).find(layout => layout
+      && point.x >= layout.x && point.x <= layout.x + layout.width
+      && point.y >= layout.y && point.y <= layout.y + layout.height) || null;
+  }
+
+  function ccImageAt(view, worldPoint) {
+    const images = ccImages(ccSheet, view);
+    for (let i = images.length - 1; i >= 0; i -= 1) {
+      const image = images[i];
+      if (worldPoint.x >= image.x && worldPoint.x <= image.x + image.width
+        && worldPoint.y >= image.y && worldPoint.y <= image.y + image.height) return image;
+    }
+    return null;
+  }
+
+  function ccDistanceToSegment(point, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    if (!dx && !dy) return Math.hypot(point.x - a.x, point.y - a.y);
+    const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(point.x - (a.x + t * dx), point.y - (a.y + t * dy));
+  }
+
+  function ccHitTest(point) {
+    const callouts = ccVisibleCallouts();
+    for (let i = callouts.length - 1; i >= 0; i -= 1) {
+      const callout = callouts[i];
+      const layout = ccPanelLayouts[callout.view];
+      const image = ccImageById(callout.imageId, ccSheet, callout.view);
+      if (!layout || !image) continue;
+      for (let ti = callout.targets.length - 1; ti >= 0; ti -= 1) {
+        const pin = ccWorldToCanvas(layout, ccWorldOf(image, callout.targets[ti]));
+        if (Math.hypot(point.x - pin.x, point.y - pin.y) <= CC_HIT_RADIUS) {
+          return { callout, image, layout, part: 'anchor', anchorIndex: ti };
+        }
+      }
+      const box = ccBoxCache[callout.id];
+      if (box && point.x >= box.x && point.x <= box.x + box.width && point.y >= box.y && point.y <= box.y + box.height) {
+        return { callout, image, layout, part: 'label', anchorIndex: -1 };
+      }
+      const label = ccWorldToCanvas(layout, ccWorldOf(image, callout.textPos));
+      for (let ti = callout.targets.length - 1; ti >= 0; ti -= 1) {
+        const pin = ccWorldToCanvas(layout, ccWorldOf(image, callout.targets[ti]));
+        if (ccDistanceToSegment(point, label, pin) <= 6) {
+          return { callout, image, layout, part: 'line', anchorIndex: ti };
+        }
+      }
+    }
+    return null;
+  }
+
+  function ccCreateCalloutAt(layout, worldPoint) {
+    const row = ccRowById(ccSelectedRowId) || ccMissingRows()[0];
+    if (!row || row.sheet !== ccSheet || ccCalloutForRow(row.id)) {
+      ccStartCalloutTool();
+      return;
+    }
+    if (layout.view !== row.view) {
+      ccActiveView = row.view;
+      ccSyncUi();
+      showToast('Row ' + ccRowSeq(row.id) + ' belongs to ' + row.view.toUpperCase() + '; place it in that panel');
+      return;
+    }
+    const image = ccImageAt(row.view, worldPoint);
+    if (!image) { showToast('Click a sketch image in the ' + row.view.toUpperCase() + ' panel'); return; }
+    const target = ccNormalize(image, worldPoint);
+    const callout = {
+      id: state.idCounter++, rowId: row.id, sheet: row.sheet, view: row.view, imageId: image.id,
+      targets: [target],
+      textPos: {
+        nx: clamp(target.nx + (target.nx > 0.65 ? -0.30 : 0.08), 0.02, 0.88),
+        ny: clamp(target.ny - 0.04, 0.04, 0.94),
+      },
+      color: CC_CALLOUT_COLOR,
+    };
+    ensureConstruction().callouts.push(callout);
+    const next = ccNextMissingRow(row.id);
+    if (next) {
+      ccSelectedRowId = next.id;
+      ccSelectedCalloutId = null;
+      ccActiveView = next.view;
+    } else {
+      ccSelectedRowId = row.id;
+      ccSelectedCalloutId = callout.id;
+      ccTool = 'select';
+    }
+    renderConstruction();
+    pushHistoryIfChanged();
+    showToast(next ? 'Callout added · next row ' + ccRowSeq(next.id) + ' · ' + next.view.toUpperCase() : 'All Construction rows now have callouts · Select is active');
+  }
+
+  function ccAddLeaderAt(layout, worldPoint) {
+    const callout = ccSelectedCallout();
+    if (!callout) { ccSetTool('select'); return; }
+    if (layout.view !== callout.view) { showToast('Add leaders inside the selected callout\'s ' + callout.view.toUpperCase() + ' panel'); return; }
+    const image = ccImageById(callout.imageId, ccSheet, callout.view);
+    if (!image || ccImageAt(callout.view, worldPoint) !== image) {
+      showToast('Add the leader inside the selected callout\'s own image');
+      return;
+    }
+    callout.targets.push(ccNormalize(image, worldPoint));
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccDeleteAnchorAt(point) {
+    const hit = ccHitTest(point);
+    if (!hit || hit.part !== 'anchor') return;
+    if (hit.callout.targets.length <= 1) {
+      showToast('A callout needs at least one leader; delete the callout to remove it');
+      return;
+    }
+    hit.callout.targets.splice(hit.anchorIndex, 1);
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccWrapLines(ctx, text, maxWidth) {
+    const paragraphs = String(text || '').split('\n');
+    const lines = [];
+    paragraphs.forEach(paragraph => {
+      const words = paragraph.split(/\s+/).filter(Boolean);
+      if (!words.length) { lines.push(''); return; }
+      let line = '';
+      words.forEach(word => {
+        const next = line ? line + ' ' + word : word;
+        if (line && ctx.measureText(next).width > maxWidth) { lines.push(line); line = word; }
+        else line = next;
+      });
+      lines.push(line);
+    });
+    return lines.length ? lines : [''];
+  }
+
+  function ccEdgeToward(box, target) {
+    const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
+    const dx = target.x - cx, dy = target.y - cy;
+    const tx = dx ? (box.width / 2) / Math.abs(dx) : 1e9;
+    const ty = dy ? (box.height / 2) / Math.abs(dy) : 1e9;
+    const t = Math.min(tx, ty);
+    return { x: cx + dx * t, y: cy + dy * t };
+  }
+
+  function ccDrawArrow(ctx, from, to, color) {
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(to.x, to.y);
+    ctx.lineTo(to.x - CC_ARROW_SIZE * Math.cos(angle - Math.PI / 6), to.y - CC_ARROW_SIZE * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(to.x - CC_ARROW_SIZE * Math.cos(angle + Math.PI / 6), to.y - CC_ARROW_SIZE * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function ccCalloutText(callout) {
+    const row = ccRowById(callout.rowId);
+    if (!row) return '? deleted Construction row';
+    const detail = String(row.detail || '').trim();
+    return ccRowSeq(row.id, row.sheet) + '. ' + CC_AREA_LABELS[row.area].toUpperCase() + (detail ? ' — ' + detail : '');
+  }
+
+  function ccDrawCallout(ctx, callout) {
+    const row = ccRowById(callout.rowId);
+    const layout = ccPanelLayouts[callout.view];
+    const image = ccImageById(callout.imageId, callout.sheet, callout.view);
+    if (!row || !layout || !image) return;
+    const selected = callout.id === ccSelectedCalloutId;
+    const color = callout.color || CC_CALLOUT_COLOR;
+    const label = ccWorldToCanvas(layout, ccWorldOf(image, callout.textPos));
+    ctx.save();
+    ctx.font = (selected ? 'bold ' : '') + '12px sans-serif';
+    const lines = ccWrapLines(ctx, ccCalloutText(callout), CC_TEXT_WIDTH);
+    const widths = lines.map(line => ctx.measureText(line).width);
+    const box = { x: label.x - 5, y: label.y - 9, width: Math.max(34, ...widths) + 10, height: Math.max(1, lines.length) * CC_LINE_HEIGHT + 6 };
+    ccBoxCache[callout.id] = box;
+    ctx.fillStyle = 'rgba(255,255,255,.95)';
+    ctx.fillRect(box.x, box.y, box.width, box.height);
+    callout.targets.forEach((target, index) => {
+      const pin = ccWorldToCanvas(layout, ccWorldOf(image, target));
+      const from = ccEdgeToward(box, pin);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = selected ? 2.5 : 1.5;
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(pin.x, pin.y);
+      ctx.stroke();
+      ccDrawArrow(ctx, from, pin, color);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(pin.x, pin.y, index === 0 ? CC_PIN_RADIUS : CC_ANCHOR_RADIUS, 0, Math.PI * 2);
+      ctx.fill();
+      if (index === 0) {
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ccRowSeq(row.id, row.sheet), pin.x, pin.y + .5);
+      }
+    });
+    if (selected) {
+      ctx.strokeStyle = '#3f8ae0';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+    }
+    ctx.font = (selected ? 'bold ' : '') + '12px sans-serif';
+    ctx.fillStyle = callout.textRed ? '#cc0000' : '#111';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    lines.forEach((line, index) => ctx.fillText(line, label.x, label.y + index * CC_LINE_HEIGHT));
+    ctx.restore();
+  }
+
+  function ccDrawCanvas() {
+    const canvas = document.getElementById('constructionCanvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const dpr = window.devicePixelRatio || 1;
+    ccDrawCanvasInto(canvas, rect.width, rect.height, dpr);
+  }
+
+  // Draw the active sheet's working board (Outer/Inner panels + callouts)
+  // into any canvas at a given CSS size and pixel scale. Extracted from
+  // ccDrawCanvas so the Preview & Export page can render a chosen sheet
+  // offscreen through the exact same drawing code the live board uses
+  // (US-079: preview and export share one render path).
+  function ccDrawCanvasInto(canvas, cssWidth, cssHeight, pixelScale) {
+    canvas.width = Math.round(cssWidth * pixelScale);
+    canvas.height = Math.round(cssHeight * pixelScale);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(pixelScale, 0, 0, pixelScale, 0, 0);
+    ctx.clearRect(0, 0, cssWidth, cssHeight);
+    ctx.fillStyle = '#eef0f4';
+    ctx.fillRect(0, 0, cssWidth, cssHeight);
+    const gap = 12;
+    const panelWidth = (cssWidth - gap * 3) / 2;
+    const panelHeight = cssHeight - gap * 2;
+    ccPanelLayouts = {
+      outer: ccBuildPanelLayout('outer', gap, gap, panelWidth, panelHeight),
+      inner: ccBuildPanelLayout('inner', gap * 2 + panelWidth, gap, panelWidth, panelHeight),
+    };
+    ccBoxCache = {};
+    CC_VIEWS.forEach(view => {
+      const layout = ccPanelLayouts[view];
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(layout.x, layout.y, layout.width, layout.height);
+      ctx.strokeStyle = view === ccActiveView ? '#1c6dd0' : '#c7ccd4';
+      ctx.lineWidth = view === ccActiveView ? 2 : 1;
+      ctx.strokeRect(layout.x, layout.y, layout.width, layout.height);
+      ctx.fillStyle = view === ccActiveView ? '#eaf2ff' : '#f5f6f8';
+      ctx.fillRect(layout.x, layout.y, layout.width, 30);
+      ctx.fillStyle = '#111827';
+      ctx.font = '600 13px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(view.toUpperCase(), layout.x + 10, layout.y + 15);
+      const images = ccImages(ccSheet, view);
+      if (!images.length) {
+        ctx.strokeStyle = '#c8ccd4';
+        ctx.setLineDash([6, 5]);
+        ctx.strokeRect(layout.content.x, layout.content.y, layout.content.width, layout.content.height);
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#7a8190';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Paste, drop, or add images to ' + view.toUpperCase(), layout.content.x + layout.content.width / 2, layout.content.y + layout.content.height / 2);
+      }
+      images.forEach(image => {
+        const topLeft = ccWorldToCanvas(layout, { x: image.x, y: image.y });
+        const width = image.width * layout.scale, height = image.height * layout.scale;
+        const runtime = ccImageRuntime(image.id);
+        if (runtime) ctx.drawImage(runtime, topLeft.x, topLeft.y, width, height);
+        else {
+          ctx.fillStyle = '#f3f4f6';
+          ctx.fillRect(topLeft.x, topLeft.y, width, height);
+          ctx.fillStyle = '#8b919c';
+          ctx.textAlign = 'center';
+          ctx.fillText('Image data unavailable', topLeft.x + width / 2, topLeft.y + height / 2);
+        }
+        if (image.id === ccSelectedImageId) {
+          ctx.strokeStyle = '#3f8ae0';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(topLeft.x - 2, topLeft.y - 2, width + 4, height + 4);
+        }
+      });
+    });
+    ccVisibleCallouts().forEach(callout => ccDrawCallout(ctx, callout));
+  }
+
+  // Offscreen render of ONE sheet (solid|lace) for the Preview & Export page
+  // and the tech-pack Excel export. Swaps the module view state so the shared
+  // draw code targets the requested sheet with no selection/active-panel
+  // chrome, and restores it in finally so the live board never observes the
+  // swap. ccPanelLayouts/ccBoxCache are hit-testing caches keyed to the live
+  // canvas — they must be restored or clicks after a render would mis-hit.
+  function ccRenderSheetToCanvas(sheet, cssWidth, cssHeight, pixelScale) {
+    const saved = {
+      sheet: ccSheet, view: ccActiveView, callout: ccSelectedCalloutId,
+      image: ccSelectedImageId, layouts: ccPanelLayouts, boxes: ccBoxCache,
+    };
+    const canvas = document.createElement('canvas');
+    try {
+      ccSheet = ccSheetKey(sheet);
+      ccActiveView = '';
+      ccSelectedCalloutId = null;
+      ccSelectedImageId = null;
+      ccDrawCanvasInto(canvas, cssWidth, cssHeight, pixelScale || 1);
+    } finally {
+      ccSheet = saved.sheet;
+      ccActiveView = saved.view;
+      ccSelectedCalloutId = saved.callout;
+      ccSelectedImageId = saved.image;
+      ccPanelLayouts = saved.layouts;
+      ccBoxCache = saved.boxes;
+    }
+    return canvas;
+  }
+
+  function ccAreaOptions(selected) {
+    return CC_AREAS.map(area => '<option value="' + area + '"' + (area === selected ? ' selected' : '') + '>' + escapeHtml(CC_AREA_LABELS[area]) + '</option>').join('');
+  }
+
+  function ccRowHtml(row) {
+    const callout = ccCalloutForRow(row.id);
+    const selected = row.id === ccSelectedRowId || (callout && callout.id === ccSelectedCalloutId);
+    return '<tr data-cc-row="' + row.id + '"' + (selected ? ' class="cc-row-selected"' : '') + '>'
+      + '<td class="cc-tbl-seq">' + ccRowSeq(row.id) + '</td>'
+      + '<td class="cc-tbl-view"><select data-cc-row-view="' + row.id + '" aria-label="Construction view">'
+      + '<option value="outer"' + (row.view === 'outer' ? ' selected' : '') + '>Outer</option>'
+      + '<option value="inner"' + (row.view === 'inner' ? ' selected' : '') + '>Inner</option></select></td>'
+      + '<td class="cc-tbl-area"><select data-cc-row-area="' + row.id + '" aria-label="Construction area">' + ccAreaOptions(row.area) + '</select></td>'
+      + '<td class="cc-tbl-detail"><div class="cc-detail-wrap"><textarea rows="1" spellcheck="false" data-cc-row-detail="' + row.id + '" aria-label="Construction detail">' + escapeHtml(row.detail) + '</textarea>'
+      + '<button type="button" data-cc-phrase-row="' + row.id + '" title="Choose a construction phrase">&#9662;</button></div></td>'
+      + '<td class="cc-tbl-callout"><button type="button" data-cc-row-callout="' + row.id + '" title="' + (callout ? 'Select existing callout' : 'Place callout') + '">' + (callout ? '&#9679;' : '&#8853;') + '</button></td>'
+      + '<td class="cc-tbl-del"><button type="button" data-cc-row-del="' + row.id + '" title="Delete row">&#10005;</button></td>'
+      + '</tr>';
+  }
+
+  function ccRenderTable() {
+    const body = document.getElementById('ccTableBody');
+    if (!body) return;
+    const active = document.activeElement;
+    if (active && body.contains(active)) return;
+    body.innerHTML = CC_VIEWS.map(view => {
+      const rows = ccRowsForView(view, ccSheet);
+      return '<tr class="cc-view-band"><th colspan="6">' + view.toUpperCase() + '</th></tr>'
+        + rows.map(ccRowHtml).join('')
+        + '<tr class="cc-add-row"><td colspan="6"><button type="button" data-cc-add-row="' + view + '">&#65291; Add ' + view + ' row</button></td></tr>';
+    }).join('');
+  }
+
+  function ccOpenPhraseMenu(rowId, button) {
+    ccPhraseRowId = rowId;
+    ccSelectedRowId = rowId;
+    const row = ccRowById(rowId);
+    if (row) ccActiveView = row.view;
+    const menu = document.getElementById('ccPhraseMenu');
+    const search = document.getElementById('ccPhraseSearch');
+    if (!menu || !search) return;
+    search.value = '';
+    menu.hidden = false;
+    const rect = button.getBoundingClientRect();
+    menu.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 390)) + 'px';
+    menu.style.top = Math.min(rect.bottom + 4, window.innerHeight - 330) + 'px';
+    ccRenderPhraseList();
+    search.focus();
+    renderConstruction();
+  }
+
+  function ccClosePhraseMenu() {
+    const menu = document.getElementById('ccPhraseMenu');
+    if (menu) menu.hidden = true;
+    ccPhraseRowId = null;
+  }
+
+  function ccRenderPhraseList() {
+    const search = document.getElementById('ccPhraseSearch');
+    const list = document.getElementById('ccPhraseList');
+    if (!list) return;
+    const tokens = String((search && search.value) || '').toLowerCase().split(/\s+/).filter(Boolean);
+    ccPhraseHits = (tokens.length
+      ? CONSTRUCTION_PHRASES.filter(item => tokens.every(token => item.text.toLowerCase().includes(token)))
+      : CONSTRUCTION_PHRASES.filter(item => item.favorite)).slice(0, 60);
+    list.innerHTML = ccPhraseHits.map((item, index) => '<button type="button" data-cc-phrase="' + index + '">' + escapeHtml(item.text) + '</button>').join('')
+      || '<div class="cc-phrase-empty">No matching phrase</div>';
+  }
+
+  function ccApplyPhrase(index) {
+    const row = ccRowById(ccPhraseRowId);
+    const item = ccPhraseHits[index];
+    if (!row || !item) return;
+    row.detail = item.text;
+    ccClosePhraseMenu();
+    renderConstruction();
+    pushHistoryIfChanged();
+  }
+
+  function ccSyncUi() {
+    document.querySelectorAll('[data-cc-sheet]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.ccSheet === ccSheet));
+    });
+    document.querySelectorAll('[data-cc-active-view]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.ccActiveView === ccActiveView));
+    });
+    const tools = {
+      select: document.getElementById('ccSelectToolBtn'),
+      callout: document.getElementById('ccAddCalloutBtn'),
+      leader: document.getElementById('ccAddLeaderBtn'),
+    };
+    Object.keys(tools).forEach(tool => {
+      const button = tools[tool];
+      if (!button) return;
+      button.classList.toggle('cc-tool-active', ccTool === tool);
+      button.setAttribute('aria-pressed', String(ccTool === tool));
+    });
+    if (tools.leader) tools.leader.disabled = !ccSelectedCallout();
+    const deleteCallout = document.getElementById('ccDeleteCalloutBtn');
+    if (deleteCallout) deleteCallout.disabled = !ccSelectedCallout();
+    const deleteImage = document.getElementById('ccDeleteImageBtn');
+    if (deleteImage) deleteImage.disabled = !ccImageById(ccSelectedImageId, ccSheet, ccActiveView);
+    const hint = document.getElementById('ccToolHint');
+    if (hint) {
+      if (ccTool === 'callout') {
+        const row = ccRowById(ccSelectedRowId);
+        hint.textContent = row ? 'Add Callouts: place row ' + ccRowSeq(row.id) + ' in ' + row.view.toUpperCase() + '; Select/Esc finishes.' : 'Add Callouts: place the highlighted row.';
+      } else if (ccTool === 'leader') {
+        hint.textContent = 'Add Leaders: click multiple targets on the selected callout image; Select/Esc finishes.';
+      } else {
+        hint.textContent = 'Active panel: ' + ccActiveView.toUpperCase() + ' · select a label, leader, target, or image to adjust it.';
+      }
+    }
+    const canvas = document.getElementById('constructionCanvas');
+    if (canvas) {
+      canvas.classList.remove('cc-tool-select', 'cc-tool-callout', 'cc-tool-leader');
+      canvas.classList.add('cc-tool-' + ccTool);
+    }
+  }
+
+  function renderConstruction() {
+    ensureConstruction();
+    if (ccTool === 'leader' && !ccSelectedCallout()) ccTool = 'select';
+    const title = document.getElementById('ccSheetTitle');
+    if (title) title.textContent = 'CONSTRUCTION · ' + ccSheet.toUpperCase();
+    ccDrawCanvas();
+    ccRenderTable();
+    ccSyncUi();
+  }
+
+  function ccEventPoint(event, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  function ccOnPointerDown(event) {
+    const canvas = document.getElementById('constructionCanvas');
+    if (!canvas) return;
+    const point = ccEventPoint(event, canvas);
+    const layout = ccPanelAt(point);
+    if (!layout) return;
+    ccActiveView = layout.view;
+    const world = ccCanvasToWorld(layout, point);
+    if (ccTool === 'callout') { ccCreateCalloutAt(layout, world); return; }
+    if (ccTool === 'leader') { ccAddLeaderAt(layout, world); return; }
+    const hit = ccHitTest(point);
+    if (hit) {
+      ccSelectedCalloutId = hit.callout.id;
+      ccSelectedRowId = hit.callout.rowId;
+      ccSelectedImageId = null;
+      if (hit.part !== 'line') ccDrag = { kind: 'callout', hit };
+      renderConstruction();
+      event.preventDefault();
+      return;
+    }
+    const image = ccImageAt(layout.view, world);
+    if (image) {
+      ccSelectedImageId = image.id;
+      ccSelectedCalloutId = null;
+      ccDrag = { kind: 'image', image, layout, prev: world };
+    } else {
+      ccSelectedImageId = null;
+      ccSelectedCalloutId = null;
+    }
+    renderConstruction();
+  }
+
+  function ccOnPointerMove(event) {
+    if (!ccDrag) return;
+    const canvas = document.getElementById('constructionCanvas');
+    if (!canvas) return;
+    const point = ccEventPoint(event, canvas);
+    if (ccDrag.kind === 'callout') {
+      const hit = ccDrag.hit;
+      const world = ccCanvasToWorld(hit.layout, point);
+      const norm = ccNormalize(hit.image, world);
+      if (hit.part === 'anchor') hit.callout.targets[hit.anchorIndex] = norm;
+      else if (hit.part === 'label') hit.callout.textPos = norm;
+    } else if (ccDrag.kind === 'image') {
+      const world = ccCanvasToWorld(ccDrag.layout, point);
+      ccDrag.image.x += world.x - ccDrag.prev.x;
+      ccDrag.image.y += world.y - ccDrag.prev.y;
+      ccDrag.prev = world;
+    }
+    ccDrawCanvas();
+  }
+
+  function ccOnPointerUp() {
+    if (!ccDrag) return;
+    ccDrag = null;
+    pushHistoryIfChanged();
+  }
+
+  function initConstruction() {
+    ensureConstruction();
+    const page = document.getElementById('constructionPage');
+    if (!page) return;
+    const canvas = document.getElementById('constructionCanvas');
+    const imageInput = document.getElementById('ccImageInput');
+    const tableBody = document.getElementById('ccTableBody');
+
+    document.querySelectorAll('[data-cc-sheet]').forEach(button => {
+      button.addEventListener('click', () => {
+        ccSheet = ccSheetKey(button.dataset.ccSheet);
+        ccSelectedRowId = null;
+        ccSelectedCalloutId = null;
+        ccSelectedImageId = null;
+        ccSetTool('select');
+        renderConstruction();
+      });
+    });
+    document.querySelectorAll('[data-cc-active-view]').forEach(button => {
+      button.addEventListener('click', () => {
+        ccActiveView = ccViewKey(button.dataset.ccActiveView);
+        ccSelectedImageId = null;
+        renderConstruction();
+      });
+    });
+
+    const addImage = document.getElementById('ccAddImageBtn');
+    if (addImage) addImage.addEventListener('click', () => imageInput && imageInput.click());
+    if (imageInput) imageInput.addEventListener('change', async () => {
+      await ccAddImageFiles(imageInput.files, ccSheet, ccActiveView);
+      imageInput.value = '';
+    });
+    const pasteImage = document.getElementById('ccPasteImageBtn');
+    if (pasteImage) pasteImage.addEventListener('click', async () => {
+      if (!navigator.clipboard || typeof navigator.clipboard.read !== 'function') {
+        showToast('Use Ctrl/Cmd+V while Construction is open to paste images.');
+        return;
+      }
+      try {
+        const items = await navigator.clipboard.read();
+        const urls = [];
+        for (const item of items) {
+          const type = item.types.find(value => /^image\//i.test(value));
+          if (type) urls.push(await blobToDataURL(await item.getType(type)));
+        }
+        if (urls.length) await ccAddImagesFromDataURLs(urls, ccSheet, ccActiveView);
+        else showToast('Clipboard has no image.');
+      } catch (_) { showToast('Clipboard access was blocked; use Ctrl/Cmd+V instead.'); }
+    });
+    const deleteImage = document.getElementById('ccDeleteImageBtn');
+    if (deleteImage) deleteImage.addEventListener('click', ccDeleteSelectedImage);
+    const zoomOut = document.getElementById('ccImageZoomOutBtn');
+    const zoomIn = document.getElementById('ccImageZoomInBtn');
+    if (zoomOut) zoomOut.addEventListener('click', () => ccZoomSelectedImage(0.9));
+    if (zoomIn) zoomIn.addEventListener('click', () => ccZoomSelectedImage(1.1));
+    const selectTool = document.getElementById('ccSelectToolBtn');
+    const addCallout = document.getElementById('ccAddCalloutBtn');
+    const addLeader = document.getElementById('ccAddLeaderBtn');
+    const deleteCallout = document.getElementById('ccDeleteCalloutBtn');
+    if (selectTool) selectTool.addEventListener('click', () => ccSetTool('select'));
+    if (addCallout) addCallout.addEventListener('click', () => ccStartCalloutTool(ccSelectedRowId));
+    if (addLeader) addLeader.addEventListener('click', () => ccSetTool('leader'));
+    if (deleteCallout) deleteCallout.addEventListener('click', ccDeleteSelectedCallout);
+
+    if (canvas) {
+      canvas.addEventListener('mousedown', ccOnPointerDown);
+      canvas.addEventListener('dblclick', event => {
+        if (ccTool === 'select') ccDeleteAnchorAt(ccEventPoint(event, canvas));
+      });
+      canvas.addEventListener('dragover', event => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy'; });
+      canvas.addEventListener('drop', async event => {
+        event.preventDefault();
+        const layout = ccPanelAt(ccEventPoint(event, canvas));
+        if (layout) ccActiveView = layout.view;
+        await ccAddImageFiles(event.dataTransfer.files, ccSheet, ccActiveView);
+      });
+    }
+    window.addEventListener('mousemove', ccOnPointerMove);
+    window.addEventListener('mouseup', ccOnPointerUp);
+    window.addEventListener('resize', () => { if (state.activePage === 'construction') ccDrawCanvas(); });
+
+    if (tableBody) {
+      tableBody.addEventListener('input', event => {
+        const detail = event.target.closest('[data-cc-row-detail]');
+        if (!detail) return;
+        const row = ccRowById(Number(detail.dataset.ccRowDetail));
+        if (!row) return;
+        row.detail = detail.value;
+        ccDrawCanvas();
+      });
+      tableBody.addEventListener('change', event => {
+        const viewSelect = event.target.closest('[data-cc-row-view]');
+        if (viewSelect) {
+          const rowId = Number(viewSelect.dataset.ccRowView);
+          const nextView = viewSelect.value;
+          // A focused table control suppresses tbody rebuilds to preserve the
+          // caret. Blur before moving so the row immediately relocates under
+          // its new OUTER/INNER band.
+          viewSelect.blur();
+          ccMoveRowView(ccRowById(rowId), nextView);
+          return;
+        }
+        const areaSelect = event.target.closest('[data-cc-row-area]');
+        if (areaSelect) {
+          const row = ccRowById(Number(areaSelect.dataset.ccRowArea));
+          if (!row) return;
+          row.area = ccNormalizeArea(areaSelect.value);
+          ccDrawCanvas();
+          pushHistoryIfChanged();
+        }
+      });
+      tableBody.addEventListener('focusout', event => {
+        if (event.target.closest('[data-cc-row-detail]')) {
+          pushHistoryIfChanged();
+          setTimeout(ccRenderTable, 0);
+        }
+      });
+      tableBody.addEventListener('keydown', event => {
+        const detail = event.target.closest('[data-cc-row-detail]');
+        if (!detail || event.key !== 'Enter') return;
+        if (event.shiftKey) return;
+        event.preventDefault();
+        detail.blur();
+      });
+      tableBody.addEventListener('click', event => {
+        const phrase = event.target.closest('[data-cc-phrase-row]');
+        if (phrase) { ccOpenPhraseMenu(Number(phrase.dataset.ccPhraseRow), phrase); return; }
+        const callout = event.target.closest('[data-cc-row-callout]');
+        if (callout) { callout.blur(); ccArmRowCallout(Number(callout.dataset.ccRowCallout)); return; }
+        const remove = event.target.closest('[data-cc-row-del]');
+        if (remove) { remove.blur(); ccDeleteRow(Number(remove.dataset.ccRowDel)); return; }
+        const add = event.target.closest('[data-cc-add-row]');
+        if (add) { add.blur(); ccAddRow(add.dataset.ccAddRow); return; }
+        if (event.target.closest('select,textarea,button')) return;
+        const tr = event.target.closest('tr[data-cc-row]');
+        if (!tr) return;
+        const row = ccRowById(Number(tr.dataset.ccRow));
+        if (!row) return;
+        ccSelectedRowId = row.id;
+        ccActiveView = row.view;
+        const existing = ccCalloutForRow(row.id);
+        ccSelectedCalloutId = existing ? existing.id : null;
+        renderConstruction();
+      });
+    }
+
+    const phraseSearch = document.getElementById('ccPhraseSearch');
+    const phraseList = document.getElementById('ccPhraseList');
+    if (phraseSearch) phraseSearch.addEventListener('input', ccRenderPhraseList);
+    if (phraseList) phraseList.addEventListener('click', event => {
+      const button = event.target.closest('[data-cc-phrase]');
+      if (button) ccApplyPhrase(Number(button.dataset.ccPhrase));
+    });
+    document.addEventListener('click', event => {
+      const menu = document.getElementById('ccPhraseMenu');
+      if (menu && !menu.hidden && !event.target.closest('#ccPhraseMenu,[data-cc-phrase-row]')) ccClosePhraseMenu();
+    });
+    document.addEventListener('paste', async event => {
+      if (state.activePage !== 'construction') return;
+      const active = document.activeElement;
+      if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT' || active.isContentEditable)) return;
+      const files = Array.from((event.clipboardData && event.clipboardData.items) || [])
+        .filter(item => item.kind === 'file' && /^image\//i.test(item.type || ''))
+        .map(item => item.getAsFile()).filter(Boolean);
+      if (!files.length) return;
+      event.preventDefault();
+      event.stopPropagation();
+      await ccAddImageFiles(files, ccSheet, ccActiveView);
+    }, true);
+    document.addEventListener('keydown', event => {
+      if (state.activePage !== 'construction') return;
+      if (event.key === 'Escape') {
+        if (ccTool !== 'select') { ccSetTool('select'); return; }
+        if (ccSelectedCalloutId != null || ccSelectedImageId != null || ccSelectedRowId != null) {
+          ccSelectedCalloutId = null; ccSelectedImageId = null; ccSelectedRowId = null; renderConstruction(); return;
+        }
+        setActivePage('board');
+        return;
+      }
+      if (event.key === 'Backspace') {
+        const active = document.activeElement;
+        if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT' || active.isContentEditable)) return;
+        if (ccSelectedCallout()) { event.preventDefault(); ccDeleteSelectedCallout(); }
+      }
+    }, true);
+    renderConstruction();
+  }
+
+  // ---- src/ui/bom-material-data.js ----
+// Ported from the sibling tech-pack project's #bom-lib data island (mod-bom)
+// per ADR 0041 — a static 27-material suggestion library mined from 1,748
+// historical BOM records. Verbatim data — do not hand-edit without checking
+// the source stays in sync. Suggestions only: supplier/article/width/size are
+// never written into a row as fact, only offered as a fill (bom.js never
+// overwrites a cell the TD has already typed into).
+
+const BOM_MATERIAL_LIBRARY = [
+  {
+    name: '2-piece removable cookies',
+    section: 'TRIM',
+    width: '',
+    size: 'To be size-wise graded',
+    supplierOptions: ['Easy fashion'],
+    articleOptions: [],
+    areaOptions: ['Cup', 'Cup panel', 'Inner cup panel'],
+  },
+  {
+    name: 'allover lace',
+    section: 'FABRIC',
+    width: '',
+    size: '',
+    supplierOptions: ['YiYuan', 'B&H Lace', 'B&H', 'Wanting', 'Yi Yuan'],
+    articleOptions: ['JG021043326H', '#10', '61201', '67152', 'AirMara vB 3.0'],
+    areaOptions: ['Outer cup panel', 'Outer cup', 'Cup'],
+  },
+  {
+    name: 'diamond trim',
+    section: 'TRIM',
+    width: '',
+    size: '',
+    supplierOptions: ['Factory source'],
+    articleOptions: [],
+    areaOptions: ['Center cradle', 'Outer CF neck'],
+  },
+  {
+    name: 'fusing',
+    section: 'FABRIC',
+    width: '',
+    size: '',
+    supplierOptions: ['Factory source', 'Same as Daisy'],
+    articleOptions: ['Factory source'],
+    areaOptions: ['inside lower strap panel at front', 'Between two layer shell fabric at the back strap', 'Cup panel stabilisation, Hook-and-eye guard'],
+  },
+  {
+    name: 'galloon lace',
+    section: 'FABRIC',
+    width: '10 cm',
+    size: '',
+    supplierOptions: ['YiYuan', 'Dongguan Guoyi', 'Same as Zenchic', 'Yi Yuan', 'Yusheng'],
+    articleOptions: ['BR-GL-KT-NL-M-150-YY-444', 'BR-GL-KT-NL-M-150-YY-634', '#8', '1037D', '7117'],
+    areaOptions: ['Cup panel', 'Front neckline', 'Front sling, back panel - outer middle'],
+  },
+  {
+    name: 'hook and eye',
+    section: 'TRIM',
+    width: '',
+    size: 'XS, S, M, L, XL',
+    supplierOptions: ['1', 'Factory source'],
+    articleOptions: [],
+    areaOptions: ['CB', 'CB closure', 'Back closure'],
+  },
+  {
+    name: 'insert (encased) elastic- ub',
+    section: 'FABRIC',
+    width: '3 cm',
+    size: '4XL and above',
+    supplierOptions: ['Mingshipai'],
+    articleOptions: ['D2008', 'D2009'],
+    areaOptions: ['UB', 'Front & back inner UB', 'Inside bottom UB'],
+  },
+  {
+    name: 'lace trim',
+    section: 'FABRIC',
+    width: '2.5 cm',
+    size: '',
+    supplierOptions: ['Yi Yuan', 'YiYuan', 'To be sorce', 'Wanhe'],
+    articleOptions: ['1752', '5088', 'JW254591', 'YIYUAN_LT_S010075', 'YIYUAN_LT_S020699'],
+    areaOptions: ['Front neckline', 'Front UB', 'Along cup top edge'],
+  },
+  {
+    name: 'loop elastic',
+    section: 'FABRIC',
+    width: '2 cm (full width)',
+    size: 'XS-XL',
+    supplierOptions: ['Factory source'],
+    articleOptions: ['Rosylift (free market)', 'Same quality as Uplacy 1.0- Loop dimensions will be provided', 'Same quality and dimensions as Uplacy 1.0- Loop dimensions will be provided'],
+    areaOptions: ['Shoulder straps', 'Shoulder Strap, Inner front apex', 'Straps'],
+  },
+  {
+    name: 'nylon coated 8-shaped ring',
+    section: 'TRIM',
+    width: '2.5 cm (inner width)',
+    size: 'XS to XL',
+    supplierOptions: [],
+    articleOptions: [],
+    areaOptions: ['Front apex', 'Back apex edge', 'Front apex adjuster'],
+  },
+  {
+    name: 'nylon coated slider',
+    section: 'TRIM',
+    width: '',
+    size: '2XL-4XL',
+    supplierOptions: [],
+    articleOptions: [],
+    areaOptions: ['BACK STRAP ADJUSTMENT', 'BACK SHOULDER STRAP'],
+  },
+  {
+    name: 'nylon coated swan hook',
+    section: 'TRIM',
+    width: '2.5 cm (inner width)',
+    size: 'XS, S, M, L, XL,2XL',
+    supplierOptions: ['Same as Uplacy'],
+    articleOptions: [],
+    areaOptions: ['Front strap', 'Front end of adjustable straps', 'Front side panel to strap'],
+  },
+  {
+    name: 'open end zipper- nylon coil, nylon coated puller, automatic locking',
+    section: 'TRIM',
+    width: '',
+    size: 'Size breakdown TBA by TD',
+    supplierOptions: ['Same as Uplacy', 'Factory source', 'Same as Ziplacy'],
+    articleOptions: ['3 teeth', 'Coil zipper #4'],
+    areaOptions: ['CF opening', 'Front closure', 'CF'],
+  },
+  {
+    name: 'oval ring',
+    section: 'TRIM',
+    width: '3 cm (inner width)',
+    size: '',
+    supplierOptions: [],
+    articleOptions: [],
+    areaOptions: ['CF ring on UB', 'Front rigid tape', 'Front stabilizer tape'],
+  },
+  {
+    name: 'power mesh',
+    section: 'FABRIC',
+    width: '',
+    size: '',
+    supplierOptions: ['Wanting', 'Same as LunaHug\'s powermesh', '74%Nylon 26%Spandex 150gsm 10.2 CNY', 'B&H 150 gsm 70CNY', 'Guang Da'],
+    articleOptions: ['BR-ME-KT-NL-M-130-LF-I/8', 'BR-ME-KT-NL-L-200-LF-338', 'BR-ME-KT-NL-M-140-BH-I/8', 'BR-ME-KT-NL-M-165-LF-337', 'BR-ME-KT-NL-M-165-LF-I/8'],
+    areaOptions: ['inner front UB', 'Front UB liner', 'inner front UB, liner strap, outer and liner top back, front cup liner, top back'],
+  },
+  {
+    name: 'ready-made soft stretch tape',
+    section: 'FABRIC',
+    width: '1cm',
+    size: 'Inner binding tape for synthetic bras',
+    supplierOptions: ['Mingshipai'],
+    articleOptions: ['L1827', 'L1875', 'Uplacy\'s'],
+    areaOptions: ['inner binding at side seam, inner binding under cup', 'Inner binding at under cup & side seam', 'Inner binding tape'],
+  },
+  {
+    name: 'rigid tape',
+    section: 'FABRIC',
+    width: '2.5 cm',
+    size: 'XS, S, M, L, XL',
+    supplierOptions: ['Same as EllaCurve', 'Shunxingsheng'],
+    articleOptions: ['6887'],
+    areaOptions: ['Inner front apex', 'Apex, strap', 'Inner apex'],
+  },
+  {
+    name: 'set-in molded foam cup',
+    section: 'FABRIC',
+    width: '',
+    size: 'To be size-wise graded',
+    supplierOptions: ['To be source', 'Factory source (thin fabric)'],
+    articleOptions: ['Need to be source', 'AF-FC-MF-01', 'need to source', 'Source new shape', 'To be sorce'],
+    areaOptions: ['Cup', 'Cup panel', 'Cups'],
+  },
+  {
+    name: 'shell fabric',
+    section: 'FABRIC',
+    width: '',
+    size: '',
+    supplierOptions: ['Yodu', 'Same as Curvyflex', 'JinTaiFeng', 'Lifeng/ code 33-260 66 % Nylon + 34% Spandex 260gsm 57cny/kg', 'CurvyFlex\'s synthetic'],
+    articleOptions: ['BR-FB-KT-NL-H-260-LF-I/28', 'BR-FB-KT-NL-H-200-XG-I/7', 'BR-FB-KT-NL-M-180-LF-I/6', '99009', 'BR-FB-KT-NL-H-215-LF-645'],
+    areaOptions: ['Front outer and liner side panel, outer UB, outer cup, outer strap, zipper gard', 'Cup panel, Inner and outer cradle, Inner and outer back panel', 'front inner side panel, strap outer and inner, Back liner'],
+  },
+  {
+    name: 'soft underwire channel tape',
+    section: 'FABRIC',
+    width: '',
+    size: '',
+    supplierOptions: [],
+    articleOptions: [],
+    areaOptions: ['Inner binding tape for synthetic bras'],
+  },
+  {
+    name: 'strap elastic',
+    section: 'FABRIC',
+    width: '2.5 cm',
+    size: 'XS, S, M, L, XL',
+    supplierOptions: ['Shunxingsheng', 'ShapeCurvy Exposed elastic OR new item that has the same clean appearence on the face & reverse'],
+    articleOptions: ['6887', '6888', '6886'],
+    areaOptions: ['Straps', 'Back straps', 'Strap'],
+  },
+  {
+    name: 'two-piece molded foam cup',
+    section: 'FABRIC',
+    width: '',
+    size: 'Size wise graded',
+    supplierOptions: [],
+    articleOptions: ['JH518', 'Need to be source', 'need to source', 'Source new shape'],
+    areaOptions: ['Cup', 'Cup panel', 'Front cups'],
+  },
+  {
+    name: 'ub plush elastic',
+    section: 'FABRIC',
+    width: '1 cm',
+    size: 'XS, S, M, L, XL',
+    supplierOptions: ['Mingshipai', 'To be sourced (thinner quality than UB elastic)', 'Baoyoule'],
+    articleOptions: ['L1619', 'To be sourced (thinner quality than UB elastic)', 'To be sourced (thinner quality than UB Plush elastic)', 'L1620', 'UpLacy\'s'],
+    areaOptions: ['Inner UB', 'UB', 'Front & back inner UB'],
+  },
+  {
+    name: 'v-fold elastic',
+    section: 'FABRIC',
+    width: '16 mm (full width)',
+    size: 'S -XL',
+    supplierOptions: ['Mingshipai'],
+    articleOptions: ['L1612', 'L1613', 'UpLacy\'s'],
+    areaOptions: ['Neckline & armholes finish', 'Front & back armholes, front & back neckline, back straps', 'Front & back neckline & armholes finish'],
+  },
+  {
+    name: 'velcro hook side',
+    section: 'TRIM',
+    width: '',
+    size: 'XS-XL',
+    supplierOptions: ['Same as Selina', 'Shengou'],
+    articleOptions: ['2 Velcro', 'Same quality as Emma bra'],
+    areaOptions: ['Strap', 'shoulder straps', 'CF opening'],
+  },
+  {
+    name: 'velcro loop side',
+    section: 'TRIM',
+    width: '',
+    size: 'XS-XL',
+    supplierOptions: ['Same as Selina', 'Shengou'],
+    articleOptions: ['2 Velcro', 'Same quality as Emma bra'],
+    areaOptions: ['Strap', 'shoulder straps', 'CF opening'],
+  },
+  {
+    name: 'zipper puller',
+    section: 'TRIM',
+    width: '',
+    size: '',
+    supplierOptions: [],
+    articleOptions: ['ComfyMia'],
+    areaOptions: ['CF', 'Zipper puller'],
+  },
+];
+
+  // ---- src/ui/bom.js ----
+// BOM page: editable material table + material-key canvas annotation
+// (US-072, ADR 0041). Source part for app.js. Run `npm run build` after
+// editing.
+//
+// Rebuilt on this tool's primitives from the sibling tech-pack project's
+// mod-bom module — that project has its own globals/closures with no shared
+// module, so this is a fork, not a link (same pattern as MAIN PAGE/
+// Construction, ADR 0037/0039). Static suggestion data is carried across
+// verbatim in bom-material-data.js (BOM_MATERIAL_LIBRARY, 27 entries mined
+// from 1,748 historical BOM records) — that file must load before this one
+// (see scripts/source-parts.mjs).
+//
+// A row is { id, section:'FABRIC'|'TRIM', scope:'BOTH'|'SOLID'|'LACE',
+// cells:{description, areaOfUse, supplier, article, width, size,
+// composition}, cwOverride:{}, groupId?, photo?:{dataURL} } — groupId marks
+// a size-split pair (x.1/x.2 numbering), photo is the MATERIAL IMAGES cell.
+// state.bom is { rows, images:{solid:[],lace:[]}, callouts, seedId,
+// schemaVersion } — seedId records that the
+// reference seed (BM_SEED_ROWS, US-074) already ran for this project.
+// One shared row list, scope-filtered per
+// Solid/Lace sheet at render time via this page's `[data-bom-variant]` tabs
+// — same convention as Construction's `[data-cc-variant]` (ADR 0040). `#` is
+// computed live from render order (FABRIC rows then TRIM rows), never
+// stored — same non-goal as Construction's seq.
+//
+// A callout is { id, rowId, imageId, variant, targets:[{nx,ny}, ...],
+// textPos:{nx,ny} } — the "material key" annotation, placed on a BOM-owned
+// image for that variant. It deliberately reuses Construction's exact
+// multi-anchor/edge-leader-line/arrowhead/double-click-delete geometry,
+// forked (not shared) under a bm* prefix, per this codebase's
+// duplicate-over-premature-abstraction convention — there is no existing
+// shared leader-line module to extract into. A callout's label text is
+// derived live from its linked row's current number + description
+// (`N. {description}`), never stored, matching how BOM row numbers are
+// computed.
+//
+// Colorway columns finally consume state.mainPage.colorways — ADR 0037
+// named this "knowingly inert" pending exactly this feature.
+//
+// The material-suggestion picker is a side-panel searchable list (mirroring
+// Construction's phrase quick-list, ADR 0039), not the reference tool's
+// per-cell floating popover. Picking a material always sets the selected
+// row's description, and pre-fills areaOfUse/supplier/article/width/size
+// only into cells the TD has not yet typed into — never overwrites.
+//
+// Dropped by ADR 0041: AI translation, bilingual cells, per-row reference
+// photo + asset-management catalog matching, auto-draft-from-Construction,
+// split-row (size-run pairing), floating per-cell SuggMenu popover.
+
+  const BM_SCHEMA_VERSION = 2;
+  const BM_SECTIONS = ['FABRIC', 'TRIM'];
+  // Section bands + column contract mirror the reference factory sheet
+  // (Tech pack Output/TechPack output.html mod-bom) exactly — order AND
+  // bilingual header strings are copied verbatim from its D.bom.columns
+  // (US-073): description, composition, supplier, article, width, size,
+  // area_of_use. Header 中文 is static parity text; cell-CONTENT translation
+  // stays dropped per ADR 0041 (offline, no API).
+  const BM_SECTION_BANDS = { FABRIC: 'MAIN BODY FABRICS', TRIM: 'TRIMS / COMPONENTS' };
+  const BM_CELL_FIELDS = ['description', 'composition', 'supplier', 'article', 'width', 'size', 'areaOfUse'];
+  const BM_CELL_LABELS = {
+    description: 'DESCRIPTION',
+    composition: 'TYPE / COMPOSITION',
+    supplier: 'SUPPLIER NAME',
+    article: 'ARTICLE #',
+    width: 'WIDTH',
+    size: 'SIZE',
+    areaOfUse: 'AREA OF USE',
+  };
+  const BM_CELL_LABELS_CN = {
+    description: '描述',
+    composition: '材质 / 成分',
+    supplier: '供应商名称',
+    article: '款号',
+    width: '宽度',
+    size: '尺码',
+    areaOfUse: '使用部位',
+  };
+  const BM_PHOTO_LABEL = 'MATERIAL IMAGES';
+  const BM_PHOTO_LABEL_CN = '材料图片';
+  // The six columns the reference sheet marks SUGGESTABLE_COLS — each gets a
+  // ▾ button in the cell. Composition has no library vocabulary.
+  const BM_SUGGESTABLE_FIELDS = ['description', 'areaOfUse', 'supplier', 'article', 'width', 'size'];
+
+  // US-074: a fresh BOM starts as the reference factory sheet's exact 12-row
+  // BOM (Tech pack Output/TechPack output.html, #pack-data bom.rows, style
+  // RSL vDraft 1.0) instead of empty. Every cell string is verbatim from that
+  // JSON (area_of_use → areaOfUse only renames the key). `group` marks the
+  // reference's two size-split pairs (group_id "strap-elastic" /
+  // "nylon-coated-slider") and becomes one shared numeric groupId per pair at
+  // seed time, so bmNumberedRows renders them 8.1/8.2 and 9.1/9.2 on the
+  // SOLID sheet exactly like the reference. bom.seedId records that seeding
+  // already happened: unlike MAIN PAGE fields, BOM rows are deletable on
+  // purpose, so a TD who empties the table must NOT get the seed back on the
+  // next load.
+  const BM_SEED_ID = 'rsl-vdraft-1.0';
+  const BM_SEED_ROWS = [
+    { section: 'FABRIC', scope: 'BOTH', cells: {
+      description: 'Shell fabric', composition: '', supplier: 'TBD',
+      article: 'AF-SF-01', width: '58"', size: 'ALL',
+      areaOfUse: 'Outer cup, outer cradle, outer UB, back panel' } },
+    { section: 'TRIM', scope: 'BOTH', cells: {
+      description: 'Two-piece molded foam cup', composition: '', supplier: '',
+      article: 'need to source', width: '', size: 'To be size-wise graded',
+      areaOfUse: 'Inner cup' } },
+    { section: 'FABRIC', scope: 'BOTH', cells: {
+      description: 'Power mesh -- front neckline yoke', composition: '', supplier: 'LiFeng',
+      article: 'BR-ME-KT-NL-L-200-LF-338', width: '', size: 'ALL',
+      areaOfUse: 'Front neckline yoke (outer + inner, both variants)' } },
+    { section: 'FABRIC', scope: 'BOTH', cells: {
+      description: 'Power mesh -- back panel (body fabric)', composition: '', supplier: '',
+      article: '', width: '', size: 'ALL',
+      areaOfUse: 'Back panel, full body from underarm to underband (outer, both variants)' } },
+    { section: 'FABRIC', scope: 'LACE', cells: {
+      description: 'Allover lace', composition: '', supplier: 'Yiyuan',
+      article: 'N/A', width: '120cm', size: 'ALL',
+      areaOfUse: 'Outer front cup (overlaid on shell layer)' } },
+    { section: 'TRIM', scope: 'BOTH', cells: {
+      description: 'Oval ring', composition: '', supplier: '',
+      article: '', width: '3 cm (inner width)', size: 'ALL',
+      areaOfUse: 'Strap hardware' } },
+    { section: 'TRIM', scope: 'BOTH', cells: {
+      description: 'Hook and eye', composition: '', supplier: 'Factory source',
+      article: '', width: '5 rows (observed on sketch); column count TBC', size: 'ALL',
+      areaOfUse: 'CB closure' } },
+    { section: 'TRIM', scope: 'BOTH', cells: {
+      description: 'Insert (encased) elastic- UB', composition: '', supplier: 'Mingshipai',
+      article: 'D2008', width: '3 cm', size: 'ALL',
+      areaOfUse: 'UB' } },
+    { section: 'TRIM', scope: 'BOTH', group: 'strap-elastic', cells: {
+      description: 'Strap elastic', composition: '', supplier: '',
+      article: '', width: '', size: 'S, M, L, XL, M2',
+      areaOfUse: 'Adjustable strap' } },
+    { section: 'TRIM', scope: 'BOTH', group: 'strap-elastic', cells: {
+      description: 'Strap elastic', composition: '', supplier: '',
+      article: '', width: '', size: '2XL, 3XL, 4XL, 5XL, L2, XL2, 2XL2, 3XL2, 4XL2, 5XL2',
+      areaOfUse: 'Adjustable strap' } },
+    { section: 'TRIM', scope: 'BOTH', group: 'nylon-coated-slider', cells: {
+      description: 'Nylon coated slider', composition: '', supplier: '',
+      article: '', width: '', size: 'S, M, L, XL, M2',
+      areaOfUse: 'Strap hardware, both attach ends (front + back)' } },
+    { section: 'TRIM', scope: 'BOTH', group: 'nylon-coated-slider', cells: {
+      description: 'Nylon coated slider', composition: '', supplier: '',
+      article: '', width: '', size: '2XL, 3XL, 4XL, 5XL, L2, XL2, 2XL2, 3XL2, 4XL2, 5XL2',
+      areaOfUse: 'Strap hardware, both attach ends (front + back)' } },
+  ];
+
+  const BM_PIN_RADIUS = 9;       // screen px at scale 1
+  const BM_ANCHOR_RADIUS = 4;    // screen px, secondary leader-line dots (index > 0)
+  const BM_HIT_RADIUS = 11;      // screen px, generous vs. the drawn pin/dot
+  const BM_LABEL_HALF_W = 70;    // screen px hit-box half-width for the label
+  const BM_LABEL_HALF_H = 12;    // screen px hit-box half-height for the label
+  const BM_ARROW_SIZE = 7;       // screen px, leader-line arrowhead
+  // #cc0066 is the reference sheet's material-key accent (its MK constant) —
+  // distinct on purpose from Construction's blue and the leader-arrow red.
+  const BM_CALLOUT_COLOR = '#cc0066';
+  const BM_ORPHAN_COLOR = '#b3261e';
+
+  // Session-only UI state — never persisted, same pattern as construction.js's
+  // ccArmed/ccVariant module-level lets.
+  let bmVariant = 'solid';       // 'solid' | 'lace' — shared by the table AND the material key
+  let bmSelectedRowId = null;    // selected editable BOM row
+  let bmSearchText = '';
+  let bmMaterialHits = [];
+  let bmTool = 'select';         // 'select' | 'callout' | 'leader'
+  let bmSelectedCalloutId = null;
+  let bmSelectedImageId = null;
+  let bmDrag = null;             // callout anchor/label or BOM image drag
+  let bmCanvasView = { offX: 0, offY: 0, scale: 1 };
+
+  // Bitmap bytes deliberately live outside state.bom. History snapshots clone
+  // state.bom frequently; embedding base64 there would duplicate every BOM
+  // image for every cell edit. Project save injects the bytes, project load
+  // extracts them again (the same split used by Board images/imageDataById).
+  const bmImageDataById = new Map();
+  const bmImageElementById = new Map();
+
+  function bmVariantKey(variant) {
+    return String(variant || bmVariant).toLowerCase() === 'lace' ? 'lace' : 'solid';
+  }
+
+  function bmVariantImages(variant) {
+    const bom = ensureBom();
+    const key = bmVariantKey(variant);
+    return bom.images[key];
+  }
+
+  function bmImageRuntime(id) {
+    return bmImageElementById.get(id) || null;
+  }
+
+  function bmStripImageForState(image) {
+    return {
+      id: image.id,
+      x: Number(image.x) || 0,
+      y: Number(image.y) || 0,
+      width: Math.max(1, Number(image.width) || 1),
+      height: Math.max(1, Number(image.height) || 1),
+      aspect: Math.max(0.01, Number(image.aspect) || ((Number(image.width) || 1) / (Number(image.height) || 1))),
+      locked: !!image.locked,
+    };
+  }
+
+  function bmSerializeForProject() {
+    const out = state.bom ? clone(state.bom) : null;
+    if (!out || !out.images) return out;
+    ['solid', 'lace'].forEach(variant => {
+      out.images[variant] = (out.images[variant] || []).map(image => ({
+        ...bmStripImageForState(image),
+        dataURL: bmImageDataById.get(image.id) || null,
+      }));
+    });
+    return out;
+  }
+
+  async function bmLoadProjectState(rawBom) {
+    state.bom = rawBom && typeof rawBom === 'object' ? clone(rawBom) : null;
+    bmImageDataById.clear();
+    bmImageElementById.clear();
+    const bom = ensureBom();
+    const loads = [];
+    ['solid', 'lace'].forEach(variant => {
+      bom.images[variant] = (bom.images[variant] || []).map(image => {
+        const meta = bmStripImageForState(image);
+        if (image.dataURL) {
+          bmImageDataById.set(meta.id, image.dataURL);
+          loads.push(loadImageFromDataURL(image.dataURL)
+            .then(img => bmImageElementById.set(meta.id, img))
+            .catch(() => {}));
+        }
+        return meta;
+      });
+    });
+    await Promise.all(loads);
+    return bom;
+  }
+
+  function bmSeedComparableRows(rows) {
+    const groupNames = new Map();
+    return (rows || []).map(row => {
+      let group = null;
+      if (row.groupId != null) {
+        if (!groupNames.has(row.groupId)) groupNames.set(row.groupId, 'g' + (groupNames.size + 1));
+        group = groupNames.get(row.groupId);
+      }
+      return {
+        section: row.section,
+        scope: row.scope || 'BOTH',
+        group,
+        cells: BM_CELL_FIELDS.reduce((out, key) => {
+          out[key] = String((row.cells && row.cells[key]) || '');
+          return out;
+        }, {}),
+      };
+    });
+  }
+
+  function bmExpectedSeedRows() {
+    const groups = new Map();
+    return BM_SEED_ROWS.map(seed => {
+      let group = null;
+      if (seed.group) {
+        if (!groups.has(seed.group)) groups.set(seed.group, 'g' + (groups.size + 1));
+        group = groups.get(seed.group);
+      }
+      return { section: seed.section, scope: seed.scope, group, cells: Object.assign({}, seed.cells) };
+    });
+  }
+
+  function hasMeaningfulBomWork() {
+    const bom = state && state.bom;
+    if (!bom) return false;
+    if ((bom.callouts || []).length) return true;
+    if (bom.images && ((bom.images.solid || []).length || (bom.images.lace || []).length)) return true;
+    if ((bom.rows || []).some(row => row.photo && row.photo.dataURL)) return true;
+    if ((bom.rows || []).some(row => row.cwOverride && Object.keys(row.cwOverride).length)) return true;
+    return JSON.stringify(bmSeedComparableRows(bom.rows)) !== JSON.stringify(bmExpectedSeedRows());
+  }
+
+  // Seeds state.bom in place. Safe to call repeatedly. Both callers that
+  // matter for undo run before seedHistory() (state.js boot init and
+  // project-io's loadProject), so the seeded rows are part of the history
+  // baseline, never an undoable step.
+  function ensureBom() {
+    const bom = state.bom && typeof state.bom === 'object'
+      ? state.bom
+      : (state.bom = {});
+    if (!Array.isArray(bom.rows)) bom.rows = [];
+    if (!Array.isArray(bom.callouts)) bom.callouts = [];
+    if (!bom.images || typeof bom.images !== 'object') bom.images = {};
+    if (!Array.isArray(bom.images.solid)) bom.images.solid = [];
+    if (!Array.isArray(bom.images.lace)) bom.images.lace = [];
+    // First materialization of a project's BOM: fill the reference rows.
+    // A bom that carries any seedId is stamped only — a TD-emptied table
+    // stays empty, and a pre-seed project that already has rows keeps them.
+    if (!bom.seedId) {
+      if (!bom.rows.length && !bom.callouts.length) {
+        const groupIds = {};
+        BM_SEED_ROWS.forEach(seed => {
+          const row = {
+            id: state.idCounter++,
+            section: seed.section,
+            scope: seed.scope,
+            cells: Object.assign({}, seed.cells),
+            cwOverride: {},
+          };
+          if (seed.group) {
+            if (groupIds[seed.group] == null) groupIds[seed.group] = state.idCounter++;
+            row.groupId = groupIds[seed.group];
+          }
+          bom.rows.push(row);
+        });
+      }
+      bom.seedId = BM_SEED_ID;
+    }
+    // Pre-0043 callouts pointed at Board images. Copy only the referenced
+    // image metadata/bytes into the callout's variant so old projects reopen
+    // without losing their Material Key. The two models are independent after
+    // this one-time migration.
+    if ((Number(bom.schemaVersion) || 0) < BM_SCHEMA_VERSION) {
+      bom.callouts.forEach(callout => {
+        const variant = bmVariantKey(callout.variant);
+        if (bom.images[variant].some(image => image.id === callout.imageId)) return;
+        const boardImage = (state.images || []).find(image => image.id === callout.imageId);
+        if (!boardImage) return;
+        bom.images[variant].push(bmStripImageForState(boardImage));
+        const dataURL = imageDataById.get(boardImage.id) || boardImage.dataURL;
+        if (dataURL) bmImageDataById.set(boardImage.id, dataURL);
+        if (boardImage.img) bmImageElementById.set(boardImage.id, boardImage.img);
+      });
+      bom.schemaVersion = BM_SCHEMA_VERSION;
+    }
+    return bom;
+  }
+
+  function bmVisibleRows(variant) {
+    const rows = (state.bom && state.bom.rows) || [];
+    const v = String(variant || bmVariant).toUpperCase();
+    return rows.filter(r => (r.scope || 'BOTH') === 'BOTH' || r.scope === v);
+  }
+
+  // FABRIC rows then TRIM rows, in list order — the only numbering BOM ever
+  // computes; nothing stores it (mirrors Construction's per-sheet seq).
+  // Consecutive rows sharing a groupId (size-split pairs, US-072 follow-up)
+  // number as one base with .1/.2 children — same numbering the reference
+  // sheet's numberRows() produces.
+  function bmNumberedRows(variant) {
+    const visible = bmVisibleRows(variant);
+    const out = [];
+    let base = 0;
+    BM_SECTIONS.forEach(section => {
+      const part = visible.filter(r => r.section === section);
+      const groups = [];
+      let cur = null, key = null;
+      part.forEach(r => {
+        const k = r.groupId != null ? 'g:' + r.groupId : 'id:' + r.id;
+        if (cur && k === key) cur.push(r);
+        else { if (cur) groups.push(cur); cur = [r]; key = k; }
+      });
+      if (cur) groups.push(cur);
+      groups.forEach(g => {
+        base += 1;
+        if (g.length === 1) out.push({ row: g[0], seq: String(base), base: String(base) });
+        else g.forEach((r, i) => out.push({ row: r, seq: base + '.' + (i + 1), base: String(base) }));
+      });
+    });
+    return out;
+  }
+
+  function bmRowSeq(rowId, variant) {
+    const hit = bmNumberedRows(variant).find(x => x.row.id === rowId);
+    return hit ? hit.seq : null;
+  }
+
+  // The plain group number ("3" for a "3.1"/"3.2" split pair) — what the
+  // material-key pin and label prefix show, mirroring the reference sheet's
+  // dedup-by-base behaviour in its material key.
+  function bmRowBase(rowId, variant) {
+    const hit = bmNumberedRows(variant).find(x => x.row.id === rowId);
+    return hit ? hit.base : null;
+  }
+
+  function bmRowById(id) {
+    return ((state.bom && state.bom.rows) || []).find(r => r.id === id) || null;
+  }
+
+  function bmAddRow(section) {
+    if (BM_SECTIONS.indexOf(section) === -1) return;
+    const bom = ensureBom();
+    const row = {
+      id: state.idCounter++,
+      section,
+      scope: 'BOTH',
+      cells: { description: '', composition: '', supplier: '', article: '', width: '', size: '', areaOfUse: '' },
+      cwOverride: {},
+    };
+    bom.rows.push(row);
+    bmSelectedRowId = row.id;
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  // ADR 0044: the BOM row owns its Material Callouts. Remove the row and every
+  // linked variant callout in one history transaction so table and Material
+  // Key can never diverge; Undo restores both from the same snapshot.
+  function bmRemoveRow(id) {
+    const bom = ensureBom();
+    const idx = bom.rows.findIndex(r => r.id === id);
+    if (idx === -1) return;
+    const removed = bom.callouts.filter(c => c.rowId === id);
+    const removedIds = new Set(removed.map(c => c.id));
+    bom.rows.splice(idx, 1);
+    if (removed.length) bom.callouts = bom.callouts.filter(c => c.rowId !== id);
+    if (bmSelectedRowId === id) bmSelectedRowId = null;
+    if (removedIds.has(bmSelectedCalloutId)) bmSelectedCalloutId = null;
+    if (bmTool === 'leader' && !bmSelectedCallout()) bmTool = 'select';
+    renderBom();
+    pushHistoryIfChanged();
+    showToast('BOM row removed' + (removed.length ? ' with ' + removed.length + ' linked callout(s)' : '')
+      + ' · Ctrl/Cmd+Z to undo');
+  }
+
+  // Size-split (reference ⎘): clones the row right below itself and marks
+  // the pair with one shared groupId, so bmNumberedRows() renders them as
+  // x.1/x.2 — the "same material, small-size run vs 2XL+ run" convention the
+  // historical BOM corpus uses. Width/size are cleared on the clone (they
+  // are exactly what differs between the two halves of a split).
+  function bmSplitRow(id) {
+    const bom = ensureBom();
+    const idx = bom.rows.findIndex(r => r.id === id);
+    if (idx === -1) return;
+    const src = bom.rows[idx];
+    if (src.groupId == null) src.groupId = state.idCounter++;
+    const clone = {
+      id: state.idCounter++,
+      section: src.section,
+      scope: src.scope || 'BOTH',
+      groupId: src.groupId,
+      cells: Object.assign({}, src.cells, { width: '', size: '' }),
+      cwOverride: Object.assign({}, src.cwOverride),
+    };
+    bom.rows.splice(idx + 1, 0, clone);
+    bmSelectedRowId = clone.id;
+    renderBom();
+    pushHistoryIfChanged();
+    showToast('Row split into a size pair (.1/.2) · fill WIDTH/SIZE per run');
+  }
+
+  // A cwOverride key is only "set" if present at all — an explicit empty
+  // string (TD cleared it on purpose) must still win over the colorway's
+  // default name, so this checks key presence, not truthiness.
+  function bmCwValue(row, cw) {
+    const key = cw.col;
+    if (row.cwOverride && Object.prototype.hasOwnProperty.call(row.cwOverride, key)) {
+      return row.cwOverride[key];
+    }
+    return cw.value || '';
+  }
+
+  function bmMaterialMatches(m, tokens) {
+    const s = m.name.toLowerCase();
+    return tokens.every(t => s.includes(t));
+  }
+
+  // Fills the selected row's description (the point of picking a material)
+  // and pre-fills the remaining suggestion fields only into cells the TD
+  // has not already typed into — never overwrites a TD's own entry.
+  function bmApplyMaterial(rowId, material) {
+    const row = bmRowById(rowId);
+    if (!row || !material) return;
+    row.cells.description = material.name;
+    if (!row.cells.areaOfUse && material.areaOptions && material.areaOptions.length) {
+      row.cells.areaOfUse = material.areaOptions[0];
+    }
+    if (!row.cells.supplier && material.supplierOptions && material.supplierOptions.length) {
+      row.cells.supplier = material.supplierOptions[0];
+    }
+    if (!row.cells.article && material.articleOptions && material.articleOptions.length) {
+      row.cells.article = material.articleOptions[0];
+    }
+    if (!row.cells.width && material.width) row.cells.width = material.width;
+    if (!row.cells.size && material.size) row.cells.size = material.size;
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  function bmApplyMaterialByIndex(i) {
+    const m = bmMaterialHits[i];
+    if (m && bmSelectedRowId) bmApplyMaterial(bmSelectedRowId, m);
+  }
+
+  /* ---- In-cell suggestion menu (reference bom-dd / SuggMenu, simplified) --- */
+
+  let bmDdOpenFor = null;   // 'rowId|field' the menu is open for, or null
+  let bmDdItems = [];
+
+  function bmMaterialInfoFor(description) {
+    const key = String(description || '').trim().toLowerCase();
+    if (!key) return null;
+    return BOM_MATERIAL_LIBRARY.find(m => m.name.toLowerCase() === key) || null;
+  }
+
+  // Suggestions are offered, never auto-inserted — same "chọn tay, KHÔNG tự
+  // điền" rule as the reference sheet. Non-description columns resolve from
+  // the row's OWN material when its description matches a library entry.
+  function bmSuggestItems(row, field) {
+    const out = [];
+    const add = (value, tag) => {
+      if (value && !out.some(x => x.value === value)) out.push({ value, tag: tag || '' });
+    };
+    if (field === 'description') {
+      BOM_MATERIAL_LIBRARY.forEach(m => add(m.name, m.section));
+      return out;
+    }
+    const info = bmMaterialInfoFor(row.cells.description);
+    if (field === 'areaOfUse') {
+      if (info) (info.areaOptions || []).forEach(v => add(v));
+      if (!out.length) {
+        BOM_MATERIAL_LIBRARY.forEach(m => (m.areaOptions || []).forEach(v => add(v, m.name)));
+      }
+    } else if (field === 'supplier') {
+      if (info) (info.supplierOptions || []).forEach(v => add(v));
+    } else if (field === 'article') {
+      if (info) (info.articleOptions || []).forEach(v => add(v));
+    } else if (field === 'width') {
+      if (info) add(info.width);
+    } else if (field === 'size') {
+      if (info) add(info.size);
+      add('ALL', 'default');
+    }
+    return out;
+  }
+
+  function bmDdMenuEl() {
+    let menu = document.getElementById('bomDdMenu');
+    if (menu) return menu;
+    menu = document.createElement('div');
+    menu.id = 'bomDdMenu';
+    menu.className = 'bm-dd-menu';
+    menu.hidden = true;
+    menu.innerHTML = '<input type="search" class="bm-dd-q" spellcheck="false" placeholder="Type to filter&hellip;">'
+      + '<div class="bm-dd-list"></div>';
+    document.body.appendChild(menu);
+    menu.querySelector('.bm-dd-q').addEventListener('input', e => bmDdRenderList(e.target.value));
+    menu.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { bmCloseDd(); return; }
+      if (e.key !== 'Tab') e.stopPropagation();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const first = menu.querySelector('.bm-dd-list [data-bm-pick]');
+        if (first) bmDdPick(+first.dataset.bmPick);
+      }
+    });
+    menu.addEventListener('click', e => {
+      const pick = e.target.closest('[data-bm-pick]');
+      if (pick) bmDdPick(+pick.dataset.bmPick);
+    });
+    return menu;
+  }
+
+  function bmDdRenderList(query) {
+    const menu = bmDdMenuEl();
+    const list = menu.querySelector('.bm-dd-list');
+    const tokens = String(query || '').toLowerCase().split(/\s+/).filter(Boolean);
+    const hits = tokens.length
+      ? bmDdItems.filter(it => tokens.every(t => it.value.toLowerCase().includes(t)))
+      : bmDdItems;
+    list.innerHTML = hits.slice(0, 60).map(it =>
+      '<button type="button" data-bm-pick="' + bmDdItems.indexOf(it) + '">'
+      + escapeHtml(it.value)
+      + (it.tag ? '<span class="bm-dd-tag">' + escapeHtml(it.tag) + '</span>' : '')
+      + '</button>').join('')
+      || '<div class="bm-dd-empty">Library has nothing for this cell yet — type your own value</div>';
+  }
+
+  function bmOpenDd(btn) {
+    const [rowIdStr, field] = String(btn.dataset.bomDd).split('|');
+    const row = bmRowById(+rowIdStr);
+    if (!row) return;
+    bmDdOpenFor = btn.dataset.bomDd;
+    bmDdItems = bmSuggestItems(row, field);
+    const menu = bmDdMenuEl();
+    menu.hidden = false;
+    const q = menu.querySelector('.bm-dd-q');
+    q.value = '';
+    bmDdRenderList('');
+    const r = btn.getBoundingClientRect();
+    const w = 300;
+    menu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+    menu.style.top = Math.min(r.bottom + 4, window.innerHeight - 80) + 'px';
+    q.focus();
+  }
+
+  function bmCloseDd() {
+    const menu = document.getElementById('bomDdMenu');
+    if (menu) menu.hidden = true;
+    bmDdOpenFor = null;
+  }
+
+  function bmDdPick(index) {
+    const it = bmDdItems[index];
+    if (!it || !bmDdOpenFor) return;
+    const [rowIdStr, field] = bmDdOpenFor.split('|');
+    const row = bmRowById(+rowIdStr);
+    bmCloseDd();
+    if (!row) return;
+    if (field === 'description') {
+      // Route through the same fill-empty rule as the side-panel pick: sets
+      // the description, pre-fills only cells the TD has not typed into.
+      const material = bmMaterialInfoFor(it.value);
+      if (material) { bmApplyMaterial(row.id, material); return; }
+    }
+    row.cells[field] = it.value;
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  /* ---- Material photo cell (reference photo-trigger, offline-only) --------
+     A row's photo is { dataURL } in row.photo — uploaded or pasted by the
+     TD, stored in the project like board images. No catalog matching (the
+     reference's exact-article/same-material badges need its photo catalog,
+     which this offline tool does not carry). */
+
+  let bmPhotoOpenRow = null;
+
+  function bmSetRowPhoto(rowId, dataURL) {
+    const row = bmRowById(rowId);
+    if (!row) return;
+    if (dataURL) row.photo = { dataURL };
+    else delete row.photo;
+    bmClosePhotoMenu();
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  function bmPhotoMenuEl() {
+    let menu = document.getElementById('bomPhotoMenu');
+    if (menu) return menu;
+    menu = document.createElement('div');
+    menu.id = 'bomPhotoMenu';
+    menu.className = 'bm-dd-menu bm-photo-menu';
+    menu.hidden = true;
+    menu.innerHTML = '<div class="bm-photo-hint">Material photo for this row — prints on the BOM sheet.</div>'
+      + '<div class="bm-photo-actions">'
+      + '<button type="button" data-bm-photo-upload title="Or Cmd/Ctrl+V to paste a copied image">Upload&hellip; / Paste</button>'
+      + '<button type="button" data-bm-photo-clear>Remove</button></div>';
+    document.body.appendChild(menu);
+    const filePick = document.createElement('input');
+    filePick.type = 'file';
+    filePick.accept = 'image/*';
+    filePick.hidden = true;
+    menu.appendChild(filePick);
+    filePick.addEventListener('change', () => {
+      const f = filePick.files && filePick.files[0];
+      const rowId = bmPhotoOpenRow;
+      filePick.value = '';
+      if (!f || rowId == null || !/^image\//i.test(f.type)) return;
+      const rd = new FileReader();
+      rd.onload = () => bmSetRowPhoto(rowId, rd.result);
+      rd.readAsDataURL(f);
+    });
+    menu.addEventListener('click', e => {
+      if (bmPhotoOpenRow == null) return;
+      if (e.target.closest('[data-bm-photo-upload]')) { filePick.click(); return; }
+      if (e.target.closest('[data-bm-photo-clear]')) bmSetRowPhoto(bmPhotoOpenRow, null);
+    });
+    // Paste lands here (not on the board): stopPropagation keeps the app's
+    // document-level paste router from also adopting the image as a sketch.
+    menu.addEventListener('paste', e => {
+      if (bmPhotoOpenRow == null || !e.clipboardData) return;
+      const it = Array.from(e.clipboardData.items)
+        .find(x => x.kind === 'file' && /^image\//i.test(x.type));
+      if (!it) return;
+      const f = it.getAsFile();
+      if (!f) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const rowId = bmPhotoOpenRow;
+      const rd = new FileReader();
+      rd.onload = () => bmSetRowPhoto(rowId, rd.result);
+      rd.readAsDataURL(f);
+    });
+    menu.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { bmClosePhotoMenu(); return; }
+      if (e.key !== 'Tab') e.stopPropagation();
+    });
+    return menu;
+  }
+
+  function bmOpenPhotoMenu(btn) {
+    bmCloseDd();
+    bmPhotoOpenRow = +btn.dataset.bomPhoto;
+    const menu = bmPhotoMenuEl();
+    menu.hidden = false;
+    // tabindex makes the menu focusable so the paste event targets it.
+    menu.tabIndex = -1;
+    const r = btn.getBoundingClientRect();
+    menu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 240)) + 'px';
+    menu.style.top = Math.min(r.bottom + 4, window.innerHeight - 90) + 'px';
+    menu.focus();
+  }
+
+  function bmClosePhotoMenu() {
+    const menu = document.getElementById('bomPhotoMenu');
+    if (menu) menu.hidden = true;
+    bmPhotoOpenRow = null;
+  }
+
+  /* ---- Material-key annotation engine (forked from construction.js) ------ */
+
+  function bmImageById(id, variant) {
+    return bmVariantImages(variant).find(im => im.id === id) || null;
+  }
+
+  function bmImageBounds(variant) {
+    const images = bmVariantImages(variant);
+    if (!images.length) return { x: 0, y: 0, width: 1, height: 1 };
+    const minX = Math.min(...images.map(im => im.x));
+    const minY = Math.min(...images.map(im => im.y));
+    const maxX = Math.max(...images.map(im => im.x + im.width));
+    const maxY = Math.max(...images.map(im => im.y + im.height));
+    return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
+  }
+
+  function bmReflowImages(variant) {
+    const images = bmVariantImages(variant);
+    if (!images.length) return;
+    const commonHeight = 300;
+    const gap = 30;
+    let x = 0;
+    images.forEach(image => {
+      image.height = commonHeight;
+      image.width = commonHeight * (image.aspect || 1);
+      image.x = x;
+      image.y = 0;
+      x += image.width + gap;
+    });
+  }
+
+  async function bmAddImagesFromDataURLs(dataURLs, variant) {
+    const key = bmVariantKey(variant);
+    const images = bmVariantImages(key);
+    let added = 0;
+    for (const dataURL of dataURLs || []) {
+      if (!dataURL) continue;
+      const img = await loadImageFromDataURL(dataURL);
+      const id = state.idCounter++;
+      const aspect = img.height > 0 ? img.width / img.height : 1;
+      images.push({ id, x: 0, y: 0, width: 300 * aspect, height: 300, aspect, locked: false });
+      bmImageDataById.set(id, dataURL);
+      bmImageElementById.set(id, img);
+      added += 1;
+    }
+    if (!added) return 0;
+    bmReflowImages(key);
+    bmSelectedImageId = null;
+    bmSelectedCalloutId = null;
+    if (bmTool === 'leader') bmTool = 'select';
+    renderBom();
+    pushHistoryIfChanged();
+    showToast(added === 1
+      ? '1 image added to the ' + key.toUpperCase() + ' Material Key.'
+      : added + ' images added to the ' + key.toUpperCase() + ' Material Key.');
+    return added;
+  }
+
+  async function bmAddImageFiles(files, variant) {
+    const imageFiles = Array.from(files || []).filter(file => file && /^image\//i.test(file.type || ''));
+    if (!imageFiles.length) {
+      showToast('Add PNG, JPEG, or WebP images to the Material Key.');
+      return 0;
+    }
+    const dataURLs = [];
+    for (const file of imageFiles) dataURLs.push(await blobToDataURL(file));
+    return bmAddImagesFromDataURLs(dataURLs, variant);
+  }
+
+  function bmDeleteSelectedImage() {
+    const image = bmImageById(bmSelectedImageId);
+    if (!image) { showToast('Select a Material Key image first.'); return; }
+    const linked = bmVisibleCallouts().filter(callout => callout.imageId === image.id);
+    if (linked.length && !window.confirm(
+      'Delete this image and its ' + linked.length + ' linked material callout(s)?\n\nUndo restores both.'
+    )) return;
+    const images = bmVariantImages();
+    images.splice(images.indexOf(image), 1);
+    if (linked.length) {
+      const ids = new Set(linked.map(callout => callout.id));
+      state.bom.callouts = state.bom.callouts.filter(callout => !ids.has(callout.id));
+    }
+    bmSelectedImageId = null;
+    bmSelectedCalloutId = null;
+    bmReflowImages();
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  function bmZoomSelectedImage(factor) {
+    const image = bmImageById(bmSelectedImageId);
+    if (!image) { showToast('Select a Material Key image first.'); return; }
+    const nextWidth = clamp(image.width * factor, 60, 1800);
+    const nextHeight = nextWidth / (image.aspect || (image.width / image.height) || 1);
+    const cx = image.x + image.width / 2;
+    const cy = image.y + image.height / 2;
+    image.width = nextWidth;
+    image.height = nextHeight;
+    image.x = cx - nextWidth / 2;
+    image.y = cy - nextHeight / 2;
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  function bmVisibleCallouts() {
+    const callouts = (state.bom && state.bom.callouts) || [];
+    return callouts.filter(c => (c.variant || 'solid') === bmVariant);
+  }
+
+  function bmSelectedCallout() {
+    return bmVisibleCallouts().find(c => c.id === bmSelectedCalloutId) || null;
+  }
+
+  function bmCalloutForRow(rowId, variant) {
+    const key = bmVariantKey(variant);
+    return (((state.bom && state.bom.callouts) || []).find(c =>
+      c.rowId === rowId && bmVariantKey(c.variant) === key)) || null;
+  }
+
+  function bmMissingCalloutRows(variant) {
+    const key = bmVariantKey(variant);
+    return bmNumberedRows(key).map(x => x.row)
+      .filter(row => !bmCalloutForRow(row.id, key));
+  }
+
+  function bmNextMissingCalloutRow(afterRowId, variant) {
+    const key = bmVariantKey(variant);
+    const ordered = bmNumberedRows(key).map(x => x.row);
+    if (!ordered.length) return null;
+    const start = Math.max(-1, ordered.findIndex(row => row.id === afterRowId));
+    for (let step = 1; step <= ordered.length; step += 1) {
+      const row = ordered[(start + step) % ordered.length];
+      if (!bmCalloutForRow(row.id, key)) return row;
+    }
+    return null;
+  }
+
+  function bmWorldOf(imageRec, norm) {
+    return { x: imageRec.x + norm.nx * imageRec.width, y: imageRec.y + norm.ny * imageRec.height };
+  }
+
+  function bmNormalize(imageRec, pt) {
+    return { nx: (pt.x - imageRec.x) / imageRec.width, ny: (pt.y - imageRec.y) / imageRec.height };
+  }
+
+  function bmWorldToCanvas(pt) {
+    return { x: pt.x * bmCanvasView.scale + bmCanvasView.offX, y: pt.y * bmCanvasView.scale + bmCanvasView.offY };
+  }
+
+  function bmCanvasPointFromEvent(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    return { x: (cx - bmCanvasView.offX) / bmCanvasView.scale, y: (cy - bmCanvasView.offY) / bmCanvasView.scale };
+  }
+
+  function bmImageAt(pt) {
+    const images = bmVariantImages();
+    for (let i = images.length - 1; i >= 0; i -= 1) {
+      const im = images[i];
+      if (pt.x >= im.x && pt.x <= im.x + im.width && pt.y >= im.y && pt.y <= im.y + im.height) return im;
+    }
+    return null;
+  }
+
+  // Hit-tests every leader-line anchor (not just the first) before falling
+  // back to the label box, so a double-click on a secondary arrowhead can
+  // remove just that leader line.
+  function bmHitTest(pt) {
+    const callouts = bmVisibleCallouts();
+    const rWorld = BM_HIT_RADIUS / bmCanvasView.scale;
+    const halfW = BM_LABEL_HALF_W / bmCanvasView.scale;
+    const halfH = BM_LABEL_HALF_H / bmCanvasView.scale;
+    for (let i = callouts.length - 1; i >= 0; i -= 1) {
+      const c = callouts[i];
+      const im = bmImageById(c.imageId);
+      if (!im) continue;
+      const targets = c.targets || [];
+      for (let ti = targets.length - 1; ti >= 0; ti -= 1) {
+        const pin = bmWorldOf(im, targets[ti]);
+        if (Math.hypot(pt.x - pin.x, pt.y - pin.y) <= rWorld) {
+          return { callout: c, part: 'anchor', anchorIndex: ti, imageRec: im };
+        }
+      }
+      const label = bmWorldOf(im, c.textPos);
+      if (Math.abs(pt.x - label.x) <= halfW && Math.abs(pt.y - label.y) <= halfH) {
+        return { callout: c, part: 'label', imageRec: im };
+      }
+      for (let ti = targets.length - 1; ti >= 0; ti -= 1) {
+        const pin = bmWorldOf(im, targets[ti]);
+        if (bmDistanceToSegment(pt, label, pin) <= (6 / bmCanvasView.scale)) {
+          return { callout: c, part: 'line', anchorIndex: ti, imageRec: im };
+        }
+      }
+    }
+    return null;
+  }
+
+  function bmDistanceToSegment(pt, a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    if (!dx && !dy) return Math.hypot(pt.x - a.x, pt.y - a.y);
+    const t = Math.max(0, Math.min(1, ((pt.x - a.x) * dx + (pt.y - a.y) * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(pt.x - (a.x + t * dx), pt.y - (a.y + t * dy));
+  }
+
+  function bmCreateCalloutAt(pt) {
+    const im = bmImageAt(pt);
+    if (!im) { showToast('Click on a sketch image to place a material-key callout'); return; }
+    const rows = bmMissingCalloutRows(bmVariant);
+    if (!rows.length) {
+      bmSetTool('select');
+      showToast('Every visible BOM row already has a callout');
+      return;
+    }
+    const bom = ensureBom();
+    const target = bmNormalize(im, pt);
+    const rowId = (bmSelectedRowId && rows.some(r => r.id === bmSelectedRowId)) ? bmSelectedRowId : rows[0].id;
+    // Start the label on the roomier side of the target and keep its baseline
+    // inside the image. Drawing then connects every leader from the nearest
+    // edge of the label box, so TDs rarely need a cleanup drag after placement.
+    const textPos = {
+      nx: clamp(target.nx + (target.nx > 0.65 ? -0.28 : 0.08), 0.02, 0.90),
+      ny: clamp(target.ny - 0.03, 0.04, 0.96),
+    };
+    const callout = {
+      id: state.idCounter++,
+      rowId,
+      imageId: im.id,
+      variant: bmVariant,
+      targets: [target],
+      textPos,
+    };
+    bom.callouts.push(callout);
+    const next = bmNextMissingCalloutRow(rowId, bmVariant);
+    if (next) {
+      bmSelectedRowId = next.id;
+      bmSelectedCalloutId = null;
+    } else {
+      bmSelectedRowId = rowId;
+      bmSelectedCalloutId = callout.id;
+      bmTool = 'select';
+    }
+    renderBom();
+    pushHistoryIfChanged();
+    showToast(next
+      ? 'Callout added · next row ' + (bmRowSeq(next.id, bmVariant) || '') + '. ' + bmShortLabel(next.cells.description || '(empty)')
+      : 'All visible BOM rows now have callouts · Select is active');
+  }
+
+  // Add Leaders is a persistent tool: every valid click adds one image-local
+  // target to the selected callout until Select or Escape ends the mode.
+  function bmAddArrowAt(pt) {
+    const c = bmSelectedCallout();
+    if (!c) { showToast('Select a callout first'); return; }
+    const im = bmImageById(c.imageId);
+    if (!im) return;
+    if (bmImageAt(pt) !== im) {
+      showToast('Add the leader inside the selected callout\'s own image');
+      return;
+    }
+    c.targets.push(bmNormalize(im, pt));
+    renderBom();
+    pushHistoryIfChanged();
+    showToast('Leader ' + c.targets.length + ' added · click again, or Select/Esc to finish');
+  }
+
+  // Double-clicking an arrowhead removes just that leader line. A callout
+  // must keep at least one — deleting the last one is a no-op (use Delete
+  // callout to remove it entirely), matching Construction's convention.
+  function bmDeleteAnchorAt(pt) {
+    const hit = bmHitTest(pt);
+    if (!hit || hit.part !== 'anchor') return;
+    if (hit.callout.targets.length <= 1) {
+      showToast('A callout needs at least one arrow — use Delete callout to remove it entirely');
+      return;
+    }
+    hit.callout.targets.splice(hit.anchorIndex, 1);
+    renderBom();
+    pushHistoryIfChanged();
+  }
+
+  // Reference ⊕ (data-mk): jump straight to the Material Key armed for THIS
+  // row — the next sketch click drops its numbered callout. If the row
+  // prints on a single sheet, follow it onto that variant first, so the
+  // callout lands on (and stays filtered to) the row's own sheet.
+  function bmArmRowCallout(rowId) {
+    const row = bmRowById(rowId);
+    if (!row) return;
+    const scope = row.scope || 'BOTH';
+    if (scope !== 'BOTH' && scope.toLowerCase() !== bmVariant) {
+      bmVariant = scope.toLowerCase();
+      bmSyncVariantTabs();
+    }
+    bmSelectedRowId = rowId;
+    const existing = bmCalloutForRow(rowId, bmVariant);
+    if (existing) {
+      bmSelectedCalloutId = existing.id;
+      bmSelectedImageId = null;
+      bmSetTool('select');
+    } else {
+      bmSelectedCalloutId = null;
+      bmSelectedImageId = null;
+      bmSetTool('callout');
+    }
+    renderBom();
+    const mkView = document.getElementById('bomMatkeyView');
+    if (mkView) mkView.scrollIntoView({ block: 'start' });
+    showToast(existing
+      ? 'Selected the existing callout for row ' + (bmRowSeq(rowId, bmVariant) || '')
+      : 'Click the sketch to place the callout for row ' + (bmRowSeq(rowId, bmVariant) || ''));
+  }
+
+  function bmDeleteSelectedCallout() {
+    const c = bmSelectedCallout();
+    if (!c) return;
+    const callouts = state.bom.callouts;
+    const idx = callouts.indexOf(c);
+    if (idx === -1) return;
+    callouts.splice(idx, 1);
+    bmSelectedCalloutId = null;
+    if (bmTool === 'leader') bmTool = 'select';
+    renderBom();
+    pushHistoryIfChanged();
+    showToast('Deleted callout · Ctrl/Cmd+Z to undo');
+  }
+
+  // Reference shortLabel(): first comma-clause of the description, 40 chars.
+  function bmShortLabel(d) {
+    return String(d || '').split(',')[0].replace(/ -- /g, ' – ').slice(0, 40);
+  }
+
+  function bmCalloutLabelText(c) {
+    const row = bmRowById(c.rowId);
+    if (!row) return '? deleted BOM row';
+    const base = bmRowBase(c.rowId, bmVariant);
+    return (base || '?') + '. ' + (bmShortLabel(row.cells.description) || '(empty)');
+  }
+
+  function bmSetTool(tool) {
+    if (tool !== 'select' && tool !== 'callout' && tool !== 'leader') tool = 'select';
+    if (tool === 'leader' && !bmSelectedCallout()) {
+      showToast('Select a callout before adding leaders');
+      tool = 'select';
+    }
+    bmTool = tool;
+    bmSyncToolUi();
+  }
+
+  function bmStartCalloutTool(preferredRowId) {
+    const missing = bmMissingCalloutRows(bmVariant);
+    if (!missing.length) {
+      bmSetTool('select');
+      showToast('Every visible BOM row already has a callout');
+      return;
+    }
+    const preferred = missing.find(row => row.id === preferredRowId)
+      || missing.find(row => row.id === bmSelectedRowId)
+      || missing[0];
+    bmSelectedRowId = preferred.id;
+    bmSelectedCalloutId = null;
+    bmSelectedImageId = null;
+    bmSetTool('callout');
+    renderBom();
+    showToast('Add Callouts · place row ' + (bmRowSeq(preferred.id, bmVariant) || '')
+      + '. ' + bmShortLabel(preferred.cells.description || '(empty)'));
+  }
+
+  function bmSyncToolUi() {
+    const tools = {
+      select: document.getElementById('bomSelectToolBtn'),
+      callout: document.getElementById('bomAddCalloutBtn'),
+      leader: document.getElementById('bomAddArrowBtn'),
+    };
+    Object.keys(tools).forEach(tool => {
+      const btn = tools[tool];
+      if (!btn) return;
+      const active = bmTool === tool;
+      btn.classList.toggle('bm-tool-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+    if (tools.leader) tools.leader.disabled = !bmSelectedCallout();
+    const canvas = document.getElementById('bomMatkeyCanvas');
+    if (canvas) {
+      canvas.classList.remove('bm-tool-select', 'bm-tool-callout', 'bm-tool-leader');
+      canvas.classList.add('bm-tool-' + bmTool);
+    }
+    const hint = document.getElementById('bomToolHint');
+    if (hint) {
+      if (bmTool === 'callout') {
+        const row = bmSelectedRowId ? bmRowById(bmSelectedRowId) : null;
+        hint.textContent = 'Add Callouts: place ' + (row ? (bmRowSeq(row.id, bmVariant) || '') + '. ' + bmShortLabel(row.cells.description || '(empty)') : 'the highlighted row')
+          + '; Select/Esc finishes.';
+      } else if (bmTool === 'leader') {
+        hint.textContent = 'Add Leaders: click multiple targets on the selected callout image; Select/Esc finishes.';
+      } else {
+        hint.textContent = 'Select a callout label, leader, or target to adjust it.';
+      }
+    }
+  }
+
+  function bmSyncVariantTabs() {
+    document.querySelectorAll('[data-bom-variant]').forEach(btn => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.bomVariant === bmVariant));
+    });
+  }
+
+  function bmSyncSelectedRowClass() {
+    document.querySelectorAll('#bomSections tr[data-bom-row]').forEach(tr => {
+      tr.classList.toggle('bm-row-selected', String(bmSelectedRowId) === tr.dataset.bomRow);
+    });
+  }
+
+  /* ---- Rendering ----------------------------------------------------------- */
+
+  function renderBom() {
+    if (!state.bom) return;
+    if (bmTool === 'leader' && !bmSelectedCallout()) bmTool = 'select';
+    bmRenderTable();
+    bmDrawCanvas();
+    bmRenderCalloutSidePanel();
+    bmSyncToolUi();
+  }
+
+  // One factory-style table per sheet — section band rows (MAIN BODY
+  // FABRICS / TRIMS / COMPONENTS) with the header row repeated under each
+  // band and an add-row line per section, matching the reference sheet's
+  // renderTable() structure. Numbering runs continuously across sections.
+  // Bilingual header row shared by the screen table and the print sheets —
+  // EN label + the reference's verbatim 中文 string in a .bm-cn span (a
+  // sibling of the text, mirroring the reference's <span class='cn'>).
+  function bmHeaderRowHtml(colorways, withActCol) {
+    return '<tr class="bm-hdr"><th class="bm-num">#</th>'
+      + BM_CELL_FIELDS.map(f => '<th>' + escapeHtml(BM_CELL_LABELS[f])
+        + '<span class="bm-cn">' + BM_CELL_LABELS_CN[f] + '</span></th>').join('')
+      + '<th>' + BM_PHOTO_LABEL + '<span class="bm-cn">' + BM_PHOTO_LABEL_CN + '</span></th>'
+      + colorways.map(c => '<th>' + escapeHtml(c.col) + '</th>').join('')
+      + (withActCol ? '<th class="act">&middot;</th>' : '')
+      + '</tr>';
+  }
+
+  function bmColgroupHtml(colorways, withActCol) {
+    return '<colgroup>'
+      + '<col class="bm-col-num">'
+      + '<col class="bm-col-description"><col class="bm-col-composition">'
+      + '<col class="bm-col-supplier"><col class="bm-col-article">'
+      + '<col class="bm-col-width"><col class="bm-col-size">'
+      + '<col class="bm-col-area"><col class="bm-col-photo">'
+      + colorways.map(() => '<col class="bm-col-colorway">').join('')
+      + (withActCol ? '<col class="bm-col-actions">' : '')
+      + '</colgroup>';
+  }
+
+  // Reference .sheethead: a style meta line (.shl) + the sheet name (.shm),
+  // composed live from MAIN PAGE fields — Range Name, Style No, tech-pack
+  // creation date — skipping blanks and TBC placeholders.
+  // The style meta line as plain text — shared by the HTML sheet head and
+  // the tech-pack Excel meta row (US-079), so both always agree.
+  function bmSheetMetaText() {
+    const fields = (state.mainPage && state.mainPage.fields) || [];
+    const val = re => {
+      const hit = fields.find(f => re.test(String((f && f.label) || '')));
+      const v = hit ? String(hit.value || '').trim() : '';
+      return /^TBC$/i.test(v) ? '' : v;
+    };
+    const styleNo = val(/^Style No\s*-/i);
+    return [
+      val(/^Range Name\b/i),
+      styleNo ? 'Style # ' + styleNo : '',
+      val(/Tech Pack Creation date/i),
+    ].filter(Boolean).join(' · ');
+  }
+
+  function bmSheetHeadHtml(variant) {
+    return '<div class="bm-sheet-head"><div class="bm-shl">'
+      + escapeHtml(bmSheetMetaText()) + '</div><div class="bm-shm">BOM-'
+      + String(variant).toUpperCase() + '</div></div>';
+  }
+
+  function bmRenderTable() {
+    const host = document.getElementById('bomSections');
+    if (!host) return;
+    const sheetHead = document.getElementById('bomSheetHead');
+    if (sheetHead) sheetHead.innerHTML = bmSheetHeadHtml(bmVariant);
+    const colorways = (state.mainPage && state.mainPage.colorways) || [];
+    const span = 1 + BM_CELL_FIELDS.length + 1 + colorways.length + 1;
+    const hdr = bmHeaderRowHtml(colorways, true);
+    const numbered = bmNumberedRows(bmVariant);
+    let html = '';
+    BM_SECTIONS.forEach(section => {
+      html += '<tr><td class="bm-secband" colspan="' + span + '">'
+        + escapeHtml(BM_SECTION_BANDS[section]) + '</td></tr>' + hdr;
+      html += numbered.filter(x => x.row.section === section)
+        .map(x => bmRenderRow(x.row, x.seq, colorways)).join('');
+      html += '<tr class="bm-addrow-tr"><td colspan="' + span + '">'
+        + '<button type="button" class="bm-addrow" data-bom-add="' + section + '">&#65291; Dòng '
+        + escapeHtml(section) + '</button></td></tr>';
+    });
+    host.innerHTML = '<div class="bm-band">Bill of Materials Sheet</div>'
+      + '<table class="bm-table">' + bmColgroupHtml(colorways, true)
+      + '<tbody>' + html + '</tbody></table>';
+    bmRenderPrintSheets();
+  }
+
+  // Print parity (US-073): the reference prints BOM-SOLID then BOM-LACE as
+  // two factory sheets regardless of which tab is open on screen. Rendered
+  // into a print-only container (#bomPrintSheets, shown by the @media print
+  // rules) so the interactive screen table — and every #bomSections-scoped
+  // selector bom-check relies on — stays untouched. No editor affordances
+  // here: no ▾, no action column, no add-row line, plain text cells.
+  function bmRenderPrintSheets() {
+    const host = document.getElementById('bomPrintSheets');
+    if (!host) return;
+    host.innerHTML = ['solid', 'lace'].map(variant =>
+      '<section class="bm-print-sheet">' + bmPrintSheetHtml(variant) + '</section>').join('');
+  }
+
+  // One variant's full factory sheet (head + material key + table) as plain
+  // non-interactive HTML. Extracted from bmRenderPrintSheets (US-079) so the
+  // Preview & Export page shows the exact same sheet the print path produces.
+  function bmPrintSheetHtml(variant) {
+    const colorways = (state.mainPage && state.mainPage.colorways) || [];
+    const span = 1 + BM_CELL_FIELDS.length + 1 + colorways.length;
+    const hdr = bmHeaderRowHtml(colorways, false);
+    const numbered = bmNumberedRows(variant);
+    let html = '';
+    BM_SECTIONS.forEach(section => {
+      html += '<tr><td class="bm-secband" colspan="' + span + '">'
+        + escapeHtml(BM_SECTION_BANDS[section]) + '</td></tr>' + hdr;
+      html += numbered.filter(x => x.row.section === section)
+        .map(x => bmRenderPrintRow(x.row, x.seq, colorways)).join('');
+    });
+    return '<div class="bm-sheet">' + bmSheetHeadHtml(variant)
+      + '<div class="bm-band bm-band-big">Fabric and Trim Requirement</div>'
+      + bmPrintMaterialKeyHtml(variant)
+      + '<div class="bm-band">Bill of Materials Sheet</div>'
+      + '<table class="bm-table">' + bmColgroupHtml(colorways, false)
+      + '<tbody>' + html + '</tbody></table></div>';
+  }
+
+  function bmPrintMaterialKeyHtml(variant) {
+    const images = bmVariantImages(variant);
+    if (!images.length) return '<div class="bm-print-matkey bm-print-matkey-empty"></div>';
+    const W = 1900, H = 820, pad = 55;
+    const bounds = bmImageBounds(variant);
+    const scale = Math.min((W - pad * 2) / bounds.width, (H - pad * 2) / bounds.height);
+    const offX = (W - bounds.width * scale) / 2 - bounds.x * scale;
+    const offY = (H - bounds.height * scale) / 2 - bounds.y * scale;
+    const project = pt => ({ x: pt.x * scale + offX, y: pt.y * scale + offY });
+    const imageHtml = images.map(image => {
+      const dataURL = bmImageDataById.get(image.id);
+      if (!dataURL) return '';
+      const p = project({ x: image.x, y: image.y });
+      return '<img src="' + dataURL + '" alt="" style="left:' + (p.x / W * 100)
+        + '%;top:' + (p.y / H * 100) + '%;width:' + (image.width * scale / W * 100)
+        + '%;height:' + (image.height * scale / H * 100) + '%">';
+    }).join('');
+    let svg = '';
+    let labels = '';
+    const callouts = ((state.bom && state.bom.callouts) || [])
+      .filter(callout => bmVariantKey(callout.variant) === bmVariantKey(variant));
+    callouts.forEach(callout => {
+      const image = bmImageById(callout.imageId, variant);
+      if (!image) return;
+      const label = project(bmWorldOf(image, callout.textPos));
+      const text = bmCalloutLabelTextForVariant(callout, variant);
+      const labelBox = { x: label.x - 4, y: label.y - 9, width: Math.max(20, text.length * 6.5 + 8), height: 18 };
+      (callout.targets || []).forEach(target => {
+        const pin = project(bmWorldOf(image, target));
+        const edge = bmEdgeToward(labelBox, pin.x, pin.y) || label;
+        svg += '<line x1="' + edge.x + '" y1="' + edge.y + '" x2="' + pin.x + '" y2="' + pin.y + '"></line>'
+          + '<circle cx="' + pin.x + '" cy="' + pin.y + '" r="7"></circle>';
+      });
+      labels += '<div class="bm-print-label" style="left:' + (label.x / W * 100)
+        + '%;top:' + (label.y / H * 100) + '%">' + escapeHtml(text) + '</div>';
+    });
+    return '<div class="bm-print-matkey">' + imageHtml
+      + '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + svg + '</svg>'
+      + labels + '</div>';
+  }
+
+  function bmCalloutLabelTextForVariant(callout, variant) {
+    const row = bmRowById(callout.rowId);
+    if (!row) return '? deleted BOM row';
+    const base = bmRowBase(callout.rowId, variant);
+    return (base || '?') + '. ' + (bmShortLabel(row.cells.description) || '(empty)');
+  }
+
+  function bmRenderPrintRow(row, seq, colorways) {
+    const cells = BM_CELL_FIELDS.map(f => '<td>' + escapeHtml(row.cells[f] || '') + '</td>').join('');
+    const photo = '<td class="bm-photo-cell">'
+      + (row.photo && row.photo.dataURL ? '<img src="' + row.photo.dataURL + '" alt="">' : '')
+      + '</td>';
+    const cw = colorways.map(c => '<td>' + escapeHtml(bmCwValue(row, c)) + '</td>').join('');
+    return '<tr><td class="bm-num">' + seq + '</td>' + cells + photo + cw + '</tr>';
+  }
+
+  function bmRenderRow(row, seq, colorways) {
+    // Editable content lives in an inner span (reference structure): the ▾
+    // suggestion button is a plain sibling of the span, so it can never be
+    // typed over or swallowed into the cell's textContent.
+    const cells = BM_CELL_FIELDS.map(f => {
+      const suggestable = BM_SUGGESTABLE_FIELDS.indexOf(f) !== -1;
+      return '<td' + (suggestable ? ' class="bm-sugg"' : '') + '>'
+        + '<span contenteditable spellcheck="false" data-row="' + row.id + '" data-cell="' + f + '">'
+        + escapeHtml(row.cells[f] || '') + '</span>'
+        + (suggestable
+          ? '<button type="button" class="bm-dd" data-bom-dd="' + row.id + '|' + f
+            + '" tabindex="-1" title="Suggestions from the material library — pick by hand, never auto-filled"></button>'
+          : '')
+        + '</td>';
+    }).join('');
+    const photoCell = '<td class="bm-photo-cell"><button type="button" class="bm-photo-trigger" data-bom-photo="'
+      + row.id + '" title="Material photo — upload or paste an image">'
+      + (row.photo && row.photo.dataURL ? '<img src="' + row.photo.dataURL + '" alt="">' : '+')
+      + '</button></td>';
+    const cw = colorways.map(c =>
+      '<td contenteditable spellcheck="false" data-row="' + row.id + '" data-cw="' + escapeHtml(c.col) + '">'
+      + escapeHtml(bmCwValue(row, c)) + '</td>').join('');
+    const scope = row.scope || 'BOTH';
+    const act = '<td class="act">'
+      + '<button type="button" data-row="' + row.id + '" data-bom-mk title="Place this row&#39;s numbered callout on the Material Key">&#8853;</button>'
+      + '<button type="button" data-row="' + row.id + '" data-bom-split title="Split into a size pair (.1/.2)">&#9112;</button>'
+      + '<button type="button" data-row="' + row.id + '" data-bom-rm title="Delete row">&times;</button>'
+      + '<select data-row="' + row.id + '" data-scope aria-label="Scope" title="Which sheet prints this row">'
+      + ['BOTH', 'SOLID', 'LACE'].map(s =>
+        '<option value="' + s + '"' + (scope === s ? ' selected' : '') + '>' + s + '</option>').join('')
+      + '</select></td>';
+    const selectedCls = row.id === bmSelectedRowId ? ' class="bm-row-selected"' : '';
+    return '<tr data-bom-row="' + row.id + '"' + selectedCls + '>'
+      + '<td class="bm-num">' + seq + '</td>' + cells + photoCell + cw + act + '</tr>';
+  }
+
+  function bmRenderMaterialPanel() {
+    const empty = document.getElementById('bomMatEmpty');
+    const panel = document.getElementById('bomMatPanel');
+    if (!empty || !panel) return;
+    const row = bmSelectedRowId ? bmRowById(bmSelectedRowId) : null;
+    if (!row) {
+      empty.hidden = false;
+      panel.hidden = true;
+      return;
+    }
+    empty.hidden = true;
+    panel.hidden = false;
+    const label = document.getElementById('bomMatRowLabel');
+    if (label) {
+      const seq = bmRowSeq(row.id, bmVariant);
+      label.textContent = (seq ? seq + '. ' : '') + (row.cells.description || '(empty description)');
+    }
+    bmRenderMaterialList();
+  }
+
+  function bmRenderMaterialList() {
+    const box = document.getElementById('bomMatList');
+    if (!box) return;
+    const tokens = bmSearchText.toLowerCase().split(/\s+/).filter(Boolean);
+    const hits = tokens.length
+      ? BOM_MATERIAL_LIBRARY.filter(m => bmMaterialMatches(m, tokens))
+      : BOM_MATERIAL_LIBRARY;
+    bmMaterialHits = hits.slice(0, 60);
+    box.innerHTML = bmMaterialHits.map((m, i) =>
+      '<button type="button" data-bom-mat="' + i + '">' + escapeHtml(m.name)
+      + '<span class="bm-mat-section">' + escapeHtml(m.section) + '</span></button>').join('')
+      || '<div class="bm-mat-empty">No material matches — type your own description in the row</div>';
+  }
+
+  function bmDrawCanvas() {
+    const canvas = document.getElementById('bomMatkeyCanvas');
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    bmDrawCanvasInto(canvas, rect.width, rect.height, dpr);
+  }
+
+  // Draw the active variant's Material Key (images + callouts) into any
+  // canvas at a given CSS size and pixel scale. Extracted from bmDrawCanvas
+  // (US-079) so the tech-pack Excel export can render a chosen variant
+  // offscreen through the same drawing code the live Material Key uses.
+  function bmDrawCanvasInto(canvas, cssWidth, cssHeight, pixelScale) {
+    const w = Math.max(1, Math.round(cssWidth * pixelScale));
+    const h = Math.max(1, Math.round(cssHeight * pixelScale));
+    if (canvas.width !== w) canvas.width = w;
+    if (canvas.height !== h) canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(pixelScale, 0, 0, pixelScale, 0, 0);
+    ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+    const images = bmVariantImages();
+    if (!images.length) {
+      ctx.fillStyle = '#8a8f9a';
+      ctx.font = '13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Paste, drop, or add images to this ' + bmVariant.toUpperCase() + ' Material Key.', cssWidth / 2, cssHeight / 2);
+      bmCanvasView = { offX: cssWidth / 2, offY: cssHeight / 2, scale: 1 };
+      return;
+    }
+
+    const bounds = bmImageBounds();
+    const pad = 40;
+    const scale = Math.min(
+      (cssWidth - pad * 2) / bounds.width,
+      (cssHeight - pad * 2) / bounds.height,
+      4
+    );
+    const offX = (cssWidth - bounds.width * scale) / 2 - bounds.x * scale;
+    const offY = (cssHeight - bounds.height * scale) / 2 - bounds.y * scale;
+    bmCanvasView = { offX, offY, scale };
+
+    ctx.save();
+    ctx.translate(offX, offY);
+    ctx.scale(scale, scale);
+    images.forEach(image => {
+      const img = bmImageRuntime(image.id);
+      if (img) ctx.drawImage(img, image.x, image.y, image.width, image.height);
+      if (image.id === bmSelectedImageId) {
+        ctx.strokeStyle = '#356dff';
+        ctx.lineWidth = 2 / scale;
+        ctx.strokeRect(image.x, image.y, image.width, image.height);
+      }
+    });
+    ctx.restore();
+
+    bmVisibleCallouts().forEach(c => bmDrawCallout(ctx, c, c.id === bmSelectedCalloutId));
+  }
+
+  // Offscreen render of ONE variant's Material Key for the tech-pack Excel
+  // export (US-079). Swaps the module view state so the shared draw code
+  // targets the requested variant with no selection chrome, and restores it
+  // in finally — bmCanvasView is the live canvas's hit-test mapping and must
+  // never be left pointing at the offscreen render.
+  function bmRenderMatkeyToCanvas(variant, cssWidth, cssHeight, pixelScale) {
+    const saved = {
+      variant: bmVariant, callout: bmSelectedCalloutId,
+      image: bmSelectedImageId, view: bmCanvasView,
+    };
+    const canvas = document.createElement('canvas');
+    try {
+      bmVariant = bmVariantKey(variant);
+      bmSelectedCalloutId = null;
+      bmSelectedImageId = null;
+      bmDrawCanvasInto(canvas, cssWidth, cssHeight, pixelScale || 1);
+    } finally {
+      bmVariant = saved.variant;
+      bmSelectedCalloutId = saved.callout;
+      bmSelectedImageId = saved.image;
+      bmCanvasView = saved.view;
+    }
+    return canvas;
+  }
+
+  function bmLabelBox(ctx, label, text, isSelected) {
+    ctx.font = (isSelected ? 'bold ' : '') + '12px sans-serif';
+    const w = ctx.measureText(text).width;
+    return { x: label.x - 4, y: label.y - 9, width: w + 8, height: 18 };
+  }
+
+  function bmEdgeToward(box, ax, ay) {
+    const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
+    const dx = ax - cx, dy = ay - cy;
+    if (Math.abs(dx) < box.width / 2 && Math.abs(dy) < box.height / 2) return null;
+    const tx = dx !== 0 ? (box.width / 2) / Math.abs(dx) : 1e9;
+    const ty = dy !== 0 ? (box.height / 2) / Math.abs(dy) : 1e9;
+    const t = Math.min(tx, ty);
+    return { x: cx + dx * t, y: cy + dy * t };
+  }
+
+  function bmDrawArrowHead(ctx, from, to, color) {
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(to.x, to.y);
+    ctx.lineTo(to.x - BM_ARROW_SIZE * Math.cos(angle - Math.PI / 6), to.y - BM_ARROW_SIZE * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(to.x - BM_ARROW_SIZE * Math.cos(angle + Math.PI / 6), to.y - BM_ARROW_SIZE * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function bmDrawCallout(ctx, c, isSelected) {
+    const im = bmImageById(c.imageId);
+    if (!im) return;
+    const label = bmWorldToCanvas(bmWorldOf(im, c.textPos));
+    const orphan = !bmRowById(c.rowId);
+    const color = orphan ? BM_ORPHAN_COLOR : BM_CALLOUT_COLOR;
+    const text = bmCalloutLabelText(c);
+    const box = bmLabelBox(ctx, label, text, isSelected);
+    const targets = c.targets || [];
+    const seq = bmRowBase(c.rowId, bmVariant);
+
+    ctx.save();
+    targets.forEach((t, i) => {
+      const pin = bmWorldToCanvas(bmWorldOf(im, t));
+      const edge = bmEdgeToward(box, pin.x, pin.y);
+      const from = edge || { x: label.x, y: label.y };
+      ctx.strokeStyle = color;
+      ctx.lineWidth = isSelected ? 2.5 : 1.5;
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(pin.x, pin.y);
+      ctx.stroke();
+      bmDrawArrowHead(ctx, from, pin, color);
+      if (i === 0) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(pin.x, pin.y, BM_PIN_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(seq || '?'), pin.x, pin.y + 0.5);
+      } else {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(pin.x, pin.y, BM_ANCHOR_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    });
+
+    ctx.font = (isSelected ? 'bold ' : '') + '12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    if (isSelected) {
+      ctx.strokeStyle = color;
+      ctx.setLineDash([3, 2]);
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+      ctx.setLineDash([]);
+    }
+    ctx.fillStyle = orphan ? BM_ORPHAN_COLOR : '#111';
+    ctx.fillText(text, label.x, label.y);
+    ctx.restore();
+  }
+
+  function bmRenderCalloutSidePanel() {
+    const empty = document.getElementById('bomMkSideEmpty');
+    const panel = document.getElementById('bomMkSideCallout');
+    if (!empty || !panel) return;
+    const c = bmSelectedCallout();
+    if (!c) {
+      empty.hidden = false;
+      panel.hidden = true;
+      return;
+    }
+    empty.hidden = true;
+    panel.hidden = false;
+    const seqEl = document.getElementById('bomMkSideSeq');
+    if (seqEl) seqEl.textContent = String(bmRowSeq(c.rowId, bmVariant) || '?');
+    const rowSelect = document.getElementById('bomMkRowSelect');
+    if (rowSelect && rowSelect !== document.activeElement) {
+      const rows = bmVisibleRows(bmVariant);
+      const orphan = !rows.some(r => r.id === c.rowId);
+      rowSelect.innerHTML = (orphan
+        ? '<option value="" selected disabled>? deleted BOM row — pick a row to relink</option>'
+        : '')
+        + rows.map(r => {
+          const seq = bmRowSeq(r.id, bmVariant);
+          const occupied = bmCalloutForRow(r.id, bmVariant);
+          const disabled = occupied && occupied.id !== c.id;
+          return '<option value="' + r.id + '"' + (!orphan && r.id === c.rowId ? ' selected' : '')
+            + (disabled ? ' disabled' : '') + '>'
+            + seq + '. ' + escapeHtml(r.cells.description || '(empty)') + '</option>';
+        }).join('');
+    }
+  }
+
+  /* ---- Wiring --------------------------------------------------------------- */
+  // Page open/close belongs to page-nav.js's setActivePage('bom' | 'board' |
+  // 'mainpage' | 'construction') — the BOM page is a peer page, not a modal
+  // this file owns the visibility of.
+
+  function bmOnPointerDown(e) {
+    if (!state.bom) return;
+    const canvas = document.getElementById('bomMatkeyCanvas');
+    if (!canvas) return;
+    const pt = bmCanvasPointFromEvent(e, canvas);
+    if (bmTool === 'callout') { bmCreateCalloutAt(pt); return; }
+    if (bmTool === 'leader') { bmAddArrowAt(pt); return; }
+    const hit = bmHitTest(pt);
+    if (hit) {
+      bmSelectedCalloutId = hit.callout.id;
+      bmSelectedRowId = hit.callout.rowId;
+      bmSelectedImageId = null;
+      bmDrag = hit.part === 'line' ? null
+        : { callout: hit.callout, part: hit.part, anchorIndex: hit.anchorIndex, imageRec: hit.imageRec };
+      renderBom();
+      e.preventDefault();
+      return;
+    }
+    const image = bmImageAt(pt);
+    if (image) {
+      bmSelectedCalloutId = null;
+      bmSelectedImageId = image.id;
+      bmDrag = {
+        part: 'image', imageRec: image,
+        startX: pt.x, startY: pt.y, originX: image.x, originY: image.y,
+      };
+      renderBom();
+      e.preventDefault();
+      return;
+    }
+    bmSelectedCalloutId = null;
+    bmSelectedImageId = null;
+    renderBom();
+  }
+
+  function bmOnPointerMove(e) {
+    if (!bmDrag) return;
+    const canvas = document.getElementById('bomMatkeyCanvas');
+    if (!canvas) return;
+    const pt = bmCanvasPointFromEvent(e, canvas);
+    if (bmDrag.part === 'image') {
+      if (!bmDrag.imageRec.locked) {
+        bmDrag.imageRec.x = bmDrag.originX + pt.x - bmDrag.startX;
+        bmDrag.imageRec.y = bmDrag.originY + pt.y - bmDrag.startY;
+      }
+    } else {
+      const norm = bmNormalize(bmDrag.imageRec, pt);
+      if (bmDrag.part === 'anchor') bmDrag.callout.targets[bmDrag.anchorIndex] = norm;
+      else bmDrag.callout.textPos = norm;
+    }
+    bmDrawCanvas();
+  }
+
+  function bmOnPointerUp() {
+    if (!bmDrag) return;
+    bmDrag = null;
+    pushHistoryIfChanged();
+  }
+
+  function bmOnDoubleClick(e) {
+    if (bmTool !== 'select') return;
+    const canvas = document.getElementById('bomMatkeyCanvas');
+    if (!canvas) return;
+    bmDeleteAnchorAt(bmCanvasPointFromEvent(e, canvas));
+  }
+
+  function initBom() {
+    ensureBom();
+    const page = document.getElementById('bomPage');
+    if (!page) return;
+
+    document.querySelectorAll('[data-bom-variant]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const v = btn.dataset.bomVariant;
+        if (v !== 'solid' && v !== 'lace') return;
+        bmVariant = v;
+        bmCloseDd();
+        bmSelectedRowId = null;
+        bmSelectedCalloutId = null;
+        bmSelectedImageId = null;
+        bmSetTool('select');
+        bmSyncVariantTabs();
+        renderBom();
+      });
+    });
+
+    const selectToolBtn = document.getElementById('bomSelectToolBtn');
+    if (selectToolBtn) selectToolBtn.addEventListener('click', () => {
+      bmSetTool('select');
+      showToast('Select tool active');
+    });
+
+    const addCalloutBtn = document.getElementById('bomAddCalloutBtn');
+    if (addCalloutBtn) {
+      addCalloutBtn.addEventListener('click', () => {
+        if (bmTool === 'callout') {
+          bmSetTool('select');
+          showToast('Select tool active');
+          return;
+        }
+        bmStartCalloutTool();
+      });
+    }
+
+    const addArrowBtn = document.getElementById('bomAddArrowBtn');
+    if (addArrowBtn) {
+      addArrowBtn.addEventListener('click', () => {
+        if (!bmSelectedCallout()) { showToast('Select a callout first'); return; }
+        if (bmTool === 'leader') {
+          bmSetTool('select');
+          showToast('Select tool active');
+          return;
+        }
+        bmSetTool('leader');
+        showToast('Add Leaders · click multiple targets; Select/Esc finishes');
+      });
+    }
+
+    const deleteCalloutBtn = document.getElementById('bomDeleteCalloutBtn');
+    if (deleteCalloutBtn) deleteCalloutBtn.addEventListener('click', bmDeleteSelectedCallout);
+
+    const imageInput = document.getElementById('bomImageFileInput');
+    const addImageBtn = document.getElementById('bomAddImageBtn');
+    if (addImageBtn && imageInput) addImageBtn.addEventListener('click', () => imageInput.click());
+    if (imageInput) imageInput.addEventListener('change', async () => {
+      const files = Array.from(imageInput.files || []);
+      imageInput.value = '';
+      await bmAddImageFiles(files, bmVariant);
+    });
+    const pasteImageBtn = document.getElementById('bomPasteImageBtn');
+    if (pasteImageBtn) pasteImageBtn.addEventListener('click', async () => {
+      if (!navigator.clipboard || typeof navigator.clipboard.read !== 'function') {
+        showToast('Use Cmd/Ctrl+V while Material Key is open.');
+        return;
+      }
+      try {
+        const items = await navigator.clipboard.read();
+        const dataURLs = [];
+        for (const item of items) {
+          const type = item.types.find(t => /^image\//i.test(t));
+          if (type) dataURLs.push(await blobToDataURL(await item.getType(type)));
+        }
+        if (dataURLs.length) await bmAddImagesFromDataURLs(dataURLs, bmVariant);
+        else showToast('Clipboard has no image.');
+      } catch (_) {
+        showToast('Clipboard access was blocked. Use Cmd/Ctrl+V instead.');
+      }
+    });
+    const deleteImageBtn = document.getElementById('bomDeleteImageBtn');
+    if (deleteImageBtn) deleteImageBtn.addEventListener('click', bmDeleteSelectedImage);
+    const zoomOutImageBtn = document.getElementById('bomImageZoomOutBtn');
+    if (zoomOutImageBtn) zoomOutImageBtn.addEventListener('click', () => bmZoomSelectedImage(0.9));
+    const zoomInImageBtn = document.getElementById('bomImageZoomInBtn');
+    if (zoomInImageBtn) zoomInImageBtn.addEventListener('click', () => bmZoomSelectedImage(1.1));
+    const fitImagesBtn = document.getElementById('bomFitImagesBtn');
+    if (fitImagesBtn) fitImagesBtn.addEventListener('click', () => {
+      if (!bmVariantImages().length) return;
+      bmReflowImages();
+      bmSelectedImageId = null;
+      renderBom();
+      pushHistoryIfChanged();
+    });
+
+    const rowSelect = document.getElementById('bomMkRowSelect');
+    if (rowSelect) {
+      rowSelect.addEventListener('change', () => {
+        const c = bmSelectedCallout();
+        if (!c) return;
+        const rowId = +rowSelect.value;
+        const occupied = bmCalloutForRow(rowId, bmVariant);
+        if (occupied && occupied.id !== c.id) {
+          showToast('That BOM row already owns a callout on this variant');
+          renderBom();
+          return;
+        }
+        c.rowId = rowId;
+        bmSelectedRowId = rowId;
+        renderBom();
+        pushHistoryIfChanged();
+      });
+    }
+
+    const canvas = document.getElementById('bomMatkeyCanvas');
+    if (canvas) {
+      canvas.addEventListener('mousedown', bmOnPointerDown);
+      canvas.addEventListener('dblclick', bmOnDoubleClick);
+      const filesDragging = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+      canvas.addEventListener('dragover', e => {
+        if (!filesDragging(e)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        canvas.classList.add('bm-drag-over');
+      });
+      canvas.addEventListener('dragleave', () => canvas.classList.remove('bm-drag-over'));
+      canvas.addEventListener('drop', async e => {
+        if (!e.dataTransfer) return;
+        e.preventDefault();
+        canvas.classList.remove('bm-drag-over');
+        await bmAddImageFiles(e.dataTransfer.files, bmVariant);
+      });
+    }
+    window.addEventListener('mousemove', bmOnPointerMove);
+    window.addEventListener('mouseup', bmOnPointerUp);
+    window.addEventListener('resize', () => {
+      if (state.activePage === 'bom') bmDrawCanvas();
+    });
+
+    const searchEl = document.getElementById('bomMatSearch');
+    if (searchEl) {
+      searchEl.addEventListener('input', () => {
+        bmSearchText = searchEl.value;
+        bmRenderMaterialList();
+      });
+      searchEl.addEventListener('keydown', e => {
+        if (e.key !== 'Tab') e.stopPropagation();
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        if (bmMaterialHits[0]) bmApplyMaterialByIndex(0);
+      });
+    }
+
+    const matList = document.getElementById('bomMatList');
+    if (matList) {
+      matList.addEventListener('click', e => {
+        const btn = e.target.closest('[data-bom-mat]');
+        if (btn) bmApplyMaterialByIndex(+btn.dataset.bomMat);
+      });
+    }
+
+    // The floating ▾ menu is parked on <body>; anything that moves the cell
+    // out from under it (outside click, scroll, tab/variant switches) closes
+    // it rather than leaving it hovering over stale coordinates.
+    document.addEventListener('click', e => {
+      if (bmDdOpenFor && !e.target.closest('#bomDdMenu,[data-bom-dd]')) bmCloseDd();
+      if (bmPhotoOpenRow != null && !e.target.closest('#bomPhotoMenu,[data-bom-photo]')) bmClosePhotoMenu();
+    });
+    window.addEventListener('scroll', () => {
+      if (bmDdOpenFor) bmCloseDd();
+      if (bmPhotoOpenRow != null) bmClosePhotoMenu();
+    }, true);
+
+    // Delegated on the page element, which survives every table re-render —
+    // a listener on a cell/row/button would die on the next renderBom().
+    page.addEventListener('input', e => {
+      const cell = e.target.closest('[data-cell]');
+      if (cell) {
+        const row = bmRowById(+cell.dataset.row);
+        if (row) {
+          row.cells[cell.dataset.cell] = cell.textContent;
+          if (cell.dataset.cell === 'description') {
+            bmDrawCanvas();
+            bmRenderPrintSheets();
+          }
+        }
+        return;
+      }
+      const cw = e.target.closest('[data-cw]');
+      if (cw) {
+        const row = bmRowById(+cw.dataset.row);
+        if (row) {
+          if (!row.cwOverride || typeof row.cwOverride !== 'object') row.cwOverride = {};
+          row.cwOverride[cw.dataset.cw] = cw.textContent;
+        }
+      }
+    });
+
+    // One history entry per cell, not per keystroke: mutate on input, push
+    // on blur, same pattern as main-page.js's contenteditable fields.
+    page.addEventListener('focusout', e => {
+      if (e.target.closest('[contenteditable]')) pushHistoryIfChanged();
+    });
+
+    page.addEventListener('change', e => {
+      const scopeSel = e.target.closest('[data-scope]');
+      if (!scopeSel) return;
+      const row = bmRowById(+scopeSel.dataset.row);
+      if (!row) return;
+      row.scope = scopeSel.value;
+      const allowed = row.scope === 'BOTH'
+        ? new Set(['solid', 'lace'])
+        : new Set([row.scope.toLowerCase()]);
+      const removed = state.bom.callouts.filter(c => c.rowId === row.id && !allowed.has(bmVariantKey(c.variant)));
+      if (removed.length) {
+        const removedIds = new Set(removed.map(c => c.id));
+        state.bom.callouts = state.bom.callouts.filter(c => !removedIds.has(c.id));
+        if (removedIds.has(bmSelectedCalloutId)) bmSelectedCalloutId = null;
+        if (bmTool === 'leader' && !bmSelectedCallout()) bmTool = 'select';
+      }
+      renderBom();
+      pushHistoryIfChanged();
+      if (removed.length) showToast('Scope updated · removed ' + removed.length + ' callout(s) from excluded variant(s) · Ctrl/Cmd+Z to undo');
+    });
+
+    page.addEventListener('click', e => {
+      const dd = e.target.closest('[data-bom-dd]');
+      if (dd) {
+        if (bmDdOpenFor === dd.dataset.bomDd) bmCloseDd();
+        else bmOpenDd(dd);
+        return;
+      }
+      const photoBtn = e.target.closest('[data-bom-photo]');
+      if (photoBtn) {
+        if (bmPhotoOpenRow === +photoBtn.dataset.bomPhoto) bmClosePhotoMenu();
+        else bmOpenPhotoMenu(photoBtn);
+        return;
+      }
+      const addRow = e.target.closest('[data-bom-add]');
+      if (addRow) { bmAddRow(addRow.dataset.bomAdd); return; }
+      const mk = e.target.closest('[data-bom-mk]');
+      if (mk) { bmArmRowCallout(+mk.dataset.row); return; }
+      const split = e.target.closest('[data-bom-split]');
+      if (split) { bmSplitRow(+split.dataset.row); return; }
+      const rm = e.target.closest('[data-bom-rm]');
+      if (rm) { bmRemoveRow(+rm.dataset.row); return; }
+      const rowEl = e.target.closest('[data-bom-row]');
+      if (rowEl) {
+        const id = +rowEl.dataset.bomRow;
+        if (bmSelectedRowId !== id) {
+          bmSelectedRowId = id;
+          bmSyncSelectedRowClass();
+          bmRenderMaterialPanel();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (state.activePage !== 'bom') return;
+      if (e.key === 'Escape') {
+        if (bmDdOpenFor) { bmCloseDd(); return; }
+        if (bmPhotoOpenRow != null) { bmClosePhotoMenu(); return; }
+        if (bmTool !== 'select') { bmSetTool('select'); showToast('Select tool active'); return; }
+        if (bmSelectedCalloutId !== null) { bmSelectedCalloutId = null; renderBom(); return; }
+        if (bmSelectedImageId !== null) { bmSelectedImageId = null; renderBom(); return; }
+        setActivePage('board');
+        return;
+      }
+      if (e.key === 'Backspace' && bmSelectedCalloutId !== null) {
+        const active = document.activeElement;
+        const inField = active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT' || active.isContentEditable);
+        if (inField) return;
+        e.preventDefault();
+        bmDeleteSelectedCallout();
+      }
+      if ((e.key === 'Backspace' || e.key === 'Delete') && bmSelectedImageId !== null) {
+        const active = document.activeElement;
+        const inField = active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT' || active.isContentEditable);
+        if (inField) return;
+        e.preventDefault();
+        bmDeleteSelectedImage();
+      }
+    }, true);
+
+    bmSyncVariantTabs();
+    renderBom();
+  }
+
+  // ---- src/ui/preview-page.js ----
+// Preview & Export page (US-079, ADR 0046). Source part for app.js.
+// Run `npm run build` after editing.
+//
+// Fifth tech-pack tab: the whole tech pack as A4 sheets stacked vertically
+// in the fixed contract order — MAIN PAGE (portrait), CONSTRUCTION SOLID and
+// LACE (landscape), BOM-SOLID and BOM-LACE (portrait), POM / How to Measure
+// (landscape). Each sheet has an include checkbox persisted in the project
+// (state.preview.enabledPages); "Export Tech Pack (.xlsx)" writes only the
+// enabled sheets as one multi-sheet workbook (see export-xlsx.js).
+//
+// Preview fidelity is CONTENT on paper, not an Excel-pixel simulation
+// (ADR 0046 §4): cell-based sheets render as paper-styled DOM of the same
+// live state the workbook reads; the two Construction sheets are drawn by
+// ccRenderSheetToCanvas — the same function whose output the workbook embeds.
+
+  const PV_SHEETS = [
+    { key: 'mainpage', label: 'MAIN PAGE', orient: 'portrait' },
+    { key: 'construction-solid', label: 'CONSTRUCTION - SOLID', orient: 'landscape' },
+    { key: 'construction-lace', label: 'CONSTRUCTION - LACE', orient: 'landscape' },
+    { key: 'bom-solid', label: 'BOM-SOLID', orient: 'portrait' },
+    { key: 'bom-lace', label: 'BOM-LACE', orient: 'portrait' },
+    { key: 'pom', label: 'POM / HOW TO MEASURE', orient: 'landscape' },
+  ];
+
+  // A4 at 96 dpi; .pv-paper uses these as CSS width/min-height.
+  const PV_PAPER = { portrait: { w: 794, h: 1123 }, landscape: { w: 1123, h: 794 } };
+  const PV_PAPER_PAD = 28;
+
+  // Natural content widths wider than the paper: the fit transform in
+  // pvFitPaper scales these down so the sheet is always fully visible.
+  // BOM sheets keep the reference sheet's 1450px+ factory table; the MAIN
+  // PAGE three-column layout is authored around ~1140px.
+  const PV_NATURAL_WIDTH = { 'mainpage': 1140, 'bom-solid': 1502, 'bom-lace': 1502 };
+
+  function ensurePreviewPage() {
+    const pv = state.preview && typeof state.preview === 'object'
+      ? state.preview
+      : (state.preview = {});
+    if (!pv.enabledPages || typeof pv.enabledPages !== 'object' || Array.isArray(pv.enabledPages)) {
+      pv.enabledPages = {};
+    }
+    // Missing keys default to enabled — a legacy project (or a new sheet key
+    // added later) previews complete rather than silently dropping pages.
+    PV_SHEETS.forEach(sheet => {
+      if (typeof pv.enabledPages[sheet.key] !== 'boolean') pv.enabledPages[sheet.key] = true;
+    });
+    return pv;
+  }
+
+  function pvEnabledSheets() {
+    const pv = ensurePreviewPage();
+    return PV_SHEETS.filter(sheet => pv.enabledPages[sheet.key]);
+  }
+
+  /* ---- Per-sheet content builders ---------------------------------------- */
+
+  function pvMainPageHtml() {
+    const mp = state.mainPage || {};
+    const fields = mp.fields || [];
+    const kvRows = fields.map(f => {
+      const isBrand = /^\s*Brand\b/i.test(f.label || '');
+      /* US-080: the breakdown row prints as its three captioned sub-cells,
+         the same shape the page shows — the composite `value` is for readers
+         that have no room for a sub-grid (the worksheet has its own rows). */
+      if (f.parts && /Style No Breakdown/i.test(f.label || '')) {
+        return '<tr class="mp-bd-headrow"><th class="mp-bd-blank"></th><td class="mp-bdhead">'
+          + MP_BREAKDOWN_PARTS.map(p => '<span>' + escapeHtml(p.head) + '</span>').join('')
+          + '</td></tr>'
+          + '<tr><th>' + escapeHtml(f.label || '') + '</th><td class="mp-bdcell">'
+          + MP_BREAKDOWN_PARTS.map(p => '<span class="mp-bd-sub">'
+            + escapeHtml(String(f.parts[p.key] || '')) + '</span>').join('')
+          + '</td></tr>';
+      }
+      const value = isBrand
+        ? '<strong>' + escapeHtml(f.value || '') + '</strong>'
+        : escapeHtml(f.value || '');
+      return '<tr><th>' + escapeHtml(f.label || '') + '</th><td>' + value + '</td></tr>';
+    }).join('');
+    const cwRows = (mp.colorways || []).map((c, i) =>
+      '<tr><th>' + escapeHtml(c.col || ('COL ' + (i + 1))) + '</th><td>'
+      + escapeHtml(c.value || '') + '</td></tr>').join('');
+    const versionPanel = (title, variant) =>
+      '<div class="mp-vpanel"><div class="mp-vhead">' + title + '</div>'
+      + '<div class="mp-sketchrow">' + mpSketchRowHtml(variant, false) + '</div>'
+      + '<table class="mp-cwx"><tbody>' + cwRows + '</tbody></table></div>';
+    return '<div class="mp-sheet pv-mp-sheet">'
+      + '<div class="mp-sheethead"><div class="mp-shl">Bra Auto Measure</div>'
+      + '<div class="mp-shm">MAIN PAGE</div>'
+      + '<div class="mp-shr"><span class="mp-draft">DRAFT &middot; all measurements TBC</span></div></div>'
+      + '<div class="mp-cols">'
+      + '<div class="mp-col mp-col-fields"><table class="mp-kv"><tbody>' + kvRows + '</tbody></table>'
+      + (String(mp.provenance || '').trim()
+        ? '<div class="mp-note-label" style="margin-top:10px;">Provenance</div>'
+          + '<div class="mp-note">' + escapeHtml(mp.provenance) + '</div>'
+        : '')
+      + '</div>'
+      + '<div class="mp-col mp-col-version">' + versionPanel('Lace Version', 'lace') + '</div>'
+      + '<div class="mp-col mp-col-version">' + versionPanel('Solid Version', 'solid') + '</div>'
+      + '</div></div>';
+  }
+
+  function pvSpecTableHtml() {
+    const annByPom = new Map();
+    for (const ann of state.annotations) annByPom.set(getLabelText(ann), ann);
+    const pomKeys = specVisiblePomKeys(annByPom);
+    const layout = selectedSizeRun();
+    const fullIndexByLabel = new Map(SPEC_SIZE_RUN.map((c, i) => [c.label, i]));
+    const head = '<tr><th>POM</th><th>Description - English</th>'
+      + '<th>Description - Chinese</th><th>TOL</th>'
+      + layout.map(col => '<th>' + escapeHtml(col.label) + '</th>').join('') + '</tr>';
+    const rows = pomKeys.map(key => {
+      const spec = getPomSpec(key);
+      const run = buildFullSizeRun(key, annByPom);
+      return '<tr><td class="pv-num">' + escapeHtml(key) + '</td>'
+        + '<td>' + escapeHtml(spec.en) + '</td>'
+        + '<td>' + escapeHtml(spec.zh) + '</td>'
+        + '<td class="pv-num">'
+        + (spec.tol ? escapeHtml(inchesToFractionOrDecimal(spec.tol)) : '') + '</td>'
+        + layout.map(col => {
+          const cell = run[fullIndexByLabel.get(col.label)];
+          return '<td class="pv-num">'
+            + (cell && cell.value != null ? escapeHtml(specNumberText(cell.value)) : '')
+            + '</td>';
+        }).join('') + '</tr>';
+    }).join('');
+    return '<table class="pv-spec"><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function pvPomSheetInto(inner) {
+    const styleLabel = (state.styleId || '').trim() || 'Untitled';
+    inner.innerHTML = '<div class="bm-band bm-band-big">Measurement Spec &middot; '
+      + escapeHtml(styleLabel) + '</div>';
+    const bounds = getContentBounds();
+    if (bounds) {
+      const canvas = renderBoardRegionToCanvas(bounds);
+      canvas.className = 'pv-board';
+      inner.appendChild(canvas);
+    } else {
+      const empty = document.createElement('div');
+      empty.className = 'pv-empty';
+      empty.textContent = 'Board is empty — add a sketch and apply POM lines first.';
+      inner.appendChild(empty);
+    }
+    const table = document.createElement('div');
+    table.innerHTML = pvSpecTableHtml();
+    inner.appendChild(table.firstElementChild);
+  }
+
+  function pvFillPaper(sheet) {
+    const paper = document.querySelector('[data-pv-paper="' + sheet.key + '"]');
+    if (!paper) return;
+    const inner = document.createElement('div');
+    inner.className = 'pv-inner';
+    paper.textContent = '';
+    paper.appendChild(inner);
+    if (sheet.key === 'mainpage') {
+      inner.innerHTML = pvMainPageHtml();
+    } else if (sheet.key === 'construction-solid' || sheet.key === 'construction-lace') {
+      const variant = sheet.key.slice('construction-'.length);
+      inner.innerHTML = '<div class="bm-band bm-band-big">Construction &middot; '
+        + variant.toUpperCase() + ' &middot; Working Board</div>';
+      const size = PV_PAPER.landscape;
+      const canvas = ccRenderSheetToCanvas(
+        variant, size.w - PV_PAPER_PAD * 2, size.h - PV_PAPER_PAD * 2 - 38, 2);
+      canvas.className = 'pv-canvas';
+      inner.appendChild(canvas);
+    } else if (sheet.key === 'bom-solid' || sheet.key === 'bom-lace') {
+      inner.innerHTML = bmPrintSheetHtml(sheet.key.slice('bom-'.length));
+    } else if (sheet.key === 'pom') {
+      pvPomSheetInto(inner);
+    }
+    pvFitPaper(paper, sheet);
+  }
+
+  // Content wider than the paper (BOM's 1450px factory table, the MAIN PAGE
+  // three-column layout) is scaled down to fit the page width. transform
+  // does not affect layout height, so the paper gets an explicit height to
+  // avoid clipping tall scaled content while keeping the A4 minimum.
+  function pvFitPaper(paper, sheet) {
+    const inner = paper.firstElementChild;
+    if (!inner) return;
+    const size = PV_PAPER[sheet.orient];
+    const avail = size.w - PV_PAPER_PAD * 2;
+    const natural = PV_NATURAL_WIDTH[sheet.key] || 0;
+    if (natural) inner.style.width = natural + 'px';
+    const contentW = Math.max(inner.scrollWidth, natural);
+    if (contentW > avail) {
+      const scale = avail / contentW;
+      if (!natural) inner.style.width = contentW + 'px';
+      inner.style.transformOrigin = 'top left';
+      inner.style.transform = 'scale(' + scale + ')';
+      paper.style.height = Math.max(size.h, Math.ceil(inner.offsetHeight * scale) + PV_PAPER_PAD * 2) + 'px';
+    } else {
+      paper.style.height = Math.max(size.h, inner.offsetHeight + PV_PAPER_PAD * 2) + 'px';
+    }
+  }
+
+  /* ---- Page rendering ----------------------------------------------------- */
+
+  function pvSyncExportButton() {
+    const btn = document.getElementById('pvExportXlsxBtn');
+    if (!btn) return;
+    const count = pvEnabledSheets().length;
+    btn.disabled = count === 0;
+    btn.textContent = '⬇ Export Tech Pack (.xlsx) — ' + count + '/' + PV_SHEETS.length + ' sheets';
+  }
+
+  function renderPreviewPage() {
+    const host = document.getElementById('pvSheets');
+    if (!host) return;
+    const pv = ensurePreviewPage();
+    if (typeof ensureMainPage === 'function') ensureMainPage();
+    if (typeof ensureConstruction === 'function') ensureConstruction();
+    if (typeof ensureBom === 'function') ensureBom();
+    host.innerHTML = PV_SHEETS.map(sheet => {
+      const on = !!pv.enabledPages[sheet.key];
+      return '<section class="pv-sheet' + (on ? '' : ' pv-off') + '" data-pv-sheet="' + sheet.key + '">'
+        + '<label class="pv-sheet-head">'
+        + '<input type="checkbox" data-pv-toggle="' + sheet.key + '"' + (on ? ' checked' : '') + '>'
+        + '<span class="pv-sheet-name">' + escapeHtml(sheet.label) + '</span>'
+        + '<span class="pv-orient">A4 ' + sheet.orient + '</span></label>'
+        + '<div class="pv-paper pv-' + sheet.orient + '" data-pv-paper="' + sheet.key + '"></div>'
+        + '</section>';
+    }).join('');
+    PV_SHEETS.forEach(sheet => pvFillPaper(sheet));
+    pvSyncExportButton();
+  }
+
+  function initPreviewPage() {
+    // Materialize state.preview before seedHistory (same ordering contract
+    // as initMainPage): the first history fingerprint must already contain
+    // the default enabledPages, or the first tab visit would fabricate a
+    // spurious undo step.
+    ensurePreviewPage();
+    const page = document.getElementById('previewPage');
+    if (!page) return;
+    page.addEventListener('change', (e) => {
+      const box = e.target.closest('[data-pv-toggle]');
+      if (!box) return;
+      const pv = ensurePreviewPage();
+      pv.enabledPages[box.dataset.pvToggle] = box.checked;
+      const section = page.querySelector('[data-pv-sheet="' + box.dataset.pvToggle + '"]');
+      if (section) section.classList.toggle('pv-off', !box.checked);
+      pvSyncExportButton();
+      pushHistoryIfChanged();
+    });
+    const btn = document.getElementById('pvExportXlsxBtn');
+    if (btn) btn.addEventListener('click', () => { void exportTechPackXlsx(); });
+  }
+
+  // ---- src/ui/page-nav.js ----
+// Page navigation shell (US-069, ADR 0038). Source part for app.js.
+//
+// The tool now hosts more than one page of the tech pack: the Board (sketch
+// photos + POM lines, the original single-page app), the MAIN PAGE sheet
+// (US-068), and Construction annotation (US-070). They are peers — tabs on
+// the shared toolbar, not an app-plus-popup — because all are pages of the
+// same tech pack output, not a document you open over the app and dismiss.
+//
+// TECH_PACK_PAGES is the only place a page is registered. Adding a future
+// tech-pack page means adding one entry here and a content element for it to
+// show/hide; the tab bar, the show/hide toggle, and the print gating all
+// read the registry generically — proven three times now by MAIN PAGE,
+// Construction, and BOM (US-072) landing without touching this file's shape.
+//
+// state.activePage is session-only (like state.selectedImageIds) — which
+// page is showing is a view concern, not project data, so it is not part of
+// makeSnapshot/buildProjectSnapshot and does not round-trip through undo or
+// a saved project. A reopened project always starts on the Board.
+
+  // Each page names the elements it owns rather than one wrapper, because
+  // the Board page is the original app shell (toolbar groups + statusbar +
+  // canvas), not a single container — wrapping it in one div to get a single
+  // toggle point would mean restructuring the whole existing layout.
+  const TECH_PACK_PAGES = [
+    { id: 'board', label: 'Board', els: ['boardToolbarGroups', 'statusbar', 'workspace'] },
+    { id: 'mainpage', label: 'Main Page', els: ['mainPageOverlay'] },
+    { id: 'construction', label: 'Construction', els: ['constructionPage'] },
+    { id: 'bom', label: 'BOM', els: ['bomPage'] },
+    { id: 'preview', label: 'Preview & Export', els: ['previewPage'] },
+  ];
+
+  function pageEls(page) {
+    return page.els.map(function (idOrClass) {
+      return document.getElementById(idOrClass) || document.querySelector('.' + idOrClass);
+    }).filter(Boolean);
+  }
+
+  function renderPageTabs() {
+    const bar = document.getElementById('pageTabBar');
+    if (!bar) return;
+    bar.innerHTML = TECH_PACK_PAGES.map(function (p) {
+      const active = state.activePage === p.id;
+      return '<button type="button" class="' + (active ? 'active' : '') + '" data-page="' + p.id + '"'
+        + ' role="tab" aria-selected="' + active + '">' + escapeHtml(p.label) + '</button>';
+    }).join('');
+  }
+
+  function setActivePage(id) {
+    if (!TECH_PACK_PAGES.some(function (p) { return p.id === id; })) return;
+    state.activePage = id;
+    TECH_PACK_PAGES.forEach(function (p) {
+      pageEls(p).forEach(function (el) { el.classList.toggle('page-hidden', p.id !== id); });
+    });
+    document.body.classList.toggle('mainpage-open', id === 'mainpage');
+    document.body.classList.toggle('construction-open', id === 'construction');
+    document.body.classList.toggle('bom-open', id === 'bom');
+    document.body.classList.toggle('preview-open', id === 'preview');
+    renderPageTabs();
+    if (id === 'mainpage') {
+      ensureMainPage();
+      renderMainPage();
+    }
+    if (id === 'construction') {
+      ensureConstruction();
+      renderConstruction();
+    }
+    if (id === 'bom') {
+      ensureBom();
+      renderBom();
+    }
+    if (id === 'preview') {
+      ensurePreviewPage();
+      renderPreviewPage();
+    }
+    updateUI();
+  }
+
+  function initPageNav() {
+    state.activePage = 'board';
+    const bar = document.getElementById('pageTabBar');
+    if (bar) {
+      bar.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-page]');
+        if (btn) setActivePage(btn.dataset.page);
+      });
+    }
+    setActivePage('board');
+  }
+
+  // ---- src/ui/board-toolbar.js ----
+// US-082: Contextual Board toolbar. This module owns only presentation and
+// menu behavior; the original command buttons and their existing bindings
+// remain the single execution path for every action.
+
+  const BOARD_TOOLBAR_MENUS = [
+    ['fileMenuWrap', 'fileMenuBtn', 'fileMenuList'],
+    ['exportMenuWrap', 'exportMenuBtn', 'exportMenuList'],
+    ['moreMenuWrap', 'moreMenuBtn', 'moreMenuList'],
+    ['arrowMenuWrap', 'arrowMenuBtn', 'arrowMenuList'],
+    ['colorMenuWrap', 'colorMenuBtn', 'colorMenuList'],
+  ];
+
+  function boardToolbarMenuRecords() {
+    return BOARD_TOOLBAR_MENUS.map(([wrapId, buttonId, listId]) => ({
+      wrap: document.getElementById(wrapId),
+      button: document.getElementById(buttonId),
+      list: document.getElementById(listId),
+    })).filter(record => record.wrap && record.button && record.list);
+  }
+
+  function closeBoardToolbarMenus(exceptList, restoreFocus) {
+    for (const record of boardToolbarMenuRecords()) {
+      if (record.list === exceptList) continue;
+      const wasOpen = !record.list.hidden;
+      record.list.hidden = true;
+      record.button.setAttribute('aria-expanded', 'false');
+      if (wasOpen && restoreFocus) record.button.focus();
+    }
+  }
+
+  function openBoardToolbarMenu(record) {
+    closeLineStyleMenu();
+    closeBoardToolbarMenus(record.list, false);
+    record.list.hidden = false;
+    record.button.setAttribute('aria-expanded', 'true');
+    const first = Array.from(record.list.querySelectorAll('[role="menuitem"]'))
+      .find(item => !item.disabled && !item.hidden && item.offsetParent !== null);
+    if (first) first.focus();
+  }
+
+  function toggleBoardToolbarMenu(event, record) {
+    event.stopPropagation();
+    if (record.list.hidden) openBoardToolbarMenu(record);
+    else closeBoardToolbarMenus(null, true);
+  }
+
+  function moveBoardMenuFocus(event, list) {
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+    const items = Array.from(list.querySelectorAll('[role="menuitem"]'))
+      .filter(item => !item.disabled && !item.hidden && item.offsetParent !== null);
+    if (!items.length) return;
+    event.preventDefault();
+    const current = items.indexOf(document.activeElement);
+    let next = 0;
+    if (event.key === 'End') next = items.length - 1;
+    else if (event.key === 'ArrowUp') next = current <= 0 ? items.length - 1 : current - 1;
+    else if (event.key === 'ArrowDown') next = current < 0 || current === items.length - 1 ? 0 : current + 1;
+    items[next].focus();
+  }
+
+  function initBoardToolbar() {
+    const records = boardToolbarMenuRecords();
+    for (const record of records) {
+      record.button.addEventListener('click', event => toggleBoardToolbarMenu(event, record));
+      record.list.addEventListener('keydown', event => moveBoardMenuFocus(event, record.list));
+      record.list.addEventListener('click', event => {
+        if (event.target.closest('[role="menuitem"]')) closeBoardToolbarMenus();
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (!event.target.closest('.toolbar-menu')) closeBoardToolbarMenus();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      const openRecord = boardToolbarMenuRecords().find(record => !record.list.hidden);
+      if (!openRecord) return;
+      event.preventDefault();
+      closeBoardToolbarMenus(null, true);
+    });
+    const addImageMenuBtn = document.getElementById('addImageMenuBtn');
+    if (addImageMenuBtn) addImageMenuBtn.addEventListener('click', () => el.addImageBtn.click());
+  }
+
+  function setBoardToolbarHidden(node, hidden) {
+    if (node) node.hidden = !!hidden;
+  }
+
+  function updateBoardToolbarUI() {
+    const boardGroups = document.getElementById('boardToolbarGroups');
+    if (!boardGroups) return;
+    if (state.activePage && state.activePage !== 'board') closeBoardToolbarMenus();
+
+    const isAuto = state.appMode === 'auto';
+    const imageCount = state.images.length;
+    const annotationCount = state.annotations.length;
+    const empty = imageCount === 0 && annotationCount === 0;
+    const selectedAnnotation = getSelectedAnnotation();
+    const selectedImage = getSelectedImage();
+    const auto = state.autoMode;
+    const hasSource = !!pickAutoSourceImage();
+    const hasAnchors = auto.anchors.length > 0;
+    const recovery = auto.status === 'error' || auto.draftAnnotations.length > 0;
+
+    boardGroups.dataset.mode = isAuto ? 'auto' : 'manual';
+    boardGroups.dataset.empty = empty ? 'true' : 'false';
+
+    // Empty Auto boards do not show a disabled workflow. Once an image exists,
+    // exactly one next-step action receives the primary treatment.
+    el.autoModeBar.classList.toggle('workflow-empty', isAuto && !hasSource && !recovery);
+    setBoardToolbarHidden(el.autoDetectBtn, !isAuto || !hasSource || recovery);
+    setBoardToolbarHidden(el.autoManageAnchorsBtn, !isAuto || !hasAnchors || recovery);
+    setBoardToolbarHidden(el.autoGenerateBtn, !isAuto || !hasAnchors || recovery);
+    el.autoDetectBtn.classList.toggle('context-primary', isAuto && hasSource && !hasAnchors && !recovery);
+    el.autoGenerateBtn.classList.toggle('context-primary', isAuto && hasAnchors && !recovery);
+    el.addImageBtn.classList.toggle('primary-btn', empty);
+    setBoardToolbarHidden(el.addImageBtn, !isAuto && !empty);
+
+    setBoardToolbarHidden(el.autoResetAnchorsBtn, !isAuto || !auto.detection);
+    setBoardToolbarHidden(el.autoResetBoardBtn, !isAuto || isWorkingBoardEmpty());
+
+    // Manual selection actions occupy the toolbar only when actionable.
+    const selectionMode = !isAuto && state.tool === 'select';
+    setBoardToolbarHidden(el.undoBtn, !selectionMode || el.undoBtn.disabled);
+    setBoardToolbarHidden(el.redoBtn, !selectionMode || el.redoBtn.disabled);
+    setBoardToolbarHidden(el.copyLineBtn, !selectionMode || !selectedAnnotation);
+    setBoardToolbarHidden(el.reflectLineBtn, !selectionMode || !selectedAnnotation);
+    setBoardToolbarHidden(el.pasteLineBtn, !selectionMode || el.pasteLineBtn.disabled);
+    setBoardToolbarHidden(el.deleteBtn, !selectionMode || !(selectedAnnotation || selectedImage));
+    setBoardToolbarHidden(el.lockImageBtn, !selectionMode || !selectedImage);
+    const contextGroup = document.getElementById('boardContextActions');
+    if (contextGroup) {
+      const actionable = Array.from(contextGroup.querySelectorAll('button'))
+        .some(button => !button.hidden);
+      contextGroup.hidden = !selectionMode || !actionable;
+    }
+
+    // Empty Manual boards need authoring entry points, not line styling or
+    // exporters. Those controls return as soon as there is Board content.
+    const lineSettings = document.querySelector('.board-line-settings');
+    if (lineSettings) lineSettings.hidden = isAuto || empty || (!!selectedImage && state.tool === 'select');
+    setBoardToolbarHidden(el.toolEraser, isAuto || imageCount === 0);
+    const exportWrap = document.getElementById('exportMenuWrap');
+    if (exportWrap) exportWrap.hidden = isAuto || empty;
+
+    const activeArrow = selectedAnnotation ? getArrowType(selectedAnnotation) : state.arrowType;
+    const arrowButton = document.getElementById('arrowMenuBtn');
+    if (arrowButton) {
+      const label = activeArrow === 'single' ? 'Single' : activeArrow === 'none' ? 'None' : 'Double';
+      arrowButton.textContent = 'Arrow: ' + label;
+    }
+    const activeColor = selectedAnnotation ? normalizeColorKey(selectedAnnotation.color) : state.drawColor;
+    const colorButton = document.getElementById('colorMenuBtn');
+    const colorLabel = document.getElementById('colorMenuLabel');
+    if (colorButton) colorButton.dataset.color = activeColor;
+    if (colorLabel) colorLabel.textContent = activeColor.charAt(0).toUpperCase() + activeColor.slice(1);
+
+    // A mode/page transition never leaves a detached popup floating over the
+    // newly active controls.
+    for (const record of boardToolbarMenuRecords()) {
+      if (record.wrap.hidden || record.wrap.offsetParent === null) {
+        record.list.hidden = true;
+        record.button.setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
+
   // ---- src/ui/bindings.js ----
 // Top-level UI bindings: bindUI() wires the toolbar, dropdowns, file
 // inputs, the canvas, the label editor, and keyboard shortcuts. Tool and
@@ -5094,6 +14185,7 @@
 // Source part for app.js. Run `npm run build` after editing.
 
   function bindUI() {
+    initBoardToolbar();
     el.toolSelect.addEventListener('click', () => setTool('select'));
     el.toolStraight.addEventListener('click', () => setTool('straight'));
     el.toolCurved.addEventListener('click', () => setTool('curved'));
@@ -5142,10 +14234,17 @@
     el.lockImageBtn.addEventListener('click', toggleSelectedImageLock);
     el.fitBtn.addEventListener('click', fitSelectionOrAll);
     el.togglePanelBtn.addEventListener('click', toggleSpecPanel);
+    // US-038: floating anchor manager (separate from the exported Measurements
+    // panel). Toolbar toggles it; header/action buttons drive visibility.
+    if (el.autoManageAnchorsBtn) el.autoManageAnchorsBtn.addEventListener('click', toggleAnchorManager);
+    if (el.anchorManagerCloseBtn) el.anchorManagerCloseBtn.addEventListener('click', closeAnchorManager);
+    if (el.anchorManagerHideAllBtn) el.anchorManagerHideAllBtn.addEventListener('click', () => { hideAllAnchors(); renderAnchorManagerPanel(); });
+    if (el.anchorManagerShowAllBtn) el.anchorManagerShowAllBtn.addEventListener('click', () => { showAllAnchors(); renderAnchorManagerPanel(); });
     el.toggleLabelsBtn.addEventListener('click', toggleLabels);
     el.setScaleBtn.addEventListener('click', setScaleFromSelection);
     el.clearScaleBtn.addEventListener('click', clearScale);
     el.sizeRunBtn.addEventListener('click', () => openSizeRunDialog());
+    el.gradingBtn.addEventListener('click', () => openGradingDialog());
     el.exportPdfBtn.addEventListener('click', exportPdf);
     el.copyImageBtn.addEventListener('click', copyBoardImageToClipboard);
     el.exportExcelBtn.addEventListener('click', exportSpecXlsx);
@@ -5228,14 +14327,6 @@
         resetPomMeanings('all');
       });
     }
-    if (el.manageMeaningsItem) {
-      el.manageMeaningsItem.addEventListener('click', () => {
-        closeAutoLearnMenu();
-        openManageMeaningsPicker();
-      });
-    }
-    if (el.pmpSkipBtn)  el.pmpSkipBtn.addEventListener('click', () => closePomMeaningPopover());
-    if (el.pmpOtherBtn) el.pmpOtherBtn.addEventListener('click', () => showPomMeaningOtherMode());
     if (el.styleIdInput) {
       el.styleIdInput.addEventListener('input', () => {
         state.styleId = el.styleIdInput.value.trim();
@@ -5263,20 +14354,31 @@
     el.canvas.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
     el.canvas.addEventListener('wheel', onWheel, { passive: false });
-    el.canvas.addEventListener('contextmenu', onCanvasContextMenu);
+    // US-036: touch/pen layer — routes into the mouse handlers above; mouse
+    // pointers are filtered out inside the handlers. Up/cancel bind on
+    // window, mirroring the mouseup precedent, so a finger lifted
+    // off-canvas still ends its drag.
+    el.canvas.addEventListener('pointerdown', onTouchPointerDown, { passive: false });
+    el.canvas.addEventListener('pointermove', onTouchPointerMove, { passive: false });
+    window.addEventListener('pointerup', onTouchPointerEnd);
+    window.addEventListener('pointercancel', onTouchPointerEnd);
 
-    if (el.annCtxReconfirm) {
-      el.annCtxReconfirm.addEventListener('click', () => {
-        const id = annContextMenuTargetId;
-        closeAnnContextMenu();
-        if (id != null) reconfirmAnnotationMeaning(id);
-      });
-    }
 
     document.addEventListener('click', (e) => {
       if (!el.lineStyleControl.contains(e.target)) closeLineStyleMenu();
       if (el.autoLearnMenuWrap && !el.autoLearnMenuWrap.contains(e.target)) closeAutoLearnMenu();
-      if (el.annContextMenu && !el.annContextMenu.contains(e.target)) closeAnnContextMenu();
+      // US-038: click outside the floating anchor panel closes it — but not
+      // when clicking the toolbar toggle (that has its own handler) or the
+      // canvas (dragging pins while it's open should stay open).
+      if (isAnchorManagerOpen()
+          && !el.anchorManagerPanel.contains(e.target)
+          && e.target !== el.autoManageAnchorsBtn
+          && e.target !== el.canvas) {
+        closeAnchorManager();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isAnchorManagerOpen()) closeAnchorManager();
     });
     document.addEventListener('paste', onPasteEvent);
     document.addEventListener('keydown', onKeyDown);
@@ -5435,8 +14537,6 @@
       if (evalResult.status === 'recorded') {
         showToast('POM ' + ann.learnSamplePom + ' learning sample saved');
         updateUI();
-      } else if (evalResult.status === 'needsConfirmation') {
-        openPomMeaningPopover(evalResult);
       }
     }
     updateUI();
@@ -5482,6 +14582,11 @@
       pomSpecs: clone(state.pomSpecs || {}),
       gradeRules: clone(state.gradeRules || {}),
       customPoms: clone(state.customPoms || []),
+      deletedPomKeys: clone(state.deletedPomKeys || []),
+      mainPage: state.mainPage ? clone(state.mainPage) : null,
+      construction: state.construction ? clone(state.construction) : null,
+      bom: state.bom ? clone(state.bom) : null,
+      preview: state.preview ? clone(state.preview) : null,
     };
   }
 
@@ -5525,7 +14630,7 @@
     state.arrowType = snapshot.arrowType || 'double';
     state.lineWidth = normalizeLineWidth(snapshot.lineWidth);
     state.annotations = clone(snapshot.annotations || []);
-    state.annotations.forEach(ensureCurveMidPoint);
+    state.annotations.forEach(ensureCurveControls);
     state.eraseStrokes = clone(snapshot.eraseStrokes || []);
     state.nextSequence = snapshot.nextSequence || (state.annotations.length + 1);
     state.selection = snapshot.selection || { kind: null, id: null };
@@ -5536,6 +14641,15 @@
     // pre-US-011 code (or with a legacy depthRules field) must still restore.
     state.gradeRules = migrateGradeRulesV2(snapshot.gradeRules, snapshot.depthRules);
     state.customPoms = clone(snapshot.customPoms || []);
+    state.deletedPomKeys = clone(snapshot.deletedPomKeys || []);
+    state.mainPage = snapshot.mainPage ? clone(snapshot.mainPage) : null;
+    if (typeof renderMainPage === 'function') renderMainPage();
+    state.construction = snapshot.construction ? clone(snapshot.construction) : null;
+    if (typeof renderConstruction === 'function') renderConstruction();
+    state.bom = snapshot.bom ? clone(snapshot.bom) : null;
+    if (typeof renderBom === 'function') renderBom();
+    state.preview = snapshot.preview ? clone(snapshot.preview) : null;
+    if (state.activePage === 'preview' && typeof renderPreviewPage === 'function') renderPreviewPage();
     state.editingLabelId = null;
     state.drawSession = null;
     state.eraseSession = null;
@@ -5617,14 +14731,34 @@
         // former depthRules field); old files still load via migration.
         gradeRules: clone(state.gradeRules || {}),
         customPoms: clone(state.customPoms || []),
+        deletedPomKeys: clone(state.deletedPomKeys || []),
         sizeSelection: state.sizeSelection ? clone(state.sizeSelection) : null,
+        // US-068: MAIN PAGE sheet. Additive — files saved before US-068 have
+        // no key and seed a default on open. US-080: the serializer injects
+        // the version-sketch bytes, which live outside state.mainPage.
+        mainPage: (typeof mpSerializeForProject === 'function')
+          ? mpSerializeForProject()
+          : (state.mainPage ? clone(state.mainPage) : null),
+        // US-070: Construction annotation page. Additive — files saved
+        // before US-070 have no key and seed a default on open.
+        construction: (typeof ccSerializeForProject === 'function')
+          ? ccSerializeForProject()
+          : (state.construction ? clone(state.construction) : null),
+        // US-072: BOM page. Additive — files saved before US-072 have no
+        // key and seed a default (empty BOM) on open.
+        bom: (typeof bmSerializeForProject === 'function')
+          ? bmSerializeForProject()
+          : (state.bom ? clone(state.bom) : null),
+        // US-079: Preview & Export page-inclusion checkboxes. Additive —
+        // files saved before US-079 have no key and default to all enabled.
+        preview: state.preview ? clone(state.preview) : null,
       },
     };
   }
 
   function saveProject() {
-    if (!state.annotations.length && !state.images.length) {
-      showToast('Nothing to save yet. Paste an image or draw a line first.');
+    if (typeof hasUnsavedWork === 'function' ? !hasUnsavedWork() : (!state.annotations.length && !state.images.length)) {
+      showToast('Nothing to save yet. Add or edit Board/BOM work first.');
       return;
     }
     if (state.appMode === 'auto' && state.autoMode.draftAnnotations.length > 0) {
@@ -5727,7 +14861,7 @@
       return;
     }
 
-    if ((state.annotations.length || state.images.length) &&
+    if ((typeof hasUnsavedWork === 'function' ? hasUnsavedWork() : (state.annotations.length || state.images.length)) &&
         !window.confirm('Open this project? Your current board will be replaced. Save it first if you want to keep it.')) {
       return;
     }
@@ -5762,7 +14896,7 @@
       const s = project.state;
 
       state.annotations = clone(s.annotations || []);
-      state.annotations.forEach(ensureCurveMidPoint);
+      state.annotations.forEach(ensureCurveControls);
       state.eraseStrokes = clone(s.eraseStrokes || []);
       state.brushSize = s.brushSize || 24;
       state.showLabels = s.showLabels !== false;
@@ -5816,8 +14950,33 @@
       // into the v2 container's depthOffsets losslessly.
       state.gradeRules = migrateGradeRulesV2(s.gradeRules, s.depthRules);
       state.customPoms = Array.isArray(s.customPoms) ? clone(s.customPoms) : [];
+      state.deletedPomKeys = Array.isArray(s.deletedPomKeys) ? clone(s.deletedPomKeys) : [];
       state.sizeSelection = (s.sizeSelection && typeof s.sizeSelection === 'object')
         ? clone(s.sizeSelection) : null;
+      // US-080: mpLoadProjectState pulls the sketch bytes out into the module
+      // map and leaves state.mainPage byte-free, the way BOM images load.
+      if (typeof mpLoadProjectState === 'function') mpLoadProjectState(s.mainPage);
+      else {
+        state.mainPage = (s.mainPage && typeof s.mainPage === 'object')
+          ? clone(s.mainPage) : null;
+        if (typeof ensureMainPage === 'function') ensureMainPage();
+      }
+      if (typeof renderMainPage === 'function') renderMainPage();
+      if (typeof ccLoadProjectState === 'function') await ccLoadProjectState(s.construction, s.images);
+      else {
+        state.construction = (s.construction && typeof s.construction === 'object')
+          ? clone(s.construction) : null;
+        if (typeof ensureConstruction === 'function') ensureConstruction(s.images);
+      }
+      if (typeof renderConstruction === 'function') renderConstruction();
+      if (typeof bmLoadProjectState === 'function') await bmLoadProjectState(s.bom);
+      else {
+        state.bom = (s.bom && typeof s.bom === 'object') ? clone(s.bom) : null;
+        if (typeof ensureBom === 'function') ensureBom();
+      }
+      if (typeof renderBom === 'function') renderBom();
+      state.preview = (s.preview && typeof s.preview === 'object') ? clone(s.preview) : null;
+      if (typeof ensurePreviewPage === 'function') ensurePreviewPage();
 
       // Images are in place now, so the Auto status chip can resolve
       // ready/idle correctly for the reopened board.
@@ -5896,6 +15055,8 @@
     if (!state) return false;
     if (state.annotations && state.annotations.length > 0) return true;
     if (state.images && state.images.length > 0) return true;
+    if (typeof hasMeaningfulConstructionWork === 'function' && hasMeaningfulConstructionWork()) return true;
+    if (typeof hasMeaningfulBomWork === 'function' && hasMeaningfulBomWork()) return true;
     if (state.autoMode && state.autoMode.draftAnnotations && state.autoMode.draftAnnotations.length > 0) return true;
     return false;
   }
@@ -5924,6 +15085,24 @@
       record.snapshot.state.images = record.snapshot.state.images.map((img) => ({
         ...img, dataURL: null,
       }));
+      const bom = record.snapshot.state.bom;
+      if (bom && bom.images) {
+        record.bomImagesStripped = true;
+        ['solid', 'lace'].forEach(variant => {
+          bom.images[variant] = (bom.images[variant] || []).map(image => ({ ...image, dataURL: null }));
+        });
+      }
+      const construction = record.snapshot.state.construction;
+      if (construction && construction.images) {
+        record.constructionImagesStripped = true;
+        ['solid', 'lace'].forEach(sheet => {
+          ['outer', 'inner'].forEach(view => {
+            if (!construction.images[sheet]) return;
+            construction.images[sheet][view] = (construction.images[sheet][view] || [])
+              .map(image => ({ ...image, dataURL: null }));
+          });
+        });
+      }
     }
     if (tryWriteAutosave(record)) return;
     console.warn('[autosave] Could not persist even the annotation-only snapshot; localStorage is full.');
@@ -5970,6 +15149,13 @@
     const s = record.snapshot.state;
     const anns = Array.isArray(s.annotations) ? s.annotations.length : 0;
     const imgs = Array.isArray(s.images) ? s.images.length : 0;
+    const bomImgs = s.bom && s.bom.images
+      ? (s.bom.images.solid || []).length + (s.bom.images.lace || []).length
+      : 0;
+    const constructionImgs = s.construction && s.construction.images
+      ? ['solid', 'lace'].reduce((sum, sheet) => sum + ['outer', 'inner'].reduce((viewSum, view) =>
+        viewSum + (((s.construction.images[sheet] || {})[view] || []).length), 0), 0)
+      : 0;
     const ageMs = Number.isFinite(record.savedAt) ? Date.now() - record.savedAt : null;
     let when = '';
     if (ageMs != null) {
@@ -5981,6 +15167,8 @@
     const parts = [];
     if (anns) parts.push(anns + ' line' + (anns === 1 ? '' : 's'));
     if (imgs) parts.push(imgs + ' image' + (imgs === 1 ? '' : 's'));
+    if (bomImgs) parts.push(bomImgs + ' BOM image' + (bomImgs === 1 ? '' : 's'));
+    if (constructionImgs) parts.push(constructionImgs + ' Construction image' + (constructionImgs === 1 ? '' : 's'));
     if (record.imagesStripped) parts.push('image bitmap dropped to fit storage');
     return (parts.join(', ') || 'work in progress') + (when ? ' • saved ' + when : '');
   }
@@ -5996,7 +15184,14 @@
     if (!record) return;
     const s = record.snapshot && record.snapshot.state;
     const hasContent = s && ((Array.isArray(s.annotations) && s.annotations.length)
-      || (Array.isArray(s.images) && s.images.length));
+      || (Array.isArray(s.images) && s.images.length)
+      || (s.construction && ((s.construction.callouts || []).length
+        || (s.construction.images && ['solid', 'lace'].some(sheet => ['outer', 'inner'].some(view =>
+          ((((s.construction.images[sheet] || {})[view]) || []).length))))
+        || (typeof hasMeaningfulConstructionWork === 'function' && s.construction)))
+      || (s.bom && ((s.bom.callouts || []).length
+        || (s.bom.images && ((s.bom.images.solid || []).length || (s.bom.images.lace || []).length))
+        || (typeof hasMeaningfulBomWork === 'function' && s.bom))));
     if (!hasContent) { clearAutosave(); return; }
     showAutosaveRestoreBanner(record);
   }
@@ -6036,8 +15231,8 @@
       try {
         suspendAutosave();
         await loadProject(record.snapshot);
-        showToast(record.imagesStripped
-          ? 'Restored annotations. The reference image was not saved to storage — please re-add it.'
+        showToast(record.imagesStripped || record.bomImagesStripped
+          ? 'Restored project geometry. Some image bitmaps did not fit storage — please re-add them.'
           : 'Restored your previous session.');
         clearAutosave();
       } catch (err) {
@@ -6841,33 +16036,76 @@
     }
   }
 
+  // Remove one image and purge everything tied to it (erase strokes, and in
+  // Auto Mode its anchors / drafts / detection or aux view — US-052). Returns
+  // true if an image was actually removed. Caller handles the lock check,
+  // selection reset, history commit, and re-render.
+  function deleteImageById(deletedId) {
+    const before = state.images.length;
+    state.images = state.images.filter(image => image.id !== deletedId);
+    if (state.images.length === before) return false;
+    state.eraseStrokes = state.eraseStrokes.filter(stroke => stroke.imageId !== deletedId);
+    const am = state.autoMode;
+    if (am) {
+      am.anchors = (am.anchors || []).filter(a => a.sourceImageId !== deletedId);
+      am.draftAnnotations = (am.draftAnnotations || []).filter(d => d.sourceImageId !== deletedId);
+      if (am.anchorSelectedId != null && !am.anchors.some(a => a.id === am.anchorSelectedId)) am.anchorSelectedId = null;
+      if (am.detection) {
+        if (am.detection.sourceImageId === deletedId) am.detection = null;
+        else if (Array.isArray(am.detection.auxViews)) {
+          am.detection.auxViews = am.detection.auxViews.filter(v => v.sourceImageId !== deletedId);
+        }
+      }
+      if (typeof ensureAutoModeStatus === 'function') ensureAutoModeStatus();
+    }
+    return true;
+  }
+
   function deleteSelected() {
     if (state.selection.kind == null) return;
 
     if (state.selection.kind === 'annotation') {
-      const selectedAnn = state.annotations.find(a => a.id === state.selection.id) || null;
+      // Delete every selected line (Shift+click / marquee group).
+      const ids = getSelectedAnnotationIds();
+      if (!ids.length) return;
+      const targets = ids.map(id => state.annotations.find(a => a.id === id)).filter(Boolean);
+      const idSet = new Set(ids);
       const before = state.annotations.length;
-      state.annotations = state.annotations.filter(a => a.id !== state.selection.id);
+      state.annotations = state.annotations.filter(a => !idSet.has(a.id));
       if (state.annotations.length === before) return;
-      // POM numbers are measurement identities, not list positions. Deleting
-      // POM 7 must leave a gap instead of turning POM 8 into POM 7.
-      if (selectedAnn && typeof markDeletedAutoAnnotationForEvidence === 'function') {
-        markDeletedAutoAnnotationForEvidence(selectedAnn);
+      if (!Array.isArray(state.deletedPomKeys)) state.deletedPomKeys = [];
+      for (const ann of targets) {
+        // POM numbers are measurement identities, not list positions. Deleting
+        // POM 7 must leave a gap instead of turning POM 8 into POM 7.
+        if (typeof markDeletedAutoAnnotationForEvidence === 'function') markDeletedAutoAnnotationForEvidence(ann);
+        // US-047: deleting a POM line excludes that POM from the exported spec,
+        // exactly like the review × Hide toggle (TD: "delete = hide"). The id is
+        // gone after this, so remember the POM label; the export drops the row
+        // unless a line with that label is later redrawn.
+        const label = String(getLabelText(ann));
+        if (label && !state.deletedPomKeys.includes(label)) state.deletedPomKeys.push(label);
       }
     } else if (state.selection.kind === 'image') {
-      const target = getImageById(state.selection.id);
-      if (target && target.locked) {
-        showToast('Image is locked. Click Unlock first.');
+      // Delete every selected photo (Cmd/Ctrl+click group), skipping locked
+      // ones. US-052: deleteImageById purges each photo's Auto Mode state.
+      const targets = getSelectedImageIds().map(getImageById).filter(Boolean);
+      const unlocked = targets.filter(im => !im.locked);
+      const lockedCount = targets.length - unlocked.length;
+      if (!unlocked.length) {
+        showToast(lockedCount ? 'Image is locked. Click Unlock first.' : 'Select an image first.');
         return;
       }
-      const before = state.images.length;
-      const deletedId = state.selection.id;
-      state.images = state.images.filter(image => image.id !== deletedId);
-      if (state.images.length === before) return;
-      state.eraseStrokes = state.eraseStrokes.filter(stroke => stroke.imageId !== deletedId);
+      let deletedAny = false;
+      for (const im of unlocked) { if (deleteImageById(im.id)) deletedAny = true; }
+      if (!deletedAny) return;
+      if (lockedCount) {
+        showToast(lockedCount + ' locked photo' + (lockedCount > 1 ? 's' : '') + ' kept — unlock to delete.');
+      }
     }
 
     state.selection = { kind: null, id: null };
+    state.selectedImageIds = [];
+    state.selectedAnnotationIds = [];
     pushHistoryIfChanged();
     updateUI();
     requestRender();
@@ -6877,6 +16115,7 @@
     if (!state.annotations.length) return;
     state.annotations = [];
     state.deletedAutoAnnotations = [];
+    state.deletedPomKeys = [];
     state.nextSequence = 1;
     if (state.selection.kind === 'annotation') {
       state.selection = { kind: null, id: null };
@@ -6893,102 +16132,125 @@
 
   function copySelectedAnnotation() {
     if (state.appMode === 'auto') return;
-    if (state.selection.kind !== 'annotation') {
+    const anns = getSelectedAnnotations();
+    if (!anns.length) {
       showToast('Select a line to copy first.');
       return;
     }
-    const ann = state.annotations.find(a => a.id === state.selection.id);
-    if (!ann) return;
-    lineClipboard = clone(ann);
+    lineClipboard = anns.map(clone);
+    // Claim the OS clipboard (best-effort) so a photo copied EARLIER no
+    // longer shadows this line copy on paste: onPasteEvent pastes an OS
+    // image when present, otherwise the internal line clipboard — writing
+    // this marker text replaces any stale image, so "last copy wins".
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      const marker = anns.length > 1 ? '[Bra Auto Measure] ' + anns.length + ' POM lines copied' : '[Bra Auto Measure] POM line copied';
+      navigator.clipboard.writeText(marker).catch(() => {});
+    }
     updateUI();
-    showToast('Line copied.');
+    showToast(anns.length > 1 ? anns.length + ' lines copied.' : 'Line copied.');
   }
 
   function pasteLineFromClipboard() {
     if (state.appMode === 'auto') return;
-    if (!lineClipboard) {
+    const clips = Array.isArray(lineClipboard) ? lineClipboard : (lineClipboard ? [lineClipboard] : []);
+    if (!clips.length) {
       showToast('Nothing to paste — copy a line first.');
       return;
     }
-    const src = clone(lineClipboard);
     const offset = 20 / state.zoom;
     const shift = (p) => (p ? { x: p.x + offset, y: p.y + offset } : null);
-    const start = shift(src.start);
-    const end = shift(src.end);
-    const isCurved = src.type === 'curved';
-    const midPoint = isCurved ? shift(src.midPoint) : null;
-    const midHandleIn = isCurved ? shift(src.midHandleIn) : null;
-    const midHandleOut = isCurved ? shift(src.midHandleOut) : null;
-    const control1 = isCurved ? shift(src.control1) : null;
-    const control2 = isCurved ? shift(src.control2) : null;
-    const ann = {
-      id: state.idCounter++,
-      seq: state.nextSequence,
-      type: src.type,
-      style: src.style,
-      color: src.color,
-      arrowType: src.arrowType,
-      lineWidth: src.lineWidth,
-      start,
-      end,
-      midPoint,
-      midHandleIn,
-      midHandleOut,
-      control1,
-      control2,
-      label: computeDefaultLabelPosition({ type: src.type, start, end, control1, control2, midPoint, midHandleIn, midHandleOut }),
-      labelManual: false,
-      text: src.text || null,
-      value: null,
-    };
-    if (isCurved) ensureCurveMidPoint(ann);
-    state.annotations.push(ann);
-    state.selection = { kind: 'annotation', id: ann.id };
-    state.nextSequence += 1;
+    const pastedIds = [];
+    for (const clip of clips) {
+      const src = clone(clip);
+      const isCurved = src.type === 'curved';
+      const start = shift(src.start);
+      const end = shift(src.end);
+      const midPoint = isCurved ? shift(src.midPoint) : null;
+      const midHandleIn = isCurved ? shift(src.midHandleIn) : null;
+      const midHandleOut = isCurved ? shift(src.midHandleOut) : null;
+      const control1 = isCurved ? shift(src.control1) : null;
+      const control2 = isCurved ? shift(src.control2) : null;
+      const ann = {
+        id: state.idCounter++,
+        seq: state.nextSequence,
+        type: src.type,
+        style: src.style,
+        color: src.color,
+        arrowType: src.arrowType,
+        lineWidth: src.lineWidth,
+        start,
+        end,
+        midPoint,
+        midHandleIn,
+        midHandleOut,
+        control1,
+        control2,
+        label: computeDefaultLabelPosition({ type: src.type, start, end, control1, control2, midPoint, midHandleIn, midHandleOut }),
+        labelManual: false,
+        text: src.text || null,
+        value: null,
+      };
+      if (isCurved) ensureCurveControls(ann);
+      state.annotations.push(ann);
+      state.nextSequence += 1;
+      pastedIds.push(ann.id);
+    }
+    // Select the pasted group so it can be moved/nudged as one immediately.
+    state.selectedAnnotationIds = pastedIds;
+    state.selection = { kind: 'annotation', id: pastedIds[pastedIds.length - 1] };
     pushHistoryIfChanged();
     updateUI();
     requestRender();
-    showToast('Line pasted.');
+    showToast(pastedIds.length > 1 ? pastedIds.length + ' lines pasted.' : 'Line pasted.');
   }
 
   function reflectSelectedAnnotation() {
     if (state.appMode === 'auto') return;
-    if (state.selection.kind !== 'annotation') {
+    const srcs = getSelectedAnnotations();
+    if (!srcs.length) {
       showToast('Select a line to reflect first.');
       return;
     }
-    const src = state.annotations.find(a => a.id === state.selection.id);
-    if (!src) return;
-    const axisX = findReflectionAxisX(src);
-    if (axisX == null) {
+    const reflectedIds = [];
+    let skipped = 0;
+    for (const src of srcs) {
+      // Each line mirrors across ITS OWN view-box / image axis, so a group that
+      // spans front + back reflects correctly per panel.
+      const axisX = findReflectionAxisX(src);
+      if (axisX == null) { skipped += 1; continue; }
+      const mirror = (p) => (p ? { x: 2 * axisX - p.x, y: p.y } : null);
+      const ann = {
+        ...clone(src),
+        id: state.idCounter++,
+        seq: state.nextSequence,
+        start: mirror(src.start),
+        end: mirror(src.end),
+        control1: mirror(src.control1),
+        control2: mirror(src.control2),
+        midPoint: mirror(src.midPoint),
+        midHandleIn: mirror(src.midHandleIn),
+        midHandleOut: mirror(src.midHandleOut),
+        label: mirror(src.label),
+        value: null,
+      };
+      // Mirroring is exact, so every handle carries over and the curve keeps its
+      // shape; backfill the anchor set for any older single-cubic source.
+      ensureCurveControls(ann);
+      state.annotations.push(ann);
+      state.nextSequence += 1;
+      reflectedIds.push(ann.id);
+    }
+    if (!reflectedIds.length) {
       showToast('Place the line over an image to reflect.');
       return;
     }
-    const mirror = (p) => (p ? { x: 2 * axisX - p.x, y: p.y } : null);
-    const ann = {
-      ...clone(src),
-      id: state.idCounter++,
-      seq: state.nextSequence,
-      start: mirror(src.start),
-      end: mirror(src.end),
-      control1: mirror(src.control1),
-      control2: mirror(src.control2),
-      midPoint: mirror(src.midPoint),
-      midHandleIn: mirror(src.midHandleIn),
-      midHandleOut: mirror(src.midHandleOut),
-      label: mirror(src.label),
-      value: null,
-    };
-    // Mirroring is exact, so every handle carries over and the curve keeps its
-    // shape; backfill the anchor set for any older single-cubic source.
-    ensureCurveMidPoint(ann);
-    state.annotations.push(ann);
-    state.selection = { kind: 'annotation', id: ann.id };
-    state.nextSequence += 1;
+    state.selectedAnnotationIds = reflectedIds;
+    state.selection = { kind: 'annotation', id: reflectedIds[reflectedIds.length - 1] };
     pushHistoryIfChanged();
     updateUI();
     requestRender();
-    showToast('Reflected copy added.');
+    const base = reflectedIds.length > 1 ? reflectedIds.length + ' reflected copies added.' : 'Reflected copy added.';
+    showToast(skipped ? base + ' (' + skipped + ' skipped — not over an image)' : base);
   }
 
   // Pick the vertical axis to mirror across: prefer the detected view box
@@ -7024,7 +16286,7 @@
   }
 
   function hasLineClipboard() {
-    return lineClipboard != null;
+    return Array.isArray(lineClipboard) ? lineClipboard.length > 0 : lineClipboard != null;
   }
 
   // ---- src/manual/interactions.js ----
@@ -7041,6 +16303,11 @@
 
 function setSelection(kind, id) {
     state.selection = kind && id != null ? { kind, id } : { kind: null, id: null };
+    // Keep the image + annotation multi-selections in lockstep: selecting one
+    // (or anything else, or nothing) collapses the set. Shift+click / marquee
+    // widen the annotation set through the helpers below.
+    state.selectedImageIds = kind === 'image' && id != null ? [id] : [];
+    state.selectedAnnotationIds = kind === 'annotation' && id != null ? [id] : [];
     if (kind === 'annotation') {
       const ann = getAnnotationById(id);
       if (ann) {
@@ -7051,6 +16318,201 @@ function setSelection(kind, id) {
     }
     updateUI();
     requestRender();
+  }
+
+  // The set of currently-selected image ids. Derived from state so a direct
+  // `state.selection = {...}` assignment elsewhere (which bypasses
+  // setSelection) can't leave a stale multi-selection: if the primary is not
+  // an image the set is empty. A real multi-selection is ALWAYS built around
+  // the current primary (setSelection / toggleImageInSelection keep it in the
+  // set), so if the raw set does not contain the primary it is stale — a new
+  // primary was assigned directly, e.g. when adding a photo — and we return
+  // just the primary rather than silently widening the group to the
+  // previously-selected photo (which made a plain drag move both). Only ids of
+  // images that still exist are returned.
+  function getSelectedImageIds() {
+    if (state.selection.kind !== 'image' || state.selection.id == null) return [];
+    const raw = Array.isArray(state.selectedImageIds) ? state.selectedImageIds : [];
+    if (!raw.includes(state.selection.id)) {
+      return getImageById(state.selection.id) ? [state.selection.id] : [];
+    }
+    return raw.filter((id) => !!getImageById(id));
+  }
+
+  function getSelectedImages() {
+    return getSelectedImageIds().map((id) => getImageById(id)).filter(Boolean);
+  }
+
+  function isImageInSelection(id) {
+    return getSelectedImageIds().includes(id);
+  }
+
+  // Cmd/Ctrl+click: add the image to the multi-selection, or remove it if it
+  // was already selected. Manages state.selection + state.selectedImageIds
+  // directly (NOT via setSelection, which would collapse the set to one).
+  function toggleImageInSelection(id) {
+    if (!getImageById(id)) return;
+    const current = getSelectedImageIds();
+    const had = current.includes(id);
+    const next = had ? current.filter((x) => x !== id) : current.concat([id]);
+    if (next.length === 0) {
+      state.selectedImageIds = [];
+      state.selection = { kind: null, id: null };
+    } else {
+      // Primary anchor: the just-clicked image when adding; when removing the
+      // primary, fall back to the last still-selected image.
+      const primary = had ? next[next.length - 1] : id;
+      state.selectedImageIds = next;
+      state.selection = { kind: 'image', id: primary };
+    }
+    if (state.autoMode) state.autoMode.anchorSelectedId = null;
+    updateUI();
+    requestRender();
+  }
+
+  // ---- Annotation (POM line) multi-selection: Shift+click + marquee ----
+  // Same derive-through-primary contract as the image helpers: the set is empty
+  // unless the primary selection is an annotation, and the primary is always
+  // included; only ids of lines that still exist (and aren't hidden) count.
+  function getSelectedAnnotationIds() {
+    if (state.selection.kind !== 'annotation' || state.selection.id == null) return [];
+    const raw = Array.isArray(state.selectedAnnotationIds) ? state.selectedAnnotationIds : [];
+    // Same stale-set guard as getSelectedImageIds: a multi-selection only
+    // counts when its raw set was built around the current primary. A direct
+    // `state.selection = {...}` assignment (e.g. selecting a freshly drawn
+    // line) leaves the previous set behind — ignore it instead of merging the
+    // new primary into a group it never belonged to.
+    if (!raw.includes(state.selection.id)) {
+      return (getAnnotationById(state.selection.id) && !isAnnHidden(state.selection.id))
+        ? [state.selection.id] : [];
+    }
+    return raw.filter((id) => !!getAnnotationById(id) && !isAnnHidden(id));
+  }
+
+  function getSelectedAnnotations() {
+    return getSelectedAnnotationIds().map((id) => getAnnotationById(id)).filter(Boolean);
+  }
+
+  function isAnnInSelection(id) {
+    return getSelectedAnnotationIds().includes(id);
+  }
+
+  // Adopt an annotation as the primary selection AND keep its draw defaults in
+  // sync, mirroring setSelection('annotation', …) without collapsing the set.
+  function setPrimaryAnnotation(id) {
+    state.selection = { kind: 'annotation', id };
+    const ann = getAnnotationById(id);
+    if (ann) {
+      state.drawStyle = ann.style || state.drawStyle;
+      state.drawColor = normalizeColorKey(ann.color);
+      state.arrowType = getArrowType(ann);
+    }
+  }
+
+  // Shift+click: add the line to the multi-selection, or remove it if already in.
+  function toggleAnnInSelection(id) {
+    if (!getAnnotationById(id) || isAnnHidden(id)) return;
+    const current = getSelectedAnnotationIds();
+    const had = current.includes(id);
+    const next = had ? current.filter((x) => x !== id) : current.concat([id]);
+    if (next.length === 0) {
+      state.selectedAnnotationIds = [];
+      state.selection = { kind: null, id: null };
+    } else {
+      state.selectedAnnotationIds = next;
+      setPrimaryAnnotation(had ? next[next.length - 1] : id);
+    }
+    updateUI();
+    requestRender();
+  }
+
+  // Does a segment a→b touch the axis-aligned rect? Liang–Barsky clip: true iff
+  // any part of the segment (incl. an endpoint inside) lies within the rect.
+  function segmentTouchesRect(a, b, minX, minY, maxX, maxY) {
+    let t0 = 0, t1 = 1;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const p = [-dx, dx, -dy, dy];
+    const q = [a.x - minX, maxX - a.x, a.y - minY, maxY - a.y];
+    for (let i = 0; i < 4; i += 1) {
+      if (p[i] === 0) { if (q[i] < 0) return false; }
+      else {
+        const r = q[i] / p[i];
+        if (p[i] < 0) { if (r > t1) return false; if (r > t0) t0 = r; }
+        else { if (r < t0) return false; if (r < t1) t1 = r; }
+      }
+    }
+    return t0 <= t1;
+  }
+
+  // A line is in the marquee only if its ACTUAL geometry passes through the box
+  // — test the drawn polyline (curves sampled), NOT the padded export bbox, so a
+  // small box over 3 lines doesn't grab every densely-packed POM around it.
+  function annotationTouchesRect(ann, minX, minY, maxX, maxY) {
+    const pts = getAnnotationPolyline(ann, BEZIER_SAMPLES);
+    for (let i = 0; i < pts.length - 1; i += 1) {
+      if (segmentTouchesRect(pts[i], pts[i + 1], minX, minY, maxX, maxY)) return true;
+    }
+    // A zero-length / single-point line still counts if that point is inside.
+    if (pts.length === 1) {
+      const p = pts[0];
+      return p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY;
+    }
+    return false;
+  }
+
+  // Replace/extend the line selection with everything a marquee rectangle
+  // touched. `additive` (Shift held) merges with the existing selection.
+  function selectAnnotationsInRect(x1, y1, x2, y2, additive) {
+    const loX = Math.min(x1, x2), hiX = Math.max(x1, x2);
+    const loY = Math.min(y1, y2), hiY = Math.max(y1, y2);
+    const hits = [];
+    for (const ann of state.annotations) {
+      if (isAnnHidden(ann.id)) continue;
+      if (annotationTouchesRect(ann, loX, loY, hiX, hiY)) hits.push(ann.id);
+    }
+    let ids = hits;
+    if (additive) ids = Array.from(new Set(getSelectedAnnotationIds().concat(hits)));
+    if (!ids.length) {
+      if (!additive) { state.selection = { kind: null, id: null }; state.selectedAnnotationIds = []; }
+    } else {
+      state.selectedAnnotationIds = ids;
+      setPrimaryAnnotation(ids[ids.length - 1]);
+    }
+    updateUI();
+    requestRender();
+  }
+
+  // Cmd/Ctrl+A — select everything on the board. The selection model is
+  // single-kind (photos OR lines), so "all" resolves to the kind that acts on
+  // the whole board: all PHOTOS by default — dragging any selected photo moves
+  // the group WITH the POM lines sitting on each photo — or all LINES when a
+  // line is already the primary selection (so line group ops: copy, reflect,
+  // delete, nudge). Hidden lines and Auto Mode line ops stay excluded.
+  function selectAllOnBoard() {
+    const selectAllLines = () => {
+      const ids = state.annotations.filter(a => !isAnnHidden(a.id)).map(a => a.id);
+      if (!ids.length) return false;
+      state.selectedAnnotationIds = ids;
+      setPrimaryAnnotation(ids[ids.length - 1]);
+      updateUI();
+      requestRender();
+      showToast(ids.length > 1 ? ids.length + ' lines selected.' : '1 line selected.');
+      return true;
+    };
+    if (state.appMode !== 'auto' && state.selection.kind === 'annotation' && selectAllLines()) return;
+    const imgIds = state.images.map(im => im.id);
+    if (imgIds.length) {
+      state.selectedImageIds = imgIds;
+      state.selection = { kind: 'image', id: imgIds[imgIds.length - 1] };
+      if (state.autoMode) state.autoMode.anchorSelectedId = null;
+      updateUI();
+      requestRender();
+      showToast(imgIds.length > 1
+        ? imgIds.length + ' photos selected — drag one to move all; lines move with their photo.'
+        : '1 photo selected — drag to move it; its lines move with it.');
+      return;
+    }
+    if (state.appMode !== 'auto') selectAllLines();
   }
 
   function clearSelection() {
@@ -7102,6 +16564,9 @@ function setSelection(kind, id) {
   }
 
   function onMouseDown(e) {
+    // Commit any pending keyboard nudge burst first, so the drag that starts
+    // now takes its before-fingerprint AFTER the nudge is in history.
+    flushLineNudgeSession();
     const isPanButton = state.spacePan || e.button === 1 || e.button === 2;
     if (isPanButton) {
       startPanInteraction(e);
@@ -7147,6 +16612,40 @@ function setSelection(kind, id) {
         }
         return;
       }
+      // Images are movable in Auto Mode too. Anchors are normalized to the
+      // source image (anchorWorldPos), so a moved or resized photo carries its
+      // anchors and drafts with it — nothing desyncs. Anchors + drafts still win
+      // the click; only bare image (or its resize corner) starts an image drag.
+      const selImageAuto = getSelectedImage();
+      // A 2+ image group resizes from ONE set of handles on its bounding box; a
+      // single selection keeps its own corner handles.
+      if (startGroupResizeIfHandleHit(world)) return;
+      const imageHandleHitAuto = selImageAuto && !selImageAuto.locked && getSelectedImageIds().length <= 1
+        ? hitTestSelectedImageHandles(world, selImageAuto) : null;
+      if (imageHandleHitAuto) {
+        startImageResize(selImageAuto.id, imageHandleHitAuto.corner);
+        return;
+      }
+      const imageHitAuto = hitTestImages(world);
+      if (imageHitAuto) {
+        state.autoMode.anchorSelectedId = null;
+        // Cmd/Ctrl+click toggles this photo in the multi-selection (no drag).
+        if (e.metaKey || e.ctrlKey) {
+          toggleImageInSelection(imageHitAuto.id);
+          return;
+        }
+        // A plain click on a photo that is already part of a multi-selection
+        // keeps the group so the drag moves them all; otherwise it selects
+        // just this one.
+        if (!(getSelectedImageIds().length > 1 && isImageInSelection(imageHitAuto.id))) {
+          setSelection('image', imageHitAuto.id);
+        }
+        const hitImageAuto = getImageById(imageHitAuto.id);
+        if (hitImageAuto && !hitImageAuto.locked) startImageDrag(imageHitAuto.id, world);
+        updateUI();
+        requestRender();
+        return;
+      }
       // Empty space — drop any current selection (draft or anchor).
       if (state.selection.kind === 'draft' || state.autoMode.anchorSelectedId != null) {
         state.autoMode.anchorSelectedId = null;
@@ -7170,23 +16669,46 @@ function setSelection(kind, id) {
     }
 
     const selectedAnnotation = getSelectedAnnotation();
-    const handleHit = selectedAnnotation ? hitTestSelectedHandles(world, selectedAnnotation) : null;
+    // Endpoint/handle editing is a single-line action — a multi-selection is
+    // for moving/copying the group, so skip handles when more than one is picked.
+    const handleHit = selectedAnnotation && getSelectedAnnotationIds().length <= 1
+      ? hitTestSelectedHandles(world, selectedAnnotation) : null;
     if (handleHit) {
       startHandleDrag(selectedAnnotation.id, handleHit.part, world);
       return;
     }
 
     const selectedImage = getSelectedImage();
-    const imageHandleHit = selectedImage && !selectedImage.locked
+    if (startGroupResizeIfHandleHit(world)) return;
+    const imageHandleHit = selectedImage && !selectedImage.locked && getSelectedImageIds().length <= 1
       ? hitTestSelectedImageHandles(world, selectedImage) : null;
     if (imageHandleHit) {
       startImageResize(selectedImage.id, imageHandleHit.corner);
       return;
     }
 
+    // Cmd/Ctrl+click on a photo toggles it in the multi-selection before the
+    // annotation hit-test, so the modifier is dedicated to picking photos.
+    if ((e.metaKey || e.ctrlKey)) {
+      const modImageHit = hitTestImages(world);
+      if (modImageHit) {
+        toggleImageInSelection(modImageHit.id);
+        return;
+      }
+    }
+
     const annotationHit = hitTestAnnotations(world);
     if (annotationHit) {
-      setSelection('annotation', annotationHit.id);
+      // Shift+click toggles the line in the multi-selection (no drag).
+      if (e.shiftKey) {
+        toggleAnnInSelection(annotationHit.id);
+        return;
+      }
+      // Plain click on a line already part of a multi-selection keeps the group
+      // so the drag moves them all; otherwise it selects just this line.
+      if (!(getSelectedAnnotationIds().length > 1 && isAnnInSelection(annotationHit.id))) {
+        setSelection('annotation', annotationHit.id);
+      }
       if (annotationHit.part === 'label') {
         startLabelDrag(annotationHit.id, world);
       } else {
@@ -7195,9 +16717,26 @@ function setSelection(kind, id) {
       return;
     }
 
+    // Shift is dedicated to building a line multi-selection. A Shift+click that
+    // misses every line must NOT fall through to the image branch below, which
+    // would call setSelection('image', …) and wipe the group the TD is
+    // assembling (a near-miss of a thin line on a dense sketch is easy). Route
+    // to an ADDITIVE marquee instead: a Shift+drag then rubber-bands more lines
+    // in, and a plain Shift+click on empty space / the sketch commits nothing
+    // and leaves the current selection intact (see the marquee branch in
+    // onMouseUp: additive + not-moved = no clear).
+    if (e.shiftKey) {
+      startMarquee(world, true);
+      return;
+    }
+
     const imageHit = hitTestImages(world);
     if (imageHit) {
-      setSelection('image', imageHit.id);
+      // Keep an existing multi-selection when clicking one of its members so the
+      // drag moves the whole group; otherwise select just this photo.
+      if (!(getSelectedImageIds().length > 1 && isImageInSelection(imageHit.id))) {
+        setSelection('image', imageHit.id);
+      }
       const hitImage = getImageById(imageHit.id);
       if (hitImage && !hitImage.locked) {
         startImageDrag(imageHit.id, world);
@@ -7205,9 +16744,10 @@ function setSelection(kind, id) {
       return;
     }
 
-    if (state.selection.kind != null) {
-      clearSelection();
-    }
+    // Empty canvas (select tool): start a marquee to rubber-band select lines.
+    // A plain click (no drag past a small threshold) clears the selection on
+    // mouseup; Shift adds the marquee's hits to the current selection.
+    startMarquee(world, e.shiftKey);
   }
 
   function onMouseMove(e) {
@@ -7237,17 +16777,30 @@ function setSelection(kind, id) {
     }
 
     if (interaction.type === 'drag-annotation') {
-      const ann = getAnnotationById(interaction.id);
-      if (!ann) return;
+      const ids = interaction.groupIds || [interaction.id];
       const dx = world.x - interaction.prevWorld.x;
       const dy = world.y - interaction.prevWorld.y;
       if (dx || dy) {
-        moveAnnotation(ann, dx, dy);
-        if (isAutoDraft(ann)) markDraftTouchedByTD(ann);
+        for (const aid of ids) {
+          const a = getAnnotationById(aid);
+          if (!a) continue;
+          moveAnnotation(a, dx, dy);
+          if (isAutoDraft(a)) markDraftTouchedByTD(a);
+        }
         interaction.changed = true;
         interaction.prevWorld = world;
         requestRender();
       }
+      return;
+    }
+
+    if (interaction.type === 'marquee') {
+      interaction.currentWorld = { x: world.x, y: world.y };
+      const dx = interaction.currentWorld.x - interaction.startWorld.x;
+      const dy = interaction.currentWorld.y - interaction.startWorld.y;
+      // A tiny wobble is still a click; only past a few screen px is it a drag.
+      if (Math.abs(dx) > 3 / state.zoom || Math.abs(dy) > 3 / state.zoom) interaction.moved = true;
+      requestRender();
       return;
     }
 
@@ -7275,18 +16828,20 @@ function setSelection(kind, id) {
       if (isAutoDraft(ann)) markDraftTouchedByTD(ann);
       interaction.changed = true;
       interaction.prevWorld = world;
+      refreshMeasuredValueForAnnotation(ann.id); // US-028: live Value cell
       requestRender();
       return;
     }
 
     if (interaction.type === 'drag-image') {
-      const image = getImageById(interaction.id);
-      if (!image) return;
+      const imageIds = interaction.imageIds || [interaction.id];
       const dx = world.x - interaction.prevWorld.x;
       const dy = world.y - interaction.prevWorld.y;
       if (dx || dy) {
-        image.x += dx;
-        image.y += dy;
+        for (const imgId of imageIds) {
+          const image = getImageById(imgId);
+          if (image) { image.x += dx; image.y += dy; }
+        }
         if (interaction.groupedAnnotationIds) {
           for (const annId of interaction.groupedAnnotationIds) {
             const ann = getAnnotationById(annId);
@@ -7304,6 +16859,14 @@ function setSelection(kind, id) {
       const image = getImageById(interaction.id);
       if (!image) return;
       resizeImageFromCorner(image, interaction.corner, interaction.anchor, interaction.aspect, world);
+      interaction.changed = true;
+      interaction.prevWorld = world;
+      requestRender();
+      return;
+    }
+
+    if (interaction.type === 'drag-images-resize') {
+      resizeImagesFromCorner(interaction, world);
       interaction.changed = true;
       interaction.prevWorld = world;
       requestRender();
@@ -7336,6 +16899,22 @@ function setSelection(kind, id) {
     if (!interaction) return;
 
     document.body.classList.remove('grabbing');
+
+    if (interaction.type === 'marquee') {
+      if (interaction.moved) {
+        selectAnnotationsInRect(
+          interaction.startWorld.x, interaction.startWorld.y,
+          interaction.currentWorld.x, interaction.currentWorld.y,
+          interaction.additive
+        );
+      } else if (!interaction.additive && state.selection.kind != null) {
+        // Plain click on empty canvas = clear selection.
+        clearSelection();
+      }
+      state.interaction = null;
+      requestRender();
+      return;
+    }
 
     if (interaction.type !== 'pan' && interaction.changed) {
       if (interaction.type === 'drag-anchor') {
@@ -7386,15 +16965,126 @@ function setSelection(kind, id) {
           if (evalResult.status === 'recorded') {
             showToast('POM ' + evalResult.pom + ' learning sample saved from TD edit.');
             updateUI();
-          } else if (evalResult.status === 'needsConfirmation') {
-            openPomMeaningPopover(evalResult);
           }
         }
       }
     }
 
     state.interaction = null;
+    requestRender(); // drop gesture-scoped visuals (US-029 readout)
   }
+
+// ---- US-036: touch layer -----------------------------------------------
+// Touch (and pen) input arrives as pointer events and routes into the SAME
+// mouse handlers, so every gesture rule (selection, drag semantics, one
+// history commit per gesture) is shared, not duplicated. Mouse pointers are
+// filtered out — the existing mouse listeners keep handling them — and
+// preventDefault() on pointerdown suppresses the browser's compatibility
+// mouse events so nothing double-fires. Two fingers open a pinch session:
+// zoom scales with finger distance, pan keeps the world point that was
+// under the finger midpoint pinned to it (same math as zoomAtScreenPoint).
+const touchPoints = new Map(); // pointerId -> {x, y} client coords
+let touchPinch = null;         // { d0, zoom0, world0 }
+let touchTapCandidate = null;  // current finger: { t, x, y, moved }
+let lastTouchTap = null;       // last COMPLETED clean tap: { t, x, y }
+
+function onTouchPointerDown(e) {
+  if (e.pointerType === 'mouse') return;
+  e.preventDefault();
+  touchPoints.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  // Synthetic PointerEvents (tests) carry no real pointer id to capture.
+  try { el.canvas.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+  if (touchPoints.size === 2) {
+    // Second finger: this is a pinch, never a tap — kill tap tracking so a
+    // pinch started near a recent tap can't trigger an accidental fit.
+    touchTapCandidate = null;
+    lastTouchTap = null;
+    // Commit any in-flight one-finger drag first so the pinch never
+    // smears into the drag's history entry.
+    if (state.interaction || state.eraseSession) onMouseUp(e);
+    beginTouchPinch();
+    return;
+  }
+  if (touchPoints.size === 1) {
+    touchTapCandidate = { t: performance.now(), x: e.clientX, y: e.clientY, moved: false };
+    onMouseDown(e);
+  }
+}
+
+function onTouchPointerMove(e) {
+  if (e.pointerType === 'mouse' || !touchPoints.has(e.pointerId)) return;
+  e.preventDefault();
+  touchPoints.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (touchPinch) {
+    updateTouchPinch();
+    return;
+  }
+  if (touchTapCandidate
+      && Math.hypot(e.clientX - touchTapCandidate.x, e.clientY - touchTapCandidate.y) > 8) {
+    touchTapCandidate.moved = true; // it's a drag, not a tap
+  }
+  onMouseMove(e);
+}
+
+function onTouchPointerEnd(e) {
+  if (e.pointerType === 'mouse' || !touchPoints.has(e.pointerId)) return;
+  touchPoints.delete(e.pointerId);
+  if (touchPinch) {
+    // Pinch over: a remaining finger starts nothing new until lifted —
+    // that avoids a surprise drag from wherever the leftover finger sits.
+    if (touchPoints.size < 2) touchPinch = null;
+    return;
+  }
+  onMouseUp(e);
+  // Double-tap = fit (parity with double-click / F): decided on the UP of a
+  // clean tap (quick, unmoved, never joined by a second finger), so pinches
+  // and drags can never fire it. touch-action:none means the browser won't
+  // synthesize dblclick for us.
+  const now = performance.now();
+  const tap = touchTapCandidate;
+  touchTapCandidate = null;
+  if (!tap || tap.moved || now - tap.t > 400) { lastTouchTap = null; return; }
+  if (lastTouchTap && now - lastTouchTap.t < 350
+      && Math.hypot(tap.x - lastTouchTap.x, tap.y - lastTouchTap.y) < 20
+      && state.tool === 'select') {
+    lastTouchTap = null;
+    onDoubleClick(e);
+    return;
+  }
+  lastTouchTap = { t: now, x: tap.x, y: tap.y };
+}
+
+function touchMidAndDist() {
+  const rect = el.canvas.getBoundingClientRect();
+  const pts = [...touchPoints.values()];
+  return {
+    mid: {
+      x: (pts[0].x + pts[1].x) / 2 - rect.left,
+      y: (pts[0].y + pts[1].y) / 2 - rect.top,
+    },
+    dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+  };
+}
+
+function beginTouchPinch() {
+  const { mid, dist } = touchMidAndDist();
+  touchPinch = {
+    d0: Math.max(1, dist),
+    zoom0: state.zoom,
+    world0: screenToWorld(mid.x, mid.y),
+  };
+}
+
+function updateTouchPinch() {
+  if (touchPoints.size < 2) return;
+  const { mid, dist } = touchMidAndDist();
+  const nextZoom = clamp(touchPinch.zoom0 * (dist / touchPinch.d0), MIN_ZOOM, MAX_ZOOM);
+  state.zoom = nextZoom;
+  state.panX = mid.x - touchPinch.world0.x * nextZoom;
+  state.panY = mid.y - touchPinch.world0.y * nextZoom;
+  updateUI();
+  requestRender();
+}
 
 function onWheel(e) {
   e.preventDefault();
@@ -7416,19 +17106,6 @@ function onWheel(e) {
     const target = e.target;
     const inField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
 
-    // Meaning popover owns the keyboard while open. ESC closes it (when
-    // no input is focused — the inline "Other…" input handles its own
-    // ESC). Every other non-field key is swallowed so canvas shortcuts
-    // (S/B/0/F/etc.) don't fire under the TD while they pick a meaning.
-    if (pendingMeaningEval) {
-      if (e.key === 'Escape' && !inField) {
-        e.preventDefault();
-        closePomMeaningPopover();
-        return;
-      }
-      if (inField) return;       // popover's own input handles its keys
-      return;                    // swallow everything else
-    }
 
     // A modal (Help, Set Scale, PPTX picker) is open — let it own the keyboard.
     if (document.querySelector('.picker-overlay')) {
@@ -7443,13 +17120,31 @@ function onWheel(e) {
     if (isMeta && key === 'z' && !e.shiftKey) {
       e.preventDefault();
       if (inField && typeof target.blur === 'function') target.blur();
+      flushLineNudgeSession();
       void undo();
       return;
     }
     if (isMeta && ((key === 'z' && e.shiftKey) || key === 'y')) {
       e.preventDefault();
       if (inField && typeof target.blur === 'function') target.blur();
+      flushLineNudgeSession();
       void redo();
+      return;
+    }
+
+    // Save / Open the project (⌘/Ctrl+S, ⌘/Ctrl+O) — mirror the toolbar
+    // buttons; work in both modes and from a focused field (commit it first).
+    // preventDefault suppresses the browser's Save-page / Open-file dialogs.
+    if (isMeta && key === 's') {
+      e.preventDefault();
+      if (inField && typeof target.blur === 'function') target.blur();
+      el.saveProjectBtn.click();
+      return;
+    }
+    if (isMeta && key === 'o') {
+      e.preventDefault();
+      if (inField && typeof target.blur === 'function') target.blur();
+      el.openProjectBtn.click();
       return;
     }
 
@@ -7471,10 +17166,58 @@ function onWheel(e) {
       }
     }
 
+    // US-027: in Manual Mode the arrows nudge the selected line — or just its
+    // active point (Tab cycles it) — by one source-image pixel (Shift = 10).
+    // Moving an endpoint is how a TD changes the measured value precisely.
+    if (!isMeta && state.appMode !== 'auto' && state.selection.kind === 'annotation'
+        && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      const step = e.shiftKey ? 10 : 1;
+      const dxPx = e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0;
+      const dyPx = e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0;
+      if (nudgeSelectedAnnotation(dxPx, dyPx)) {
+        e.preventDefault();
+        return;
+      }
+    }
+
+    // US-027: Tab picks which point the arrows move — whole line → start →
+    // (mid point on curves) → end. Shift+Tab cycles backwards. Only fires
+    // with a line selected, so field-to-field tabbing keeps working.
+    if (!isMeta && e.key === 'Tab' && state.appMode !== 'auto' && state.selection.kind === 'annotation') {
+      const ann = getSelectedAnnotation();
+      if (ann) {
+        e.preventDefault();
+        cycleNudgePart(ann, e.shiftKey ? -1 : 1);
+        return;
+      }
+    }
+
+    // Auto-Mode step shortcuts mirror the "1 Detect · 2 Generate · 3 Review"
+    // flow chips: 1 = Detect, 2 = Generate Drafts, 3 = Apply Lines. Clicking the
+    // button (rather than calling the handler) respects its disabled + hidden
+    // (recovery-only) state, so a step can't fire before it's available.
+    if (!isMeta && state.appMode === 'auto' && (key === '1' || key === '2' || key === '3')) {
+      const btn = key === '1' ? el.autoDetectBtn : key === '2' ? el.autoGenerateBtn : el.autoApplyBtn;
+      if (btn && !btn.disabled && btn.offsetParent !== null) {
+        e.preventDefault();
+        btn.click();
+        return;
+      }
+    }
+
     if (e.code === 'Space' && !state.spacePan) {
       state.spacePan = true;
       document.body.classList.add('space-pan');
       e.preventDefault();
+    }
+
+    // Cmd/Ctrl+A — select all photos (drag moves them with their lines), or
+    // all lines when a line is already selected. Fields keep native
+    // select-all via the inField return above.
+    if (isMeta && key === 'a') {
+      e.preventDefault();
+      selectAllOnBoard();
+      return;
     }
 
     // Cmd/Ctrl+Shift+C — copy the whole board as a PNG image. Checked
@@ -7486,17 +17229,13 @@ function onWheel(e) {
       return;
     }
 
-    // Copy/paste/reflect for the selected line. Cmd/Ctrl-V intercept also
-    // suppresses the paste event for image data — acceptable since the
-    // user just explicitly asked to paste a line.
+    // Copy for the selected line. Cmd/Ctrl-V is NOT intercepted here: the
+    // native paste event (onPasteEvent) decides between an OS-clipboard
+    // image and the internal line clipboard, so copying a photo after
+    // copying lines still pastes the photo.
     if (isMeta && key === 'c' && state.selection.kind === 'annotation' && state.appMode !== 'auto') {
       e.preventDefault();
       copySelectedAnnotation();
-      return;
-    }
-    if (isMeta && key === 'v' && hasLineClipboard() && state.appMode !== 'auto') {
-      e.preventDefault();
-      pasteLineFromClipboard();
       return;
     }
     if (!isMeta && key === 'm' && state.selection.kind === 'annotation' && state.appMode !== 'auto') {
@@ -7514,6 +17253,27 @@ function onWheel(e) {
     if (!isMeta && key === 's') {
       e.preventDefault();
       setTool('select');
+      return;
+    }
+
+    // H shows/hides the Measurements side panel (same as the toolbar button).
+    if (!isMeta && key === 'h') {
+      e.preventDefault();
+      toggleSpecPanel();
+      return;
+    }
+
+    // A opens the Add Image file picker (same as the toolbar button).
+    if (!isMeta && key === 'a') {
+      e.preventDefault();
+      el.imageFileInput.click();
+      return;
+    }
+
+    // G opens the Grading dialog (same as the toolbar button).
+    if (!isMeta && key === 'g') {
+      e.preventDefault();
+      openGradingDialog();
       return;
     }
 
@@ -7557,11 +17317,35 @@ function onWheel(e) {
         return;
       }
 
-      if (!isMeta && key === 'e' && state.images.length > 0) {
+      // Eraser moved E → X (TD request 2026-07-10: E now exports Excel).
+      if (!isMeta && key === 'x' && state.images.length > 0) {
         e.preventDefault();
         setTool('eraser');
         return;
       }
+    }
+
+    // E exports the Excel measurement spec (same as the toolbar button;
+    // opens the size picker first). Manual-only, matching the button's
+    // manual-only class and the Cmd/Ctrl+Shift+C copy-image precedent.
+    if (!isMeta && key === 'e' && state.appMode !== 'auto') {
+      e.preventDefault();
+      void exportSpecXlsx();
+      return;
+    }
+
+    // P exports the PDF, I imports a PPTX — mirror the manual-only toolbar
+    // buttons (parity with E = Export Excel). Click the button so behavior
+    // (dialogs, disabled state) matches exactly.
+    if (!isMeta && key === 'p' && state.appMode !== 'auto') {
+      e.preventDefault();
+      el.exportPdfBtn.click();
+      return;
+    }
+    if (!isMeta && key === 'i' && state.appMode !== 'auto') {
+      e.preventDefault();
+      el.importPptxBtn.click();
+      return;
     }
 
     if (!isMeta && key === 'n') {
@@ -7574,15 +17358,16 @@ function onWheel(e) {
       e.preventDefault();
       const factor = key === ']' ? 1.18 : 1 / 1.18;
       state.brushSize = Math.max(4, Math.min(200, Math.round(state.brushSize * factor)));
-      showToast('Brush size: ' + state.brushSize + ' px');
+      showToast('Brush size: ' + state.brushSize + ' px', { replace: true });
       updateUI();
       return;
     }
 
     if ((e.key === 'Delete' || e.key === 'Backspace') && state.selection.kind != null) {
-      // In Auto Mode, project annotations are locked; Delete on a draft also
-      // does nothing (use Discard Drafts or Mark Review-Only instead).
-      if (state.appMode === 'auto') return;
+      // In Auto Mode, project annotations/drafts are locked from Delete (use
+      // Discard Drafts or Mark Review-Only). Deleting an added PHOTO is allowed
+      // (US-052) — otherwise the only way to remove a photo is Reset Board.
+      if (state.appMode === 'auto' && state.selection.kind !== 'image') return;
       e.preventDefault();
       deleteSelected();
       return;
@@ -7604,6 +17389,12 @@ function onWheel(e) {
         requestRender();
       } else if (state.tool === 'straight' || state.tool === 'curved' || state.tool === 'eraser') {
         setTool('select');
+      } else if (state.selection.kind === 'annotation' && state.selection.part) {
+        // First Escape drops back to whole-line nudging; the next one
+        // clears the selection itself.
+        state.selection.part = null;
+        updateUI();
+        requestRender();
       } else if (state.selection.kind != null) {
         clearSelection();
       }
@@ -7639,7 +17430,20 @@ function beginTrackedInteraction(type, payload) {
 }
 
 function startAnnotationDrag(id, world) {
-  beginTrackedInteraction('drag-annotation', { id, prevWorld: world });
+  // Move every selected line together (Shift+click / marquee group), or just
+  // this one when it isn't part of a multi-selection.
+  const selected = getSelectedAnnotationIds();
+  const groupIds = (selected.length > 1 && selected.includes(id)) ? selected.slice() : [id];
+  beginTrackedInteraction('drag-annotation', { id, prevWorld: world, groupIds });
+}
+
+function startMarquee(world, additive) {
+  beginTrackedInteraction('marquee', {
+    startWorld: { x: world.x, y: world.y },
+    currentWorld: { x: world.x, y: world.y },
+    additive: !!additive,
+    moved: false,
+  });
 }
 
 function startLabelDrag(id, world) {
@@ -7647,13 +17451,35 @@ function startLabelDrag(id, world) {
 }
 
 function startHandleDrag(id, part, world) {
+  // Keep the keyboard nudge aimed at the handle the TD last grabbed, so a
+  // rough drag can be finished with arrow keys without pressing Tab.
+  if (part !== 'label' && state.selection.kind === 'annotation' && state.selection.id === id) {
+    state.selection.part = part;
+  }
   beginTrackedInteraction('drag-handle', { id, part, prevWorld: world });
 }
 
 function startImageDrag(id, world) {
-  const image = getImageById(id);
-  const groupedAnnotationIds = image ? getAnnotationsOnImage(image).map(ann => ann.id) : [];
-  beginTrackedInteraction('drag-image', { id, prevWorld: world, groupedAnnotationIds });
+  // Move every selected image together (Cmd/Ctrl+click multi-selection), or
+  // just the clicked one when nothing else is selected. Locked images never
+  // move. Each moving image carries the POM lines that sit on it; the combined
+  // set is de-duplicated so a line is never nudged twice.
+  const selected = getSelectedImageIds();
+  const movingIds = (selected.length > 1 ? selected : [id])
+    .filter((imgId) => { const im = getImageById(imgId); return im && !im.locked; });
+  if (!movingIds.includes(id)) movingIds.push(id);
+  const annIdSet = new Set();
+  for (const imgId of movingIds) {
+    const im = getImageById(imgId);
+    if (!im) continue;
+    for (const ann of getAnnotationsOnImage(im)) annIdSet.add(ann.id);
+  }
+  beginTrackedInteraction('drag-image', {
+    id,
+    prevWorld: world,
+    imageIds: movingIds,
+    groupedAnnotationIds: Array.from(annIdSet),
+  });
 }
 
 function startImageResize(id, corner) {
@@ -7665,6 +17491,59 @@ function startImageResize(id, corner) {
     anchor: getOppositeImageCorner(image, corner),
     aspect: image.width / Math.max(1, image.height),
   });
+}
+
+// Group resize: 2+ selected photos scale together about the opposite corner of the
+// GROUP's bounding box, so their relative sizes and spacing are preserved. Returns
+// true when it claimed the click. A locked image in the selection blocks it (same
+// rule as single-image resize). Anchors/drafts/erase strokes are stored normalized
+// to their own image, so they follow each photo without extra work.
+function startGroupResizeIfHandleHit(world) {
+  const images = getSelectedImages();
+  if (!images || images.length <= 1) return false;
+  if (images.some(im => im.locked)) return false;
+  const box = getImagesGroupBox(images);
+  if (!box) return false;
+  const hit = hitTestSelectedImageHandles(world, box);
+  if (!hit) return false;
+  beginTrackedInteraction('drag-images-resize', {
+    corner: hit.corner,
+    anchor: getOppositeImageCorner(box, hit.corner),
+    box,
+    // Snapshot every member up front: scaling must be computed from the ORIGINAL
+    // geometry each frame, or repeated relative scaling compounds and drifts.
+    start: images.map(im => ({ id: im.id, x: im.x, y: im.y, width: im.width, height: im.height })),
+  });
+  return true;
+}
+
+// Uniform scale factor from the group's anchor corner to the cursor. Driven by the
+// dominant axis so a diagonal drag feels like the single-image resize, and floored
+// so no member can collapse below the 48px minimum used for one image.
+function resizeImagesFromCorner(interaction, world) {
+  const { anchor, box, start } = interaction;
+  if (!anchor || !box || !Array.isArray(start) || !start.length) return;
+  const spanX = Math.abs(box.x + (box.x + box.width) - 2 * anchor.x) || box.width;
+  const spanY = Math.abs(box.y + (box.y + box.height) - 2 * anchor.y) || box.height;
+  const rawW = Math.abs(world.x - anchor.x);
+  const rawH = Math.abs(world.y - anchor.y);
+  const sx = spanX > 0 ? rawW / spanX : 1;
+  const sy = spanY > 0 ? rawH / spanY : 1;
+  let scale = Math.max(sx, sy);
+  if (!Number.isFinite(scale) || scale <= 0) return;
+  const MIN_IMAGE_SIZE = 48;
+  const smallest = start.reduce((m, s) => Math.min(m, s.width, s.height), Infinity);
+  if (Number.isFinite(smallest) && smallest > 0) {
+    scale = Math.max(scale, MIN_IMAGE_SIZE / smallest);
+  }
+  for (const s of start) {
+    const image = getImageById(s.id);
+    if (!image) continue;
+    image.x = anchor.x + (s.x - anchor.x) * scale;
+    image.y = anchor.y + (s.y - anchor.y) * scale;
+    image.width = s.width * scale;
+    image.height = s.height * scale;
+  }
 }
 
   // ---- Eraser ----
@@ -7900,6 +17779,126 @@ function startImageResize(id, corner) {
     }
   }
 
+  // ---- US-027: arrow-key nudge for Manual-Mode lines ------------------------
+  // Mirrors the Auto-Mode anchor nudge: arrows move one source-image pixel
+  // (Shift = 10), and rapid keystrokes form one "nudge session" that pushes a
+  // single history entry LINE_NUDGE_COMMIT_MS after the last keystroke — the
+  // same one-commit-per-drag contract the mouse path follows. Tab cycles the
+  // active part; with no part active the whole line moves.
+  const LINE_NUDGE_COMMIT_MS = 700;
+  let lineNudgeSession = null; // { annId, timer }
+
+  // Ring order: the main points first (the common Tab targets), then the
+  // bend handles (US-030) in geometric order start-side → end-side. Only
+  // parts the annotation actually has are included, so single-segment
+  // curves and straight lines get shorter rings automatically.
+  function lineNudgeParts(ann) {
+    const parts = [null, 'start'];
+    if (ann.type === 'curved') {
+      if (ann.midPoint) parts.push('midPoint');
+      parts.push('end');
+      if (ann.control1) parts.push('control1');
+      if (ann.midHandleIn) parts.push('midHandleIn');
+      if (ann.midHandleOut) parts.push('midHandleOut');
+      if (ann.control2) parts.push('control2');
+    } else {
+      parts.push('end');
+    }
+    return parts;
+  }
+
+  function nudgePartLabel(part) {
+    if (part === 'start') return 'start point';
+    if (part === 'midPoint') return 'mid point';
+    if (part === 'end') return 'end point';
+    if (part === 'control1') return 'start bend handle';
+    if (part === 'control2') return 'end bend handle';
+    if (part === 'midHandleIn') return 'mid bend handle (start side)';
+    if (part === 'midHandleOut') return 'mid bend handle (end side)';
+    return 'whole line';
+  }
+
+  function cycleNudgePart(ann, dir) {
+    const parts = lineNudgeParts(ann);
+    const idx = parts.indexOf(state.selection.part || null);
+    const next = parts[(idx + dir + parts.length) % parts.length];
+    state.selection.part = next;
+    // Live status — latest wins; queueing stale part names after a Tab
+    // burst would mislead (US-032).
+    showToast('Arrows move the ' + nudgePartLabel(next) + '.', { replace: true });
+    updateUI();
+    requestRender();
+  }
+
+  // World-units-per-source-pixel for the image under the line's midpoint —
+  // the same association rule as getAnnotationsOnImage. Off-image lines fall
+  // back to one screen pixel so the nudge always does something visible.
+  function lineNudgeWorldStep(ann) {
+    const mid = { x: (ann.start.x + ann.end.x) / 2, y: (ann.start.y + ann.end.y) / 2 };
+    const hit = hitTestImages(mid);
+    const image = hit ? getImageById(hit.id) : null;
+    if (image && image.img && image.img.naturalWidth && image.width) {
+      return image.width / image.img.naturalWidth;
+    }
+    return 1 / state.zoom;
+  }
+
+  function nudgeSelectedAnnotation(dxPx, dyPx) {
+    const ann = getSelectedAnnotation();
+    if (!ann) return false;
+    const stepWorld = lineNudgeWorldStep(ann);
+    const dx = dxPx * stepWorld;
+    const dy = dyPx * stepWorld;
+    if (lineNudgeSession && lineNudgeSession.annId !== ann.id) {
+      flushLineNudgeSession();
+    }
+    if (!lineNudgeSession) {
+      lineNudgeSession = { annId: ann.id, timer: null };
+    }
+    const part = state.selection.part;
+    const point = part === 'start' ? ann.start
+      : part === 'end' ? ann.end
+        : part ? ann[part] : null;
+    if (part && point) {
+      // Route through dragHandle so curve semantics (endpoint carrying its
+      // control, mid point carrying both mid handles) match a mouse drag.
+      const prev = clonePoint(point);
+      dragHandle(ann, part, { x: prev.x + dx, y: prev.y + dy }, prev);
+    } else {
+      moveAnnotation(ann, dx, dy);
+    }
+    if (isAutoDraft(ann)) markDraftTouchedByTD(ann);
+    if (lineNudgeSession.timer) clearTimeout(lineNudgeSession.timer);
+    lineNudgeSession.timer = setTimeout(flushLineNudgeSession, LINE_NUDGE_COMMIT_MS);
+    refreshMeasuredValueForAnnotation(ann.id); // US-028: live Value cell
+    requestRender();
+    return true;
+  }
+
+  // Lets the renderer show the adjustment readout (US-029) while a nudge
+  // burst is still open, without reaching into the session object.
+  function isLineNudgeActive(annId) {
+    return !!(lineNudgeSession && lineNudgeSession.annId === annId);
+  }
+
+  function flushLineNudgeSession() {
+    const session = lineNudgeSession;
+    lineNudgeSession = null;
+    if (!session) return;
+    if (session.timer) clearTimeout(session.timer);
+    const ann = getAnnotationById(session.annId);
+    pushHistoryIfChanged();
+    requestRender(); // drop the on-canvas readout now that the burst committed
+    // Same learning capture as a committed mouse drag on an applied draft.
+    if (state.appMode === 'manual' && ann && isAutoDraft(ann)) {
+      const evalResult = evaluateManualPomSample(ann, { allowAuto: true });
+      if (evalResult.status === 'recorded') {
+        showToast('POM ' + evalResult.pom + ' learning sample saved from TD edit.');
+        updateUI();
+      }
+    }
+  }
+
   function moveAnnotation(ann, dx, dy) {
     ann.start.x += dx; ann.start.y += dy;
     ann.end.x += dx; ann.end.y += dy;
@@ -8033,7 +18032,7 @@ function resizeCanvas() {
 
 function toggleSpecPanel() {
   const hidden = el.workspace.classList.toggle('panel-hidden');
-  el.togglePanelBtn.textContent = hidden ? 'Show Panel' : 'Hide Panel';
+  el.togglePanelBtn.textContent = hidden ? 'Show Measurements' : 'Hide Measurements';
   el.togglePanelBtn.classList.toggle('active', hidden);
   // Layout changed — recompute canvas size and keep current view.
   resizeCanvas();
@@ -8143,26 +18142,44 @@ function getAnnotationsOnImage(image) {
 
   function createImageRecord(img, dataURL, stackIndex) {
     const rect = state.lastCanvasRect || el.canvas.getBoundingClientRect();
-    const maxW = Math.max(180, rect.width * 0.42);
-    const maxH = Math.max(180, rect.height * 0.42);
-    const scale = Math.min(maxW / img.width, maxH / img.height, 1);
-    const width = Math.max(60, img.width * scale);
-    const height = Math.max(60, img.height * scale);
-    const centerWorld = screenToWorld(rect.width / 2, rect.height / 2);
-    const offset = stackIndex * (18 / Math.max(state.zoom, 0.25));
+    const aspect = img.height > 0 ? img.width / img.height : 1; // keep proportions
+
+    let width;
+    let height;
+    let x;
+    let y;
+    if (state.images.length) {
+      // Additional sketch: match the HEIGHT of the photo already on the board
+      // (the one this sketch lines up beside) so front / back / side read as
+      // one even-height row, regardless of each source photo's native pixel
+      // size. Width follows the new photo's own aspect so it is never stretched.
+      // Then place it to the RIGHT of everything already on the board (with a
+      // gap) — a cascade offset used to drop a 2nd image almost on top of the
+      // 1st, which read as "you can't add a second photo."
+      const prev = state.images[state.images.length - 1];
+      height = prev.height;
+      width = height * aspect;
+      const bounds = getImagesBounds();
+      const gap = Math.max(24, width * 0.12);
+      x = bounds.x + bounds.width + gap;
+      y = bounds.y; // top-align with the existing row
+    } else {
+      // First image sets the reference size: fit it to ~42% of the board from
+      // its own pixels (never upscaled), centered on the viewport. Later
+      // sketches match this height.
+      const maxW = Math.max(180, rect.width * 0.42);
+      const maxH = Math.max(180, rect.height * 0.42);
+      const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+      width = Math.max(60, img.width * scale);
+      height = Math.max(60, img.height * scale);
+      const centerWorld = screenToWorld(rect.width / 2, rect.height / 2);
+      x = centerWorld.x - width / 2;
+      y = centerWorld.y - height / 2;
+    }
 
     const id = state.idCounter++;
     imageDataById.set(id, dataURL);
-    return {
-      id,
-      dataURL,
-      img,
-      width,
-      height,
-      x: centerWorld.x - width / 2 + offset,
-      y: centerWorld.y - height / 2 + offset,
-      locked: false,
-    };
+    return { id, dataURL, img, width, height, x, y, locked: false };
   }
 
   function blobToDataURL(blob) {
@@ -8236,7 +18253,7 @@ function getAnnotationsOnImage(image) {
     let toolText = '';
     if (state.tool === 'select') {
       if (selectedAnnotation) {
-        toolText = 'Select – Drag line, endpoints, curve shape handle, or label. Use wheel to zoom, or hold <span class="kbd">Space</span> to pan.';
+        toolText = 'Select – Drag line, endpoints, curve shape handle, or label. <span class="kbd">Tab</span> picks a point, arrow keys nudge it (<span class="kbd">⇧</span> = 10 px).';
       } else if (selectedImage) {
         toolText = 'Select – Drag the image to move it, drag a corner handle to resize, use wheel to zoom, or hold <span class="kbd">Space</span> to pan.';
       } else {
@@ -8318,7 +18335,12 @@ function getAnnotationsOnImage(image) {
     el.toggleLabelsBtn.disabled = isStitchMode();
 
     updateAutoModeUI();
+    updateBoardToolbarUI();
     renderSpecPanel();
+    // US-038: keep the floating anchor panel in sync (fresh detect, mode
+    // switch, canvas pin selection). renderAnchorManagerPanel auto-closes it
+    // when we leave Auto Mode or lose anchors.
+    if (isAnchorManagerOpen()) renderAnchorManagerPanel();
   }
 
   // U4: friendly copy for the raw auto.status machine states shown in the
@@ -8364,7 +18386,11 @@ function getAnnotationsOnImage(image) {
     el.toolCurved.disabled = isAuto;
     if (isAuto) {
       el.toolEraser.disabled = true;
-      el.deleteBtn.disabled = true;
+      // US-052: Delete in Auto Mode removes a selected PHOTO only (annotations/
+      // drafts use Discard Drafts / Review-Only). Enable it when a non-locked
+      // image is selected so an added photo can be removed without Reset Board.
+      const selImg = getSelectedImage();
+      el.deleteBtn.disabled = !(selImg && !selImg.locked);
       el.clearBtn.disabled = true;
     }
 
@@ -8433,7 +18459,7 @@ function getAnnotationsOnImage(image) {
 
     el.autoGenerateBtn.disabled = busy || !hasAnchors;
     el.autoGenerateBtn.title = hasAnchors
-      ? 'Generate 16 POM drafts from the current anchor positions'
+      ? 'Generate 18 POM drafts from the current anchor positions'
       : 'Detect Sketch + place anchors first';
 
     const selectedDraft = getSelectedDraft();
@@ -8513,28 +18539,57 @@ function getAnnotationsOnImage(image) {
     for (const ann of state.annotations) max = Math.max(max, Number(ann.id) || 0);
     for (const image of state.images) max = Math.max(max, Number(image.id) || 0);
     for (const draft of state.autoMode.draftAnnotations) max = Math.max(max, Number(draft.id) || 0);
+    // BOM rows/callouts/groupIds draw from the same counter (and since
+    // US-074 every project has seeded rows) — skipping them here would let a
+    // project file with a missing idCounter re-issue their ids to new
+    // rows/images and corrupt id-keyed lookups like bmRowById.
+    if (state.bom) {
+      for (const row of state.bom.rows || []) {
+        max = Math.max(max, Number(row.id) || 0, Number(row.groupId) || 0);
+      }
+      for (const c of state.bom.callouts || []) max = Math.max(max, Number(c.id) || 0);
+      const bomImages = state.bom.images || {};
+      for (const image of [...(bomImages.solid || []), ...(bomImages.lace || [])]) {
+        max = Math.max(max, Number(image.id) || 0);
+      }
+    }
     return max + 1;
   }
 
 
   async function onPasteEvent(e) {
+    // Text fields keep native text paste. BOM photo popovers handle their own
+    // image paste and stop propagation before this document-level router.
+    const target = e.target;
+    const inField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+    if (inField) return;
     const items = Array.from(e.clipboardData?.items || []);
     const imageItems = items.filter(item => item.type && item.type.startsWith('image/'));
-    if (!imageItems.length) return;
+    if (imageItems.length) {
+      e.preventDefault();
+      const dataURLs = [];
+      for (const imageItem of imageItems) {
+        const blob = imageItem.getAsFile();
+        if (!blob) continue;
+        dataURLs.push(await blobToDataURL(blob));
+      }
+      if (dataURLs.length && state.activePage === 'bom' && typeof bmAddImagesFromDataURLs === 'function') {
+        await bmAddImagesFromDataURLs(dataURLs, bmVariant);
+      } else if (dataURLs.length) {
+        await addImagesFromDataURLs(dataURLs);
+      }
+      return;
+    }
+    // No image on the OS clipboard — fall back to the internal line
+    // clipboard. copySelectedAnnotation claims the OS clipboard with a text
+    // marker, so whichever was copied LAST wins here, like a real clipboard.
+    // Never hijack a paste aimed at a text field.
+    if (inField || state.appMode === 'auto' || !hasLineClipboard()) return;
     e.preventDefault();
-    const dataURLs = [];
-    for (const imageItem of imageItems) {
-      const blob = imageItem.getAsFile();
-      if (!blob) continue;
-      dataURLs.push(await blobToDataURL(blob));
-    }
-    if (dataURLs.length) {
-      await addImagesFromDataURLs(dataURLs);
-    }
+    pasteLineFromClipboard();
   }
 
   async function addImagesFromDataURLs(dataURLs) {
-    const hadImages = state.images.length > 0;
     const baseCount = state.images.length;
     let added = 0;
 
@@ -8543,7 +18598,13 @@ function getAnnotationsOnImage(image) {
       const img = await loadImageFromDataURL(dataURL);
       const imageRecord = createImageRecord(img, dataURL, baseCount + batchIndex);
       state.images.push(imageRecord);
+      // Select the new photo as the sole selection. This assigns directly
+      // (rather than setSelection, which would updateUI/render every loop
+      // iteration), so it must also reset the multi-selection set — otherwise a
+      // previously-clicked photo lingers in selectedImageIds and a later plain
+      // drag of the new photo moves both together.
       state.selection = { kind: 'image', id: imageRecord.id };
+      state.selectedImageIds = [imageRecord.id];
       recordAutoTelemetryEvent('image_loaded', {
         sourceImageId: imageRecord.id,
         sketch_id: imageRecord.id,
@@ -8561,7 +18622,10 @@ function getAnnotationsOnImage(image) {
     // 'detected', so 'ready' is never shown on the normal path.
     ensureAutoModeStatus();
 
-    if (!hadImages && state.images.length > 0) {
+    // Re-fit the board to frame ALL images after any add (not just the first),
+    // so a newly added second/third sketch is guaranteed visible beside the
+    // others rather than sitting off-screen or under the existing view.
+    if (added > 0 && state.images.length > 0) {
       fitImagesToBoard();
     } else {
       updateUI();
@@ -8689,16 +18753,23 @@ function getAnnotationsOnImage(image) {
     const text = String(labelText == null ? '' : labelText).trim();
     if (!text) return { desc: '', refL: null, zh: '' };
     const nums = text.split(/[,\s]+/).filter(Boolean);
+    // Custom POMs (17+, US-011) resolve from the project registry with the
+    // same shape as template entries; refL stays null (no standard value).
+    const infoFor = (n) => {
+      if (POM_TEMPLATE[n]) return POM_TEMPLATE[n];
+      const custom = customPomEntry(n);
+      return custom ? { desc: custom.en || '', zh: custom.zh || '', refL: null } : null;
+    };
     const descs = [];
     const zhs = [];
     for (const n of nums) {
-      const info = POM_TEMPLATE[n];
+      const info = infoFor(n);
       if (info) {
         descs.push(info.desc);
         if (info.zh) zhs.push(info.zh);
       }
     }
-    const single = nums.length === 1 && POM_TEMPLATE[nums[0]] ? POM_TEMPLATE[nums[0]] : null;
+    const single = nums.length === 1 ? infoFor(nums[0]) : null;
     return {
       desc: descs.join('; '),
       refL: single ? single.refL : null,
@@ -8837,10 +18908,25 @@ function getAnnotationsOnImage(image) {
   }
 
   function pickAutoSourceImage() {
-    // Use the currently selected image; otherwise the first image.
-    const selected = getSelectedImage();
-    if (selected) return selected;
-    return state.images[0] || null;
+    const ready = state.images.filter(
+      (im) => im && im.img && im.img.complete && (im.img.naturalWidth || im.img.width) > 0
+    );
+    // Single (or no) photo: the selected one, else the first. Unchanged — this
+    // is the common case and every headless test loads exactly one image.
+    if (ready.length <= 1) {
+      return getSelectedImage() || ready[0] || state.images[0] || null;
+    }
+    // Multiple photos on the board: the PRIMARY must be the front + back OUTER
+    // view — the photo with two garment panels side by side — while a separate
+    // front-inner cutaway is a single panel (TD rule: the 2-view photo is
+    // front+back, the other is front inner). Picking the selected image is
+    // wrong here because pasting/adding a photo auto-selects it, so loading the
+    // inner second would make IT primary and swap the roles. A 2-panel board is
+    // markedly wider relative to its height (aspect ~2) than a 1-panel cutaway
+    // (aspect ~1), so pick the widest-by-aspect photo as primary; the rest
+    // become auxiliary front-inner views regardless of load order / selection.
+    const aspect = (im) => (im.img.naturalWidth || im.img.width) / Math.max(1, im.img.naturalHeight || im.img.height);
+    return ready.slice().sort((a, b) => aspect(b) - aspect(a))[0];
   }
 
   // ---- src/auto/detect/junctions.js ----
@@ -9457,6 +19543,8 @@ function getAnnotationsOnImage(image) {
     if (kind.indexOf('inner-cup-') === 0) return 'frontCup';
     if (kind === 'apex-left' || kind === 'apex-right') return 'frontCup';
     if (kind === 'side-top' || kind === 'side-bottom') return 'sideSeam';
+    if (kind === '171' || kind === '172') return 'frontCup';
+    if (kind === '181' || kind === '182') return 'sideSeam';
     if (kind === 'strap-top' || kind === 'strap-bottom') return 'strap';
     if (kind === 'back-strap-left' || kind === 'back-strap-right') return 'strap';
     if (kind.indexOf('back-') === 0) return 'backPanel';
@@ -9513,7 +19601,11 @@ function getAnnotationsOnImage(image) {
     const sideTopRightInk = detection.sideTopRight || null;
     const backPanelInk = detection.backPanel || null;
     const backPanelHeightInk = detection.backPanelHeight || null;
-    const cradleCfFromCupSeam = !detection.cradleCfTop && !!detection.cradleCupTop;
+    // Mirrors seed-anchors.js: the CF projection only fires from trusted seam
+    // tiers ('strong'/'seam'), never from guide/arc commits (ADR 0021/0022).
+    const cradleCfFromCupSeam = !detection.cradleCfTop
+      && !!detection.cradleCupTop
+      && (detection.cradleCupTier === 'strong' || detection.cradleCupTier === 'seam');
     const geometryReviewRequired = !!detection.geometryReviewRequired;
     const geometryReasons = detection.geometryFacts && detection.geometryFacts.quality
       && Array.isArray(detection.geometryFacts.quality.reasons)
@@ -9564,11 +19656,14 @@ function getAnnotationsOnImage(image) {
     const confByKind = {
       'cf-top':            tier(det.axis, 'medium'),
       'cf-bottom':         tier(det.band, 'high'),
-      'cradle-cf-top':     (cradleCfFromCupSeam || detection.cradleCfTopDipProjected)
+      'cradle-cf-top':     (cradleCfFromCupSeam
+                              || detection.cradleCfTopDipProjected
+                              || detection.cradleCfTopJunction
+                              || detection.cradleCfCrestSeedY != null)
                              ? 'low'
                              : tier(det.cradleCfTop, 'medium'),
-      'cradle-cup-top':    tier(det.cradleCupTop, 'medium'),
-      'cradle-cup-bottom': tier(det.cradleCupBottom, 'medium'),
+      'cradle-cup-top':    (detection.cradleCupTier === 'guide' || detection.cradleCupTier === 'arc') ? 'low' : tier(det.cradleCupTop, 'medium'),
+      'cradle-cup-bottom': (detection.cradleCupTier === 'guide' || detection.cradleCupTier === 'arc') ? 'low' : tier(det.cradleCupBottom, 'medium'),
       'band-left':         tier(det.band, 'high'),
       'band-right':        tier(det.band, 'high'),
       'chest-left':        tier(det.chest, 'medium'),
@@ -9589,6 +19684,14 @@ function getAnnotationsOnImage(image) {
       'side-bottom':       tier(det.sideRight, 'medium'),
       'apex-left':         tier(det.apexLeft, 'medium'),
       'apex-right':        tier(det.apexRight, 'medium'),
+      // US-037: neckline corners ride the apex-outer join (medium when a join
+      // point exists, else low). Armhole is a bowed-curve guess with no direct
+      // ink trace yet — floored to 'low' so POM 18 always reviewRequired
+      // (matches its 'low' expected_confidence_tier and POM 14's precedent).
+      '171':     detection.cfTopY != null ? 'medium' : 'low',
+      '172':    (detection.apexRightInner || detection.apexRight) ? 'medium' : 'low',
+      '181':       'low',
+      '182':    'low',
       // POM 14 is the only contractually-low POM (always verify by hand); floor
       // both strap ends to 'low' so reviewRequired is guaranteed (ADR 0012).
       'strap-top':         'low',
@@ -9605,11 +19708,15 @@ function getAnnotationsOnImage(image) {
     const sourceByKind = {
       'cf-top':            detection.cfTopY != null ? 'ink' : 'ratio',
       'cf-bottom':         detection.bandY != null ? 'silhouette' : 'ratio',
-      'cradle-cf-top':     cradleCfFromCupSeam
-                             ? 'seamProjected'
-                             : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'),
-      'cradle-cup-top':    'seam',
-      'cradle-cup-bottom': 'seam',
+      'cradle-cf-top':     detection.cradleCfTopJunction
+                             ? 'seamJunction'
+                             : (detection.cradleCfCrestSeedY != null
+                               ? 'seamCrest'
+                               : (cradleCfFromCupSeam
+                                 ? 'seamProjected'
+                                 : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'))),
+      'cradle-cup-top':    detection.cradleCupTier === 'guide' ? 'seamGuide' : (detection.cradleCupTier === 'arc' ? 'seamArc' : 'seam'),
+      'cradle-cup-bottom': detection.cradleCupTier === 'guide' ? 'seamGuide' : (detection.cradleCupTier === 'arc' ? 'seamArc' : 'seam'),
       'band-left':         detection.bandLeftX != null ? 'ink' : 'silhouette',
       'band-right':        detection.bandRightX != null ? 'ink' : 'silhouette',
       'chest-left':        (detection.underbustLeftX != null || detection.chestLeftX != null) ? 'ink' : 'ratio',
@@ -9622,6 +19729,10 @@ function getAnnotationsOnImage(image) {
       'side-bottom':       detection.sideBottomRight ? 'ink' : 'silhouette',
       'apex-left':         detection.apexLeft ? 'apexJoin' : 'ratio',
       'apex-right':        detection.apexRight ? 'apexJoin' : 'ratio',
+      '171':     detection.cfTopY != null ? 'cfTop' : 'ratio',
+      '172':    (detection.apexRightInner || detection.apexRight) ? 'apexJoin' : 'ratio',
+      '181':       detection.sideTopRightInk ? 'ink' : (detection.sideRightX != null ? 'silhouette' : 'ratio'),
+      '182':    (detection.apexRightOuter || detection.frontStrapStart) ? 'strapJoin' : 'ratio',
       'strap-top':         detection.frontStrapStart ? 'frontStrapSeam' : 'ratio',
       'strap-bottom':      (backPanelHeightInk || backPanelInk) ? 'backPanelJoin' : 'ratio',
       'back-top':          (detection.back && detection.back.top) ? 'ink' : 'ratio',
@@ -9648,6 +19759,8 @@ function getAnnotationsOnImage(image) {
       'side-top': sideTopRightInk ? det.sideTopRight : det.sideRight,
       'side-bottom': det.sideRight,
       'apex-left': det.apexLeft, 'apex-right': det.apexRight,
+      '171': null, '172': null,
+      '181': null, '182': null,
       'strap-top': det.frontStrapStart, 'strap-bottom': det.backPanel,
       'back-top': det.back, 'back-bottom': det.back,
       'back-panel-top': det.backPanel, 'back-panel-bottom': det.backPanel,
@@ -9661,7 +19774,9 @@ function getAnnotationsOnImage(image) {
     const apexR = detection.apexRightInner || detection.apexRight;
     const presentByKind = {};
     for (const schema of ANCHOR_SCHEMA) presentByKind[schema.kind] = true;
-    presentByKind['cradle-cf-top'] = !!(detection.cradleCfTop || cradleCfFromCupSeam);
+    presentByKind['cradle-cf-top'] = !!(detection.cradleCfTop
+      || detection.cradleCfCrestSeedY != null
+      || cradleCfFromCupSeam);
     presentByKind['cradle-cup-top'] = !!(detection.cradleCupTop && detection.cradleCupBottom);
     presentByKind['cradle-cup-bottom'] = presentByKind['cradle-cup-top'];
     presentByKind['apex-left'] = !!(frontViewValid && apexL && apexR);
@@ -9681,7 +19796,8 @@ function getAnnotationsOnImage(image) {
 
     // ---- Source class: provenance → Engineering Workflow vocabulary ----
     const SOURCE_CLASS = {
-      ink: 'detected', seam: 'detected', silhouette: 'detected',
+      ink: 'detected', seam: 'detected', seamGuide: 'detected', seamArc: 'detected',
+      seamJunction: 'detected', seamCrest: 'detected', silhouette: 'detected',
       apexJoin: 'detected', frontStrapSeam: 'detected', backPanelJoin: 'detected',
       cupModel: 'detected', frontInnerView: 'detected',
       innerCupTopInkFallback: 'detected',
@@ -9737,6 +19853,14 @@ function getAnnotationsOnImage(image) {
       } else {
         if (source === 'seamProjected') {
           notes.push('projected landmark: CF seam missed; extended from the bottom-cup cradle seam to the CF axis — verify the POM 6/8 boundary.');
+        } else if (source === 'seamGuide') {
+          notes.push('guide-tier seam: accepted from a sparse dashed vertical guide (below the strong-guide threshold) — verify the POM 7 placement; this seam is not used for POM 9/10 geometry.');
+        } else if (source === 'seamArc') {
+          notes.push('arc-tier seam: POM 7 placed on the traced cup-bottom/underwire arc (no drawn seam or guide line) — verify the cradle height placement; this seam is not used for POM 9/10 geometry.');
+        } else if (source === 'seamJunction') {
+          notes.push('junction-tier seam: the cradle/band seam is interrupted at the CF by a closure placket; placed where the seam meets the placket edges — verify the POM 6/8 boundary.');
+        } else if (source === 'seamCrest') {
+          notes.push('crest-tier seam: no direct CF seam ink; placed on the symmetric contour crest where the cup-bottom seams meet the CF axis (gore top) — verify the POM 6/8 boundary.');
         } else if (source === 'seamDip') {
           notes.push('projected landmark: cradle-cf-top projected from the seam dip — verify against the actual CF seam.');
         } else if (source === 'ratio' || source === 'cupRatioFallback') {
@@ -9904,8 +20028,20 @@ function getAnnotationsOnImage(image) {
 
     // ---- Edge: commit detection + seed anchors + notify ----
     state.autoMode.detection = detection;
-    maybePromptForViewRoles(detection);
-    state.autoMode.anchors = seedAnchorsFromDetection(detection, sourceImage);
+    // US-039: recognize EXTRA board photos (beyond the single detection source)
+    // as auxiliary views — e.g. a front-inner cutaway the TD added as its own
+    // image. Recognition + labeling ONLY: measurement stays on the source image
+    // and no POM moves to these views (ADR 0011).
+    detection.auxViews = await buildAuxViews(sourceImage);
+    // When view-role classification is uncertain — e.g. a 3-panel board where
+    // "back" vs "front_inner" is genuinely ambiguous from the sketch — let the
+    // TD confirm/correct the roles BEFORE anchors are seeded, so a corrected
+    // front/back/inner assignment places anchors on the right panels. Awaited so
+    // seeding uses the confirmed roles. In test/label modes it returns
+    // immediately (see maybePromptForViewRoles) and seeding proceeds with the
+    // auto roles, so headless suites are unaffected.
+    await maybePromptForViewRoles(detection, sourceImage);
+    seedAndRelocateAnchors(detection, sourceImage);
     recordAutoTelemetryEvent('anchor_seeded', {
       sourceImageId: sourceImage.id,
       count: state.autoMode.anchors.length,
@@ -9913,6 +20049,7 @@ function getAnnotationsOnImage(image) {
     });
     state.autoMode.anchorSelectedId = null;
     state.autoMode.anchorsHidden = false;
+    state.autoMode.hiddenAnchorKinds = []; // US-038: fresh detect shows all anchors
     state.autoMode.status = 'detected';
     state.autoMode.lastError = null;
     recordAutoTelemetryEvent('detect_finished', {
@@ -9928,6 +20065,117 @@ function getAnnotationsOnImage(image) {
       ? ' + ' + detection.contourCount + ' contours (' + detection.traceDurationMs + 'ms)'
       : '';
     showToast('Detected sketch (' + detection.durationMs + 'ms)' + traceInfo + '. Anchors seeded — drag any that look wrong, then Generate POM Drafts.');
+  }
+
+  // Seed anchors from the committed detection, then apply the US-049 relocation
+  // that moves the cup / neckline / armhole POMs (9/10/17/18) onto a SEPARATE
+  // front-inner PHOTO's own seeded anchors when one was recognized as an aux
+  // view. (An in-image front-inner PANEL — a 3-view board in a single photo — is
+  // handled inside seedAnchorsFromDetection itself, which transfers those anchors
+  // from the front-outer box onto the inner box.) Extracted so it can re-run
+  // after the TD confirms/corrects view roles, re-placing anchors to follow the
+  // corrected front/back/inner assignment.
+  function seedAndRelocateAnchors(detection, sourceImage) {
+    state.autoMode.anchors = seedAnchorsFromDetection(detection, sourceImage);
+    const innerViewSeed = (detection.auxViews || [])
+      .find(v => v && v.viewRole === 'front_inner' && Array.isArray(v.anchors) && v.anchors.length);
+    if (innerViewSeed) {
+      const MOVED_ANCHOR_KINDS = ['inner-cup-top', 'inner-cup-bottom', 'inner-cup-left', 'inner-cup-right', '171', '172', '181', '182'];
+      const innerByKind = Object.create(null);
+      for (const an of innerViewSeed.anchors) innerByKind[an.kind] = an;
+      state.autoMode.anchors = state.autoMode.anchors.map(an =>
+        (MOVED_ANCHOR_KINDS.indexOf(an.kind) >= 0 && innerByKind[an.kind]) ? innerByKind[an.kind] : an);
+    }
+  }
+
+  // US-039: recognize EXTRA board photos as auxiliary views. The main pipeline
+  // detects/measures ONE source image; a TD may add a front-inner cutaway (or
+  // other reference) as its OWN photo. Each such photo becomes one aux view: an
+  // ink bbox normalized to that photo (so it follows pans / zooms / resizes),
+  // with a display role. This is recognition + labeling only — no anchors, no
+  // POM placement, no change to the measurement detection (ADR 0011: the inner
+  // cutaway is a bonus, never a precondition). The primary image already holds
+  // front_outer + back, so the first extra photo defaults to the front-inner
+  // view; further extras stay 'unknown' for the TD to interpret.
+  async function buildAuxViews(sourceImage) {
+    if (!sourceImage) return [];
+    const others = state.images.filter(
+      (im) => im && im.id !== sourceImage.id && im.img && im.img.complete
+    );
+    const auxViews = [];
+    let innerAssigned = false;
+    for (const im of others) {
+      let box = { x: 0, y: 0, width: 1, height: 1 }; // fallback: whole photo
+      let det = null;
+      try {
+        // singleView: an aux photo is ONE garment view (front-inner cutaway),
+        // so detect it without the panel split — otherwise its gore/shading
+        // alleys split it into 3 boxes and the cup/neckline/armhole anchors
+        // seed off one cup instead of the whole, centered garment.
+        det = detectSketchFromImage(im, { debug: false, singleView: true });
+        // Union of every detected view box = the full drawn extent, so the
+        // label hugs the whole sketch even when an extra photo has more than
+        // one panel (or its cups split at the gore). detection.bbox alone is
+        // only the primary view's bounds, so it can undercover. Fall back to
+        // bbox, then to the whole photo.
+        const views = det && Array.isArray(det.viewBoxes) ? det.viewBoxes.filter(Boolean) : [];
+        if (views.length) {
+          const minX = Math.min(...views.map((v) => v.x));
+          const minY = Math.min(...views.map((v) => v.y));
+          const maxX = Math.max(...views.map((v) => v.x + v.width));
+          const maxY = Math.max(...views.map((v) => v.y + v.height));
+          if (maxX > minX && maxY > minY) box = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+        } else if (det && det.bbox && det.bbox.width > 0 && det.bbox.height > 0) {
+          box = { x: det.bbox.x, y: det.bbox.y, width: det.bbox.width, height: det.bbox.height };
+        }
+      } catch (err) {
+        console.warn('[Auto Mode] aux-view bbox failed; boxing whole image:', err);
+      }
+      const viewRole = innerAssigned ? 'unknown' : 'front_inner';
+      innerAssigned = true;
+      const auxView = {
+        sourceImageId: im.id,
+        aux: true,
+        viewRole,
+        x: box.x,
+        y: box.y,
+        width: box.width,
+        height: box.height,
+      };
+      // US-049: the front-inner view is a MEASUREMENT surface for the cup /
+      // neckline / armhole POMs (9, 10, 17, 18 — POM 8 stays on front-outer,
+      // ADR 0011 amendment). Persist its detection (minus the heavy ink mask,
+      // session-only) plus a full anchor set seeded on THIS photo, so
+      // generatePOMDraftsFromAnchors can run a second pass that places those
+      // POMs on the inner view.
+      if (viewRole === 'front_inner' && det && det.bbox) {
+        try {
+          det.sourceImageId = im.id;
+          // Mark the detection as a single-view (front-inner cutaway) so the
+          // anchor seeder drops the top-of-cup POMs (172/182/IC-top) to the
+          // strap→cup seam for this view — the front-outer strap-join fraction
+          // lands them up at the apex on a molded cutaway.
+          det.singleView = true;
+          // Trace this photo's contours BEFORE the mask is dropped. The primary
+          // pipeline traces only the SOURCE image, but seedAnchorsFromDetection's
+          // cup-width extremes (ADR 0036) require detection.contours — without
+          // them it silently fell back to the pre-ADR-0036 shared-row placement,
+          // so a 2-image board (primary + separate front-inner cutaway) kept the
+          // old narrow POM 10 while a single 3-view photo got the new one.
+          await applyPotraceContoursToDetection(det);
+          delete det._mask; delete det._maskW; delete det._maskH; delete det.debug;
+          // Keep the promise in the comment above buildAuxViews: the persisted aux
+          // detection carries no heavy raster payload.
+          delete det.inkMask; delete det.inkMaskW; delete det.inkMaskH;
+          auxView.detection = det;
+          auxView.anchors = seedAnchorsFromDetection(det, im);
+        } catch (err) {
+          console.warn('[Auto Mode] inner-view anchor seeding failed:', err);
+        }
+      }
+      auxViews.push(auxView);
+    }
+    return auxViews;
   }
 
   // Vector tracing pass — runs after the raster feature pass so curved
@@ -9994,6 +20242,12 @@ function getAnnotationsOnImage(image) {
       }
     }
     syncDetectionRoleIndexes(detection);
+    // The TD may have moved the back role to a different panel than the auto
+    // pick. Back POM landmarks (POM 11/12/13/15) were detected on the auto back
+    // box, so re-run that detection on the confirmed back box before anchors are
+    // (re-)seeded. Cup/neckline/armhole (front-inner) anchors are box-relative
+    // and follow the corrected role without re-detection.
+    redetectBackLandmarks(detection);
     detection.viewRoleReviewRequired = false;
   }
 
@@ -10427,6 +20681,12 @@ function getAnnotationsOnImage(image) {
       cv: cvAnalysis.inkBackend || null,
       params: activeDetectionParams(options),
       debug: !!(options && options.debug),
+      // singleView: treat the whole photo as ONE garment view — skip the
+      // front/back/inner panel split. Used for auxiliary photos (e.g. a
+      // front-inner cutaway added as its own image), which are a single view;
+      // the split otherwise carves the cutaway's gore/shading alleys into 3
+      // boxes and collapses the "front" onto one cup.
+      singleView: !!(options && options.singleView),
     });
   }
 
@@ -10469,6 +20729,7 @@ function getAnnotationsOnImage(image) {
     // unchanged in this phase — it is availability, not forced consumption.
     const geometry = analyzeGeometry(seg, {
       detectionParams, mark, stageTimingsMs, contourEvidence: contours,
+      singleView: !!(opts && opts.singleView),
     });
     if (geometry.earlyReturn) return geometry.earlyReturn;
 
@@ -10784,12 +21045,23 @@ function getAnnotationsOnImage(image) {
 
     // ---- Stage: view-box grouping + role classification ----
     let viewBoxesPx = detectSketchViewBoxes(filtered.keptComponents, globalStats, w, h);
-    // If the component grouping returned a single wide bbox covering most of
-    // the canvas, that's usually two views merged by stray ink. Try to split
-    // it by finding the empty vertical alley in the middle.
-    if (viewBoxesPx.length === 1) {
-      const subdivided = splitMergedViewByVerticalValley(dark, w, h, viewBoxesPx[0]);
-      if (subdivided.length > 1) viewBoxesPx = subdivided;
+    if (ctx.singleView) {
+      // Auxiliary single-view photo (e.g. a front-inner cutaway): force ONE
+      // view spanning ALL ink and skip the panel split. The split + front/back/
+      // inner classifier is for multi-panel boards; on a lone cutaway the gore
+      // gap and cup shading read as vertical alleys and carve it into 3 boxes,
+      // so the "front" primary collapses onto a single cup and axis/apex/side
+      // land in the wrong tenth of the image. One whole-garment box keeps the
+      // symmetry axis centered and the cup/neckline/armhole landmarks correct.
+      viewBoxesPx = [statsToBounds(globalStats)];
+    } else {
+      // Component grouping keys off horizontal gaps, so unevenly-spaced panels
+      // can merge (a 3-panel board where two panels sit closer than the gap
+      // threshold collapses into one double-wide box). Split any over-wide box
+      // at its empty vertical alley so each garment panel gets its own view
+      // box; the single lone-box case (two views bridged by stray ink) is
+      // subsumed here.
+      viewBoxesPx = splitWideViewBoxes(viewBoxesPx, dark, w, h);
     }
     // Flexible view-role classification. Supports a two-view layout
     // (front_outer + back) and a three-view layout (front_outer + back +
@@ -11111,9 +21383,26 @@ function getAnnotationsOnImage(image) {
 
     // ---- Stage: apex + strap landmarks ----
     const bounds = { minX, minY, maxX, maxY };
+
+    // POM 6 / POM 7 bottom anchors follow the drawn hem at their OWN column
+    // instead of the single flat bandY row (US-061). Normalized result, with
+    // the flat row as the fallback when that column carries no ink — so a
+    // straight-hem sketch is byte-identical to before.
+    const hemNormAtColumn = (colPx, flatY) => {
+      const row = hemRowAtColumn(dark, w, h, colPx, bandY * h, bboxH);
+      return row == null ? flatY : row / h;
+    };
+    // The CF column's hem — POM 6's (and, unavoidably, POM 5's) bottom.
+    const cfBottomHemY = hemNormAtColumn(axisPx, bandY);
     const apexLeftCandidate = findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, -1);
     const apexRightCandidate = findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, +1);
-    const apexPair = validateCupApexPair(apexLeftCandidate, apexRightCandidate, bounds, w, h);
+    // US-084: the two cup/strap joins are near-symmetric features, so a pair
+    // that disagrees sharply on row means one side locked onto the wrong ink —
+    // and the sides are found INDEPENDENTLY, so nothing above caught that. Give
+    // the outlier side a second look, anchored on the side we trust.
+    const apexRepaired = repairApexPairRow(
+      apexLeftCandidate, apexRightCandidate, dark, w, h, bounds, axisPx, chestRow);
+    const apexPair = validateCupApexPair(apexRepaired.left, apexRepaired.right, bounds, w, h);
     const apexLeftInfo = apexPair ? apexPair.left : null;
     const apexRightInfo = apexPair ? apexPair.right : null;
     const apexLeft = apexLeftInfo ? apexLeftInfo.point : null;
@@ -11531,6 +21820,74 @@ function getAnnotationsOnImage(image) {
       }
     }
 
+    // Interrupted-seam junction tier (US-015 / ADR 0023): on front-closure
+    // styles the cradle/band seam is interrupted AT the CF axis by the
+    // placket, so the direct paths above (which need ink on the winning
+    // cradle row at the axis) miss — and on such styles the cradle ROW prior
+    // itself can lock onto the neckline far above the true seam (demo4: row
+    // 0.54, rejected 'too close to CF top' while the seam sits at 0.83).
+    // Recover it row-agnostically: scan rows below cf-top for the junction
+    // signature — a long horizontal seam run approaching the axis from BOTH
+    // sides, a narrow CF gap roughly centered on the axis, and VERTICAL
+    // closure-edge ink bounding the gap (the placket sides; a curved wire
+    // bounding a gore gap is locally horizontal and fails this). Topmost
+    // qualifying row wins (the seam's upper stitch line — where the TD arrow
+    // tip sits, per the amorafit correction). Seeds low-confidence +
+    // reviewRequired via the seamJunction provenance; never trusted further.
+    let cradleCfTopJunction = false;
+    if (!cradleCfTop && cfTopPx >= 0 && bandRow > 0) {
+      const jStart = Math.min(h - 1, cfTopPx + Math.max(4, Math.round(bboxH * 0.05)));
+      const jEnd = Math.max(jStart, (bandEdgeRow > 0 ? bandEdgeRow : bandRow) - Math.max(3, Math.round(bboxH * 0.02)));
+      const minRunPx = Math.max(10, Math.round(bboxW * 0.12));
+      const maxGapPx = Math.max(8, Math.round(bboxW * 0.18));
+      const maxHole = 1;                                   // tolerate anti-aliased seams
+      const vEdgeRun = Math.max(6, Math.round(bboxH * 0.10));
+      const inkAt = (x, y) => rawDark[y * w + x];
+      for (let y = jStart; y <= jEnd && !cradleCfTopJunction; y += 1) {
+        const rowInk = (x) => inkAt(x, y)
+          || (y > 0 && inkAt(x, y - 1))
+          || (y < h - 1 && inkAt(x, y + 1));
+        let leftEdge = -1;
+        for (let x = axisPx; x >= minX; x -= 1) { if (rowInk(x)) { leftEdge = x; break; } }
+        if (leftEdge < 0) continue;
+        let rightEdge = -1;
+        for (let x = axisPx + 1; x <= maxX; x += 1) { if (rowInk(x)) { rightEdge = x; break; } }
+        if (rightEdge < 0) continue;
+        // The junction signature REQUIRES an empty gap at the axis — the
+        // placket interior. Ink on/next to the axis cell means this row is a
+        // continuous structure (band interior, drawn CF line, gore ink), not
+        // an interrupted seam; the direct paths above own those cases.
+        if (leftEdge >= axisPx - 1 || rightEdge <= axisPx + 1) continue;
+        if (rightEdge - leftEdge > maxGapPx) continue;
+        if (Math.abs((leftEdge + rightEdge) / 2 - axisPx) > Math.max(4, bboxW * 0.04)) continue;
+        const runFrom = (x0, dir) => {
+          let run = 0, hole = 0, x = x0;
+          while (x >= minX && x <= maxX) {
+            if (rowInk(x)) { run += 1; hole = 0; }
+            else { hole += 1; if (hole > maxHole) break; }
+            x += dir;
+          }
+          return run;
+        };
+        if (runFrom(leftEdge, -1) < minRunPx) continue;
+        if (runFrom(rightEdge, +1) < minRunPx) continue;
+        const vRun = (x) => {
+          let run = 0;
+          for (let yy = Math.max(minY, y - vEdgeRun); yy <= Math.min(maxY, y + vEdgeRun); yy += 1) {
+            if (inkAt(x, yy)
+              || (x > 0 && inkAt(x - 1, yy))
+              || (x < w - 1 && inkAt(x + 1, yy))) run += 1;
+          }
+          return run;
+        };
+        if (vRun(leftEdge) < vEdgeRun) continue;
+        if (vRun(rightEdge) < vEdgeRun) continue;
+        cradleCfTop = { x: axisPx / w, y: y / h };
+        cradleCfTopJunction = true;
+        cradleCfTopReject = null;
+      }
+    }
+
     // ---- Cradle-at-bottom-cup (POM 7 endpoints) ----
     // POM 7 measures the cradle/cup-bottom seam height at the BOTTOM-CUP
     // position (away from the CF axis, inside the cup-side region). Its top
@@ -11550,6 +21907,11 @@ function getAnnotationsOnImage(image) {
     let cradleCupTop = null;
     let cradleCupBottom = null;
     let cradleCupSide = 0;
+    // Provenance tier of the committed seam: 'strong' (vertical guide),
+    // 'seam' (pattern-3 seam+baseline), or 'guide' (sparse dashed guide —
+    // NEW relaxed tier; drawn for TD review but NEVER fed to the cupModel,
+    // see buildCupModel and ADR 0021).
+    let cradleCupTier = null;
     let cradleCupTopInkRatio = 0;
     let cradleCupBandInkRatio = 0;
     let cradleCupColInkRatio = 0;
@@ -11609,6 +21971,13 @@ function getAnnotationsOnImage(image) {
       // qualify; for pattern 3 (no guide) we need actual seam ink at the
       // candidate column, not just a single grazing curve point.
       const cradleRatioNoGuide = 0.25;
+      // Guide tier (ADR 0021): a sparse dashed guide (gap ≥ ~8 px) hits every
+      // segment but its continuous colRatio sits below the strong floor. When
+      // BOTH today's acceptance paths fail, such a candidate may still commit
+      // at tier 'guide' — drawn low-confidence + reviewRequired, and ignored
+      // by the cupModel. 0.18 admits real sparse dashes (2px dash / 8px gap
+      // ≈ 0.25) while genuinely ambiguous patterns (gap 12 ≈ 0.17) stay out.
+      const dashedColMinRatio = 0.18;
       // Span between rows for the vertical check — strictly INSIDE the gap
       // so cradleRow / bandRow ink doesn't contribute.
       const vGapLo = Math.min(cradleRow + ySpan + 1, bandRow - yBandSpan - 1);
@@ -11622,6 +21991,7 @@ function getAnnotationsOnImage(image) {
       const aboveHi = Math.max(0, cradleRow - ySpan - 1);
       const aboveMaxRatio = 0.35;
       const sideCandidates = [];
+      const guideCandidates = [];      // dashed-guide tier pool (ADR 0021)
       let anyPassedRows = false;       // ≥1 candidate passed cradle+band rows
       let anyPassedColumn = false;     // ≥1 candidate also had vertical ink
       let anyRejectedAsSideSeam = false;
@@ -11646,6 +22016,14 @@ function getAnnotationsOnImage(image) {
         let bestColRatio = 0;
         let bestSegmentsHit = 0;
         let bestEdgePenalty = 1;
+        let bestTier = null;
+        let bestGuideX = -1;
+        let bestGuideScore = 0;
+        let bestGuideCradleInk = 0;
+        let bestGuideBandInk = 0;
+        let bestGuideColRatio = 0;
+        let bestGuideSegmentsHit = 0;
+        let bestGuideEdgePenalty = 1;
         for (let xc = xLo; xc <= xHi; xc += 1) {
           const cxLo = Math.max(0, xc - xWin);
           const cxHi = Math.min(w - 1, xc + xWin);
@@ -11710,9 +22088,23 @@ function getAnnotationsOnImage(image) {
           // cup-bottom seam extends across the bottom-cup zone, whereas a
           // cup-outline arc tangent only piles ink at a single point).
           const verticalGuideStrong = (colRatio >= colMinRatio) && (segmentsHit >= segmentMin);
+          // Sparse dashed guide: every segment inked but the continuous ratio
+          // is below the strong floor. Only relevant when pattern 3 ALSO
+          // fails — then the candidate survives as guide-tier (ADR 0021)
+          // instead of being rejected outright.
+          const dashedGuidePresent = !verticalGuideStrong
+            && (segmentsHit >= segmentMin)
+            && (colRatio >= dashedColMinRatio);
+          // dashedOnly = this candidate exists only via the guide tier. Such
+          // candidates must not disturb today's reject-reason flags or score
+          // pool — the tier is strictly additive.
+          let dashedOnly = false;
           let seamHorizontalRun = 0;
           if (!verticalGuideStrong) {
-            if (cradleRatio < cradleRatioNoGuide) continue;
+            if (cradleRatio < cradleRatioNoGuide) {
+              if (!dashedGuidePresent) continue;
+              dashedOnly = true;
+            }
             // Horizontal seam extent: a real cradle/cup-bottom seam draws
             // ink continuously across the bottom-cup region; a cup-outline
             // arc tangent piles ink only in ~10-15 contiguous columns
@@ -11752,7 +22144,10 @@ function getAnnotationsOnImage(image) {
             // continuous), OR a meaningful run at the exact cradleRow.
             const minBandRun = Math.max(28, Math.round(bboxW * 0.16));
             const minSingleRun = Math.max(18, Math.round(bboxW * 0.10));
-            if (seamHorizontalRun < minBandRun && singleRowRun < minSingleRun) continue;
+            if (!dashedOnly && seamHorizontalRun < minBandRun && singleRowRun < minSingleRun) {
+              if (!dashedGuidePresent) continue;
+              dashedOnly = true;
+            }
           }
           // Reject side-seam-like columns: a long, continuous vertical run of
           // ink ABOVE the cradle row in any column of the candidate window
@@ -11779,7 +22174,10 @@ function getAnnotationsOnImage(image) {
           }
           const aboveRatio = aboveRows > 0 ? aboveMaxColRun / aboveRows : 0;
           if (aboveRatio > aboveMaxRatio) {
-            anyRejectedAsSideSeam = true;
+            // Guide-only candidates would have been rejected before reaching
+            // this guard under today's rules — keep the reject-reason flags
+            // (and therefore the user-facing messages) byte-identical.
+            if (!dashedOnly) anyRejectedAsSideSeam = true;
             continue;
           }
           // HARD reject candidates that sit within 5% of the side seam
@@ -11804,10 +22202,10 @@ function getAnnotationsOnImage(image) {
             ? Math.max(3, Math.round(bboxW * 0.02))
             : minDistFromSide;
           if (distFromEdgePx < guardDistPx) {
-            anyRejectedAsSideSeam = true;
+            if (!dashedOnly) anyRejectedAsSideSeam = true;
             continue;
           }
-          anyPassedColumn = true;
+          if (!dashedOnly) anyPassedColumn = true;
           // Distance prior — reward being far from CF (≥ 20% of bbox width
           // earns full bonus). Apply a SOFT penalty for closeness to the
           // side seam: never below 0.5 even when adjacent, smoothly
@@ -11822,7 +22220,24 @@ function getAnnotationsOnImage(image) {
           // Vertical-guide multiplier: candidates with a clear guide line
           // outscore those without. Floor at 0.35 so pattern-3 candidates
           // (no guide, but real cradle seam) can still win when no guide
-          // candidate exists.
+          // candidate exists. Guide-tier (dashed-only) candidates score into
+          // their OWN pool — they can never displace a candidate accepted by
+          // today's rules (ADR 0021 additivity).
+          if (dashedOnly) {
+            const guideScore = cradleRatio * (0.6 + 0.4 * bandRatio)
+              * (0.55 + 0.45 * farBonus) * edgePenalty
+              * (0.45 + 0.25 * colRatio * segmentBonus);
+            if (guideScore > bestGuideScore) {
+              bestGuideScore = guideScore;
+              bestGuideX = xc;
+              bestGuideCradleInk = cradleRatio;
+              bestGuideBandInk = bandRatio;
+              bestGuideColRatio = colRatio;
+              bestGuideSegmentsHit = segmentsHit;
+              bestGuideEdgePenalty = edgePenalty;
+            }
+            continue;
+          }
           const guideMultiplier = verticalGuideStrong
             ? (0.6 + 0.4 * colRatio * segmentBonus)
             : 0.35;
@@ -11836,6 +22251,7 @@ function getAnnotationsOnImage(image) {
             bestColRatio = colRatio;
             bestSegmentsHit = segmentsHit;
             bestEdgePenalty = edgePenalty;
+            bestTier = verticalGuideStrong ? 'strong' : 'seam';
           }
         }
         if (bestX > 0) {
@@ -11844,10 +22260,25 @@ function getAnnotationsOnImage(image) {
             cradleInk: bestCradleInk, bandInk: bestBandInk,
             colRatio: bestColRatio, segmentsHit: bestSegmentsHit,
             edgePenalty: bestEdgePenalty,
+            tier: bestTier,
+          });
+        }
+        if (bestGuideX > 0) {
+          guideCandidates.push({
+            side, x: bestGuideX, score: bestGuideScore,
+            cradleInk: bestGuideCradleInk, bandInk: bestGuideBandInk,
+            colRatio: bestGuideColRatio, segmentsHit: bestGuideSegmentsHit,
+            edgePenalty: bestGuideEdgePenalty,
+            tier: 'guide',
           });
         }
       }
-      if (!sideCandidates.length) {
+      // Guide-tier fallback (ADR 0021): considered ONLY when today's
+      // acceptance found nothing on either side, so images that detect today
+      // are byte-identical. A guide winner commits at tier 'guide' — seeded
+      // low-confidence + reviewRequired, and ignored by the cupModel.
+      const acceptedPool = sideCandidates.length ? sideCandidates : guideCandidates;
+      if (!acceptedPool.length) {
         if (anyRejectedAsSideSeam && !anyPassedColumn) {
           cradleCupReject = 'candidate column looks like the side seam, not a POM 7 line (ink extends above the cradle row)';
         } else if (anyPassedRows && !anyPassedColumn) {
@@ -11861,8 +22292,8 @@ function getAnnotationsOnImage(image) {
           cradleCupReject = 'no cradle/band ink support in either bottom-cup region';
         }
       } else {
-        sideCandidates.sort((a, b) => b.score - a.score);
-        const winner = sideCandidates[0];
+        acceptedPool.sort((a, b) => b.score - a.score);
+        const winner = acceptedPool[0];
         cradleCupSide = winner.side;
         cradleCupTopInkRatio = winner.cradleInk;
         cradleCupBandInkRatio = winner.bandInk;
@@ -11871,7 +22302,92 @@ function getAnnotationsOnImage(image) {
         cradleCupSegmentCount = segmentCount;
         cradleCupEdgePenalty = winner.edgePenalty;
         cradleCupTop = { x: winner.x / w, y: cradleRow / h };
-        cradleCupBottom = { x: winner.x / w, y: bandRow / h };
+        // POM 7's bottom is a BAND ANCHOR: it must land on the garment's drawn
+        // bottom edge, not on bandRow (the band ZONE used only to bound the
+        // cup/cradle searches above — US-060). It follows the hem at its OWN
+        // column so an arched or scalloped edge is tracked rather than averaged
+        // (US-061); bandY is the fallback when that column shows no ink.
+        cradleCupBottom = {
+          x: winner.x / w,
+          y: hemNormAtColumn(winner.x, bandY),
+        };
+        cradleCupTier = winner.tier || 'seam';
+      }
+    }
+
+    // POM 7 arc tier (US-014 / ADR 0022): when neither the seam tiers nor the
+    // dashed-guide tier committed, read the cup-bottom structure itself — the
+    // traced underwire/cup-bottom arc (the same evidence the cupModel already
+    // trusts for POM 9's bottom). Requires a validated apex on the same side.
+    // Commits at tier 'arc': seeded low-confidence + reviewRequired, ignored
+    // by the cupModel side-picker and bottom (only 'strong'/'seam' feed it).
+    // The right cup is preferred to match the TD labeling convention (demo3).
+    //
+    // A cup-bottom / underwire arc is a DIP: it descends from the gore, bottoms
+    // out near cup centre, and rises again toward the side seam. A curve whose
+    // lowest point sits hard against the CF axis is not a cup base at all — on
+    // a scoop-neck sketch it is the NECKLINE, which by construction reaches its
+    // lowest point at centre front. findCupBottomFromInk only insets its search
+    // band 20% off the axis, so such a curve is still descending when the
+    // window clips it and then "wins" at the band's own inner wall.
+    //
+    // Measured deepest-point clearance across the demo corpus, as a fraction of
+    // the CF -> side-seam half-width: committed seam/strong tiers land at
+    // 52-84%, legitimate arcs at 40% (demo4) to 71% (demo1), while the neckline
+    // mis-lock on "EvelynBliss vA 1.0" lands at 26% — where cradleY resolves to
+    // the chest row (chestY is null there), so the search window never reaches
+    // the real cradle seam ~0.15 further down. A 1/3 floor separates those with
+    // margin on both sides. It is deliberately a FRACTION, not an absolute
+    // normalized distance: the same garment feature then scores the same on a
+    // 3-view board as on a lone sketch.
+    //
+    // Scoped to the arc tier on purpose — it is the last-resort, review-flagged
+    // tier (ADR 0022); the seam tiers carry their own validation.
+    const ARC_MIN_CF_CLEARANCE = 1 / 3;
+    if (!cradleCupTop && cradleY != null && bandY != null) {
+      let arcClearanceReject = null;
+      for (const side of [+1, -1]) {
+        const apexPoint = side < 0 ? apexLeft : apexRight;
+        if (!apexPoint) continue;
+        const arcSideColPx = side < 0
+          ? (Number.isFinite(sideLeftX) ? Math.round(sideLeftX * w) : minX + Math.round(bboxW * 0.05))
+          : (Number.isFinite(sideRightX) ? Math.round(sideRightX * w) : maxX - Math.round(bboxW * 0.05));
+        const arc = findCupBottomFromInk(dark, w, h, bounds, axisPx, arcSideColPx, apexPoint.y, cradleY, side);
+        const arcHalfSpanPx = Math.abs(arcSideColPx - axisPx);
+        const arcCfClearance = (arc && arc.bottomX != null && arcHalfSpanPx > 0)
+          ? Math.abs(arc.bottomX * w - axisPx) / arcHalfSpanPx
+          : 0;
+        if (arc && arc.bottomX != null
+            && arc.support >= 0.30
+            && arc.bottomY > apexPoint.y + 0.08
+            && arc.bottomY >= cradleY - 0.05
+            && arc.bottomY < bandY - 0.01
+            && arcCfClearance >= ARC_MIN_CF_CLEARANCE) {
+          cradleCupTop = { x: arc.bottomX, y: arc.bottomY };
+          // Hem-following bottom, same rule as the seam/strong tier (US-061).
+          cradleCupBottom = { x: arc.bottomX, y: hemNormAtColumn(arc.bottomX * w, bandY) };
+          cradleCupSide = side;
+          cradleCupTier = 'arc';
+          cradleCupReject = null;
+          arcClearanceReject = null;
+          break;
+        }
+        if (arc && arc.bottomX != null
+            && arcCfClearance < ARC_MIN_CF_CLEARANCE
+            && !arcClearanceReject) {
+          arcClearanceReject = 'traced cup-bottom arc rejected: bottoms out '
+            + Math.round(arcCfClearance * 100) + '% of the way from CF to the side seam, '
+            + 'inside the ' + Math.round(ARC_MIN_CF_CLEARANCE * 100)
+            + '% cup-base floor (reads as the neckline curve, not a cup bottom)';
+        }
+      }
+      // Keep the seam-tier reason — it says why we reached the fallback at all —
+      // and append why the fallback also declined, so missingReason tells the
+      // whole story instead of only the last stage that ran.
+      if (!cradleCupTop && arcClearanceReject) {
+        cradleCupReject = cradleCupReject
+          ? (cradleCupReject + '; ' + arcClearanceReject)
+          : arcClearanceReject;
       }
     }
 
@@ -11892,7 +22408,7 @@ function getAnnotationsOnImage(image) {
       cradleY,
       apexLeft, apexLeftConf: apexLeftInfo ? apexLeftInfo.confidence : 0,
       apexRight, apexRightConf: apexRightInfo ? apexRightInfo.confidence : 0,
-      cradleCupTop, cradleCupSide, cradleCupConfidence,
+      cradleCupTop, cradleCupSide, cradleCupTier, cradleCupConfidence,
       sideLeftX, sideRightX,
       hasFrontInner: viewClassification.frontInnerIndex >= 0,
     });
@@ -11912,79 +22428,16 @@ function getAnnotationsOnImage(image) {
         .sort((a, b) => (b.view.count || 0) - (a.view.count || 0));
       if (candidates.length) backViewIndex = candidates[0].index;
     }
-    const backInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackCenterLandmarks(dark, w, h, viewBoxesPx[backViewIndex])
-      : null;
-    // Per-view feature pass for the back view. Gives the back view its OWN
-    // axis, chest/band rows, side seams, and ink endpoints so back-view
-    // anchors can snap to ink instead of view-box proportions. The legacy
-    // backInfo above is kept for the panel-top/panel-bottom signal it already
-    // produces — both feed seedAnchorsFromDetection.
-    const backFeatures = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? detectFeaturesInViewBox(dark, w, h, viewBoxesPx[backViewIndex])
-      : null;
-    // Back-panel top/bottom from contour-following at ~22% from the back-view
-    // left edge — replaces the hardcoded inView(b, 0.225, 0.439/1.005)
-    // (off-image) fallbacks for POM 13.
-    const backPanelInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackPanelEdges(dark, w, h, viewBoxesPx[backViewIndex])
-      : null;
-    // POM 13 back-panel height: strap-joining point → bottom band (vertical).
-    // Prefers the back chest row (panel top edge) and the solid band edge.
-    const backPanelHeightInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex] && backFeatures)
-      ? findBackPanelHeight(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures.bandY  != null ? Math.round(backFeatures.bandY  * h) : -1,
-          backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1
-        )
-      : null;
-    // Back-view strap-top: topmost ink in the back's left strap zone, just
-    // above the back chest row. Replaces the hardcoded inView(b, 0.187, 0.405)
-    // seed in the back-view seed block.
-    const backStrapTopInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackStrapTopFromInk(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures && backFeatures.chestY != null
-            ? Math.round(backFeatures.chestY * h)
-            : -1
-        )
-      : null;
-    // Back-view strap INNER edges (POM 15). Inner edge of each shoulder strap
-    // where it meets the back band — replaces the chestLeftX/chestRightX
-    // (panel OUTER corner) seed that placed the anchors on the wrong edge.
-    const backStrapInnerInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackStrapInnerEdges(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures && backFeatures.chestY != null
-            ? Math.round(backFeatures.chestY * h)
-            : -1,
-          backFeatures && backFeatures.axisX != null
-            ? Math.round(backFeatures.axisX * w)
-            : -1
-        )
-      : null;
-    // Back-view side-top: topmost ink at the left-edge column of the back
-    // panel. Fixes POM 11 — previously side-top Y came from bChestY (the
-    // strongest horizontal row in the back view's top 50%), which locks onto
-    // strap hardware rather than the true underarm seam top. Scanning the
-    // full height of the left-edge column finds the actual outline start.
-    const backSideTopInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findSideTopFromInk(
-          dark, w, h, viewBoxesPx[backViewIndex],
-          viewBoxesPx[backViewIndex].minX + 1,  // left-edge column
-          -1,                                    // search full back bbox height
-          -1                                     // left side
-        )
-      : null;
-    const backSideBottomInfo = (backSideTopInfo && backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findSideBottomFromInk(dark, w, h, viewBoxesPx[backViewIndex], backSideTopInfo.point)
-      : null;
-    // Preferred POM-11 source: the outer-silhouette seam (top=armpit, bottom=hem
-    // corner). Falls back to the top-ink + downward-follow pair above.
-    const backSideInfo = (backViewIndex >= 0 && viewBoxesPx[backViewIndex])
-      ? findBackSideSeam(dark, w, h, viewBoxesPx[backViewIndex],
-          backFeatures && backFeatures.bandY != null ? Math.round(backFeatures.bandY * h) : -1)
-      : null;
+    const backBox = (backViewIndex >= 0 && viewBoxesPx[backViewIndex]) ? viewBoxesPx[backViewIndex] : null;
+    // All back-view landmarks (center axis, panel edges/height, strap top/inner,
+    // side seam) come from detectBackLandmarks so the identical pass can re-run
+    // if the TD reassigns the back role in the view-role dialog — needed on a
+    // 3-panel board where "back" vs "front_inner" was ambiguous and the auto
+    // pick was wrong (see maybePromptForViewRoles / redetectBackLandmarks).
+    const {
+      backInfo, backFeatures, backPanelInfo, backPanelHeightInfo,
+      backStrapTopInfo, backStrapInnerInfo, backSideTopInfo, backSideBottomInfo, backSideInfo,
+    } = detectBackLandmarks(dark, w, h, backBox);
 
     _stageMark('backFeatures');
 
@@ -12067,9 +22520,14 @@ function getAnnotationsOnImage(image) {
       cradleCfTopSeamSingleRowRun,
       cradleCfTopMissingReason: cradleCfTopReject,
       cradleCfTopDipProjected,
+      cradleCfTopJunction,
       cradleCupTop,
       cradleCupBottom,
+      // Hem row at the CF column, for POM 6's bottom anchor (US-061). Equals
+      // bandY on a straight hem; rises above it on an arched / scalloped one.
+      cfBottomHemY,
       cradleCupSide,
+      cradleCupTier,
       cradleCupTopInkRatio: Number(cradleCupTopInkRatio.toFixed(4)),
       cradleCupBandInkRatio: Number(cradleCupBandInkRatio.toFixed(4)),
       cradleCupColInkRatio: Number(cradleCupColInkRatio.toFixed(4)),
@@ -12207,6 +22665,7 @@ function getAnnotationsOnImage(image) {
         present: !!cradleCupTop,
         confidence: cradleCupTop ? sigConf(cradleStrength, rowNoiseFloor) : 0,
         side: cradleCupSide || 0,
+        tier: cradleCupTier,
         missingReason: cradleCupReject,
       },
       upperCupCfSeam: {
@@ -12279,9 +22738,11 @@ function getAnnotationsOnImage(image) {
       geometryFacts.seamGeometry = {
         cradleCfTop: cradleCfTop || null,
         cradleCfDipProjected: !!cradleCfTopDipProjected,
+        cradleCfJunction: !!cradleCfTopJunction,
         cradleCupTop: cradleCupTop || null,
         cradleCupBottom: cradleCupBottom || null,
         cradleCupSide: cradleCupSide || 0,
+        cradleCupTier,
         upperCupCfSeamPresent: cfTopY != null,
       };
       geometryFacts.backPanelGeometry = {
@@ -12426,6 +22887,7 @@ function getAnnotationsOnImage(image) {
           cradleCfTopSeamSingleRowRun,
           cradleCfTopMissingReason: cradleCfTopReject,
           cradleCfTopDipProjected,
+          cradleCfTopJunction,
           cradleCfSeamLeftReachPx,
           cradleCfSeamRightReachPx,
           cradleCupTop: cradleCupTop
@@ -12435,6 +22897,7 @@ function getAnnotationsOnImage(image) {
             ? { x: safeNum(cradleCupBottom.x, 4), y: safeNum(cradleCupBottom.y, 4) }
             : null,
           cradleCupSide,
+          cradleCupTier,
           cradleCupTopInkRatio: safeNum(cradleCupTopInkRatio, 4),
           cradleCupBandInkRatio: safeNum(cradleCupBandInkRatio, 4),
           cradleCupColInkRatio: safeNum(cradleCupColInkRatio, 4),
@@ -13004,6 +23467,30 @@ function getAnnotationsOnImage(image) {
     return -1;
   }
 
+  // Lowest inked row in a thin column band — the garment's drawn hem AT ONE x.
+  //
+  // bandY is a single horizontal row, which is right for a straight hem and
+  // wrong for a scalloped or arched one. Measured on Evelyn vA 3.0 (1830x711):
+  // the picot hem sits at 662px out at the sides and rises to 632px at centre
+  // front, a 30px arch, while bandY is a flat 659px — so the CF bottom anchor
+  // ends up 27px BELOW the artwork, floating in white space.
+  //
+  // Used ONLY by the POM 6 / POM 7 bottom anchors (US-061). band-left and
+  // band-right deliberately keep the flat row so POM 1 stays a level span.
+  //
+  // Scans UP from just below the band row and returns the first inked row.
+  // Returns null when the window holds no ink, so the caller keeps bandY and
+  // straight-hem sketches stay byte-identical.
+  function hemRowAtColumn(dark, w, h, colPx, bandRowPx, bboxH) {
+    if (!Number.isFinite(colPx) || !Number.isFinite(bandRowPx) || !(bboxH > 0)) return null;
+    const halfBand = Math.max(1, Math.round(bboxH * 0.006));
+    const fromY = Math.min(h - 1, Math.round(bandRowPx + bboxH * 0.06));
+    const toY = Math.max(0, Math.round(bandRowPx - bboxH * 0.12));
+    if (fromY < toY) return null;
+    const hit = findVerticalInkBound(dark, w, Math.round(colPx), halfBand, fromY, toY, -1);
+    return hit >= 0 ? hit : null;
+  }
+
   // Potrace vector tracer — wraps the singleton Potrace API (potrace.js) into
   // a Promise that takes the ink mask and returns normalized contour paths.
   //
@@ -13384,15 +23871,31 @@ function getAnnotationsOnImage(image) {
     };
   }
 
-  function findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, side) {
+  // rowHintNorm (US-084, optional): when the other side's join is trusted, scan
+  // only a band around that row and score by PROXIMITY to it instead of by the
+  // topmost-run preference. The top preference is what takes the bait on a high
+  // stray feature, so a hinted retry must not reuse it — otherwise the retry
+  // simply re-picks the same wrong run inside a smaller window.
+  function findCupStrapJoinFromInk(dark, w, h, bounds, axisPx, chestRow, side, rowHintNorm) {
     const bboxW = bounds.maxX - bounds.minX + 1;
     const bboxH = bounds.maxY - bounds.minY + 1;
     const guard = Math.max(4, Math.round(bboxW * 0.075));
-    const y1 = bounds.minY + Math.round(bboxH * 0.08);
-    const y2 = Math.min(
+    let y1 = bounds.minY + Math.round(bboxH * 0.08);
+    let y2 = Math.min(
       bounds.maxY,
       chestRow > 0 ? chestRow + Math.round(bboxH * 0.05) : bounds.minY + Math.round(bboxH * 0.48)
     );
+    // Band half-height for a hinted retry. Wide enough to absorb a real
+    // left/right height difference (TD pairs slant at most 0.0548) plus the
+    // run-centre quantisation, narrow enough to exclude the stray that caused
+    // the disagreement.
+    const hinted = Number.isFinite(rowHintNorm);
+    if (hinted) {
+      const hintPx = rowHintNorm * h;
+      const band = Math.max(3, Math.round(bboxH * 0.06));
+      y1 = Math.max(y1, Math.round(hintPx - band));
+      y2 = Math.min(y2, Math.round(hintPx + band));
+    }
     const x1 = side < 0
       ? bounds.minX + Math.round(bboxW * 0.05)
       : axisPx + guard;
@@ -13458,8 +23961,19 @@ function getAnnotationsOnImage(image) {
         // still requires real cup body below the pick, so this cannot snap onto
         // a thin strap-ribbon tick above the true cup seam.
         const topPref = 0.5 + 0.5 * highCupBias * highCupBias;
-        const score = support * topPref * (0.75 + edgeBias * 0.25);
-        if (!best || score > best.score || (Math.abs(score - best.score) < 1e-6 && y < best.y)) {
+        // A hinted retry scores by nearness to the trusted row instead of by
+        // height in the window — see the rowHintNorm note on this function.
+        const rowPref = hinted
+          ? 1 - Math.min(1, Math.abs(y - rowHintNorm * h) / Math.max(1, y2 - y1))
+          : topPref;
+        const score = support * rowPref * (0.75 + edgeBias * 0.25);
+        // Tie-break: normally the higher run wins (cup top, not a lower seam);
+        // on a hinted retry the run nearer the trusted row wins instead.
+        const tieBreakWins = best && Math.abs(score - best.score) < 1e-6
+          && (hinted
+            ? Math.abs(y - rowHintNorm * h) < Math.abs(best.y - rowHintNorm * h)
+            : y < best.y);
+        if (!best || score > best.score || tieBreakWins) {
           best = {
             x: cx,
             // Inner edge of the strap ribbon at the join row — the edge nearer
@@ -13494,6 +24008,68 @@ function getAnnotationsOnImage(image) {
         count: best.support,
         verticalSpan: best.verticalSpan,
         score: Math.round(best.score * 100) / 100,
+      },
+    };
+  }
+
+  // US-084: cross-check the two cup/strap joins against each other.
+  //
+  // findCupStrapJoinFromInk runs once per side with no knowledge of the other,
+  // and it deliberately prefers the TOPMOST qualifying run so the pick lands on
+  // the strap join rather than a lower cup-body seam. When one side carries an
+  // extra high feature that clears the support gates (a strap ribbon tick, a
+  // trim line, a neckline binding crossing the search window), that preference
+  // takes the bait on that side only. The result is a pair straddling two
+  // different rows, which no per-side check can see: on demo7.png the left join
+  // is exactly on the TD-labelled row while the right sits 0.134 above it.
+  //
+  // The two joins are near-symmetric features on a flat sketch. TD-labelled
+  // pairs slant (dy/dx) by at most 0.0548, so a pair beyond APEX_SLANT_LIMIT is
+  // a detection disagreement, not a garment property. Re-run the losing side
+  // with the trusted side's row as a hint and keep the result only if it
+  // genuinely reconciles the pair — otherwise leave both candidates untouched
+  // and let validateCupApexPair / the POM 16 slant gate handle it, so a sketch
+  // this cannot repair degrades exactly as before rather than getting a
+  // fabricated anchor.
+  const APEX_SLANT_LIMIT = 0.06;
+
+  function apexPairSlant(left, right) {
+    if (!left || !right) return null;
+    const dx = Math.abs(right.point.x - left.point.x);
+    if (!(dx > 0)) return Infinity;
+    return Math.abs(left.point.y - right.point.y) / dx;
+  }
+
+  function repairApexPairRow(left, right, dark, w, h, bounds, axisPx, chestRow) {
+    const slant = apexPairSlant(left, right);
+    if (slant == null || slant <= APEX_SLANT_LIMIT) return { left, right, repaired: null };
+
+    // Trust the more confident side; on a tie prefer the LOWER row, since the
+    // failure mode this repairs is a pick that jumped UP off the cup.
+    const leftWins = left.confidence > right.confidence + 1e-9
+      || (Math.abs(left.confidence - right.confidence) <= 1e-9 && left.point.y >= right.point.y);
+    const keep = leftWins ? left : right;
+    const side = leftWins ? +1 : -1;   // re-search the OTHER side
+    const retry = findCupStrapJoinFromInk(
+      dark, w, h, bounds, axisPx, chestRow, side, keep.point.y);
+    if (!retry) return { left, right, repaired: null };
+
+    const next = leftWins ? { left, right: retry } : { left: retry, right };
+    const nextSlant = apexPairSlant(next.left, next.right);
+    // Only accept a retry that actually reconciles the pair.
+    if (nextSlant == null || nextSlant > APEX_SLANT_LIMIT || nextSlant >= slant) {
+      return { left, right, repaired: null };
+    }
+    return {
+      left: next.left,
+      right: next.right,
+      repaired: {
+        side: leftWins ? 'right' : 'left',
+        fromY: (leftWins ? right : left).point.y,
+        toY: retry.point.y,
+        hintY: keep.point.y,
+        slantBefore: slant,
+        slantAfter: nextSlant,
       },
     };
   }
@@ -14039,13 +24615,19 @@ function getAnnotationsOnImage(image) {
           if (run >= 2) { low = y; break; }
         }
       }
-      if (low >= 0) { bottoms.push(low); hit += 1; }
+      if (low >= 0) { bottoms.push({ x, low }); hit += 1; }
     }
     if (hit < Math.max(3, Math.round(cols * 0.30))) return null; // not a coherent arc
-    bottoms.sort((a, b) => a - b);
+    const lows = bottoms.slice();  // (x, low) pairs preserved below
+    bottoms.sort((a, b) => a.low - b.low);
     // 80th percentile of per-column lowest points — robust to a few short cols.
     const idx = Math.min(bottoms.length - 1, Math.round(bottoms.length * 0.80));
-    return { bottomY: bottoms[idx] / h, support: hit / cols };
+    const chosenY = bottoms[idx].low;
+    // Arc-bottom column: median x of the columns within 2px of the deepest
+    // point — the flat center of the wire dip (used by the POM 7 arc tier).
+    const deep = lows.filter((b) => b.low >= chosenY - 2).map((b) => b.x).sort((a, b) => a - b);
+    const bottomX = deep.length ? deep[Math.floor(deep.length / 2)] / w : null;
+    return { bottomY: chosenY / h, bottomX, support: hit / cols };
   }
 
   // POM 9 / POM 10 share one cup model so they describe the same physical cup.
@@ -14070,7 +24652,7 @@ function getAnnotationsOnImage(image) {
     const {
       bounds, w, h, dark, axisPx, cradleY,
       apexLeft, apexLeftConf, apexRight, apexRightConf,
-      cradleCupTop, cradleCupSide, cradleCupConfidence,
+      cradleCupTop, cradleCupSide, cradleCupTier, cradleCupConfidence,
       sideLeftX, sideRightX,
       hasFrontInner,
     } = ctx;
@@ -14078,6 +24660,11 @@ function getAnnotationsOnImage(image) {
     const bboxW = maxX - minX + 1;
 
     // -------- 1. Pick cup side from positive structure evidence -------------
+    // Only trusted seam tiers may influence the cup side. 'guide'/'arc' tier
+    // commits (ADR 0021/0022) are review-grade POM 7 evidence and must leave
+    // the cupModel — including its side selection — byte-identical.
+    const trustedSeamTier = cradleCupTier === 'strong' || cradleCupTier === 'seam';
+    const seamSide = trustedSeamTier ? cradleCupSide : 0;
     let side = 0;
     let sideReason = '';
     const lConf = apexLeftConf || 0;
@@ -14086,14 +24673,14 @@ function getAnnotationsOnImage(image) {
       // Symmetric apex evidence — pick the side whose cup-bottom seam was
       // accepted by the POM 7 detector. Fall back to left when neither side
       // dominates.
-      if (cradleCupSide === +1) { side = +1; sideReason = 'symmetric apex pair; cup-bottom seam confirms right cup'; }
-      else if (cradleCupSide === -1) { side = -1; sideReason = 'symmetric apex pair; cup-bottom seam confirms left cup'; }
+      if (seamSide === +1) { side = +1; sideReason = 'symmetric apex pair; cup-bottom seam confirms right cup'; }
+      else if (seamSide === -1) { side = -1; sideReason = 'symmetric apex pair; cup-bottom seam confirms left cup'; }
       else { side = -1; sideReason = 'symmetric apex pair without cup-bottom seam evidence; default left cup'; }
     } else if (lConf > 0 || rConf > 0) {
       side = lConf >= rConf ? -1 : +1;
       sideReason = `stronger ${side < 0 ? 'left' : 'right'} apex confidence (${lConf.toFixed(2)} vs ${rConf.toFixed(2)})`;
-    } else if (cradleCupSide === -1 || cradleCupSide === +1) {
-      side = cradleCupSide;
+    } else if (seamSide === -1 || seamSide === +1) {
+      side = seamSide;
       sideReason = `no apex; cup side taken from POM 7 cup-bottom seam (side=${side})`;
     } else {
       side = -1;
@@ -14133,7 +24720,12 @@ function getAnnotationsOnImage(image) {
     let bottomFromInk = false;      // cup-bottom confirmed by a traced ink arc
     let bottomInkSupport = 0;
     let seamRawX = null;        // raw seam column (debug only)
-    if (cradleCupTop && cradleCupSide === side) {
+    if (cradleCupTop && cradleCupSide === side && trustedSeamTier) {
+      // Only strong/pattern-3 seams may relocate the cup bottom. Guide-tier
+      // (sparse dashed, ADR 0021) and arc-tier (traced underwire, ADR 0022)
+      // commits are weak evidence drawn for TD review — letting them in here
+      // is exactly what shifted inner-cup geometry and broke invariant B3 in
+      // the reverted 2026-07-09 prototype.
       seamY = cradleCupTop.y;
       seamRawX = cradleCupTop.x;
       bottomFromSeam = true;
@@ -14768,13 +25360,132 @@ function getAnnotationsOnImage(image) {
   // looking for a low-density vertical alley in its middle and, if found,
   // split it into [leftSub, rightSub]. Returns [view] unchanged when no
   // confident alley is detected.
-  function splitMergedViewByVerticalValley(dark, w, h, view) {
+  // Compute every back-view landmark from a back view box (pixel-space
+  // {minX,minY,maxX,maxY}) against the ink mask. Extracted verbatim from
+  // detectLandmarks so the SAME pass can re-run when the TD reassigns the back
+  // role in the view-role dialog (redetectBackLandmarks). Returns null-valued
+  // fields when backBox is null.
+  function detectBackLandmarks(dark, w, h, backBox) {
+    if (!backBox) {
+      return {
+        backInfo: null, backFeatures: null, backPanelInfo: null, backPanelHeightInfo: null,
+        backStrapTopInfo: null, backStrapInnerInfo: null, backSideTopInfo: null,
+        backSideBottomInfo: null, backSideInfo: null,
+      };
+    }
+    const backInfo = findBackCenterLandmarks(dark, w, h, backBox);
+    // Per-view feature pass: the back view's OWN axis, chest/band rows, side
+    // seams, and ink endpoints so back anchors snap to ink, not box ratios.
+    const backFeatures = detectFeaturesInViewBox(dark, w, h, backBox);
+    // Back-panel top/bottom (POM 13) from contour-following near the left edge.
+    const backPanelInfo = findBackPanelEdges(dark, w, h, backBox);
+    // POM 13 back-panel height: strap-joining point → bottom band (vertical).
+    const backPanelHeightInfo = backFeatures
+      ? findBackPanelHeight(
+          dark, w, h, backBox,
+          backFeatures.bandY  != null ? Math.round(backFeatures.bandY  * h) : -1,
+          backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1
+        )
+      : null;
+    // Back-view strap-top: topmost ink in the back's left strap zone (POM 14 back).
+    const backStrapTopInfo = findBackStrapTopFromInk(
+      dark, w, h, backBox,
+      backFeatures && backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1
+    );
+    // Back-view strap INNER edges (POM 15) where each strap meets the back band.
+    const backStrapInnerInfo = findBackStrapInnerEdges(
+      dark, w, h, backBox,
+      backFeatures && backFeatures.chestY != null ? Math.round(backFeatures.chestY * h) : -1,
+      backFeatures && backFeatures.axisX  != null ? Math.round(backFeatures.axisX  * w) : -1
+    );
+    // Back-view side-top (POM 11): topmost ink at the left-edge column.
+    const backSideTopInfo = findSideTopFromInk(dark, w, h, backBox, backBox.minX + 1, -1, -1);
+    const backSideBottomInfo = backSideTopInfo
+      ? findSideBottomFromInk(dark, w, h, backBox, backSideTopInfo.point)
+      : null;
+    // Preferred POM-11 source: the outer-silhouette seam (top=armpit, bottom=hem).
+    const backSideInfo = findBackSideSeam(
+      dark, w, h, backBox,
+      backFeatures && backFeatures.bandY != null ? Math.round(backFeatures.bandY * h) : -1
+    );
+    return {
+      backInfo, backFeatures, backPanelInfo, backPanelHeightInfo,
+      backStrapTopInfo, backStrapInnerInfo, backSideTopInfo, backSideBottomInfo, backSideInfo,
+    };
+  }
+
+  // Re-run back-view landmark detection against the CURRENT detection.backViewIndex
+  // and overwrite the back-* fields, so a TD role correction (back moved to a
+  // different panel) re-places the back POMs (11/12/13/15) on the new panel. Uses
+  // the retained ink mask (detection.inkMask, dimensions inkMaskW/H). No-op when
+  // the mask or a back box is unavailable. Mirrors the field mapping in
+  // detectLandmarks' detection assembly.
+  function redetectBackLandmarks(detection) {
+    if (!detection || !detection.inkMask || !detection.inkMaskW || !detection.inkMaskH) return;
+    const views = detection.views || detection.viewBoxes || [];
+    const idx = detection.backViewIndex;
+    const vb = (Number.isFinite(idx) && idx >= 0) ? views[idx] : null;
+    if (!vb || !(vb.width > 0) || !(vb.height > 0)) return;
+    const mw = detection.inkMaskW;
+    const mh = detection.inkMaskH;
+    const backBox = {
+      minX: Math.max(0, Math.round(vb.x * mw)),
+      minY: Math.max(0, Math.round(vb.y * mh)),
+      maxX: Math.min(mw - 1, Math.round((vb.x + vb.width) * mw)),
+      maxY: Math.min(mh - 1, Math.round((vb.y + vb.height) * mh)),
+      count: 0,
+    };
+    const bl = detectBackLandmarks(detection.inkMask, mw, mh, backBox);
+    detection.back = bl.backInfo;
+    detection.backFeatures = bl.backFeatures;
+    detection.backPanel = bl.backPanelInfo;
+    detection.backPanelHeight = bl.backPanelHeightInfo;
+    detection.backStrapInner = bl.backStrapInnerInfo;
+    detection.backStrapTop = bl.backStrapTopInfo ? bl.backStrapTopInfo.point : null;
+    detection.backSideTop = bl.backSideTopInfo ? bl.backSideTopInfo.point : null;
+    detection.backSideBottom = bl.backSideBottomInfo ? bl.backSideBottomInfo.point : null;
+    detection.backSide = bl.backSideInfo;
+  }
+
+  // Split every view box wide enough to plausibly hold more than one panel at
+  // its internal vertical alley, recursing so a board whose panels merged in
+  // component-grouping separates into one box per panel. This generalizes the
+  // former lone-box-only special case: a box is split-eligible when it spans
+  // more than half the canvas (>0.50w). A single garment panel on a multi-panel
+  // board is never that wide — there would be no room for the others — so a box
+  // over that gate is a merge of >=2 panels (e.g. EvelynBliss's back+inner
+  // grouped into one 0.565w box). Correct 2-panel boards keep two sub-half
+  // boxes and are untouched, which is why golden is unaffected. The per-box
+  // sanity gates inside splitMergedViewByVerticalValley (empty-alley run length
+  // + >=20% ink share each side) additionally reject splitting a genuine single
+  // view (deep-V neckline, wide back panel).
+  function splitWideViewBoxes(boxes, dark, w, h) {
+    if (!boxes || boxes.length === 0) return boxes;
+    const out = [];
+    for (const box of boxes) {
+      const parts = splitMergedViewByVerticalValley(dark, w, h, box, 0.50);
+      if (parts.length > 1) {
+        // Recurse at the SAME 0.50 gate so a box holding 3+ merged panels keeps
+        // splitting while any resulting piece still spans more than half the
+        // canvas. The gate stays at 0.50 (never lower) because a lone wide
+        // single panel — demo1/demo2 group into one >0.50w box that the split
+        // separates into front+back — must not have its halves re-split; a
+        // lower gate over-splits those legitimate single panels (golden regress).
+        out.push(...splitWideViewBoxes(parts, dark, w, h));
+      } else {
+        out.push(box);
+      }
+    }
+    return out;
+  }
+
+  function splitMergedViewByVerticalValley(dark, w, h, view, minWidthRatio = 0.50) {
     const { minX, minY, maxX, maxY } = view;
     const bw = maxX - minX + 1;
     const bh = maxY - minY + 1;
     // Require a fairly wide bbox before we even try to split — narrow boxes
     // are almost certainly a single view that just happens to be off-center.
-    if (bw < w * 0.50 || bh < 16) return [view];
+    if (bw < w * minWidthRatio || bh < 16) return [view];
 
     // Column density restricted to the view's bbox.
     const colDark = new Uint32Array(bw);
@@ -14900,22 +25611,47 @@ function getAnnotationsOnImage(image) {
     };
 
     const used = new Set();
-    let backIndex = assignBest('back', 'backScore', used);
-    if (backIndex >= 0) used.add(backIndex);
-
+    let backIndex = -1;
     let frontInnerIndex = -1;
-    if (eligible.length >= 3) {
-      frontInnerIndex = assignBest('front_inner', 'frontInnerScore', used);
-      if (frontInnerIndex >= 0) used.add(frontInnerIndex);
-    }
+    let frontOuterIndex = -1;
 
-    let frontOuterIndex = assignBest('front_outer', 'frontOuterScore', used);
-    if (frontOuterIndex < 0) {
-      const fallback = eligible
-        .filter(item => !used.has(item.index))
-        .sort((a, b) => a.score.centroidX - b.score.centroidX)[0] || eligible[0];
-      frontOuterIndex = fallback.index;
-      roles[frontOuterIndex] = 'front_outer';
+    if (eligible.length >= 3) {
+      // Panel order on a technical board is a fixed TD convention, left to
+      // right: front_outer, back, front_inner. Position is a far more reliable
+      // signal than the visual scores — a symmetric racerback back and a
+      // molded-cup inner cutaway score too alike to tell apart — so assign the
+      // three roles by centroidX order. Take the three highest-ink eligible
+      // views first so a stray 4th blob can't shift the mapping; any extra
+      // panel stays 'unknown' and trips reviewRequired below.
+      const trio = eligible
+        .slice()
+        .sort((a, b) => (b.view.count || 0) - (a.view.count || 0))
+        .slice(0, 3)
+        .sort((a, b) => a.score.centroidX - b.score.centroidX);
+      frontOuterIndex = trio[0].index; roles[frontOuterIndex] = 'front_outer';
+      backIndex       = trio[1].index; roles[backIndex] = 'back';
+      frontInnerIndex = trio[2].index; roles[frontInnerIndex] = 'front_inner';
+      used.add(frontOuterIndex); used.add(backIndex); used.add(frontInnerIndex);
+      // Position is authoritative for the 3-view layout, so assign a confident
+      // role score — the review dialog is NOT forced on a clean 3-panel board
+      // (the TD can still nudge anchors if a board ever breaks the convention).
+      for (const idx of [frontOuterIndex, backIndex, frontInnerIndex]) {
+        if (scores[idx]) scores[idx].roleConfidence = 0.75;
+      }
+    } else {
+      // Two panels (the common front + back board): back by best backScore, the
+      // remaining view is front_outer. Unchanged from the long-standing path.
+      backIndex = assignBest('back', 'backScore', used);
+      if (backIndex >= 0) used.add(backIndex);
+
+      frontOuterIndex = assignBest('front_outer', 'frontOuterScore', used);
+      if (frontOuterIndex < 0) {
+        const fallback = eligible
+          .filter(item => !used.has(item.index))
+          .sort((a, b) => a.score.centroidX - b.score.centroidX)[0] || eligible[0];
+        frontOuterIndex = fallback.index;
+        roles[frontOuterIndex] = 'front_outer';
+      }
     }
 
     const roleConfidence = (index, metric) => {
@@ -14927,9 +25663,13 @@ function getAnnotationsOnImage(image) {
       const runnerUp = values.length ? values[0] : 0;
       return clamp01(0.45 + (scores[index][metric] - runnerUp) * 0.55);
     };
-    if (frontOuterIndex >= 0) scores[frontOuterIndex].roleConfidence = roleConfidence(frontOuterIndex, 'frontOuterScore');
-    if (backIndex >= 0) scores[backIndex].roleConfidence = roleConfidence(backIndex, 'backScore');
-    if (frontInnerIndex >= 0) scores[frontInnerIndex].roleConfidence = roleConfidence(frontInnerIndex, 'frontInnerScore');
+    // The ≤2-panel path derives confidence from the visual score margin. The
+    // 3-view path already set a fixed positional confidence above (position is
+    // authoritative there), so it is not recomputed from scores here.
+    if (eligible.length < 3) {
+      if (frontOuterIndex >= 0) scores[frontOuterIndex].roleConfidence = roleConfidence(frontOuterIndex, 'frontOuterScore');
+      if (backIndex >= 0) scores[backIndex].roleConfidence = roleConfidence(backIndex, 'backScore');
+    }
 
     const reviewRequired =
       eligible.length > 3 ||
@@ -14950,7 +25690,6 @@ function getAnnotationsOnImage(image) {
     const bh = (view.maxY - view.minY + 1);
     const cx = (view.minX + view.maxX) / 2;
     const ink = view.count || 1;
-    let innerInk = 0;
     let edgeInk = 0;
     let centerVerticalInk = 0;
     if (dark && w && h && bw > 0 && bh > 0) {
@@ -14964,15 +25703,13 @@ function getAnnotationsOnImage(image) {
           if (!dark[base + x]) continue;
           const inInner = x >= view.minX + insetX && x <= view.maxX - insetX
             && y >= view.minY + insetY && y <= view.maxY - insetY;
-          if (inInner) innerInk += 1;
-          else edgeInk += 1;
+          if (!inInner) edgeInk += 1;
           if (x >= centerLo && x <= centerHi) centerVerticalInk += 1;
         }
       }
     }
     const widthRatio = w > 0 ? bw / w : 0;
     const aspect = bh / Math.max(1, bw);
-    const innerRatio = innerInk / ink;
     const edgeRatio = edgeInk / ink;
     const centerVerticalRatio = centerVerticalInk / ink;
     const leftness = 1 - clamp01(cx / Math.max(1, w));
@@ -14998,23 +25735,15 @@ function getAnnotationsOnImage(image) {
       edgeRatio * 0.20 +
       clamp01(aspect / 1.45) * 0.16 +
       (1 - symmetry) * 0.10;
-    const frontInnerScore =
-      innerRatio * 0.38 +
-      symmetry * 0.18 +
-      (1 - edgeRatio) * 0.18 +
-      (1 - rightness * 0.45) * 0.10 +
-      (1 - clamp01(Math.abs(aspect - 1.0))) * 0.16;
     return {
       centroidX: w > 0 ? cx / w : 0,
       widthRatio,
       count: view.count || 0,
-      innerRatio,
       edgeRatio,
       centerVerticalRatio,
       symmetry,
       frontOuterScore,
       backScore,
-      frontInnerScore,
       roleConfidence: 0,
     };
   }
@@ -15126,7 +25855,7 @@ function getAnnotationsOnImage(image) {
   //
   // Anchors live between detection and POM generation. Detect Sketch seeds
   // them with rough positions; the TD drags any wrong ones; the POM
-  // generator then reads anchor positions to lay down 16 draft lines.
+  // generator then reads anchor positions to lay down 18 draft lines.
   // Anchors x/y are normalized [0, 1] in the source image's pixel space, so
   // they travel with the image (pan / zoom / resize / save).
 
@@ -15158,6 +25887,9 @@ function getAnnotationsOnImage(image) {
       x: clamp01(view.x + view.width * rx),
       y: clamp01(view.y + view.height * ry),
     });
+    // x-only view-box fallback, for a landmark whose y must come from a SHARED
+    // row rather than from this side's own ratio (see the band/chest seeds).
+    const inViewX = (view, rx) => clamp01(view.x + view.width * rx);
     const roleByKind = Object.create(null);
     for (const schema of ANCHOR_SCHEMA) {
       roleByKind[schema.kind] = defaultViewRoleForAnchorKind(schema.kind);
@@ -15170,6 +25902,12 @@ function getAnnotationsOnImage(image) {
     const halfW = bb.width / 2;
     const ax    = detection.axisX;
     const band  = detection.bandY;
+    // POM 6's bottom (shared with POM 5) sits on the hem at the CF column when
+    // detection resolved one, else on the flat band row (US-061). Older saved
+    // detections have no cfBottomHemY, so they keep the flat row.
+    const cfBottomY = Number.isFinite(detection.cfBottomHemY)
+      ? detection.cfBottomHemY
+      : band;
     // Chest fallback: 30% down from bbox top if detection didn't surface one.
     const chest = detection.chestY != null
       ? detection.chestY
@@ -15187,18 +25925,6 @@ function getAnnotationsOnImage(image) {
     const sideR = detection.sideRightX != null ? detection.sideRightX : clamp01(right - bb.width * 0.02);
 
     const det = detection.confidence || {};
-
-    // Landmark QA layer (Engineering Workflow Phase 6): the per-landmark
-    // verdicts — source class, confidence tier, reviewRequired, QA notes —
-    // that this seed layer consumes below instead of recomputing its own
-    // tables. Computed HERE (not reused from detection time) because the
-    // detection object can be mutated between seedings (e.g. the front_inner
-    // branch backfills detection.innerCupTop), and it must run BEFORE that
-    // mutation so its evidence reads match this seeding pass. Re-attached so
-    // debug consumers always see the verdicts the current anchors came from.
-    const landmarkQa = buildLandmarkQaFromDetection(detection);
-    if (landmarkQa) detection.landmarkQa = landmarkQa;
-    const qaByKind = (landmarkQa && landmarkQa.byKind) || {};
 
     // Inner cup sits on the side with the stronger local cup signal. Default
     // to the left cup because the bundled reference sketch shows it clearly.
@@ -15219,59 +25945,214 @@ function getAnnotationsOnImage(image) {
     // gracefully — POM 6 stays REVIEW_ONLY when cradleCupTop is also missing.
     // No rule-JSON change: cf-bottom still derives onto the band line via the
     // existing anchor-schema drop_to_line rule.
-    const cradleCfFromCupSeam = !detection.cradleCfTop && !!detection.cradleCupTop;
+    // Gate the projection to trusted seam tiers ('strong'/'seam'): a
+    // guide/arc-tier POM 7 commit (ADR 0021/0022) follows a curved wire whose
+    // bottom-cup y says nothing about the CF gore boundary — projecting it
+    // would seed a confidently-wrong POM 6/8 top (e.g. demo5's plunge gore).
+    const cradleCfFromCupSeam = !detection.cradleCfTop
+      && !!detection.cradleCupTop
+      && (detection.cradleCupTier === 'strong' || detection.cradleCupTier === 'seam');
 
     // Gore bottom (POM 6/8 cradle-cf-top refinement). detection.cradleCfTop pins
-    // to the global cradle ROW (the strongest horizontal band), which sits a
-    // touch BELOW the true cup↔cradle seam at CF. detection.contours (traced by
-    // seed time) outlines that seam as a short horizontal contour crossing the
-    // CF axis; snap cradle-cf-top's y UP to it so POM 8 (cup-at-CF) ends and
-    // POM 6 (cradle-at-CF) starts at the real gore bottom. Returns y or null.
+    // to the global cradle ROW (the strongest horizontal band), which can sit
+    // BELOW the true cup↔cradle seam at CF. Two contour shapes are valid:
+    //   1. a symmetric CREST at CF whose same traced edge descends on both
+    //      sides (the center-front top edge in the TD-corrected demo/1.jpg),
+    //   2. a short horizontal seam crossing the axis (legacy fallback).
+    // Prefer the crest when it is present. This prevents a lower horizontal
+    // lace/seam row from winning merely because it is denser. Returns y/null.
+    // Returns { refinedY, crestY, crestBelowCfY }: refinedY = the US-012
+    // refinement result (guarded crest, else legacy horizontal seam, else
+    // null) used to snap an EXISTING direct detection up to the seam; crestY
+    // = the raw topmost symmetric crest regardless of the raised-panel
+    // guards; crestBelowCfY = the topmost crest sitting BELOW cf-top (POM 8
+    // ordering) — on a plunge gore the neckline-V samples just above cf-top
+    // and the gore-top samples just below it belong to the same contour, so
+    // the standalone crest tier (US-015 / ADR 0023) must select with the
+    // cf-top floor applied, not filter afterwards.
     const goreBottomYFromContours = () => {
+      const none = { refinedY: null, crestY: null, crestBelowCfY: null };
       const C = detection.contours;
-      if (!C || !Array.isArray(C.paths) || detection.axisX == null) return null;
+      if (!C || !Array.isArray(C.paths) || detection.axisX == null) return none;
       const axisX = detection.axisX;
-      const ubY = detection.underbustY != null ? detection.underbustY
-        : (detection.chestY != null ? detection.chestY : 0);
-      const bY = detection.bandY != null ? detection.bandY : 1;
-      if (!(bY > ubY)) return null;
-      const lo = ubY + (bY - ubY) * 0.15;   // clearly below the underbust seam
-      const hi = bY - (bY - ubY) * 0.05;    // clearly above the band
-      let best = null;
+      const detectedY = detection.cradleCfTop && detection.cradleCfTop.y != null
+        ? detection.cradleCfTop.y
+        : (detection.cradleY != null ? detection.cradleY : null);
+      if (detectedY == null) return none;
+      const viewH = frontView && frontView.height > 0
+        ? frontView.height
+        : (detection.bbox && detection.bbox.height ? detection.bbox.height : 1);
+
+      // Search only the structural band immediately above the detected cradle
+      // row. A neckline/gore detail much higher in the cup is not a POM 6
+      // candidate. The desired crest is an upside-down U: points on BOTH arms
+      // of the SAME contour sit lower than its near-axis point.
+      const crestLo = Math.max(0, detectedY - Math.max(0.10, viewH * 0.28));
+      const crestHi = detectedY - Math.max(0.008, viewH * 0.015);
+      const axisTol = Math.max(0.012, (frontView && frontView.width ? frontView.width : 1) * 0.05);
+      const minArmDx = Math.max(0.018, (frontView && frontView.width ? frontView.width : 1) * 0.055);
+      const maxArmDx = Math.max(minArmDx * 2, (frontView && frontView.width ? frontView.width : 1) * 0.30);
+      const minDrop = Math.max(0.006, viewH * 0.012);
+      const symmetryTol = Math.max(0.020, viewH * 0.055);
+      let bestCrest = null;
+      let bestCrestBelow = null;
+      const cfFloorY = detection.cfTopY != null ? detection.cfTopY + 0.004 : null;
       for (const p of C.paths) {
-        const b = p && p.bbox; if (!b) continue;
-        const minX = b.x, maxX = b.x + b.width, midY = b.y + b.height / 2;
-        if (!(minX < axisX - 0.01 && maxX > axisX + 0.01)) continue; // straddles CF
-        if (b.height > 0.12 || b.width < 0.03) continue;             // horizontal seam
-        if (midY < lo || midY > hi) continue;                        // cradle region
-        if (!best || midY < best) best = midY;                       // topmost = gore bottom
+        const b = p && p.bbox;
+        if (!b || b.width < minArmDx * 2) continue;
+        if (!(b.x < axisX - minArmDx && b.x + b.width > axisX + minArmDx)) continue;
+        const samples = samplePathPoints(p);
+        if (!Array.isArray(samples) || samples.length < 5) continue;
+        for (const center of samples) {
+          // The symmetry axis is a fitted prior and can sit a few pixels off
+          // the drawn CF crest. Use the nearest contour sample in a tight CF
+          // zone instead of forcing an interpolated crossing onto a displaced
+          // axis (which selects the lower bound edge on demo/1.jpg).
+          if (Math.abs(center.x - axisX) > axisTol) continue;
+          if (center.y < crestLo || center.y > crestHi) continue;
+          let left = null, right = null;
+          for (const q of samples) {
+            const dx = q.x - axisX;
+            if (dx <= -minArmDx && dx >= -maxArmDx && q.y >= center.y + minDrop) {
+              if (!left || q.y < left.y || (q.y === left.y && Math.abs(dx + minArmDx) < left.dist)) {
+                left = { y: q.y, dist: Math.abs(dx + minArmDx) };
+              }
+            }
+            if (dx >= minArmDx && dx <= maxArmDx && q.y >= center.y + minDrop) {
+              if (!right || q.y < right.y || (q.y === right.y && Math.abs(dx - minArmDx) < right.dist)) {
+                right = { y: q.y, dist: Math.abs(dx - minArmDx) };
+              }
+            }
+          }
+          if (!left || !right) continue;
+          const leftDrop = left.y - center.y;
+          const rightDrop = right.y - center.y;
+          if (leftDrop < minDrop || rightDrop < minDrop) continue;
+          if (Math.abs(leftDrop - rightDrop) > symmetryTol) continue;
+          const score = Math.min(leftDrop, rightDrop) - Math.abs(leftDrop - rightDrop) * 0.5;
+          // Paired seam/stitch lines can produce two valid crests. The TD
+          // landmark is the UPPER black edge, so vertical order wins once the
+          // symmetric-crest guards have passed; score only breaks same-row ties.
+          if (!bestCrest || center.y < bestCrest.y - 0.002
+            || (Math.abs(center.y - bestCrest.y) <= 0.002 && score > bestCrest.score)) {
+            bestCrest = { y: center.y, score };
+          }
+          // Same selection, restricted below the cf-top floor (POM 8 keeps a
+          // positive length) — used by the standalone crest tier.
+          if (cfFloorY != null && center.y >= cfFloorY) {
+            if (!bestCrestBelow || center.y < bestCrestBelow.y - 0.002
+              || (Math.abs(center.y - bestCrestBelow.y) <= 0.002 && score > bestCrestBelow.score)) {
+              bestCrestBelow = { y: center.y, score };
+            }
+          }
+        }
       }
-      return best != null ? clamp01(best) : null;
+      const crestRawY = bestCrest ? clamp01(bestCrest.y) : null;
+      const crestBelowCfY = bestCrestBelow ? clamp01(bestCrestBelow.y) : null;
+      let refined = null;
+      if (bestCrest) {
+        // This override is specific to a RAISED cradle panel, not every
+        // symmetric curve in a cup/gore. The crest must coincide with the
+        // independently detected underbust boundary, be materially above the
+        // lower cradle-row prior, and still sit below CF top (POM 8 ordering).
+        // Without all three signals, preserve the existing direct/placket/
+        // projected behavior rather than promoting a neckline or gore curve.
+        const ubY = detection.underbustY;
+        const cfY = detection.cfTopY;
+        const alignsUnderbust = ubY != null
+          && Math.abs(bestCrest.y - ubY) <= Math.max(0.018, viewH * 0.04);
+        const meaningfullyRaised = ubY != null
+          && detectedY - ubY >= Math.max(0.08, viewH * 0.16);
+        const belowCfTop = cfY == null
+          || bestCrest.y - cfY >= Math.max(0.025, viewH * 0.06);
+        if (alignsUnderbust && meaningfullyRaised && belowCfTop) refined = clamp01(bestCrest.y);
+      }
+
+      // Legacy horizontal-seam fallback for styles without a visible crest.
+      if (refined == null) {
+        const ubY = detection.underbustY != null ? detection.underbustY
+          : (detection.chestY != null ? detection.chestY : 0);
+        const bY = detection.bandY != null ? detection.bandY : 1;
+        if (bY > ubY) {
+          const lo = ubY + (bY - ubY) * 0.15;   // clearly below the underbust seam
+          const hi = bY - (bY - ubY) * 0.05;    // clearly above the band
+          let best = null;
+          for (const p of C.paths) {
+            const b = p && p.bbox; if (!b) continue;
+            const minX = b.x, maxX = b.x + b.width, midY = b.y + b.height / 2;
+            if (!(minX < axisX - 0.01 && maxX > axisX + 0.01)) continue; // straddles CF
+            if (b.height > 0.12 || b.width < 0.03) continue;             // horizontal seam
+            if (midY < lo || midY > hi) continue;                        // cradle region
+            if (!best || midY < best) best = midY;                       // topmost = gore bottom
+          }
+          if (best != null) refined = clamp01(best);
+        }
+      }
+      return { refinedY: refined, crestY: crestRawY, crestBelowCfY };
     };
     const detCradleCfY = detection.cradleCfTop ? detection.cradleCfTop.y : null;
-    const goreBottomY = goreBottomYFromContours();
+    const goreBottom = goreBottomYFromContours();
+    const goreBottomY = goreBottom.refinedY;
     // Only snap UP to the seam (never below the detected cradle row).
     const cradleCfTopY = (detCradleCfY != null && goreBottomY != null && goreBottomY < detCradleCfY)
       ? goreBottomY
       : detCradleCfY;
+    // Standalone crest tier (US-015 / ADR 0023): the direct CF-seam detector
+    // missed (row prior on the wrong structure, or no ink at the axis — e.g.
+    // a plunge gore whose cups meet at a crest well above the wire bottoms),
+    // but the contours show a symmetric CF crest sitting below cf-top and
+    // above the cradle row / band. Seed cradle-cf-top there — low confidence,
+    // source seamCrest, reviewRequired — instead of leaving POM 6/8 in hard
+    // REVIEW_ONLY. Stashed on `detection` BEFORE the QA build so the QA layer
+    // classifies the same decision this seeding pass applies.
+    const cradleCfCrestY = (!detection.cradleCfTop
+      && goreBottom.crestBelowCfY != null
+      && (detection.cradleY == null || goreBottom.crestBelowCfY < detection.cradleY)
+      && (detection.bandY == null || goreBottom.crestBelowCfY < detection.bandY - 0.02))
+      ? goreBottom.crestBelowCfY : null;
+    detection.cradleCfCrestSeedY = cradleCfCrestY;
+
+    // Landmark QA layer (Engineering Workflow Phase 6): the per-landmark
+    // verdicts — source class, confidence tier, reviewRequired, QA notes —
+    // that this seed layer consumes below instead of recomputing its own
+    // tables. Computed HERE (not reused from detection time) because the
+    // detection object can be mutated between seedings (e.g. the front_inner
+    // branch backfills detection.innerCupTop), and it must run BEFORE that
+    // mutation so its evidence reads match this seeding pass — and AFTER the
+    // crest-tier decision above, which it classifies via
+    // detection.cradleCfCrestSeedY. Re-attached so debug consumers always see
+    // the verdicts the current anchors came from.
+    const landmarkQa = buildLandmarkQaFromDetection(detection);
+    if (landmarkQa) detection.landmarkQa = landmarkQa;
+    const qaByKind = (landmarkQa && landmarkQa.byKind) || {};
 
     let seeds = {
       'cf-top':         { x: ax, y: clamp01(top + bb.height * 0.04) },
-      'cf-bottom':      { x: ax, y: clamp01(band) },
+      // POM 6's bottom follows the hem at the CF column, not the flat band row
+      // (US-061). detection.cfBottomHemY equals bandY on a straight hem, so
+      // this is a no-op there; on an arched hem it keeps the anchor on the
+      // artwork instead of floating below it.
+      'cf-bottom':      { x: ax, y: clamp01(cfBottomY) },
       // cradle-cf-top: seeded from direct CF-seam detection when present;
-      // otherwise from the POM 7 cradle seam projected to the CF axis (the
-      // cradleCfFromCupSeam rescue). Missing BOTH means POM 6 stays REVIEW_ONLY.
+      // else from the contour crest tier (US-015 / ADR 0023, review-flagged);
+      // else from the POM 7 cradle seam projected to the CF axis (the
+      // cradleCfFromCupSeam rescue). Missing ALL means POM 6 stays REVIEW_ONLY.
       ...(detection.cradleCfTop
         ? { 'cradle-cf-top': {
             x: clamp01(detection.cradleCfTop.x),
             y: clamp01(cradleCfTopY != null ? cradleCfTopY : detection.cradleCfTop.y),
           } }
-        : (cradleCfFromCupSeam
+        : (cradleCfCrestY != null
           ? { 'cradle-cf-top': {
               x: clamp01(ax),
-              y: clamp01(detection.cradleCupTop.y),
+              y: clamp01(cradleCfCrestY),
             } }
-          : {})),
+          : (cradleCfFromCupSeam
+            ? { 'cradle-cf-top': {
+                x: clamp01(ax),
+                y: clamp01(detection.cradleCupTop.y),
+              } }
+            : {}))),
       // cradle-cup-top / -bottom: seeded ONLY when the bottom-cup detector
       // found ink support both at the cradle row and the band row (away from
       // CF and side seam). No horizontal-ratio fallback — missing means POM 7
@@ -15370,8 +26251,17 @@ function getAnnotationsOnImage(image) {
       const fv = frontView;
       const viewW = fv ? fv.width : 1;
       const viewH = fv ? fv.height : 1;
-      // Pick the largest cup-side panel contour that spans the width row.
-      let best = null;
+      // Collect EVERY cup-side panel contour that spans the width row. Picking
+      // only the LARGEST one (the original behaviour) breaks a molded/seamed cup:
+      // such a cup is traced as SEVERAL panels split by a style seam, and the
+      // biggest panel is often an INTERIOR one whose gore-side crossing at rowY
+      // stops well short of the true cup↔gore seam. Because the search never left
+      // that panel, the inner endpoint was pulled INTO the cup and POM 10 came out
+      // ~40% narrow (EvelynBliss vA 2.0 front-inner cup: seam 0.1256 vs the real
+      // gore edge 0.1650 — cup width 24% of its view panel instead of ~40%). The
+      // inner seam is the crossing nearest the CF axis across ALL cup panels, so
+      // scan them all and let the gates below reject anything off-cup.
+      const candidatePaths = [];
       for (const p of C.paths) {
         const b = p && p.bbox; if (!b) continue;
         const bMinX = b.x, bMaxX = b.x + b.width, bMinY = b.y, bMaxY = b.y + b.height;
@@ -15380,39 +26270,199 @@ function getAnnotationsOnImage(image) {
         if (b.width > viewW * 0.6) continue;                       // not the whole outline
         if (b.height < viewH * 0.20) continue;                     // a real cup panel
         if (rowY < bMinY - 0.02 || rowY > bMaxY + 0.02) continue;  // spans the width row
-        const area = b.width * b.height;
-        if (!best || area > best.area) best = { area, path: p };
+        candidatePaths.push(p);
       }
-      if (!best) return null;
-      // Sample the panel outline and take where it ACTUALLY crosses y = rowY.
+      if (!candidatePaths.length) return null;
+      // Sample each panel outline and take where it ACTUALLY crosses y = rowY.
       // The bbox horizontal extreme (bMaxX/bMinX) sits at the panel's widest
       // row — the apex, not rowY — so using it floated the endpoint ~17px
       // off-ink and inflated cup width (~+7.5% on demo5). The inner seam is the
       // crossing nearest the CF axis, on the cup side, off-axis. A crossing at
       // rowY is by construction on the traced ink, so this doubles as the
       // "must lie on ink at rowY" gate: no valid crossing → null → fall back.
-      const samples = samplePathPoints(best.path);
-      const n = samples.length;
-      if (n < 2) return null;
       let innerX = null;
-      for (let i = 0; i < n; i += 1) {
-        const a = samples[i];
-        const c = samples[(i + 1) % n];         // closed contour: wrap to start
-        const da = a.y - rowY, dc = c.y - rowY;
-        if ((da > 0 && dc > 0) || (da < 0 && dc < 0)) continue;  // no crossing
-        if (a.y === c.y) continue;                               // horizontal seg
-        const t = da / (a.y - c.y);             // = (rowY - a.y) / (c.y - a.y)
-        const x = a.x + t * (c.x - a.x);
-        // Keep only crossings between the cup center and just inside the axis.
-        const ok = side < 0
-          ? (x > cupCenterX && x < axisX - 0.005)
-          : (x < cupCenterX && x > axisX + 0.005);
-        if (!ok) continue;
-        // Inner seam = the crossing nearest the CF axis on the cup side.
-        if (innerX == null) innerX = x;
-        else innerX = side < 0 ? Math.max(innerX, x) : Math.min(innerX, x);
+      for (const path of candidatePaths) {
+        const samples = samplePathPoints(path);
+        const n = samples.length;
+        if (n < 2) continue;
+        for (let i = 0; i < n; i += 1) {
+          const a = samples[i];
+          const c = samples[(i + 1) % n];         // closed contour: wrap to start
+          const da = a.y - rowY, dc = c.y - rowY;
+          if ((da > 0 && dc > 0) || (da < 0 && dc < 0)) continue;  // no crossing
+          if (a.y === c.y) continue;                               // horizontal seg
+          const t = da / (a.y - c.y);             // = (rowY - a.y) / (c.y - a.y)
+          const x = a.x + t * (c.x - a.x);
+          // Keep only crossings between the cup center and just inside the axis.
+          const ok = side < 0
+            ? (x > cupCenterX && x < axisX - 0.005)
+            : (x < cupCenterX && x > axisX + 0.005);
+          if (!ok) continue;
+          // Inner seam = the crossing nearest the CF axis on the cup side.
+          if (innerX == null) innerX = x;
+          else innerX = side < 0 ? Math.max(innerX, x) : Math.min(innerX, x);
+        }
       }
       return innerX == null ? null : clamp01(innerX);
+    };
+
+    // POM 10 cup width, TD convention (2026-07-25): the line spans the cup's TRUE
+    // horizontal extremes — the gore contact on the inner side, the wire/side-seam
+    // end on the outer side — and each endpoint keeps ITS OWN height, so the width
+    // follows the cup's structure instead of being flattened onto one shared row
+    // (the gore contact sits lower than the side-seam end on every style a TD
+    // measures). Taking x AND y from the SAME traced contour point is what puts
+    // the endpoint on ink: the historical A1 defect was pairing a bbox-extreme x
+    // with a forced centerY, which planted the anchor at a height the cup never
+    // reaches. Returns { inner, outer } in source-image [0,1] space, or null so
+    // callers fall back to the row-crossing snap below.
+    const cupWidthExtremesFromContours = (cm) => {
+      const C = detection.contours;
+      if (!C || !Array.isArray(C.paths) || !cm || cm.side == null) return null;
+      const side = cm.side;
+      const axisX = detection.axisX;
+      if (axisX == null) return null;
+      let rowY = cm.innerEdge ? cm.innerEdge.y : (cm.centerPoint ? cm.centerPoint.y : null);
+      if (rowY == null) return null;
+      // Front-inner cutaway: cupModel.topPoint runs up into the STRAP, not the cup.
+      // buildCupModel derives the width level as apex + 0.42·(seam − apex), so that
+      // inflated span drags the row far above the cup's widest part. Measured on the
+      // 2-photo case (Evelyn vA 3.0): topPoint.y 0.1140 (strap top) vs the clamped
+      // inner-cup-top 0.3319 gave row 0.1140 + 0.42·(0.8153 − 0.1140) = 0.4085 —
+      // 0.165 above POM 9's mid-y 0.5736, i.e. more than DOUBLE the A6 limit, while
+      // anchors 171/181 sat at ~0.59 showing where the cup is actually widest.
+      // IC-top is already clamped DOWN to strapBottom for this view; apply the SAME
+      // clamped top here so the row and POM 9 agree (recomputes to 0.5349, A6 delta
+      // 0.0387). Front-outer views never take this branch.
+      if (detection.singleView && cm.topPoint && cm.bottomPoint
+          && detection.strapBottom && typeof detection.strapBottom.y === 'number'
+          && detection.strapBottom.y > cm.topPoint.y
+          && cm.bottomPoint.y > detection.strapBottom.y) {
+        const topUsed = detection.strapBottom.y;
+        rowY = clamp01(topUsed + 0.42 * (cm.bottomPoint.y - topUsed));
+      }
+      const fv = frontView;
+      const viewW = fv ? fv.width : 1;
+      const viewH = fv ? fv.height : 1;
+      // Same panel gates as the row-crossing search, and every qualifying panel
+      // is scanned (a molded cup is traced as several style-seam panels).
+      // Horizontal bounds of the view this cup belongs to. REQUIRED: the old
+      // row-crossing search clamped x into a narrow window (cup centre → just
+      // inside the axis), so it could never leave the view. An extreme has no such
+      // window, and on a multi-view board a BACK-panel contour also satisfies
+      // "centre is on the cup side of axisX" — so the outer extreme escaped into
+      // the next panel and moved inner-cup-right by 0.279 on 1.jpg (a right cup,
+      // where outer = max x, i.e. straight toward the neighbouring views).
+      const viewLoX = fv ? fv.x : 0;
+      const viewHiX = fv ? fv.x + fv.width : 1;
+      const paths = [];
+      for (const p of C.paths) {
+        const b = p && p.bbox; if (!b) continue;
+        const cx = b.x + b.width / 2;
+        if (cx < viewLoX || cx > viewHiX) continue;                // this view only
+        if (b.height < viewH * 0.20) continue;                     // a real panel
+        if (rowY < b.y - 0.02 || rowY > b.y + b.height + 0.02) continue;
+        // The view-wide garment outline is NOT usable here. It was tried (letting it
+        // feed the outer endpoint only) to reach the cup's outer edge, and on a
+        // front-inner cutaway it does — but on a normal front-outer sketch the
+        // silhouette at cup height runs along the SIDE WING / band, well outside the
+        // cup, so the endpoint landed on the wing (panel-relative 0.011 where the TD
+        // marked 0.039) and POM 10 moved up to 0.097 on demo7. It only looked correct
+        // because the outer overshoot cancelled an inner shortfall of the same size.
+        // The cup's outer edge belongs to cupModel.outerEdgeNearArmhole, which is
+        // already band-aware (findCupOuterSilhouettePx + the side-seam ratchet).
+        if (b.width > viewW * 0.6) continue;                       // not the whole outline
+        if (side < 0 ? cx >= axisX : cx <= axisX) continue;        // cup side only
+        paths.push(p);
+      }
+      if (!paths.length) return null;
+      // Keep clear of the CF gore and the side seam so invariants B3/B4 hold. Both
+      // pads sit just above their invariant floors (B3 needs > 0.005 from the axis,
+      // B4 > 0.003 from the side column): POM 10 must reach the cup's widest extent,
+      // so every extra thousandth of pad is width the TD asked for and did not get.
+      const axisPad = 0.006;
+      const seamPad = 0.004;
+      const sideCol = side < 0 ? detection.sideLeftX : detection.sideRightX;
+      // Restrict candidates to a band around the width row. Global cup extremes
+      // run all the way down to the wire, which slants the line far more than a
+      // TD draws it (|Δy| reached 0.177 on demo3 — the endpoint had slid to the
+      // gore's bottom). A band keeps this the WIDEST CHORD THROUGH THE CUP'S
+      // MID-SECTION: each endpoint still finds its own natural height, but both
+      // stay near mid-height, which is what the measurement means (and what
+      // keeps the A6 row check meaningful).
+      // Capped in absolute terms too: the endpoints must still read as ONE width
+      // measurement near mid-height (invariant A6 bounds the row against POM 9's
+      // mid-y), so an endpoint may find its own height but not wander a fifth of
+      // the sketch away from the row.
+      // A teardrop cup is widest BELOW mid-height, so a tight band centred on the
+      // width row can miss the widest row entirely and shorten BOTH ends at once
+      // (measured: outer stuck at the contour limit 0.072 while the TD marked 0.039,
+      // inner 0.461 vs 0.494). Widened so the gore contact and the true widest row
+      // fall inside it. The slant stays governed by invariant A3 (< 0.09) and the
+      // pair's mean is still anchored to the row, so A6 is unaffected.
+      const cupSpan = (cm.topPoint && cm.bottomPoint) ? (cm.bottomPoint.y - cm.topPoint.y) : null;
+      const bandHalf = cupSpan != null
+        ? Math.min(Math.max(0.02, cupSpan * 0.20), 0.07)
+        : 0.06;
+      const bandLoY = rowY - bandHalf;
+      const bandHiY = rowY + bandHalf;
+      let inner = null, outer = null;
+      const scan = (path) => {
+        for (const pt of samplePathPoints(path)) {
+          if (!pt || !Number.isFinite(pt.x) || !Number.isFinite(pt.y)) continue;
+          if (pt.x < viewLoX || pt.x > viewHiX) continue;           // never leave the view
+          if (pt.y < bandLoY || pt.y > bandHiY) continue;          // mid-section band
+          // Stay on the cup body: above the apex is strap, below the seam is band.
+          if (cm.topPoint && pt.y < cm.topPoint.y - 0.01) continue;
+          if (cm.bottomPoint && pt.y > cm.bottomPoint.y + 0.01) continue;
+          if (!(side < 0 ? pt.x < axisX - axisPad : pt.x > axisX + axisPad)) continue;
+          // outer = farthest from the CF axis; inner = nearest it.
+          if (!outer || (side < 0 ? pt.x < outer.x : pt.x > outer.x)) outer = { x: pt.x, y: pt.y };
+          if (!inner || (side < 0 ? pt.x > inner.x : pt.x < inner.x)) inner = { x: pt.x, y: pt.y };
+        }
+      };
+      for (const path of paths) scan(path);
+      if (!inner || !outer) return null;
+      // The traced cup panels stop SHORT of the cup's real outer edge: on this sketch
+      // the panel contour bottoms out at panel-relative 0.075 while the TD marked
+      // 0.039, and widening the band barely moved it (0.072 -> 0.068) — proof it is a
+      // contour limit, not a band limit. The cup's outer edge coincides with the
+      // garment silhouette, which is unusable here (it tracks the side wing; see the
+      // rejected experiment in ADR 0036). cupModel.outerEdgeNearArmhole already solves
+      // exactly this, band-aware, via findCupOuterSilhouettePx + the side-seam
+      // ratchet — so take its x and keep the contour-derived y so the anchor stays on
+      // ink. Applied only when it sits FARTHER out: this can widen POM 10, never
+      // narrow it.
+      if (cm.outerEdgeNearArmhole && Number.isFinite(cm.outerEdgeNearArmhole.x)) {
+        const modelX = cm.outerEdgeNearArmhole.x;
+        if (side < 0 ? modelX < outer.x : modelX > outer.x) outer = { x: modelX, y: outer.y };
+      }
+      // Centre the PAIR exactly on the detected width row. Each endpoint finds its
+      // own height (that is the whole point — the gore contact sits lower than the
+      // side-seam end), but the MEAN of the two stays at the row, so the level the
+      // measurement represents is unchanged from the single-row era. Without this,
+      // both endpoints could drift the same way and slide the measurement off that
+      // level (invariant A6 hit 0.099 on demo4). Anchoring the mean makes A6 read
+      // exactly as it did before this change on every style, while the slant (Δy)
+      // is preserved untouched.
+      const meanShift = rowY - ((inner.y + outer.y) / 2);
+      inner = { x: inner.x, y: inner.y + meanShift };
+      outer = { x: outer.x, y: outer.y + meanShift };
+      if (sideCol != null && Math.abs(outer.x - sideCol) < seamPad) {
+        // Invariant B4 wants a GAP from the side-seam column, not a specific side
+        // of it — so resolve a too-close endpoint by pushing it OUTWARD (away from
+        // the cup centre), never inward. Flooring it at `sideCol + pad` (the first
+        // cut here) narrowed the cup badly whenever the detected side column sits
+        // INBOARD of the cup's real outline, which is the norm on a front-inner
+        // cutaway that has no band ink: it cost ~8.7% of the panel on the outer
+        // end. POM 10 must reach the cup's widest extent (TD convention, ADR 0036).
+        outer = { x: side < 0 ? sideCol - seamPad : sideCol + seamPad, y: outer.y };
+      }
+      if (Math.abs(inner.x - outer.x) < 0.01) return null;         // degenerate span
+      return {
+        inner: { x: clamp01(inner.x), y: clamp01(inner.y) },
+        outer: { x: clamp01(outer.x), y: clamp01(outer.y) },
+      };
     };
 
     // Pull POM 10's inner endpoint onto the contour-detected cup inner seam,
@@ -15442,6 +26492,46 @@ function getAnnotationsOnImage(image) {
       return { top, bottom, left, right };
     };
 
+    // Preferred POM 10 placement: both endpoints from the traced cup extremes,
+    // each carrying its own y (see cupWidthExtremesFromContours). Falls back to
+    // the single-row inner-seam snap when the trace can't supply a clean span, so
+    // styles without usable contours keep their previous behaviour. POM 9's bottom
+    // column is re-clamped into the span either way (invariant A5).
+    const applyContourCupWidth = (pts, cm) => {
+      if (!pts || !cm) return pts;
+      const ext = cupWidthExtremesFromContours(cm);
+      // Record WHICH placement ran. This fallback used to be silent, which is how a
+      // 2-image board (primary + separate front-inner cutaway) kept the old
+      // shared-row POM 10 while every single-image suite passed: the aux photo had
+      // no detection.contours, the extremes declined, and nothing said so. Tests
+      // assert this field so the degraded path can never pass unnoticed again.
+      detection.cupWidthSource = ext
+        ? 'contour-extremes'
+        : (detection.contours ? 'inner-seam-fallback' : 'no-contours');
+      if (!ext) {
+        // Say it out loud. A usable cup model that still cannot place POM 10 from
+        // the trace means the inputs are degraded (most often: contours were never
+        // traced for this photo), and the anchors silently revert to the superseded
+        // shared-row placement. That silence is exactly how the 2-image board
+        // regression survived a full green suite run.
+        if (typeof console !== 'undefined' && console.warn) {
+          console.warn('[Auto Mode] POM 10 fell back to the shared-row inner-seam snap'
+            + ' (cupWidthSource=' + detection.cupWidthSource + ') — ADR 0036 placement unavailable'
+            + (detection.sourceImageId != null ? ' for image ' + detection.sourceImageId : '') + '.');
+        }
+        return applyContourInnerSeam(pts, cm);
+      }
+      const a = ext.inner, b = ext.outer;
+      const left  = a.x <= b.x ? a : b;
+      const right = a.x <= b.x ? b : a;
+      const lo = Math.min(left.x, right.x), hi = Math.max(left.x, right.x);
+      const bottom = {
+        x: clamp01(Math.max(lo, Math.min(hi, pts.bottom.x))),
+        y: pts.bottom.y,
+      };
+      return { top: pts.top, bottom, left, right };
+    };
+
     if (frontView && frontView.width > 0 && frontView.height > 0) {
       const f = frontView;
       // Prefer ink-derived endpoints (chest L/R, band L/R, CF top) from the
@@ -15463,10 +26553,22 @@ function getAnnotationsOnImage(image) {
         ? detection.underbustRightX
         : (detection.chestRightX != null ? detection.chestRightX : null);
       const bandYf  = detection.bandY  != null ? detection.bandY  : (f.y + f.height * 0.978);
-      const useChestL = chestSeedLeftX  != null ? { x: chestSeedLeftX,  y: chestSeedY } : inView(f, 0.004, 0.615);
-      const useChestR = chestSeedRightX != null ? { x: chestSeedRightX, y: chestSeedY } : inView(f, 0.990, 0.605);
-      const useBandL  = detection.bandLeftX   != null ? { x: detection.bandLeftX,   y: bandYf  } : inView(f, 0.063, 0.978);
-      const useBandR  = detection.bandRightX  != null ? { x: detection.bandRightX,  y: bandYf  } : inView(f, 0.936, 0.978);
+      // band-left/-right are the two ends of ONE horizontal band row, and
+      // chest-left/-right of ONE chest row — so both ends must share that
+      // row's y and only the x may fall back per side. Taking a per-side
+      // view-box y (the old `inView(f, rx, ry)` fallback) put the two ends at
+      // DIFFERENT heights whenever the walker found ink on just one side, and
+      // for chest even when it found neither: the two ratios disagreed with
+      // each other (0.615 vs 0.605) and with chestSeedY's own 0.615 fallback.
+      // POM 1/3 force their line level at the LEFT end's y and POM 2/4 hang
+      // off the RIGHT end's y, so any such gap showed up as lines 1-4 sitting
+      // vertically off anchors that were themselves correctly placed.
+      // The ink-on-both-sides path is unchanged, which is what every golden
+      // fixture exercises.
+      const useChestL = { x: chestSeedLeftX  != null ? chestSeedLeftX  : inViewX(f, 0.004), y: chestSeedY };
+      const useChestR = { x: chestSeedRightX != null ? chestSeedRightX : inViewX(f, 0.990), y: chestSeedY };
+      const useBandL  = { x: detection.bandLeftX  != null ? detection.bandLeftX  : inViewX(f, 0.063), y: bandYf };
+      const useBandR  = { x: detection.bandRightX != null ? detection.bandRightX : inViewX(f, 0.936), y: bandYf };
       const useCfTop  = detection.cfTopY      != null ? { x: detection.axisX,       y: detection.cfTopY }
                                                       : inView(f, 0.505, 0.485);
       // POM 9 / POM 10 inner-cup anchors. Rule.md requires both to belong to
@@ -15513,7 +26615,7 @@ function getAnnotationsOnImage(image) {
         };
       };
       let useIcTop, useIcBottomFromCup, useIcLeft, useIcRight;
-      const frontCupPts = applyContourInnerSeam(innerCupFromCupModel(cupModel), cupModel);
+      const frontCupPts = applyContourCupWidth(innerCupFromCupModel(cupModel), cupModel);
       if (frontCupPts) {
         // POM 9/10 endpoints from the shared cup model — see
         // innerCupFromCupModel. POM 10 cup width spans the cup's FULL
@@ -15561,6 +26663,15 @@ function getAnnotationsOnImage(image) {
         useIcRight = w.right;
         useIcBottomFromCup = { x: w.centerX, y: clamp01(cradle) };
       }
+      // Front-inner cutaway (singleView): the cup-model top runs up into the
+      // strap, so inner-cup-top seeds at the apex. The TD measures cup height
+      // from the strap→cup seam, so drop IC-top DOWN to that seam (never up),
+      // keeping its x. Front-outer views are unaffected (TD 2026-07-22).
+      if (detection.singleView && useIcTop
+          && detection.strapBottom && typeof detection.strapBottom.y === 'number'
+          && detection.strapBottom.y > useIcTop.y) {
+        useIcTop = { x: useIcTop.x, y: clamp01(detection.strapBottom.y) };
+      }
       // Side-top: underarm notch detected by walking up from the side-seam
       // column. Falls back to chest-line height on the side seam.
       const useSideTop = sideTopRightInk
@@ -15596,11 +26707,87 @@ function getAnnotationsOnImage(image) {
         : (strapJoin
           ? { x: clamp01(strapJoin.x), y: clamp01(strapJoin.y) }
           : inView(f, 0.80, 0.18));
+
+      // POM 17 / 18 (US-037, ADR 0032) — neckline width + armhole curve,
+      // both on front_outer.
+      //   POM 17 "Neckline length" (TD 2026-07-18): the neckline edge measured
+      //   from CENTER FRONT to the strap on one side — NOT a symmetric width.
+      //     171 = center-front neckline point = cf-top (top of the CF placket
+      //           / gore, on the axis).
+      //     172 = where the neckline meets the RIGHT strap = the cup↔strap
+      //           JOINING SEAM on the inner side.
+      // TD 2026-07-18: 172 and 182 must sit at the strap→cup JOINING SEAM, not
+      // up the strap. apex* give the correct inner/outer X but their Y lands at
+      // the cup apex / strap TOP (too high). detection.strapBottom lands LOW —
+      // at the princess-seam convergence INSIDE the cup (too low). The visual
+      // join is between them, ~1/3 of the way from apex down toward strapBottom
+      // (demo5: apex 0.19 too high, strapBottom 0.42 too low, join ≈ 0.27).
+      // Interpolate rather than snap. When frontStrapStart is detected it
+      // already sits at the join, so it is used as-is.
+      // On a front-outer line sketch the join sits ~1/3 of the way from apex
+      // toward strapBottom (0.35). On a front-INNER molded cutaway (singleView)
+      // the apex sits much higher relative to the seam, so 0.35 leaves 172/182
+      // up at the apex; the TD wants them at the strap→cup seam itself, so bias
+      // almost all the way to strapBottom (TD 2026-07-22, Evelyn 2-photo case).
+      const STRAP_JOIN_FRAC = detection.singleView ? 0.9 : 0.35;
+      const strapJoinY = (srcY) => (detection.strapBottom
+        && typeof detection.strapBottom.y === 'number'
+        && detection.strapBottom.y > srcY)
+        ? srcY + (detection.strapBottom.y - srcY) * STRAP_JOIN_FRAC : srcY;
+      const useNecklineCenter = (detection.cfTopY != null && detection.axisX != null)
+        ? { x: clamp01(detection.axisX), y: clamp01(detection.cfTopY) }
+        : inView(f, 0.50, 0.55);
+      const necklineStrapSrc = detection.apexRightInner || detection.apexRight;
+      const useNecklineStrap = necklineStrapSrc
+        ? { x: clamp01(necklineStrapSrc.x), y: clamp01(strapJoinY(necklineStrapSrc.y)) }
+        : inView(f, 0.66, 0.28);
+      //   Armhole (RIGHT side, matching POM 14's right-strap convention).
+      //   TD 2026-07-18: the two anchors must SPAN the arm opening —
+      //     182 = TOP of the opening = strap/shoulder junction at the chest
+      //           line (the right cup↔strap outer join).
+      //     181 = BOTTOM of the opening = the underarm / side point, well
+      //           BELOW the chest row on the outer side edge.
+      //   (An earlier build clustered both up at the strap because the
+      //   "bottom" used the chest row for its y; the underarm is much lower.)
+      // Mirror 172 exactly: outer X from apexRightOuter (or frontStrapStart /
+      // strapJoin as fallback), Y always dropped to the join via strapJoinY.
+      // frontStrapStart is NOT used as-is — it lands up at the strap top, which
+      // put 182 above 172 on sketches where it was detected (demo1/demo4/
+      // amorafit); routing it through strapJoinY keeps 172 and 182 level at the
+      // joining seam (TD 2026-07-18).
+      const armhole182Src = detection.apexRightOuter || detection.frontStrapStart || strapJoin;
+      const useArmhole182Top = armhole182Src
+        ? { x: clamp01(armhole182Src.x), y: clamp01(strapJoinY(armhole182Src.y)) }
+        : inView(f, 0.86, 0.16);
+      // Underarm (181): the BOTTOM of the arm opening, on the OUTER silhouette
+      // where the armhole meets the side seam. Priority:
+      //   1. detected side-seam-top ink notch (the true underarm), when present.
+      //   2. chest-right — it sits on the outer silhouette at bust height, which
+      //      is where the armhole runs into the side; `sideRightX` alone lands
+      //      too far IN (near the gore) on molded cups (TD 2026-07-18, demo5).
+      //   3. side column, partway DOWN from the strap junction toward the cradle.
+      // Pick whichever candidate is the most OUTER (largest x) so the anchor
+      // reaches the arm edge rather than the center.
+      let useArmhole181Bot;
+      if (detection.sideTopRightInk) {
+        useArmhole181Bot = { x: clamp01(detection.sideTopRightInk.x),
+                             y: clamp01(detection.sideTopRightInk.y) };
+      } else {
+        const downRef = detection.cradleY != null ? detection.cradleY : cradle;
+        const colY = useArmhole182Top.y + (downRef - useArmhole182Top.y) * 0.45;
+        const colX = detection.sideRightX != null ? detection.sideRightX : sideR;
+        const chestOuter = useChestR && useChestR.x > colX ? useChestR : null;
+        useArmhole181Bot = chestOuter
+          ? { x: clamp01(chestOuter.x), y: clamp01(chestOuter.y) }
+          : { x: clamp01(colX), y: clamp01(colY) };
+      }
       // CF-bottom: bandY is the highest-confidence horizontal signal in the
       // pipeline. Prefer (axisX, bandY) over the view-box fraction so POMs 5
       // and 6 land on the actual band ink.
+      // Hem-following bottom at the CF column (US-061); cfBottomY falls back to
+      // the flat band row when detection resolved no hem there.
       const useCfBottom = (detection.bandY != null && detection.axisX != null)
-        ? { x: clamp01(detection.axisX), y: clamp01(detection.bandY) }
+        ? { x: clamp01(detection.axisX), y: clamp01(cfBottomY) }
         : inView(f, 0.505, 0.985);
       // Inner-cup-bottom: cradleY is the clean horizontal contour between
       // chest and band. When the cupModel is usable, its bottomPoint already
@@ -15628,8 +26815,16 @@ function getAnnotationsOnImage(image) {
         'side-top':        useSideTop,
         'side-bottom':     useSideBot,
         'strap-top':       useFrontStrapTop,
+        '171':   useNecklineCenter,
+        '172':  useNecklineStrap,
+        '181':  useArmhole181Bot,
+        '182':  useArmhole182Top,
       };
       roleByKind['strap-top'] = 'front_outer';
+      roleByKind['171'] = 'front_outer';
+      roleByKind['172'] = 'front_outer';
+      roleByKind['181'] = 'front_outer';
+      roleByKind['182'] = 'front_outer';
       if (useApexL && useApexR) {
         seeds['apex-left'] = useApexL;
         seeds['apex-right'] = useApexR;
@@ -15647,57 +26842,42 @@ function getAnnotationsOnImage(image) {
       }
     }
 
-    if (frontInnerView && frontInnerView.width > 0 && frontInnerView.height > 0) {
+    if (frontInnerView && frontInnerView.width > 0 && frontInnerView.height > 0
+        && frontView && frontView.width > 0 && frontView.height > 0
+        && frontInnerView !== frontView) {
       const i = frontInnerView;
-      const innerBandY = i.y + i.height * 0.92;
+      const fv = frontView;
       const innerChestY = i.y + i.height * 0.22;
-      const innerCupMidY = i.y + i.height * 0.54;
-      // Front-inner view is the cup model's preferred source per rule.md
-      // ("Prefer front_inner view if it exists and the cup is clearly
-      // visible"). When a front_inner view exists buildCupModel classifies
-      // visibility as 'direct' and produces ink-derived endpoints — those track
-      // the actual cup and differ per sketch, so we MUST prefer them over the
-      // view-box ratios (which depend only on the view box and are constant
-      // across sketches). Precedence: cupModel > innerCupTopInk (kept as-is
-      // from the frontView branch — do not clobber) > view-box ratio fallback.
-      // Computed here rather than reused from the frontView branch because a
-      // sketch can have a front_inner view without a front_outer view, so that
-      // branch may not have run. The role override below tells the rest of the
-      // pipeline these anchors belong to the front_inner view regardless of
-      // which source produced their coordinates.
-      const innerCupPts = applyContourInnerSeam(innerCupFromCupModel(cupModel), cupModel);
-      if (innerCupPts) {
-        seeds = {
-          ...seeds,
-          'inner-cup-top':    innerCupPts.top,
-          'inner-cup-bottom': innerCupPts.bottom,
-          'inner-cup-left':   innerCupPts.left,
-          'inner-cup-right':  innerCupPts.right,
-        };
-      } else if (!innerCupTopInk) {
-        // No usable cup model and no ink heuristic — fall back to view-box
-        // ratios. The view box isolates the inner cup, so these still land on
-        // cup structure (a legitimate direct-view guess, not fabrication).
-        seeds = {
-          ...seeds,
-          'inner-cup-top':    inView(i, 0.50, 0.18),
-          'inner-cup-bottom': inView(i, 0.50, 0.82),
-          'inner-cup-left':   inView(i, 0.20, 0.53),
-          'inner-cup-right':  inView(i, 0.80, 0.53),
-        };
+      // A single photo that already contains a front-inner panel (a 3-view
+      // board: front-outer + back + front-inner) needs no second photo. The
+      // inner panel shows the SAME garment as the front-outer panel, so every
+      // cup / neckline / armhole POM measured on the front maps to the
+      // corresponding RELATIVE position on the inner panel. Transfer the
+      // front-outer-derived anchors (already seeded above, in front-box space —
+      // themselves cup-model / ink derived, so this carries the real detected
+      // shape, not view-box ratios) onto the inner box, then tag them to the
+      // front-inner view. ADR-0034: POM 9/10 (inner cup) AND 17/18
+      // (neckline/armhole) measure on the inner view; POM 8 stays on the
+      // front-outer view (center-front, anchors shared with POM 5/6) so it is
+      // deliberately NOT in this list. The separate-photo (aux-view) path is
+      // handled independently in runOfflineDetection and never reaches here.
+      const remap = (pt) => (pt ? {
+        x: clamp01(i.x + (pt.x - fv.x) / fv.width * i.width),
+        y: clamp01(i.y + (pt.y - fv.y) / fv.height * i.height),
+      } : pt);
+      const INNER_VIEW_KINDS = [
+        'inner-cup-top', 'inner-cup-bottom', 'inner-cup-left', 'inner-cup-right',
+        '171', '172', '181', '182',
+      ];
+      for (const kind of INNER_VIEW_KINDS) {
+        if (seeds[kind]) seeds[kind] = remap(seeds[kind]);
+        roleByKind[kind] = 'front_inner';
       }
-      // else: innerCupTopInk fired but the cupModel is hidden — keep the
-      // innerCupTopInk-derived seeds the frontView branch already set (rule.md
-      // legacy heuristic); do not overwrite them with view-box ratios.
-      roleByKind['inner-cup-top'] = 'front_inner';
-      roleByKind['inner-cup-bottom'] = 'front_inner';
-      roleByKind['inner-cup-left'] = 'front_inner';
-      roleByKind['inner-cup-right'] = 'front_inner';
       if (!detection.innerCupTop) {
         detection.innerCupTop = { x: i.x + i.width * 0.50, y: innerChestY };
       }
-      if (detection.cradleY == null) detection.cradleY = innerBandY;
-      if (detection.underbustY == null) detection.underbustY = innerCupMidY;
+      if (detection.cradleY == null) detection.cradleY = i.y + i.height * 0.92;
+      if (detection.underbustY == null) detection.underbustY = i.y + i.height * 0.54;
     }
 
     // Demote POM 9 / POM 10 to REVIEW_ONLY when no coherent cup model could
@@ -15771,12 +26951,32 @@ function getAnnotationsOnImage(image) {
       // Falls back to chestLeftX/chestRightX (panel OUTER corners) only when the
       // strap detector finds nothing, then to view-box ratios.
       const bStrapInner = detection.backStrapInner || null;
-      const bStrapL = bStrapInner && bStrapInner.left
-        ? { x: bStrapInner.left.x, y: bStrapInner.left.y }
-        : (bf && bf.chestLeftX  != null ? { x: bf.chestLeftX,  y: bChestY } : inView(b, 0.276, 0.414));
-      const bStrapR = bStrapInner && bStrapInner.right
-        ? { x: bStrapInner.right.x, y: bStrapInner.right.y }
-        : (bf && bf.chestRightX != null ? { x: bf.chestRightX, y: bChestY } : inView(b, 0.729, 0.426));
+      // Same one-row rule as the front band/chest pairs above: POM 15 is a
+      // horizontal span, and it draws level at the LEFT end's y, so the two
+      // ends must sit on ONE row or the line misses the right anchor. Resolve
+      // the row ONCE — mean of the two ink edges when both are detected (they
+      // agree on every fixture, so this is a no-op there), the single detected
+      // edge when only one is, then the back chest row, then one shared ratio
+      // instead of the old mismatched 0.414 / 0.426 pair.
+      const bStrapInkL = bStrapInner && bStrapInner.left ? bStrapInner.left : null;
+      const bStrapInkR = bStrapInner && bStrapInner.right ? bStrapInner.right : null;
+      const bStrapY = (bStrapInkL && bStrapInkR)
+        ? (bStrapInkL.y + bStrapInkR.y) / 2
+        : (bStrapInkL ? bStrapInkL.y
+          : (bStrapInkR ? bStrapInkR.y
+            : (bf && (bf.chestLeftX != null || bf.chestRightX != null)
+              ? bChestY
+              : b.y + b.height * 0.414)));
+      const bStrapL = {
+        x: bStrapInkL ? bStrapInkL.x
+          : (bf && bf.chestLeftX  != null ? bf.chestLeftX  : inViewX(b, 0.276)),
+        y: bStrapY,
+      };
+      const bStrapR = {
+        x: bStrapInkR ? bStrapInkR.x
+          : (bf && bf.chestRightX != null ? bf.chestRightX : inViewX(b, 0.729)),
+        y: bStrapY,
+      };
       // Back-panel top/bottom: prefer the ink-following detector. Falls back
       // to view-box ratios; the old inView(b, 0.232, 1.005) used to clamp the
       // bottom anchor off-image — keep the same fraction but clamp at 0.985
@@ -15939,6 +27139,7 @@ function getAnnotationsOnImage(image) {
     state.autoMode.anchors = seedAnchorsFromDetection(detection, sourceImage);
     state.autoMode.anchorSelectedId = null;
     state.autoMode.anchorsHidden = false;
+    state.autoMode.hiddenAnchorKinds = []; // US-038: fresh seed shows all
     pushHistoryIfChanged();
     updateUI();
     requestRender();
@@ -16113,6 +27314,61 @@ function getAnnotationsOnImage(image) {
     return state.autoMode.anchors.find(a => a.id === id) || null;
   }
 
+  // ---- US-038: per-anchor visibility -------------------------------------
+  // Session-only view state keyed by anchor KIND (one anchor per kind in the
+  // seed). An anchor is visible iff !anchorsHidden && !isAnchorHidden(kind).
+  // Every mutator requests a render; the panel's Anchors section rebuilds via
+  // the specPanelFingerprint (which includes hiddenAnchorKinds).
+  function hiddenAnchorSet() {
+    if (!Array.isArray(state.autoMode.hiddenAnchorKinds)) state.autoMode.hiddenAnchorKinds = [];
+    return state.autoMode.hiddenAnchorKinds;
+  }
+
+  function isAnchorHidden(kind) {
+    return hiddenAnchorSet().indexOf(kind) !== -1;
+  }
+
+  function toggleAnchorHidden(kind) {
+    const set = hiddenAnchorSet();
+    const i = set.indexOf(kind);
+    if (i === -1) set.push(kind); else set.splice(i, 1);
+    // A hidden pin can't stay the selected/dragged one.
+    if (isAnchorHidden(kind)) {
+      const sel = getAnchorById(state.autoMode.anchorSelectedId);
+      if (sel && sel.kind === kind) state.autoMode.anchorSelectedId = null;
+    }
+    requestRender();
+  }
+
+  function hideAllAnchors() {
+    state.autoMode.hiddenAnchorKinds = state.autoMode.anchors.map(a => a.kind);
+    state.autoMode.anchorSelectedId = null;
+    requestRender();
+  }
+
+  function showAllAnchors() {
+    state.autoMode.hiddenAnchorKinds = [];
+    requestRender();
+  }
+
+  // Isolate: hide every anchor except `kind` — the "show only one" action.
+  function isolateAnchor(kind) {
+    state.autoMode.hiddenAnchorKinds = state.autoMode.anchors
+      .map(a => a.kind).filter(k => k !== kind);
+    requestRender();
+  }
+
+  // Group toggle: if any anchor in the group is visible, hide the whole
+  // group; otherwise show it (mirrors the all-or-nothing lock/hide idiom).
+  function toggleAnchorGroup(kinds) {
+    const anyVisible = kinds.some(k => !isAnchorHidden(k));
+    const set = new Set(hiddenAnchorSet());
+    if (anyVisible) kinds.forEach(k => set.add(k));
+    else kinds.forEach(k => set.delete(k));
+    state.autoMode.hiddenAnchorKinds = [...set];
+    requestRender();
+  }
+
   // Learning origin = the UNBIASED predicted position when learning stashed one
   // (predictedX/Y set by applyLearningBiasToAnchors), else the current position.
   // Recording the TD's correction relative to the raw prediction — not the
@@ -16143,6 +27399,7 @@ function getAnnotationsOnImage(image) {
     let best = null;
     let bestDist = Infinity;
     for (const anchor of state.autoMode.anchors) {
+      if (isAnchorHidden(anchor.kind)) continue; // US-038: hidden pins aren't grabbable
       const pos = anchorWorldPos(anchor);
       if (!pos) continue;
       const dx = world.x - pos.x;
@@ -16362,7 +27619,13 @@ function getAnnotationsOnImage(image) {
       if (!window.confirm(msg)) return;
     }
 
-    const fixture = buildPOMFixtureFromAnchors(state.autoMode.anchors);
+    // US-049: the front-outer pass measures against the ONE detection source
+    // image. Anchors relocated to the front-inner view (POM 9/10/17/18) carry
+    // that photo's id, so exclude them here — those POMs are (re)generated in
+    // the inner pass below. With no inner view every anchor is on the source
+    // image, so this filter is a no-op and behaviour is unchanged.
+    const frontAnchors = state.autoMode.anchors.filter(an => an.sourceImageId === sourceImage.id);
+    const fixture = buildPOMFixtureFromAnchors(frontAnchors);
     const runId = makeRunId();
     const validation = validateAutoFixture(fixture);
     if (validation.status === 'fail') {
@@ -16387,9 +27650,43 @@ function getAnnotationsOnImage(image) {
     if (typeof applyStyleConfirmedEvidenceToDrafts === 'function') {
       applyStyleConfirmedEvidenceToDrafts(drafts, sourceImage);
     }
-    nudgeAutoLabelsToAvoidCollisions(drafts);
 
-    state.autoMode.draftAnnotations = drafts;
+    // US-049: second pass — measure POM 9/10/17/18 on the front-inner view when
+    // one is present. The inner photo carries its OWN detection + anchor set
+    // (seeded in buildAuxViews); build a fixture against it — temporarily
+    // swapping the active detection so cupModel/landmark reads come from the
+    // inner photo — and REPLACE the front-outer placeholders for those POMs
+    // (which came out REVIEW_ONLY once their anchors moved off the source
+    // image). POM 8 and every other POM keep their front-outer geometry.
+    let finalDrafts = drafts;
+    const innerView = (state.autoMode.detection && Array.isArray(state.autoMode.detection.auxViews))
+      ? state.autoMode.detection.auxViews.find(v => v && v.viewRole === 'front_inner' && v.detection && Array.isArray(v.anchors) && v.anchors.length)
+      : null;
+    if (innerView) {
+      const innerImage = getImageById(innerView.sourceImageId);
+      if (innerImage && innerImage.width) {
+        const MOVED_POMS = ['9', '10', '17', '18'];
+        const savedDet = state.autoMode.detection;
+        let innerFixture = null;
+        try {
+          state.autoMode.detection = innerView.detection;
+          innerFixture = buildPOMFixtureFromAnchors(innerView.anchors);
+        } finally {
+          state.autoMode.detection = savedDet;
+        }
+        const innerValidation = innerFixture ? validateAutoFixture(innerFixture) : { status: 'fail' };
+        if (innerFixture && innerValidation.status !== 'fail') {
+          const innerDrafts = innerFixture.annotations
+            .filter(row => MOVED_POMS.indexOf(String(row.pom)) >= 0)
+            .map(row => buildDraftAnnotation(row, innerImage, innerFixture, runId));
+          finalDrafts = drafts.filter(d => MOVED_POMS.indexOf(String(d.seq)) < 0).concat(innerDrafts);
+        }
+      }
+    }
+
+    nudgeAutoLabelsToAvoidCollisions(finalDrafts);
+
+    state.autoMode.draftAnnotations = finalDrafts;
     state.autoMode.validation = validation;
     state.autoMode.runId = runId;
     state.autoMode.status = 'reviewing';
@@ -16398,7 +27695,7 @@ function getAnnotationsOnImage(image) {
     recordAutoTelemetryEvent('drafts_generated', {
       sourceImageId: sourceImage.id,
       run_id: runId,
-      draft_count: drafts.length,
+      draft_count: finalDrafts.length,
     });
 
     pushHistoryIfChanged();
@@ -16475,6 +27772,129 @@ function getAnnotationsOnImage(image) {
     const sideBot    = at('side-bottom');
     const apexL      = at('apex-left');
     const apexR      = at('apex-right');
+    // US-037: neckline (171 center-front → 172 right strap) + armhole endpoints.
+    const necklineCenter = at('171');
+    const necklineStrap  = at('172');
+    // Armhole endpoints. TD 2026-07-18: 181 = underarm (bottom of the arm
+    // opening), 182 = strap junction (top). The curve connects them either
+    // way; start on 181 to match the CLA contract test.
+    const armholeBot = at('181'); // underarm (bottom)
+    const armholeTop = at('182'); // strap junction (top)
+    // matchContourForCurve fits controls that PASS THROUGH the arc's 1/3 and
+    // 2/3 samples. For a long, strongly-curved arc (e.g. the armhole wrapping
+    // strap→underarm) that solve can throw a control far outside [0,1]; when we
+    // then clamp it the curve distorts into a wiggle. Only accept traced
+    // controls that land in a sane band around the view; otherwise fall back to
+    // a clean geometric bow (below).
+    const traceControlSane = (p) => p
+      && p.x >= -0.1 && p.x <= 1.1 && p.y >= -0.1 && p.y <= 1.1;
+    const traceIsUsable = (t) => t && t.score >= 0.55
+      && traceControlSane(t.c1) && traceControlSane(t.c2);
+    // Reject a traced curve whose belly DIPS past the lower endpoint into the
+    // body (larger y). For the neckline/armhole EDGE the curve must stay on the
+    // opening side (above/outward); a downward dip means the fit locked onto an
+    // inner cup / cradle / princess seam instead of the edge (TD 2026-07-18,
+    // demo5: 172/182 at the join → the arc between them found a dipping seam and
+    // POM 17/18 drew a V into the cup). Sample the (clamped) cubic in y.
+    const traceShapeOk = (t, A, B, tolFloor, spanFactor) => {
+      if (!t) return false;
+      const c1y = clamp01(t.c1.y), c2y = clamp01(t.c2.y);
+      const lowerY = Math.max(A.y, B.y);
+      // Tolerance is SPAN-RELATIVE (with a floor): a fixed absolute tolerance
+      // reads as tight on short arcs and loose on long ones, so a long armhole
+      // could dip a visible fraction of its own span yet still pass (demo1).
+      // Defaults (armhole) allow the belly at most 7% of the span below the
+      // lower endpoint. Callers pass a GENEROUS override for the neckline
+      // (POM 17): on a deep/plunging V the edge legitimately continues well
+      // below the CF anchor (171 sits partway up the edge, not at the V-bottom),
+      // so a good edge-following trace dips ~10% — see US-051.
+      const tol = Math.max(tolFloor != null ? tolFloor : 0.015, Math.abs(A.y - B.y) * (spanFactor != null ? spanFactor : 0.07));
+      let maxY = -Infinity;
+      for (let u = 0.15; u <= 0.86; u += 0.1) {
+        const m = 1 - u;
+        const y = m * m * m * A.y + 3 * m * m * u * c1y + 3 * m * u * u * c2y + u * u * u * B.y;
+        if (y > maxY) maxY = y;
+      }
+      return maxY <= lowerY + tol;
+    };
+    // POM 17 "Neckline length" curve. TD 2026-07-18: it must run ALONG the
+    // actual neckline edge — and neckline shapes differ (V / scoop / plunge),
+    // so a fixed geometric bow can't match them. Primary path: TRACE the
+    // detected neckline contour between 171 and 172 (matchContourForCurve fits
+    // a cubic through the real edge arc, endpoints staying on the anchors).
+    //
+    // The endpoints are the measurement points and stay EXACTLY on 171/172 —
+    // no parallel offset. An earlier build shifted the whole curve "up into
+    // the opening" to avoid covering the seam, but the neckline sits at the
+    // TOP of the front_outer view crop, so shifting up pushed the curve past
+    // the crop's top edge (it read as a bulge shooting up to the strap). A
+    // curve that traces the edge already reads as measuring the edge.
+    const neck17start = { x: clamp01(necklineCenter.x), y: clamp01(necklineCenter.y) };
+    const neck17end = { x: clamp01(necklineStrap.x), y: clamp01(necklineStrap.y) };
+    const neck17c1 = lerp(necklineCenter, necklineStrap, 0.35);
+    const neck17c2 = lerp(necklineCenter, necklineStrap, 0.65);
+    {
+      const detN = state.autoMode && state.autoMode.detection;
+      const paths = detN && detN.contours && detN.contours.paths;
+      const traced = (typeof matchContourForCurve === 'function' && paths && paths.length)
+        ? matchContourForCurve(paths, neck17start, neck17end, { preferThin: true })
+        : null;
+      // POM 17 keeps the plain range behaviour (short neckline arc, tame
+      // controls, TD-confirmed) but gains the SHAPE guard: reject a trace that
+      // dips into the cup (demo5) so it doesn't draw a V. Clean monotonic
+      // necklines (demo8) still trace.
+      // US-051: accept the neckline trace when it matches a contour well AND its
+      // controls are sane. The shape guard uses a GENEROUS neckline tolerance
+      // (floor 0.13, 60% of span) because a deep/plunging V legitimately dips
+      // ~10% below the CF anchor — the old tight guard rejected the real edge
+      // and fell back to a chord that visibly cut across the neckline.
+      if (traced && traced.score >= 0.55
+          && traceControlSane(traced.c1) && traceControlSane(traced.c2)
+          && traceShapeOk(traced, neck17start, neck17end, 0.13, 0.6)) {
+        // Controls may fall slightly outside [0,1]; clamp defensively. The
+        // neckline is interior so this rarely bites.
+        neck17c1.x = clamp01(traced.c1.x); neck17c1.y = clamp01(traced.c1.y);
+        neck17c2.x = clamp01(traced.c2.x); neck17c2.y = clamp01(traced.c2.y);
+      } else {
+        // Fallback (no clean contour): a GENTLE bow toward the neckline
+        // opening (upward perpendicular). Necklines run center-front → strap
+        // roughly along a near-straight arm, so the bow stays small; the real
+        // shape comes from the trace above when it is available.
+        const ndx = neck17end.x - neck17start.x;
+        const ndy = neck17end.y - neck17start.y;
+        const nlen = Math.max(0.0001, Math.hypot(ndx, ndy));
+        let px = -ndy / nlen, py = ndx / nlen;
+        if (py > 0) { px = -px; py = -py; } // upward → into the neckline opening
+        const neckBow = 0.02;
+        neck17c1.x = clamp01(neck17c1.x + px * neckBow); neck17c1.y = clamp01(neck17c1.y + py * neckBow);
+        neck17c2.x = clamp01(neck17c2.x + px * neckBow); neck17c2.y = clamp01(neck17c2.y + py * neckBow);
+      }
+    }
+    // POM 18 "Armhole curve length": like POM 17, TRACE the real arm-opening
+    // edge between 181 (underarm) and 182 (strap junction) when a clean contour
+    // exists; otherwise bow the curve OUTWARD toward the arm edge (+x on the
+    // right side). Endpoints stay on the anchors; lineLength reports the
+    // sampled arc length.
+    const arm18start = { x: clamp01(armholeBot.x), y: clamp01(armholeBot.y) }; // 181 underarm
+    const arm18end   = { x: clamp01(armholeTop.x), y: clamp01(armholeTop.y) }; // 182 strap
+    const arm18c1 = lerp(arm18start, arm18end, 0.35);
+    const arm18c2 = lerp(arm18start, arm18end, 0.65);
+    {
+      const detA = state.autoMode && state.autoMode.detection;
+      const pathsA = detA && detA.contours && detA.contours.paths;
+      const tracedA = (typeof matchContourForCurve === 'function' && pathsA && pathsA.length)
+        ? matchContourForCurve(pathsA, arm18start, arm18end, { preferThin: true })
+        : null;
+      if (traceIsUsable(tracedA) && traceShapeOk(tracedA, arm18start, arm18end)) {
+        arm18c1.x = clamp01(tracedA.c1.x); arm18c1.y = clamp01(tracedA.c1.y);
+        arm18c2.x = clamp01(tracedA.c2.x); arm18c2.y = clamp01(tracedA.c2.y);
+      } else {
+        // Fallback: bow OUTWARD toward the arm edge (+x on the right side).
+        const armholeBow = 0.055;
+        arm18c1.x = clamp01(arm18c1.x + armholeBow);
+        arm18c2.x = clamp01(arm18c2.x + armholeBow);
+      }
+    }
     const strapTop   = at('strap-top');
     const strapBot   = at('strap-bottom');
     const backTop    = at('back-top');
@@ -16621,6 +28041,55 @@ function getAnnotationsOnImage(image) {
         drawability: 'REVIEW_ONLY', confidence: 'low',
         uncertainty: 'Back strap distance requires a side / back view, which offline detection cannot localise.',
         reason: 'Back strap distance — review only until a side view is available.' };
+
+    // POM 16 — front apex distance (US-083).
+    //
+    // Unlike the band/chest pairs, apex-left and apex-right are NOT two ends of
+    // one detected row: each is found independently on its own side, and the TD
+    // ground truth legitimately places them at slightly different heights
+    // (measured slants of 0.0135 / 0.0418 / 0.0548 in scripts/groundtruth).
+    // So the anchors are left exactly where detection put them — flattening
+    // them onto a shared row would move them AWAY from TD truth.
+    //
+    // What is fixed is the LINE. It used to be forced level at apex-LEFT's y,
+    // which put it 0 from the left pin and the full gap from the right one. It
+    // now draws level at the MIDPOINT, so a legitimate small height difference
+    // costs each pin half the gap instead of loading it all onto one.
+    //
+    // Beyond a point the gap stops being a real height difference and becomes
+    // one side mis-detected: on demo7 apex-left is exactly right while
+    // apex-right is off by 0.134, and averaging that would drag the CORRECT
+    // anchor off truth. The credibility test is the line's SLANT (dy/dx), not
+    // an absolute distance — scale-free, so the same garment feature scores the
+    // same on a 3-view board as on a lone sketch (the POM 7 arc-tier rule,
+    // ADR 0022). Every TD-labelled apex pair slants at most 0.0548; every
+    // detected slant that ground truth proves wrong is at least 0.0767. The
+    // threshold sits in that gap. Over it, POM 16 demotes to REVIEW_ONLY rather
+    // than draw a confident-looking wrong line.
+    const APEX_MAX_SLANT = 0.06;
+    const apexSpanX = Math.abs(apexR.x - apexL.x);
+    const apexDy = Math.abs(apexR.y - apexL.y);
+    const apexSlant = apexSpanX > 0 ? apexDy / apexSpanX : Infinity;
+    const apexMidY = (apexL.y + apexR.y) / 2;
+    const pom16Row = apexSlant <= APEX_MAX_SLANT
+      ? { fixtureId: 'gen-16', pom: '16', type: 'straight', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('16'),
+        // Apex distance is a horizontal span — level, at the midpoint of the
+        // two apex heights so neither pin is favoured.
+        start: { x: apexL.x, y: apexMidY }, end: { x: apexR.x, y: apexMidY },
+        drawability: 'DRAWABLE', confidence: 'medium',
+        proposedStartLandmark: 'apex-left', proposedEndLandmark: 'apex-right',
+        reason: 'Front apex-to-apex distance.' }
+      : { fixtureId: 'gen-16', pom: '16', type: 'straight', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('16'),
+        drawability: 'REVIEW_ONLY', confidence: 'low',
+        proposedStartLandmark: 'apex-left', proposedEndLandmark: 'apex-right',
+        uncertainty: 'The two apex joins were detected ' + apexDy.toFixed(3)
+          + ' apart vertically over a ' + apexSpanX.toFixed(3) + ' span (slant '
+          + apexSlant.toFixed(3) + ', limit ' + APEX_MAX_SLANT
+          + ') — too steep for an apex-to-apex measurement, so one side is very'
+          + ' likely mis-detected. Place the apex anchors and re-generate.',
+        reason: 'Front apex-to-apex distance — review only: the two apex anchors disagree on height.' };
 
     const rows = [
       // POM 1 — bottom band (relax)
@@ -16862,13 +28331,28 @@ function getAnnotationsOnImage(image) {
       pom15Row,
 
       // POM 16 — front apex distance
-      { fixtureId: 'gen-16', pom: '16', type: 'straight', style: 'solid', arrowType: 'double',
-        viewRole: effectivePomViewRole('16'),
-        // Apex distance is a horizontal span — force end.y to start.y.
-        start: apexL, end: { x: apexR.x, y: apexL.y },
+      pom16Row,
+
+      // POM 17 — neckline length: curve tracing the neckline edge from the
+      // center front (171) up to the right strap junction (172).
+      { fixtureId: 'gen-17', pom: '17', type: 'curved', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('17'),
+        start: neck17start, end: neck17end, control1: neck17c1, control2: neck17c2,
         drawability: 'DRAWABLE', confidence: 'medium',
-        proposedStartLandmark: 'apex-left', proposedEndLandmark: 'apex-right',
-        reason: 'Front apex-to-apex distance.' },
+        proposedStartLandmark: '171', proposedEndLandmark: '172',
+        reason: 'Neckline length from center front to the strap (drawn just inside the neckline).' },
+
+      // POM 18 — armhole curve length: traced arc from the strap junction to
+      // the underarm, bowed outward toward the arm edge. Curve, not straight;
+      // lineLength samples the bezier for the true arc length. Bowed guess
+      // (no direct edge trace yet) → APPROXIMATE + low confidence, always
+      // reviewRequired via the 'low' anchor tiers.
+      { fixtureId: 'gen-18', pom: '18', type: 'curved', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('18'),
+        start: arm18start, end: arm18end, control1: arm18c1, control2: arm18c2,
+        drawability: 'APPROXIMATE', confidence: 'low',
+        proposedStartLandmark: '181', proposedEndLandmark: '182',
+        reason: 'Armhole curve length from the underarm to the strap junction.' },
     ];
 
     // Review-note plumbing (Engineering Workflow Phase 7, item 4). When a POM
@@ -16926,8 +28410,8 @@ function getAnnotationsOnImage(image) {
 
     // P5: a straight row whose endpoints coincide (zero measurable length)
     // can't satisfy its forced horizontal/vertical shape check and would make
-    // validateAutoFixture return 'fail', aborting ALL 16 POMs and discarding
-    // the 15 good ones. Demote just that degenerate row to REVIEW_ONLY so the
+    // validateAutoFixture return 'fail', aborting ALL 18 POMs and discarding
+    // the 17 good ones. Demote just that degenerate row to REVIEW_ONLY so the
     // rest still ship; the null-geometry pass below then clears its coords.
     for (const row of rows) {
       if (row.drawability === 'REVIEW_ONLY' || row.type === 'curved') continue;
@@ -17013,12 +28497,17 @@ function getAnnotationsOnImage(image) {
     };
   }
 
-  // Keep Auto Mode POM 1/2/3/4 drafts geometrically tied to the band/chest
-  // anchors while the TD is dragging. POM 1 follows band-{left,right}; POM 3
-  // follows chest-{left,right}; POMs 2 and 4 are dashed extensions that
-  // always read as 1/5 the length of their parent. Called from the
-  // drag-anchor mouse-move loop; runs only if drafts exist for the
-  // affected POMs.
+  // Keep Auto Mode POM 1/2/3/4/16 drafts geometrically tied to their anchors
+  // while the TD is dragging. POM 1 follows band-{left,right}; POM 3 follows
+  // chest-{left,right}; POMs 2 and 4 are dashed extensions that always read
+  // as 1/5 the length of their parent; POM 16 follows apex-{left,right}
+  // (US-085 — without this, correcting a mis-detected apex anchor by hand
+  // left POM 16's line drawn at the old, pre-drag position, the same
+  // "anchors right, line wrong" symptom ADR 0049 fixed for band/chest, but
+  // for a manual correction instead of a seeding fallback). Called from the
+  // drag-anchor mouse-move loop; runs only if drafts exist for the affected
+  // POMs. Other POMs' drafts still don't live-sync — a TD must re-generate
+  // after moving those anchors.
   function syncBandChestDraftsFromAnchors(movedAnchorKind) {
     if (state.appMode !== 'auto') return;
     const drafts = state.autoMode && state.autoMode.draftAnnotations;
@@ -17026,7 +28515,9 @@ function getAnnotationsOnImage(image) {
     const relevant = movedAnchorKind === 'band-left'
       || movedAnchorKind === 'band-right'
       || movedAnchorKind === 'chest-left'
-      || movedAnchorKind === 'chest-right';
+      || movedAnchorKind === 'chest-right'
+      || movedAnchorKind === 'apex-left'
+      || movedAnchorKind === 'apex-right';
     if (!relevant) return;
 
     const anchors = state.autoMode.anchors || [];
@@ -17036,6 +28527,8 @@ function getAnnotationsOnImage(image) {
     const bandR = byKind['band-right'];
     const chestL = byKind['chest-left'];
     const chestR = byKind['chest-right'];
+    const apexL = byKind['apex-left'];
+    const apexR = byKind['apex-right'];
 
     const det = state.autoMode && state.autoMode.detection;
     const sourceImage = det
@@ -17065,6 +28558,51 @@ function getAnnotationsOnImage(image) {
       const pom3Length = chestR.x - chestL.x;
       const ext4End = { x: clamp01(chestR.x + pom3Length / 5), y: chestR.y };
       updateLine(findDraft('4'), chestR, ext4End);
+    }
+    if (apexL && apexR) {
+      const draft16 = findDraft('16');
+      // POM 16 doesn't use the plain updateLine helper above: unlike
+      // band/chest it is NOT forced level onto one anchor (ADR 0049 /
+      // US-084 — the apex pair is legitimately allowed to sit at different
+      // heights), so the line's own credibility can change as the TD drags
+      // an anchor, and drawability must flip between DRAWABLE and
+      // REVIEW_ONLY live rather than staying frozen. updateLine's "never
+      // touch a REVIEW_ONLY draft" rule would defeat exactly the case this
+      // exists for: un-REVIEW-ONLY-ing POM 16 IS the point of the TD's fix.
+      if (draft16) {
+        // Keep this in lockstep with APEX_MAX_SLANT in
+        // buildPOMFixtureFromAnchors (this file) and APEX_SLANT_LIMIT in
+        // src/auto-detection.js — contract E4 guards all three from
+        // drifting apart.
+        const APEX_MAX_SLANT = 0.06;
+        const apexSpanX = Math.abs(apexR.x - apexL.x);
+        const apexDy = Math.abs(apexR.y - apexL.y);
+        const apexSlant = apexSpanX > 0 ? apexDy / apexSpanX : Infinity;
+        if (apexSlant <= APEX_MAX_SLANT) {
+          const apexMidY = (apexL.y + apexR.y) / 2;
+          const newStart = toWorld({ x: apexL.x, y: apexMidY });
+          const newEnd = toWorld({ x: apexR.x, y: apexMidY });
+          if (newStart) draft16.start = newStart;
+          if (newEnd) draft16.end = newEnd;
+          draft16.drawability = 'DRAWABLE';
+          draft16.confidence = 'medium';
+          draft16.uncertainty = null;
+        } else {
+          // validate-fixture.js requires REVIEW_ONLY rows to carry null
+          // geometry ("must have null geometry") — leaving the pre-drag
+          // start/end in place would both violate that and silently draw a
+          // stale line under a "review only" label instead of no line.
+          draft16.start = null;
+          draft16.end = null;
+          draft16.drawability = 'REVIEW_ONLY';
+          draft16.confidence = 'low';
+          draft16.uncertainty = 'The two apex joins were detected ' + apexDy.toFixed(3)
+            + ' apart vertically over a ' + apexSpanX.toFixed(3) + ' span (slant '
+            + apexSlant.toFixed(3) + ', limit ' + APEX_MAX_SLANT
+            + ') — too steep for an apex-to-apex measurement, so one side is very'
+            + ' likely mis-detected. Place the apex anchors and re-generate.';
+        }
+      }
     }
   }
 
@@ -17211,7 +28749,7 @@ function getAnnotationsOnImage(image) {
     for (const row of fixture.annotations) {
       const pomKey = String(row.pom);
       if (!pomTemplate[pomKey]) {
-        errors.push(`Row references POM ${pomKey} which is not in POM_TEMPLATE 1–16.`);
+        errors.push(`Row references POM ${pomKey} which is not in POM_TEMPLATE 1–18.`);
         continue;
       }
       const list = seenPoms.get(pomKey) || [];
@@ -17219,8 +28757,8 @@ function getAnnotationsOnImage(image) {
       seenPoms.set(pomKey, list);
     }
 
-    // Exactly one row per POM 1–16
-    for (let n = 1; n <= 16; n += 1) {
+    // Exactly one row per POM 1–18 (core range widened by ADR 0032)
+    for (let n = 1; n <= 18; n += 1) {
       const key = String(n);
       const rows = seenPoms.get(key) || [];
       if (rows.length === 0) errors.push(`Missing POM ${key}.`);
@@ -17528,7 +29066,7 @@ function getAnnotationsOnImage(image) {
       usedPomKeys.add(key);
     }
 
-    // Duplicate-only conflict path: collapse the 16 repeated messages into a
+    // Duplicate-only conflict path: collapse the 18 repeated messages into a
     // single line, and offer to clear the existing auto-applied rows so the
     // user can recover instead of hitting Discard Drafts and starting over.
     if (duplicates.length && !geometryErrors.length) {
@@ -17686,7 +29224,7 @@ function getAnnotationsOnImage(image) {
       viewRole: draft.viewRole || effectivePomViewRole(draft.seq),
       originDraftId: draft.id,
     };
-    ensureCurveMidPoint(ann);
+    ensureCurveControls(ann);
     return ann;
   }
 
@@ -18351,7 +29889,7 @@ function getAnnotationsOnImage(image) {
   // =============================================================
   // Phase 2 + Phase 3: Manual Mode silently teaches Auto Mode.
   //
-  // Trigger: TD labels a manual line with a recognised POM number 1–16.
+  // Trigger: TD labels a manual line with a recognised POM number 1–18.
   // The tool runs a shadow detection on that image (cached per-image),
   // resolves the POM number to a *measurement meaning* (fixed for POMs
   // 1, 3, 5; confirmed once by the TD for POMs 6+), then records the
@@ -18379,13 +29917,13 @@ function getAnnotationsOnImage(image) {
   // Realistic ceiling for a POM number parsed from a label. The regex below
   // already caps at two digits; this bound keeps incidental 2-digit numbers
   // in a label (e.g. "12 cm") from being read as a POM, while still letting
-  // out-of-template POMs (17, 18, …) through. Tunable.
+  // custom POMs (19, 20, …) through. Tunable.
   const POM_LABEL_MAX = 40;
 
   // Pull "1" out of labels like "1", "POM 1", "1A", "Underbust (1)".
-  // Accepts any POM in the 1–POM_LABEL_MAX range. POMs above the fixed 1–16
-  // template are not dropped here — they resolve to a style-scoped meaning via
-  // the confirmation popover instead of being silently ignored.
+  // Accepts any POM in the 1–POM_LABEL_MAX range. POMs above the fixed 1–18
+  // core template are not dropped here — they resolve to a style-scoped meaning
+  // via the confirmation popover instead of being silently ignored.
   function parsePomNumberFromLabel(text) {
     if (!text) return null;
     const m = /(?:^|[^\d])(\d{1,2})(?:$|[^\d])/.exec(' ' + String(text) + ' ');
@@ -20199,6 +31737,16 @@ function getAnnotationsOnImage(image) {
         width: image.width,
         height: image.height,
       })),
+      // US-082 toolbar test seam: add decoded Board image data without also
+      // invoking detection. This isolates the ready-state toolbar contract;
+      // the smoke/golden suites continue to own detection proof.
+      addBoardImages: async (dataURLs) => {
+        await addImagesFromDataURLs(Array.isArray(dataURLs) ? dataURLs : []);
+        return {
+          imageCount: state.images.length,
+          status: state.autoMode.status,
+        };
+      },
       getAnnotations: () => clone(state.annotations),
       // Test-only: set the review-time hidden POM lines by annotation id — the
       // same session-only state the panel's × toggle writes (state.hiddenAnnIds).
@@ -20238,6 +31786,11 @@ function getAnnotationsOnImage(image) {
         if (!bounds) return null;
         return renderBoardRegionToCanvas(bounds).toDataURL('image/png');
       },
+      // Canvas view transform. Needed to drive REAL pointer events from world
+      // coordinates in a test (screenX = worldX * zoom + panX + canvasRect.left),
+      // which is the only way to exercise selection, drag and resize the way a TD
+      // does. Without it a UI test has to guess pixel positions.
+      getView: () => ({ zoom: state.zoom, panX: state.panX, panY: state.panY }),
       getAcceptanceStats: () => clone(getAutoAcceptanceStats()),
       clearAcceptanceStats: () => clearAutoAcceptanceStats(),
       getTelemetryLog: () => clone(getAutoTelemetryLog()),
@@ -20258,6 +31811,16 @@ function getAnnotationsOnImage(image) {
         await new Promise((resolve) => setTimeout(resolve, 80));
         const sourceImage = state.images[state.images.length - 1] || null;
         if (!sourceImage) throw new Error('No image was added.');
+        // opts.auxDataURLs: add EXTRA board photos (e.g. a separate front-inner
+        // cutaway) before detection, so a suite can exercise the real 2-image board
+        // a TD uses. Until this existed every suite ran a single image, which is why
+        // the aux-view path could regress with all suites green (ADR 0036 follow-up).
+        // The primary image stays the detection source; extras become aux views.
+        const auxDataURLs = (opts && Array.isArray(opts.auxDataURLs)) ? opts.auxDataURLs : [];
+        if (auxDataURLs.length) {
+          await addImagesFromDataURLs(auxDataURLs);
+          await new Promise((resolve) => setTimeout(resolve, 80));
+        }
         state.selection = { kind: 'image', id: sourceImage.id };
         await runOfflineDetection();
         generatePOMDraftsFromAnchors({ keepDraftsForReview: true, suppressReplacePrompt: true });
@@ -20282,6 +31845,14 @@ function getAnnotationsOnImage(image) {
       },
       applyApprovedDrafts: () => applyApprovedDraftsAtomically({ suppressPrompt: true }),
       exportProject: () => clone(buildProjectSnapshot()),
+      /* US-080: drives a MAIN PAGE sketch slot the way the upload/paste menu
+         does, and hands back the RAW runtime state.mainPage — the one history
+         clones — so a suite can prove the image bytes never land in it. */
+      setMainPageSketch: async (variant, index, dataURL) => {
+        if (typeof mpSetSketch !== 'function') return null;
+        await mpSetSketch(variant, index, dataURL);
+        return JSON.stringify(state.mainPage);
+      },
       loadProject: async (project) => {
         await loadProject(project);
         return window.__braAutoModeDebug.getState();
@@ -20298,6 +31869,7 @@ function getAnnotationsOnImage(image) {
       },
       getState: () => ({
         appMode: state.appMode,
+        activePage: state.activePage,
         autoStatus: state.autoMode.status,
         lastError: state.autoMode.lastError,
         validation: clone(state.autoMode.validation),
@@ -20451,13 +32023,6 @@ function getAnnotationsOnImage(image) {
         // through the shared IIFE scope (the bundle wraps every source
         // part in the same closure). Keeping them here keeps the test
         // surface in one namespace.
-        isPopoverOpen: () => pendingMeaningEval != null,
-        openPopoverForAnn: (ann) => {
-          const result = evaluateManualPomSample(ann);
-          if (result.status === 'needsConfirmation') openPomMeaningPopover(result);
-          return { status: result.status, pom: result.pom || null };
-        },
-        cancelPopover: () => { closePomMeaningPopover(); },
         getCanvasTool: () => state.tool,
         setAppMode: (mode) => { setAppMode(mode === 'auto' ? 'auto' : 'manual'); },
       },
@@ -20629,7 +32194,12 @@ function getAnnotationBounds(ann) {
 
 function createExportCanvas(bounds) {
   const isLandscape = bounds.width > bounds.height;
-  const mmToPx = 150 / 25.4;
+  // 300 DPI (print standard). At the old 150 DPI the A4 page held too few
+  // pixels, so a photo fit to the page rendered below its native resolution and
+  // looked soft; 300 DPI lets a single/dual-photo board render at (or above)
+  // native. Doubling DPI quadruples the JPEG pixels — still well within a
+  // single-page PDF budget at quality 0.94.
+  const mmToPx = 300 / 25.4;
   const pageWidthMm = isLandscape ? 297 : 210;
   const pageHeightMm = isLandscape ? 210 : 297;
   const pageWidthPx = Math.round(pageWidthMm * mmToPx);
@@ -20644,12 +32214,19 @@ function createExportCanvas(bounds) {
   exportCanvas.width = pageWidthPx;
   exportCanvas.height = pageHeightPx;
   const exportCtx = exportCanvas.getContext('2d');
+  exportCtx.imageSmoothingEnabled = true;
+  exportCtx.imageSmoothingQuality = 'high';
   const oldCtx = ctx;
   const oldZoom = state.zoom;
   const oldPanX = state.panX;
   const oldPanY = state.panY;
   ctx = exportCtx;
   state.zoom = exportZoom;
+  // US-056 doubled the page density (150 -> 300 DPI), which doubled exportZoom and
+  // so halved the on-page size of the POM lines/labels (they divide by state.zoom).
+  // Size features against half the zoom to restore the pre-300-DPI proportions
+  // while the image keeps rendering at the higher resolution. See featureZoom().
+  state.exportFeatureZoom = exportZoom / 2;
   state.panX = exportPanX;
   state.panY = exportPanY;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -20664,6 +32241,7 @@ function createExportCanvas(bounds) {
   ctx.restore();
   ctx = oldCtx;
   state.zoom = oldZoom;
+  state.exportFeatureZoom = null;
   state.panX = oldPanX;
   state.panY = oldPanY;
   requestRender();
@@ -20796,20 +32374,43 @@ function makeExportFileName() {
   // export-pdf.js; restore is wrapped in try/finally so a draw error can
   // never leave the live board pointing at the temp canvas.
   function renderBoardRegionToCanvas(bounds) {
-    const MAX_COPY_DIMENSION = 4096;
-    const scale = Math.min(2, MAX_COPY_DIMENSION / bounds.width, MAX_COPY_DIMENSION / bounds.height);
+    const MAX_COPY_DIMENSION = 6000;
+    // Render at (at least) the NATIVE pixel density of the sharpest photo in
+    // view. Photos are stored at a downscaled board-display size (~42% of the
+    // canvas), so a fixed 2x — the old value — exported them well below their
+    // source resolution and looked blurry. Driving the scale off naturalWidth /
+    // world-width makes each photo export at full resolution; a lines-only board
+    // keeps the 2x crisp-line default. Still capped so a big multi-photo board
+    // can't allocate an absurd bitmap.
+    let contentScale = 2;
+    for (const image of state.images) {
+      if (!image || !image.img || !image.width || !image.height) continue;
+      const natW = image.img.naturalWidth || image.width;
+      const natH = image.img.naturalHeight || image.height;
+      contentScale = Math.max(contentScale, natW / image.width, natH / image.height);
+    }
+    const scale = Math.min(contentScale, MAX_COPY_DIMENSION / bounds.width, MAX_COPY_DIMENSION / bounds.height);
     const width = Math.max(1, Math.round(bounds.width * scale));
     const height = Math.max(1, Math.round(bounds.height * scale));
     const copyCanvas = document.createElement('canvas');
     copyCanvas.width = width;
     copyCanvas.height = height;
     const copyCtx = copyCanvas.getContext('2d');
+    copyCtx.imageSmoothingEnabled = true;
+    copyCtx.imageSmoothingQuality = 'high';
     const oldCtx = ctx;
     const oldZoom = state.zoom;
     const oldPanX = state.panX;
     const oldPanY = state.panY;
     ctx = copyCtx;
     state.zoom = scale;
+    // Keep line/label features a fixed fraction of the board regardless of the
+    // native-resolution export scale (US-056 drove `scale` well above the old
+    // flat 2x, which shrank the POM lines/numbers to hairlines once pasted into
+    // Excel). Reference 2 reproduces the pre-US-056 export proportions; min(scale,2)
+    // means a lines-only board (scale===2) is byte-identical and a huge board
+    // capped below 2x is never made smaller than before.
+    state.exportFeatureZoom = Math.min(scale, 2);
     state.panX = -bounds.x * scale;
     state.panY = -bounds.y * scale;
     try {
@@ -20826,6 +32427,7 @@ function makeExportFileName() {
     } finally {
       ctx = oldCtx;
       state.zoom = oldZoom;
+      state.exportFeatureZoom = null;
       state.panX = oldPanX;
       state.panY = oldPanY;
     }
@@ -20939,6 +32541,20 @@ function makeExportFileName() {
     return Math.round(value * 10000) / 10000;
   }
 
+  // US-011 S3: per-POM per-size delta override from the Grading dialog,
+  // stored in INCHES in gradeRules v2 (alpha keyed by alpha label, depth by
+  // depth label). Returns null when the TD has not overridden that cell.
+  // Precedence (highest first): per-size override → constant-step override
+  // (Size Run dialog) → built-in SPEC_* tables. A per-size override also
+  // beats the `hold` flag — an explicit cell edit is explicit TD intent.
+  function getPerSizeGradeDelta(tier, pomKey, sizeLabel) {
+    const gr = state.gradeRules;
+    const bucket = gr && gr.version === 2 ? (tier === 1 ? gr.alpha : gr.depth) : null;
+    const entry = bucket && bucket[String(pomKey)];
+    const v = entry ? entry[sizeLabel] : null;
+    return (typeof v === 'number' && isFinite(v)) ? v : null;
+  }
+
   // The 15 graded cells for one POM, in the project's unit, aligned with
   // SPEC_SIZE_RUN. Each entry is a descriptor `{ value, base, delta }`:
   //   base === null → static (the editable Size-L cell, an explicit Size-L2
@@ -20960,6 +32576,8 @@ function makeExportFileName() {
     const baseIdx = GRADE_SIZES.indexOf(GRADE_BASE_SIZE);
 
     const alphaValue = (sizeLabel) => {
+      const perSize = getPerSizeGradeDelta(1, key, sizeLabel);
+      if (perSize != null) return protoL + perSize * unitScale;
       if (rule.hold) return protoL;
       const i = GRADE_SIZES.indexOf(sizeLabel);
       if (rule.overridden || !alphaDeltas) return protoL + (i - baseIdx) * rule.step;
@@ -20978,6 +32596,8 @@ function makeExportFileName() {
     const depthLabels = SPEC_SIZE_RUN.filter(c => c.tier === 2).map(c => c.label);
 
     const depthValue = (col) => {
+      const perSize = getPerSizeGradeDelta(2, key, col.label);
+      if (perSize != null) return protoL2 + perSize * unitScale;
       if (rule.hold) return protoL;
       if (rule.overridden || !depthDeltas) {
         return protoL2 + (GRADE_SIZES.indexOf(col.base) - baseIdx) * rule.step;
@@ -21292,11 +32912,16 @@ function makeExportFileName() {
   // ({ bytes, width, height }); without it the sheet is table-only.
   // `now` feeds the header date and the ZIP timestamps — pass a fixed date
   // to get byte-identical output (determinism tests).
-  function buildSpecWorkbookXlsx(now, image) {
-    const encoder = new TextEncoder();
-    const annByPom = new Map();
-    for (const ann of state.annotations) annByPom.set(getLabelText(ann), ann);
-    const allPomKeys = Object.keys(POM_TEMPLATE).sort((a, b) => Number(a) - Number(b));
+  // The POM keys the spec actually emits, in row order. Extracted from
+  // buildSpecWorkbookXlsx (US-079) so the Preview & Export page's spec-table
+  // replica and the tech-pack workbook share the exact same visibility rules.
+  function specVisiblePomKeys(annByPom) {
+    // Standard 16 + registered custom POMs (US-011 S4). Customs sort after 16
+    // by construction (numbering starts at 19) and get identical treatment:
+    // spec row, grading (flat until the TD grades them), live formulas.
+    const allPomKeys = Object.keys(POM_TEMPLATE)
+      .concat((state.customPoms || []).map(p => String(p.pom)))
+      .sort((a, b) => Number(a) - Number(b));
 
     // A POM line the TD hid via the review × toggle (state.hiddenAnnIds) is
     // omitted from the exported spec entirely — its row and every measurement
@@ -21307,12 +32932,27 @@ function makeExportFileName() {
     for (const ann of state.annotations) {
       if (isAnnHidden(ann.id)) hiddenPomKeys.add(String(getLabelText(ann)));
     }
+    // US-047: a POM whose drawn line was DELETED is excluded from the spec just
+    // like a hidden line (TD: "delete = hide") — UNLESS a line with that label
+    // has since been redrawn, in which case the live line is authoritative.
+    for (const key of (state.deletedPomKeys || [])) {
+      if (!annByPom.has(String(key))) hiddenPomKeys.add(String(key));
+    }
     for (const key of Array.from(hiddenPomKeys)) {
       const pairing = POM_TEMPLATE[key] && POM_TEMPLATE[key].pairing;
       const partner = pairing && (pairing.partner || pairing.primary);
       if (partner != null) hiddenPomKeys.add(String(partner));
     }
-    const pomKeys = allPomKeys.filter(key => !hiddenPomKeys.has(String(key)));
+    return allPomKeys.filter(key => !hiddenPomKeys.has(String(key)));
+  }
+
+  // The Measurement Spec row grid — shared by the single-sheet Board export
+  // and the tech-pack workbook's POM sheet (US-079: one builder, two entry
+  // points, so the two exports can never disagree about the spec).
+  function buildSpecSheetRows(now) {
+    const annByPom = new Map();
+    for (const ann of state.annotations) annByPom.set(getLabelText(ann), ann);
+    const pomKeys = specVisiblePomKeys(annByPom);
 
     // US-011: the sheet emits only the SELECTED size columns. The grade math
     // always runs over the full 15-cell run (positional delta lookups assume
@@ -21373,7 +33013,10 @@ function makeExportFileName() {
         // number/date. So any fraction family (halves, quarters, eighths,
         // incl. ¾ = "3/4") round-trips to Excel exactly as authored, with no
         // conversion; fractionToNumber (src/ui/spec-panel.js) parses it back.
-        spec.tol ? specInlineStrCell('D' + r, SPEC_XF.textCenter, spec.tol) : specBlankCell('D' + r, SPEC_XF.textCenter),
+        // US-048: TOL exports as an imperial fraction in inch mode (0.375 →
+        // 3/8) to match the fraction-formatted size values; cm stays decimal.
+        // Still written verbatim as text — no coercion to number/date.
+        spec.tol ? specInlineStrCell('D' + r, SPEC_XF.textCenter, inchesToFractionOrDecimal(spec.tol)) : specBlankCell('D' + r, SPEC_XF.textCenter),
       ];
       layout.forEach((col, c) => {
         const cell = run[fullIndexByLabel.get(col.label)];
@@ -21398,7 +33041,12 @@ function makeExportFileName() {
       });
       rowsData.push({ r, cells });
     }
+    return { rowsData, colCount, pomKeys };
+  }
 
+  function buildSpecWorkbookXlsx(now, image) {
+    const encoder = new TextEncoder();
+    const { rowsData, colCount, pomKeys } = buildSpecSheetRows(now);
     const hasImage = !!(image && image.bytes && image.bytes.length);
     const sheetXml = buildSpecSheetXml(rowsData, hasImage, colCount);
 
@@ -21511,6 +33159,411 @@ function makeExportFileName() {
     }
   }
 
+  // ---- Tech-pack multi-sheet workbook (US-079, ADR 0046) ----
+  //
+  // One workbook, one worksheet per ENABLED Preview & Export sheet, in the
+  // preview's fixed order. MAIN PAGE and the two BOM sheets are real cells;
+  // the two Construction sheets and every board/photo/material-key image are
+  // embedded PNGs. The POM sheet reuses buildSpecSheetRows — the exact grid
+  // the Board "Export Excel" button writes, which stays untouched.
+
+  const TECHPACK_SHEET_NAMES = {
+    'mainpage': 'MAIN PAGE',
+    'construction-solid': 'CONSTRUCTION-SOLID',
+    'construction-lace': 'CONSTRUCTION-LACE',
+    'bom-solid': 'BOM-SOLID',
+    'bom-lace': 'BOM-LACE',
+    'pom': 'Measurement Spec',
+  };
+
+  function canvasToPngBytes(canvas) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(result => {
+        if (!result) { reject(new Error('canvas.toBlob produced no data')); return; }
+        result.arrayBuffer().then(buffer => resolve({
+          bytes: new Uint8Array(buffer), width: canvas.width, height: canvas.height,
+        }), reject);
+      }, 'image/png');
+    });
+  }
+
+  // Row-photo dataURLs can be any raster type the TD pasted; re-encode to
+  // PNG (capped) so the workbook only ever embeds one image format and one
+  // [Content_Types] default covers all media parts.
+  async function pngBytesFromDataURL(dataURL, maxDim) {
+    const img = await loadImageFromDataURL(dataURL);
+    const natW = img.naturalWidth || img.width || 1;
+    const natH = img.naturalHeight || img.height || 1;
+    const scale = Math.min(1, (maxDim || 800) / Math.max(natW, natH));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(natW * scale));
+    canvas.height = Math.max(1, Math.round(natH * scale));
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+    return canvasToPngBytes(canvas);
+  }
+
+  // Generic worksheet XML: optional per-column widths, sparse rows allowed,
+  // no merges. The POM sheet keeps using buildSpecSheetXml (its merges and
+  // column grid are part of the byte-stable single-sheet contract).
+  function buildTechPackSheetXml(rowsData, colWidths, hasDrawing) {
+    const lastRow = rowsData.length ? rowsData[rowsData.length - 1].r : 1;
+    const lastCol = specColLetter(Math.max(0, (colWidths ? colWidths.length : 1) - 1));
+    const cols = colWidths && colWidths.length
+      ? '<cols>' + colWidths.map((w, i) =>
+        '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>'
+      : '';
+    const rows = rowsData.map(row =>
+      '<row r="' + row.r + '"' + (row.ht ? ' ht="' + row.ht + '" customHeight="1"' : '') + '>'
+      + row.cells.join('') + '</row>').join('');
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+      + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+      + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+      + '<dimension ref="A1:' + lastCol + lastRow + '"/>'
+      + '<sheetViews><sheetView workbookViewId="0"/></sheetViews>'
+      + cols
+      + '<sheetData>' + rows + '</sheetData>'
+      + (hasDrawing ? '<drawing r:id="rId1"/>' : '')
+      + '</worksheet>';
+  }
+
+  // One drawing part per sheet, any number of oneCellAnchor images. Image k
+  // binds to the drawing rels' rId(k+1); explicit EMU extents keep aspect
+  // ratios identical across viewers (same rationale as buildSpecDrawingXml).
+  function buildTechPackDrawingXml(images) {
+    const anchors = images.map((image, i) => {
+      const cx = Math.round(image.displayWidth * 9525);
+      const cy = Math.round(image.displayHeight * 9525);
+      return '<xdr:oneCellAnchor>'
+        + '<xdr:from><xdr:col>' + (image.anchorCol || 0) + '</xdr:col><xdr:colOff>0</xdr:colOff>'
+        + '<xdr:row>' + (image.anchorRow || 0) + '</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>'
+        + '<xdr:ext cx="' + cx + '" cy="' + cy + '"/>'
+        + '<xdr:pic>'
+        + '<xdr:nvPicPr><xdr:cNvPr id="' + (i + 2) + '" name="Image ' + (i + 1) + '"/>'
+        + '<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr>'
+        + '<xdr:blipFill><a:blip r:embed="rId' + (i + 1) + '"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill>'
+        + '<xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>'
+        + '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr>'
+        + '</xdr:pic>'
+        + '<xdr:clientData/>'
+        + '</xdr:oneCellAnchor>';
+    }).join('');
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+      + '<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"'
+      + ' xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+      + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+      + anchors + '</xdr:wsDr>';
+  }
+
+  async function buildMainPageSheetPart(now) {
+    const mp = state.mainPage || {};
+    const rowsData = [];
+    const images = [];
+    const band = (r, styleId, text) => ({
+      r, ht: r === 1 ? 26 : 18,
+      cells: [specInlineStrCell('A' + r, styleId, text), specBlankCell('B' + r, styleId)],
+    });
+    rowsData.push(band(1, SPEC_XF.title, 'MAIN PAGE'));
+    rowsData.push(band(2, SPEC_XF.styleRow,
+      ((state.styleId || '').trim() || 'Untitled') + ' - ' + formatSpecDate(now)));
+    let r = 3;
+    (mp.fields || []).forEach(f => {
+      /* US-080: a worksheet has no room for a three-cell sub-grid, so the
+         breakdown's parts each get their own labelled row — the captions the
+         factory reads are the sheet's own, never invented at export time. */
+      if (f.parts && /Style No Breakdown/i.test(f.label || '')) {
+        rowsData.push({ r, cells: [
+          specInlineStrCell('A' + r, SPEC_XF.headLabel, f.label || ''),
+          specInlineStrCell('B' + r, SPEC_XF.text, f.value || ''),
+        ] });
+        r += 1;
+        MP_BREAKDOWN_PARTS.forEach(p => {
+          rowsData.push({ r, cells: [
+            specInlineStrCell('A' + r, SPEC_XF.text, '    ' + p.head),
+            specInlineStrCell('B' + r, SPEC_XF.text, String(f.parts[p.key] || '')),
+          ] });
+          r += 1;
+        });
+        return;
+      }
+      rowsData.push({ r, cells: [
+        specInlineStrCell('A' + r, SPEC_XF.headLabel, f.label || ''),
+        specInlineStrCell('B' + r, SPEC_XF.text, f.value || ''),
+      ] });
+      r += 1;
+    });
+    r += 1;
+    rowsData.push(band(r, SPEC_XF.styleRow, 'COLORWAYS'));
+    r += 1;
+    (mp.colorways || []).forEach((c, i) => {
+      rowsData.push({ r, cells: [
+        specInlineStrCell('A' + r, SPEC_XF.headLabel, c.col || ('COL ' + (i + 1))),
+        specInlineStrCell('B' + r, SPEC_XF.text, c.value || ''),
+      ] });
+      r += 1;
+    });
+    /* Version sketches (US-080). A worksheet cannot put the two panels beside
+       the field column the way the page does, so each version becomes its own
+       band with its flats anchored under it; blank rows are reserved beneath
+       the anchors (default row ≈ 20px) so nothing runs under an image. */
+    for (const variant of MP_SKETCH_VARIANTS) {
+      const present = MP_SKETCH_SLOTS
+        .map((slot, i) => ({ slot, dataURL: mpSketchDataURL(variant, i) }))
+        .filter(entry => entry.dataURL);
+      if (!present.length) continue;
+      r += 1;
+      rowsData.push(band(r, SPEC_XF.styleRow, variant.toUpperCase() + ' VERSION'));
+      r += 1;
+      let blockRows = 0;
+      let anchorCol = 0;
+      for (const entry of present) {
+        const png = await pngBytesFromDataURL(entry.dataURL, 1200);
+        const displayWidth = 320;
+        const displayHeight = Math.round(png.height * (displayWidth / png.width));
+        rowsData.push({ r, cells: [
+          specInlineStrCell(specColLetter(anchorCol) + r, SPEC_XF.headLabel, entry.slot.label),
+        ] });
+        images.push({ bytes: png.bytes, anchorCol, anchorRow: r, displayWidth, displayHeight });
+        blockRows = Math.max(blockRows, Math.ceil(displayHeight / 20) + 1);
+        anchorCol += 3;   // FRONT in A, BACK clear of it in D
+      }
+      r += blockRows;
+    }
+    if (String(mp.provenance || '').trim()) {
+      r += 1;
+      rowsData.push(band(r, SPEC_XF.styleRow, 'Provenance'));
+      r += 1;
+      rowsData.push({ r, cells: [
+        specInlineStrCell('A' + r, SPEC_XF.text, mp.provenance),
+        specBlankCell('B' + r, SPEC_XF.text),
+      ] });
+    }
+    return {
+      name: TECHPACK_SHEET_NAMES['mainpage'],
+      sheetXml: buildTechPackSheetXml(rowsData, [34, 58, 12, 34, 24, 12], images.length > 0),
+      images,
+    };
+  }
+
+  async function buildConstructionSheetPart(key) {
+    const variant = key.slice('construction-'.length);
+    const image = await canvasToPngBytes(ccRenderSheetToCanvas(variant, 1440, 900, 2));
+    const rowsData = [{ r: 1, ht: 26, cells: [specInlineStrCell(
+      'A1', SPEC_XF.title, 'CONSTRUCTION - ' + variant.toUpperCase() + ' - WORKING BOARD')] }];
+    const displayWidth = 1160;
+    return {
+      name: TECHPACK_SHEET_NAMES[key],
+      sheetXml: buildTechPackSheetXml(rowsData, [150], true),
+      images: [{
+        bytes: image.bytes, anchorCol: 0, anchorRow: 2, displayWidth,
+        displayHeight: Math.round(image.height * (displayWidth / image.width)),
+      }],
+    };
+  }
+
+  async function buildBomSheetPart(key, now) {
+    const variant = key.slice('bom-'.length);
+    const colorways = (state.mainPage && state.mainPage.colorways) || [];
+    const colCount = 1 + BM_CELL_FIELDS.length + 1 + colorways.length;
+    const photoColIdx = 1 + BM_CELL_FIELDS.length;
+    const rowsData = [];
+    const band = (r, styleId, text) => ({
+      r, ht: r === 1 ? 26 : 18,
+      cells: [specInlineStrCell('A' + r, styleId, text)].concat(
+        Array.from({ length: colCount - 1 }, (_, i) => specBlankCell(specColLetter(i + 1) + r, styleId))),
+    });
+    rowsData.push(band(1, SPEC_XF.title, 'BOM-' + variant.toUpperCase() + ' - Fabric and Trim Requirement'));
+    rowsData.push(band(2, SPEC_XF.styleRow, bmSheetMetaText() || formatSpecDate(now)));
+    const headerCells = (r) => {
+      const cells = [specInlineStrCell('A' + r, SPEC_XF.headLabel, '#')];
+      BM_CELL_FIELDS.forEach((f, i) => cells.push(specInlineStrCell(
+        specColLetter(1 + i) + r, SPEC_XF.headLabel, BM_CELL_LABELS[f] + '\n' + BM_CELL_LABELS_CN[f])));
+      cells.push(specInlineStrCell(
+        specColLetter(photoColIdx) + r, SPEC_XF.headLabel, BM_PHOTO_LABEL + '\n' + BM_PHOTO_LABEL_CN));
+      colorways.forEach((c, i) => cells.push(specInlineStrCell(
+        specColLetter(photoColIdx + 1 + i) + r, SPEC_XF.headAlpha, c.col || '')));
+      return cells;
+    };
+    const images = [];
+    const numbered = bmNumberedRows(variant);
+    let r = 3;
+    // Material Key sits ABOVE the table — same order as the BOM page and its
+    // preview sheet (the factory reads the annotated key first). Blank rows
+    // are reserved under the anchor (default row ≈ 20px) so the table never
+    // runs beneath the image.
+    if (bmVariantImages(variant).length) {
+      rowsData.push(band(r, SPEC_XF.styleRow, 'MATERIAL KEY'));
+      const matkey = await canvasToPngBytes(bmRenderMatkeyToCanvas(variant, 1400, 620, 2));
+      const displayWidth = 1000;
+      const displayHeight = Math.round(matkey.height * (displayWidth / matkey.width));
+      images.push({ bytes: matkey.bytes, anchorCol: 0, anchorRow: r, displayWidth, displayHeight });
+      r += 1 + Math.ceil(displayHeight / 20) + 1;
+    }
+    for (const section of BM_SECTIONS) {
+      rowsData.push(band(r, SPEC_XF.styleRow, BM_SECTION_BANDS[section]));
+      r += 1;
+      rowsData.push({ r, ht: 28, cells: headerCells(r) });
+      r += 1;
+      for (const x of numbered.filter(n => n.row.section === section)) {
+        const row = x.row;
+        const cells = [specInlineStrCell('A' + r, SPEC_XF.textCenter, x.seq)];
+        BM_CELL_FIELDS.forEach((f, i) => cells.push(specInlineStrCell(
+          specColLetter(1 + i) + r, SPEC_XF.text, row.cells[f] || '')));
+        cells.push(specBlankCell(specColLetter(photoColIdx) + r, SPEC_XF.text));
+        colorways.forEach((c, i) => cells.push(specInlineStrCell(
+          specColLetter(photoColIdx + 1 + i) + r, SPEC_XF.textCenter, bmCwValue(row, c))));
+        const hasPhoto = !!(row.photo && row.photo.dataURL);
+        rowsData.push(hasPhoto ? { r, ht: 58, cells } : { r, cells });
+        if (hasPhoto) {
+          const photo = await pngBytesFromDataURL(row.photo.dataURL, 400);
+          const displayHeight = 72; // fits the 58pt (~77px) photo row
+          images.push({
+            bytes: photo.bytes, anchorCol: photoColIdx, anchorRow: r - 1,
+            displayWidth: Math.max(1, Math.round(photo.width * (displayHeight / photo.height))),
+            displayHeight,
+          });
+        }
+        r += 1;
+      }
+    }
+    const widths = [6, 26, 20, 18, 20, 12, 16, 22, 30].concat(colorways.map(() => 16));
+    return {
+      name: TECHPACK_SHEET_NAMES[key],
+      sheetXml: buildTechPackSheetXml(rowsData, widths, images.length > 0),
+      images,
+    };
+  }
+
+  async function buildPomSheetPart(now) {
+    const { rowsData, colCount, pomKeys } = buildSpecSheetRows(now);
+    const image = await specBoardPngBytes();
+    const hasImage = !!(image && image.bytes && image.bytes.length);
+    const images = [];
+    if (hasImage) {
+      const displayWidth = Math.min(image.width, 1100);
+      images.push({
+        bytes: image.bytes, anchorCol: 0, anchorRow: 3 + pomKeys.length + 2,
+        displayWidth,
+        displayHeight: Math.round(image.height * (displayWidth / image.width)),
+      });
+    }
+    return {
+      name: TECHPACK_SHEET_NAMES['pom'],
+      sheetXml: buildSpecSheetXml(rowsData, hasImage, colCount),
+      images,
+    };
+  }
+
+  function assembleTechPackZip(parts, now) {
+    const encoder = new TextEncoder();
+    const hasAnyImage = parts.some(p => p.images.length > 0);
+    const wsType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml';
+    const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+      + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+      + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+      + '<Default Extension="xml" ContentType="application/xml"/>'
+      + (hasAnyImage ? '<Default Extension="png" ContentType="image/png"/>' : '')
+      + '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+      + parts.map((p, i) =>
+        '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="' + wsType + '"/>').join('')
+      + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+      + parts.map((p, i) => p.images.length
+        ? '<Override PartName="/xl/drawings/drawing' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>'
+        : '').join('')
+      + '</Types>';
+
+    const rootRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+      + '</Relationships>';
+
+    const workbookXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+      + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+      + ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+      + '<sheets>' + parts.map((p, i) =>
+        '<sheet name="' + xmlEscape(p.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('')
+      + '</sheets></workbook>';
+
+    const workbookRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + parts.map((p, i) =>
+        '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('')
+      + '<Relationship Id="rId' + (parts.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+      + '</Relationships>';
+
+    const files = [
+      { name: '[Content_Types].xml', bytes: encoder.encode(contentTypes) },
+      { name: '_rels/.rels', bytes: encoder.encode(rootRels) },
+      { name: 'xl/workbook.xml', bytes: encoder.encode(workbookXml) },
+      { name: 'xl/_rels/workbook.xml.rels', bytes: encoder.encode(workbookRels) },
+      { name: 'xl/styles.xml', bytes: encoder.encode(buildSpecStylesXml()) },
+    ];
+
+    let mediaIndex = 0;
+    parts.forEach((p, i) => {
+      files.push({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml', bytes: encoder.encode(p.sheetXml) });
+      if (!p.images.length) return;
+      const sheetRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing' + (i + 1) + '.xml"/>'
+        + '</Relationships>';
+      const mediaNames = p.images.map(() => { mediaIndex += 1; return 'image' + mediaIndex + '.png'; });
+      const drawingRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        + p.images.map((img, k) =>
+          '<Relationship Id="rId' + (k + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/' + mediaNames[k] + '"/>').join('')
+        + '</Relationships>';
+      files.push(
+        { name: 'xl/worksheets/_rels/sheet' + (i + 1) + '.xml.rels', bytes: encoder.encode(sheetRels) },
+        { name: 'xl/drawings/drawing' + (i + 1) + '.xml', bytes: encoder.encode(buildTechPackDrawingXml(p.images)) },
+        { name: 'xl/drawings/_rels/drawing' + (i + 1) + '.xml.rels', bytes: encoder.encode(drawingRels) }
+      );
+      p.images.forEach((img, k) => files.push({ name: 'xl/media/' + mediaNames[k], bytes: img.bytes }));
+    });
+
+    return zipStore(files, now);
+  }
+
+  // Enabled preview sheets → workbook bytes; null when nothing is ticked.
+  async function buildTechPackXlsxBytes(now) {
+    if (typeof ensureMainPage === 'function') ensureMainPage();
+    if (typeof ensureConstruction === 'function') ensureConstruction();
+    if (typeof ensureBom === 'function') ensureBom();
+    const enabled = pvEnabledSheets();
+    if (!enabled.length) return null;
+    const parts = [];
+    for (const sheet of enabled) {
+      if (sheet.key === 'mainpage') parts.push(await buildMainPageSheetPart(now));
+      else if (sheet.key.indexOf('construction-') === 0) parts.push(await buildConstructionSheetPart(sheet.key));
+      else if (sheet.key.indexOf('bom-') === 0) parts.push(await buildBomSheetPart(sheet.key, now));
+      else if (sheet.key === 'pom') parts.push(await buildPomSheetPart(now));
+    }
+    return assembleTechPackZip(parts, now);
+  }
+
+  function makeTechPackFileName(now) {
+    const pad = (v) => String(v).padStart(2, '0');
+    const styleSlug = ((state.styleId || '').trim() || 'untitled').replace(/[^\w\-]+/g, '_');
+    return 'tech-pack-' + styleSlug + '-'
+      + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '.xlsx';
+  }
+
+  async function exportTechPackXlsx() {
+    try {
+      const now = new Date();
+      const zipBytes = await buildTechPackXlsxBytes(now);
+      if (!zipBytes) {
+        showToast('No sheets selected — tick at least one page in the preview first.');
+        return;
+      }
+      downloadBlob(new Blob([zipBytes], { type: SPEC_XLSX_MIME }), makeTechPackFileName(now));
+      showToast('Tech pack exported — ' + pvEnabledSheets().length + ' of '
+        + PV_SHEETS.length + ' sheets in one workbook.');
+    } catch (error) {
+      console.error('[Export Tech Pack] failed:', error);
+      showToast('Tech pack export failed. Please try again after reducing image size.', 4200);
+    }
+  }
+
   // Test hooks for scripts/export-xlsx-tests.mjs: build the workbook with a
   // frozen date (determinism) and hand the bytes back as base64 — headless
   // Chrome can't observe a real download. Attached here (this part loads
@@ -21528,6 +33581,20 @@ function makeExportFileName() {
         return bytesToBase64(buildSpecWorkbookXlsx(now, image));
       } finally {
         if (options && 'sizeSelection' in options) state.sizeSelection = hadSelection;
+      }
+    };
+    // US-079: tech-pack workbook with a frozen date; options.enabledPages
+    // lets the suite exercise sheet subsets without driving the checkboxes.
+    window.__braAutoModeDebug.exportTechPackXlsxBase64 = async (isoDate, options) => {
+      const now = isoDate ? new Date(isoDate) : new Date();
+      const pv = ensurePreviewPage();
+      const hadPages = clone(pv.enabledPages);
+      if (options && options.enabledPages) Object.assign(pv.enabledPages, options.enabledPages);
+      try {
+        const bytes = await buildTechPackXlsxBytes(now);
+        return bytes ? bytesToBase64(bytes) : null;
+      } finally {
+        pv.enabledPages = hadPages;
       }
     };
     window.__braAutoModeDebug.buildFullSizeRun = (pomKey) => {
@@ -21554,9 +33621,8 @@ function makeExportFileName() {
     if (distance(world, ann.start) <= endpointRadius) return { part: 'start' };
     if (distance(world, ann.end) <= endpointRadius) return { part: 'end' };
     if (ann.type === 'curved') {
-      if (ann.midPoint && distance(world, ann.midPoint) <= controlRadius) return { part: 'midPoint' };
-      if (ann.midHandleIn && distance(world, ann.midHandleIn) <= controlRadius) return { part: 'midHandleIn' };
-      if (ann.midHandleOut && distance(world, ann.midHandleOut) <= controlRadius) return { part: 'midHandleOut' };
+      // Single cubic: the two control handles are always grabbable (pen-tool
+      // model). Endpoints are checked first (above) so they win a shared spot.
       if (ann.control1 && distance(world, ann.control1) <= controlRadius) return { part: 'control1' };
       if (ann.control2 && distance(world, ann.control2) <= controlRadius) return { part: 'control2' };
     }
@@ -21613,6 +33679,25 @@ function makeExportFileName() {
       { name: 'sw', x: image.x, y: image.y + image.height },
       { name: 'se', x: image.x + image.width, y: image.y + image.height },
     ];
+  }
+
+  // Bounding box of a multi-image selection, shaped like an image so the existing
+  // corner helpers (getImageCorners / hitTestSelectedImageHandles /
+  // getOppositeImageCorner) work on the GROUP without duplicating their geometry.
+  function getImagesGroupBox(images) {
+    const list = (images || []).filter(im => im
+      && Number.isFinite(im.x) && Number.isFinite(im.y)
+      && Number.isFinite(im.width) && Number.isFinite(im.height));
+    if (!list.length) return null;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const im of list) {
+      if (im.x < minX) minX = im.x;
+      if (im.y < minY) minY = im.y;
+      if (im.x + im.width > maxX) maxX = im.x + im.width;
+      if (im.y + im.height > maxY) maxY = im.y + im.height;
+    }
+    if (!(maxX > minX && maxY > minY)) return null;
+    return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
   }
 
   function getOppositeImageCorner(image, corner) {
@@ -21873,8 +33958,30 @@ function makeExportFileName() {
 // state-aware tweaks (e.g. selection highlight, alpha) so the same
 // helpers serve hover, selected, and draft renderings.
 
-  function drawAnnotation(ann) {
+  // Feature sizes (stroke width, arrowheads, callout font) are divided by
+  // state.zoom so they hold a CONSTANT on-screen pixel size at any zoom. During
+  // export, though, "zoom" is the render density: copy-image and export-pdf set
+  // state.zoom to the native-resolution scale, which US-056 pushed well above the
+  // old flat 2x. Dividing features by that big scale pins them to a few absolute
+  // device pixels — hairline lines and microscopic callout numbers on a ~2000px+
+  // board (visible the moment Excel shrinks the pasted PNG). featureZoom() lets an
+  // export path override the divisor with a fixed reference (state.exportFeatureZoom)
+  // so features stay a constant FRACTION of the board while the image still renders
+  // at native resolution. Screen rendering never sets the override, so it is a
+  // no-op there (returns state.zoom unchanged).
+  function featureZoom() {
+    return state.exportFeatureZoom || state.zoom;
+  }
+
+  function drawAnnotation(ann, withLabel = true) {
     drawLineCore(ann, 1);
+    if (withLabel) drawAnnotationLabel(ann);
+  }
+
+  // The callout number is drawn in a SEPARATE pass (after every line body and
+  // the anchor layer — see render()) so a later line or anchor never paints
+  // over a POM number. Keeps each number readable on a crowded 3-view board.
+  function drawAnnotationLabel(ann) {
     if (state.editingLabelId === ann.id) return;
     if (!labelsVisible()) return;
     drawLabel(ann.label, getLabelText(ann), state.selection.kind === 'annotation' && ann.id === state.selection.id, 1, getAnnotationColor(ann));
@@ -21898,8 +34005,8 @@ function makeExportFileName() {
     } else if (style === 'bartack') {
       drawBartackStitchLine(ann, color, lineWidth);
     } else {
-      ctx.lineWidth = lineWidth / state.zoom;
-      ctx.setLineDash(style === 'dashed' ? [10 / state.zoom, 7 / state.zoom] : []);
+      ctx.lineWidth = lineWidth / featureZoom();
+      ctx.setLineDash(style === 'dashed' ? [10 / featureZoom(), 7 / featureZoom()] : []);
       drawAnnotationPath(ann);
       ctx.stroke();
     }
@@ -21928,7 +34035,7 @@ function makeExportFileName() {
   function drawArrowheadsForStraight(ann, color, lineWidth) {
     const arrowType = getArrowType(ann);
     if (arrowType === 'none') return;
-    const arrowSize = (10 + lineWidth * 0.55) / state.zoom;
+    const arrowSize = (10 + lineWidth * 0.55) / featureZoom();
     drawArrowhead(ann.end, Math.atan2(ann.end.y - ann.start.y, ann.end.x - ann.start.x), arrowSize, color);
     if (arrowType === 'double') {
       drawArrowhead(ann.start, Math.atan2(ann.start.y - ann.end.y, ann.start.x - ann.end.x), arrowSize, color);
@@ -21938,7 +34045,7 @@ function makeExportFileName() {
   function drawArrowheadsForCurve(ann, color, lineWidth) {
     const arrowType = getArrowType(ann);
     if (arrowType === 'none') return;
-    const arrowSize = (10 + lineWidth * 0.55) / state.zoom;
+    const arrowSize = (10 + lineWidth * 0.55) / featureZoom();
     const endAngle = Math.atan2(ann.end.y - ann.control2.y, ann.end.x - ann.control2.x);
     drawArrowhead(ann.end, endAngle, arrowSize, color);
     if (arrowType === 'double') {
@@ -21968,8 +34075,8 @@ function makeExportFileName() {
   }
 
   function drawLabel(pos, text, selected, alpha = 1, color = LINE_COLOR) {
-    const fontSize = 17 / state.zoom;
-    const halo = 3 / state.zoom;
+    const fontSize = 17 / featureZoom();
+    const halo = 3 / featureZoom();
     // White label fill is invisible on the white canvas — use a dark halo so
     // the callout number still reads when the line color is white.
     const isWhiteFill = String(color || '').toLowerCase() === '#ffffff';
@@ -21981,8 +34088,8 @@ function makeExportFileName() {
     ctx.lineJoin = 'round';
     ctx.lineWidth = isWhiteFill ? halo * 1.4 : halo;
     ctx.shadowColor = 'rgba(17,24,39,.18)';
-    ctx.shadowBlur = 4 / state.zoom;
-    ctx.shadowOffsetY = 1 / state.zoom;
+    ctx.shadowBlur = 4 / featureZoom();
+    ctx.shadowOffsetY = 1 / featureZoom();
     ctx.strokeStyle = isWhiteFill ? '#111827' : '#ffffff';
     ctx.strokeText(String(text), pos.x, pos.y);
     ctx.fillStyle = color;
@@ -21991,49 +34098,143 @@ function makeExportFileName() {
   }
 
   function drawSelectionHelpers(ann) {
+    // US-027: the part the arrow keys currently move (Tab / handle drag sets
+    // it) renders filled so the TD can see what a keypress will nudge.
+    const activePart = state.selection.kind === 'annotation' && state.selection.id === ann.id
+      ? state.selection.part || null : null;
     ctx.save();
 
     if (ann.type === 'curved') {
-      const twoSeg = !!(ann.midPoint && ann.midHandleIn && ann.midHandleOut);
+      // Single cubic: two control handles, each with a dashed guide line from
+      // its endpoint (control1 off start, control2 off end) — the pen-tool
+      // model. Drag an endpoint to move it (its handle follows), drag a handle
+      // to bend that end.
       ctx.setLineDash([6 / state.zoom, 5 / state.zoom]);
       ctx.strokeStyle = 'rgba(53,109,255,.45)';
       ctx.lineWidth = 1.2 / state.zoom;
       ctx.beginPath();
-      // Separate handle lines: one per endpoint, plus two at the middle anchor
-      // (one toward each end). Each handle bends only its own side of the curve.
       if (ann.control1) { ctx.moveTo(ann.start.x, ann.start.y); ctx.lineTo(ann.control1.x, ann.control1.y); }
       if (ann.control2) { ctx.moveTo(ann.end.x, ann.end.y); ctx.lineTo(ann.control2.x, ann.control2.y); }
-      if (twoSeg) {
-        ctx.moveTo(ann.midPoint.x, ann.midPoint.y); ctx.lineTo(ann.midHandleIn.x, ann.midHandleIn.y);
-        ctx.moveTo(ann.midPoint.x, ann.midPoint.y); ctx.lineTo(ann.midHandleOut.x, ann.midHandleOut.y);
-      }
       ctx.stroke();
       ctx.setLineDash([]);
-      if (ann.control1) drawHandle(ann.control1, false);
-      if (ann.control2) drawHandle(ann.control2, false);
-      if (twoSeg) {
-        drawHandle(ann.midHandleIn, false);
-        drawHandle(ann.midHandleOut, false);
-      }
-      if (ann.midPoint) drawHandle(ann.midPoint, false);
+      if (ann.control1) drawHandle(ann.control1, false, activePart === 'control1');
+      if (ann.control2) drawHandle(ann.control2, false, activePart === 'control2');
     }
 
-    drawHandle(ann.start, true);
-    drawHandle(ann.end, true);
+    drawHandle(ann.start, true, activePart === 'start');
+    drawHandle(ann.end, true, activePart === 'end');
     drawLabelHandle(ann.label, getAnnotationColor(ann));
+    ctx.restore();
+    drawAdjustmentReadout(ann);
+  }
+
+  // Lighter per-line marker for a MULTI-selection (Shift+click / marquee): just
+  // the endpoint dots, no control/label handles or readout — enough to show the
+  // line is in the group without the busy single-line editing apparatus.
+  function drawAnnotationSelectedOutline(ann) {
+    if (!ann || !ann.start || !ann.end) return;
+    ctx.save();
+    drawHandle(ann.start, true, false);
+    drawHandle(ann.end, true, false);
     ctx.restore();
   }
 
-  function drawHandle(point, emphasized) {
-    const r = (emphasized ? 7.5 : 6.0) / state.zoom;
+  // Rubber-band selection rectangle, in world coordinates.
+  function drawMarquee(m) {
+    if (!m || !m.startWorld || !m.currentWorld) return;
+    const x = Math.min(m.startWorld.x, m.currentWorld.x);
+    const y = Math.min(m.startWorld.y, m.currentWorld.y);
+    const w = Math.abs(m.currentWorld.x - m.startWorld.x);
+    const h = Math.abs(m.currentWorld.y - m.startWorld.y);
+    ctx.save();
+    ctx.fillStyle = 'rgba(53,109,255,0.10)';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = 'rgba(53,109,255,0.75)';
+    ctx.lineWidth = 1 / state.zoom;
+    ctx.setLineDash([5 / state.zoom, 4 / state.zoom]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.restore();
+  }
+
+  // US-029: floating measurement readout, shown only WHILE the line is being
+  // adjusted (endpoint/handle mouse-drag or an open key-nudge burst) so the
+  // TD can steer toward a target value without looking away to the panel.
+  // Same value text and Δ ✓/✗ verdict as the panel's Value cell
+  // (measuredValueText / specDeltaText), pinned near the moving point.
+  function drawAdjustmentReadout(ann) {
+    const interaction = state.interaction;
+    const dragging = !!(interaction && interaction.type === 'drag-handle' && interaction.id === ann.id);
+    const nudging = isLineNudgeActive(ann.id);
+    if (!dragging && !nudging) return;
+    const text = measuredValueText(ann);
+    if (!text) return;
+    const ev = evaluateSpecTolerance(ann, getLabelText(ann));
+    const deltaText = specDeltaText(ev);
+
+    const part = dragging ? interaction.part : state.selection.part;
+    const point = (part === 'start' && ann.start)
+      || (part === 'end' && ann.end)
+      || (part && ann[part])
+      || { x: (ann.start.x + ann.end.x) / 2, y: (ann.start.y + ann.end.y) / 2 };
+
+    const z = state.zoom;
+    const fontSize = 13 / z;
+    const padX = 7 / z;
+    const gap = 6 / z;
+    const pillH = 22 / z;
+    ctx.save();
+    ctx.font = '600 ' + fontSize + 'px system-ui, -apple-system, sans-serif';
+    const valueW = ctx.measureText(text).width;
+    const deltaW = deltaText ? ctx.measureText(deltaText).width + gap : 0;
+    const pillW = valueW + deltaW + padX * 2;
+    // Above-right of the moving point; the cursor/point stays unobscured.
+    const x = point.x + 14 / z;
+    const y = point.y - 16 / z - pillH;
+    ctx.beginPath();
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(x, y, pillW, pillH, 5 / z);
+    } else {
+      ctx.rect(x, y, pillW, pillH);
+    }
+    ctx.fillStyle = 'rgba(17,24,39,.88)';
+    ctx.shadowColor = 'rgba(17,24,39,.25)';
+    ctx.shadowBlur = 5 / z;
+    ctx.shadowOffsetY = 1 / z;
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(text, x + padX, y + pillH / 2);
+    if (deltaText) {
+      ctx.fillStyle = ev.status === 'in' ? '#4ade80' : ev.status === 'out' ? '#f87171' : '#d1d5db';
+      ctx.fillText(deltaText, x + padX + valueW + gap, y + pillH / 2);
+    }
+    ctx.restore();
+  }
+
+  function drawHandle(point, emphasized, active = false) {
+    const r = ((emphasized ? 7.5 : 6.0) + (active ? 1.5 : 0)) / state.zoom;
     ctx.save();
     ctx.beginPath();
     ctx.arc(point.x, point.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
+    // Active = the point the arrow keys move: filled blue with a white ring,
+    // the inverse of the normal hollow handle, so it reads at a glance.
+    ctx.fillStyle = active ? SELECT_COLOR : '#ffffff';
     ctx.fill();
     ctx.lineWidth = 2 / state.zoom;
-    ctx.strokeStyle = emphasized ? SELECT_COLOR : 'rgba(53,109,255,.72)';
+    ctx.strokeStyle = active ? '#ffffff' : (emphasized ? SELECT_COLOR : 'rgba(53,109,255,.72)');
     ctx.stroke();
+    if (active) {
+      // US-034: detached outer ring makes the active handle a bullseye —
+      // a shape cue that survives grayscale and any color-vision deficiency,
+      // instead of relying on the blue fill alone.
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, r + 4 / state.zoom, 0, Math.PI * 2);
+      ctx.lineWidth = 1.5 / state.zoom;
+      ctx.strokeStyle = SELECT_COLOR;
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
@@ -22060,7 +34261,7 @@ function makeExportFileName() {
 // draws the per-anchor pins; anchorLabelOffsetX/Y bias the pin label so
 // labels don't pile on top of the anchor or sketch features.
 
-  function drawAutoDraftAnnotation(ann) {
+  function drawAutoDraftAnnotation(ann, withLabel = true) {
     if (isReviewOnlyDraft(ann)) return;
     if (!ann.start || !ann.end) return;
     ctx.save();
@@ -22081,10 +34282,18 @@ function makeExportFileName() {
 
     drawLineCore(ann, ann.tdApproved ? 0.95 : 0.7);
 
-    if (labelsVisible() && ann.label) {
-      drawLabel(ann.label, getLabelText(ann), isSelected, 1, getAnnotationColor(ann));
-    }
+    if (withLabel) drawAutoDraftLabel(ann);
     ctx.restore();
+  }
+
+  // Draft POM number, drawn in the label pass (after all lines + anchors) so it
+  // is never covered by a later draft line or an anchor — see render().
+  function drawAutoDraftLabel(ann) {
+    if (isReviewOnlyDraft(ann)) return;
+    if (!ann.start || !ann.end) return;
+    if (!labelsVisible() || !ann.label) return;
+    const isSelected = state.selection.kind === 'draft' && state.selection.id === ann.id;
+    drawLabel(ann.label, getLabelText(ann), isSelected, 1, getAnnotationColor(ann));
   }
 
   function hitTestAutoDraftAnnotations(world) {
@@ -22122,47 +34331,67 @@ function makeExportFileName() {
 
     ctx.save();
 
-    // View boxes — shown when the detector found separated sketch views in
-    // one source image. Each view is labeled FRONT / BACK / view N based on
-    // the front/back classifier so the TD can see what the detector decided.
+    // View boxes — labeled FRONT / BACK / FRONT INNER by role so the TD can see
+    // what the detector decided. Two sources feed this: the detector's
+    // per-view split of the ONE source image (viewBoxes), and any AUXILIARY
+    // views recognized on EXTRA board photos (auxViews, US-039). Aux views are
+    // recognition-only — no POM is placed on them (ADR 0011) — and render
+    // against their OWN image. All coordinates are normalized [0,1] to their
+    // image, so boxes survive pans, zooms, and image resizes.
+    const VIEW_STYLE = {
+      front_outer: { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
+      front_inner: { stroke: 'rgba(22, 163, 74, 0.85)', fill: 'rgba(22, 163, 74, 0.95)', dash: [], lineW: 1.4 },
+      front:       { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
+      back:        { stroke: 'rgba(168, 85, 247, 0.85)', fill: 'rgba(168, 85, 247, 0.95)', dash: [], lineW: 1.4 },
+      unknown:     { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
+      none:        { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
+    };
+    const paintViewBox = (img, view, role, labelFallback) => {
+      const vx = img.x + view.x * img.width;
+      const vy = img.y + view.y * img.height;
+      const vw = view.width * img.width;
+      const vh = view.height * img.height;
+      const style = VIEW_STYLE[role] || VIEW_STYLE.none;
+      const label = role && role !== 'unknown'
+        ? role.replace('_', ' ').toUpperCase()
+        : labelFallback;
+      ctx.strokeStyle = style.stroke;
+      ctx.lineWidth = style.lineW * px;
+      ctx.setLineDash(style.dash.map((v) => v * px));
+      ctx.strokeRect(vx, vy, vw, vh);
+      ctx.setLineDash([]);
+      ctx.font = '700 ' + (11 * px).toFixed(1) + 'px system-ui, sans-serif';
+      ctx.textBaseline = 'top';
+      // Background chip behind the label so it's readable on any sketch.
+      const padX = 5 * px, padY = 3 * px;
+      const textW = ctx.measureText(label).width;
+      const chipH = 13 * px;
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.fillRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
+      ctx.strokeStyle = style.stroke;
+      ctx.lineWidth = 0.8 * px;
+      ctx.strokeRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
+      ctx.fillStyle = style.fill;
+      ctx.fillText(label, vx + 2 * px + padX, vy + 2 * px + padY);
+    };
+
+    // Per-view split of the source image (only when >1 view was found).
     if (Array.isArray(detection.viewBoxes) && detection.viewBoxes.length > 1) {
-      const VIEW_STYLE = {
-        front_outer: { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
-        front_inner: { stroke: 'rgba(22, 163, 74, 0.85)', fill: 'rgba(22, 163, 74, 0.95)', dash: [], lineW: 1.4 },
-        front:       { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
-        back:        { stroke: 'rgba(168, 85, 247, 0.85)', fill: 'rgba(168, 85, 247, 0.95)', dash: [], lineW: 1.4 },
-        unknown:     { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
-        none:        { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
-      };
       detection.viewBoxes.forEach((view, index) => {
         if (!view) return;
-        const vx = image.x + view.x * image.width;
-        const vy = image.y + view.y * image.height;
-        const vw = view.width * image.width;
-        const vh = view.height * image.height;
         const role = view.viewRole || view.role || (index === (detection.primaryViewIndex || 0) ? 'front_outer' : 'unknown');
-        const style = VIEW_STYLE[role] || VIEW_STYLE.none;
-        const label = role && role !== 'unknown'
-          ? role.replace('_', ' ').toUpperCase()
-          : ('view ' + (index + 1));
-        ctx.strokeStyle = style.stroke;
-        ctx.lineWidth = style.lineW * px;
-        ctx.setLineDash(style.dash.map((v) => v * px));
-        ctx.strokeRect(vx, vy, vw, vh);
-        ctx.setLineDash([]);
-        ctx.font = '700 ' + (11 * px).toFixed(1) + 'px system-ui, sans-serif';
-        ctx.textBaseline = 'top';
-        // Background chip behind the label so it's readable on any sketch.
-        const padX = 5 * px, padY = 3 * px;
-        const textW = ctx.measureText(label).width;
-        const chipH = 13 * px;
-        ctx.fillStyle = 'rgba(255,255,255,0.85)';
-        ctx.fillRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
-        ctx.strokeStyle = style.stroke;
-        ctx.lineWidth = 0.8 * px;
-        ctx.strokeRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
-        ctx.fillStyle = style.fill;
-        ctx.fillText(label, vx + 2 * px + padX, vy + 2 * px + padY);
+        paintViewBox(image, view, role, 'view ' + (index + 1));
+      });
+    }
+
+    // Auxiliary views recognized on extra board photos (e.g. a front-inner
+    // cutaway added as its own image). Drawn against their own image.
+    if (Array.isArray(detection.auxViews)) {
+      detection.auxViews.forEach((view) => {
+        if (!view) return;
+        const auxImg = getImageById(view.sourceImageId);
+        if (!auxImg || !auxImg.img) return;
+        paintViewBox(auxImg, view, view.viewRole || 'unknown', 'view ?');
       });
     }
 
@@ -22434,6 +34663,7 @@ function makeExportFileName() {
     ctx.lineJoin = 'round';
 
     for (const anchor of anchors) {
+      if (isAnchorHidden(anchor.kind)) continue; // US-038: per-anchor hide
       const pos = anchorWorldPos(anchor);
       if (!pos) continue;
       const selected = state.autoMode.anchorSelectedId === anchor.id;
@@ -22736,7 +34966,7 @@ function makeExportFileName() {
     ctx.restore();
   }
 
-  function drawImageSelection(image) {
+  function drawImageSelection(image, showHandles = true) {
     ctx.save();
     ctx.lineWidth = 2 / state.zoom;
     // Use a muted outline when the image is locked so the user sees the
@@ -22745,7 +34975,9 @@ function makeExportFileName() {
     ctx.setLineDash([10 / state.zoom, 6 / state.zoom]);
     ctx.strokeRect(image.x, image.y, image.width, image.height);
     ctx.setLineDash([]);
-    if (!image.locked) {
+    // Resize handles only when a single image is selected. A multi-selection
+    // (Cmd/Ctrl+click) is a move-together group, so it shows outlines only.
+    if (!image.locked && showHandles) {
       for (const corner of getImageCorners(image)) {
         drawImageResizeHandle(corner);
       }
@@ -22983,7 +35215,7 @@ function requestRender() {
 
     for (const ann of state.annotations) {
       if (isAnnHidden(ann.id)) continue;
-      drawAnnotation(ann);
+      drawAnnotation(ann, false); // line body only — numbers drawn in the label pass below
     }
 
     // Auto Mode draft layer — rendered above project annotations so reviewers
@@ -22992,7 +35224,7 @@ function requestRender() {
     if (state.appMode === 'auto') {
       for (const draft of state.autoMode.draftAnnotations) {
         if (isDraftHidden(draft.id)) continue;
-        drawAutoDraftAnnotation(draft);
+        drawAutoDraftAnnotation(draft, false); // line body only — number drawn in the label pass below
       }
     }
 
@@ -23002,18 +35234,57 @@ function requestRender() {
       drawAnchorLoupe();
     }
 
+    // Label pass — POM numbers are drawn LAST, above every line body and the
+    // anchor layer, so a line or anchor never covers a callout number (this was
+    // the "line over the number" clutter on crowded 3-view boards). Draw order
+    // only; hit-testing is separate, so anchors and lines stay grabbable.
+    for (const ann of state.annotations) {
+      if (isAnnHidden(ann.id)) continue;
+      drawAnnotationLabel(ann);
+    }
+    if (state.appMode === 'auto') {
+      for (const draft of state.autoMode.draftAnnotations) {
+        if (isDraftHidden(draft.id)) continue;
+        drawAutoDraftLabel(draft);
+      }
+    }
+
     if (state.drawSession) {
       drawPreview();
     }
 
-    const selectedImage = getSelectedImage();
-    if (selectedImage) {
-      drawImageSelection(selectedImage);
+    // Highlight every selected image. A single selection keeps its resize
+    // handles; a Cmd/Ctrl+click group shows outlines only (move-together).
+    const selectedImages = getSelectedImages();
+    const showImageHandles = selectedImages.length <= 1;
+    for (const selectedImage of selectedImages) {
+      drawImageSelection(selectedImage, showImageHandles);
+    }
+    // A group of 2+ images gets ONE set of resize handles on its bounding box, so
+    // dragging a corner scales the whole group about the opposite corner (photos
+    // keep their relative sizes and spacing). Per-image handles stay off — they
+    // would fight each other and give no group-relative anchor.
+    if (selectedImages.length > 1) {
+      const groupBox = getImagesGroupBox(selectedImages);
+      if (groupBox && !selectedImages.some(im => im.locked)) {
+        drawImageSelection(groupBox, true);
+      }
     }
 
-    const selectedAnnotation = getSelectedAnnotation();
-    if (selectedAnnotation && !isAnnHidden(selectedAnnotation.id)) {
-      drawSelectionHelpers(selectedAnnotation);
+    // Line selection: a single selection shows full endpoint/handle helpers; a
+    // multi-selection (Shift+click / marquee) shows a lighter per-line outline
+    // on each member so the group reads as one.
+    const selAnnIds = state.appMode !== 'auto' ? getSelectedAnnotationIds() : [];
+    if (selAnnIds.length > 1) {
+      for (const id of selAnnIds) {
+        const a = getAnnotationById(id);
+        if (a && !isAnnHidden(a.id)) drawAnnotationSelectedOutline(a);
+      }
+    } else {
+      const selectedAnnotation = getSelectedAnnotation();
+      if (selectedAnnotation && !isAnnHidden(selectedAnnotation.id)) {
+        drawSelectionHelpers(selectedAnnotation);
+      }
     }
 
     if (state.appMode === 'auto') {
@@ -23030,6 +35301,12 @@ function requestRender() {
     // they can size the line accurately without releasing to check the
     // measurement panel.
     drawLengthReadoutDuringHandleDrag();
+
+    // Rubber-band selection rectangle (drawn last, over everything, in world
+    // space so it tracks the sketch while zoomed/panned).
+    if (state.interaction && state.interaction.type === 'marquee' && state.interaction.moved) {
+      drawMarquee(state.interaction);
+    }
 
     ctx.restore();
     positionLabelEditor();

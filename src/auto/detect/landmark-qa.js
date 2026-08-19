@@ -38,6 +38,8 @@
     if (kind.indexOf('inner-cup-') === 0) return 'frontCup';
     if (kind === 'apex-left' || kind === 'apex-right') return 'frontCup';
     if (kind === 'side-top' || kind === 'side-bottom') return 'sideSeam';
+    if (kind === '171' || kind === '172') return 'frontCup';
+    if (kind === '181' || kind === '182') return 'sideSeam';
     if (kind === 'strap-top' || kind === 'strap-bottom') return 'strap';
     if (kind === 'back-strap-left' || kind === 'back-strap-right') return 'strap';
     if (kind.indexOf('back-') === 0) return 'backPanel';
@@ -94,7 +96,11 @@
     const sideTopRightInk = detection.sideTopRight || null;
     const backPanelInk = detection.backPanel || null;
     const backPanelHeightInk = detection.backPanelHeight || null;
-    const cradleCfFromCupSeam = !detection.cradleCfTop && !!detection.cradleCupTop;
+    // Mirrors seed-anchors.js: the CF projection only fires from trusted seam
+    // tiers ('strong'/'seam'), never from guide/arc commits (ADR 0021/0022).
+    const cradleCfFromCupSeam = !detection.cradleCfTop
+      && !!detection.cradleCupTop
+      && (detection.cradleCupTier === 'strong' || detection.cradleCupTier === 'seam');
     const geometryReviewRequired = !!detection.geometryReviewRequired;
     const geometryReasons = detection.geometryFacts && detection.geometryFacts.quality
       && Array.isArray(detection.geometryFacts.quality.reasons)
@@ -145,11 +151,14 @@
     const confByKind = {
       'cf-top':            tier(det.axis, 'medium'),
       'cf-bottom':         tier(det.band, 'high'),
-      'cradle-cf-top':     (cradleCfFromCupSeam || detection.cradleCfTopDipProjected)
+      'cradle-cf-top':     (cradleCfFromCupSeam
+                              || detection.cradleCfTopDipProjected
+                              || detection.cradleCfTopJunction
+                              || detection.cradleCfCrestSeedY != null)
                              ? 'low'
                              : tier(det.cradleCfTop, 'medium'),
-      'cradle-cup-top':    tier(det.cradleCupTop, 'medium'),
-      'cradle-cup-bottom': tier(det.cradleCupBottom, 'medium'),
+      'cradle-cup-top':    (detection.cradleCupTier === 'guide' || detection.cradleCupTier === 'arc') ? 'low' : tier(det.cradleCupTop, 'medium'),
+      'cradle-cup-bottom': (detection.cradleCupTier === 'guide' || detection.cradleCupTier === 'arc') ? 'low' : tier(det.cradleCupBottom, 'medium'),
       'band-left':         tier(det.band, 'high'),
       'band-right':        tier(det.band, 'high'),
       'chest-left':        tier(det.chest, 'medium'),
@@ -170,6 +179,14 @@
       'side-bottom':       tier(det.sideRight, 'medium'),
       'apex-left':         tier(det.apexLeft, 'medium'),
       'apex-right':        tier(det.apexRight, 'medium'),
+      // US-037: neckline corners ride the apex-outer join (medium when a join
+      // point exists, else low). Armhole is a bowed-curve guess with no direct
+      // ink trace yet — floored to 'low' so POM 18 always reviewRequired
+      // (matches its 'low' expected_confidence_tier and POM 14's precedent).
+      '171':     detection.cfTopY != null ? 'medium' : 'low',
+      '172':    (detection.apexRightInner || detection.apexRight) ? 'medium' : 'low',
+      '181':       'low',
+      '182':    'low',
       // POM 14 is the only contractually-low POM (always verify by hand); floor
       // both strap ends to 'low' so reviewRequired is guaranteed (ADR 0012).
       'strap-top':         'low',
@@ -186,11 +203,15 @@
     const sourceByKind = {
       'cf-top':            detection.cfTopY != null ? 'ink' : 'ratio',
       'cf-bottom':         detection.bandY != null ? 'silhouette' : 'ratio',
-      'cradle-cf-top':     cradleCfFromCupSeam
-                             ? 'seamProjected'
-                             : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'),
-      'cradle-cup-top':    'seam',
-      'cradle-cup-bottom': 'seam',
+      'cradle-cf-top':     detection.cradleCfTopJunction
+                             ? 'seamJunction'
+                             : (detection.cradleCfCrestSeedY != null
+                               ? 'seamCrest'
+                               : (cradleCfFromCupSeam
+                                 ? 'seamProjected'
+                                 : (detection.cradleCfTopDipProjected ? 'seamDip' : 'seam'))),
+      'cradle-cup-top':    detection.cradleCupTier === 'guide' ? 'seamGuide' : (detection.cradleCupTier === 'arc' ? 'seamArc' : 'seam'),
+      'cradle-cup-bottom': detection.cradleCupTier === 'guide' ? 'seamGuide' : (detection.cradleCupTier === 'arc' ? 'seamArc' : 'seam'),
       'band-left':         detection.bandLeftX != null ? 'ink' : 'silhouette',
       'band-right':        detection.bandRightX != null ? 'ink' : 'silhouette',
       'chest-left':        (detection.underbustLeftX != null || detection.chestLeftX != null) ? 'ink' : 'ratio',
@@ -203,6 +224,10 @@
       'side-bottom':       detection.sideBottomRight ? 'ink' : 'silhouette',
       'apex-left':         detection.apexLeft ? 'apexJoin' : 'ratio',
       'apex-right':        detection.apexRight ? 'apexJoin' : 'ratio',
+      '171':     detection.cfTopY != null ? 'cfTop' : 'ratio',
+      '172':    (detection.apexRightInner || detection.apexRight) ? 'apexJoin' : 'ratio',
+      '181':       detection.sideTopRightInk ? 'ink' : (detection.sideRightX != null ? 'silhouette' : 'ratio'),
+      '182':    (detection.apexRightOuter || detection.frontStrapStart) ? 'strapJoin' : 'ratio',
       'strap-top':         detection.frontStrapStart ? 'frontStrapSeam' : 'ratio',
       'strap-bottom':      (backPanelHeightInk || backPanelInk) ? 'backPanelJoin' : 'ratio',
       'back-top':          (detection.back && detection.back.top) ? 'ink' : 'ratio',
@@ -229,6 +254,8 @@
       'side-top': sideTopRightInk ? det.sideTopRight : det.sideRight,
       'side-bottom': det.sideRight,
       'apex-left': det.apexLeft, 'apex-right': det.apexRight,
+      '171': null, '172': null,
+      '181': null, '182': null,
       'strap-top': det.frontStrapStart, 'strap-bottom': det.backPanel,
       'back-top': det.back, 'back-bottom': det.back,
       'back-panel-top': det.backPanel, 'back-panel-bottom': det.backPanel,
@@ -242,7 +269,9 @@
     const apexR = detection.apexRightInner || detection.apexRight;
     const presentByKind = {};
     for (const schema of ANCHOR_SCHEMA) presentByKind[schema.kind] = true;
-    presentByKind['cradle-cf-top'] = !!(detection.cradleCfTop || cradleCfFromCupSeam);
+    presentByKind['cradle-cf-top'] = !!(detection.cradleCfTop
+      || detection.cradleCfCrestSeedY != null
+      || cradleCfFromCupSeam);
     presentByKind['cradle-cup-top'] = !!(detection.cradleCupTop && detection.cradleCupBottom);
     presentByKind['cradle-cup-bottom'] = presentByKind['cradle-cup-top'];
     presentByKind['apex-left'] = !!(frontViewValid && apexL && apexR);
@@ -262,7 +291,8 @@
 
     // ---- Source class: provenance → Engineering Workflow vocabulary ----
     const SOURCE_CLASS = {
-      ink: 'detected', seam: 'detected', silhouette: 'detected',
+      ink: 'detected', seam: 'detected', seamGuide: 'detected', seamArc: 'detected',
+      seamJunction: 'detected', seamCrest: 'detected', silhouette: 'detected',
       apexJoin: 'detected', frontStrapSeam: 'detected', backPanelJoin: 'detected',
       cupModel: 'detected', frontInnerView: 'detected',
       innerCupTopInkFallback: 'detected',
@@ -318,6 +348,14 @@
       } else {
         if (source === 'seamProjected') {
           notes.push('projected landmark: CF seam missed; extended from the bottom-cup cradle seam to the CF axis — verify the POM 6/8 boundary.');
+        } else if (source === 'seamGuide') {
+          notes.push('guide-tier seam: accepted from a sparse dashed vertical guide (below the strong-guide threshold) — verify the POM 7 placement; this seam is not used for POM 9/10 geometry.');
+        } else if (source === 'seamArc') {
+          notes.push('arc-tier seam: POM 7 placed on the traced cup-bottom/underwire arc (no drawn seam or guide line) — verify the cradle height placement; this seam is not used for POM 9/10 geometry.');
+        } else if (source === 'seamJunction') {
+          notes.push('junction-tier seam: the cradle/band seam is interrupted at the CF by a closure placket; placed where the seam meets the placket edges — verify the POM 6/8 boundary.');
+        } else if (source === 'seamCrest') {
+          notes.push('crest-tier seam: no direct CF seam ink; placed on the symmetric contour crest where the cup-bottom seams meet the CF axis (gore top) — verify the POM 6/8 boundary.');
         } else if (source === 'seamDip') {
           notes.push('projected landmark: cradle-cf-top projected from the seam dip — verify against the actual CF seam.');
         } else if (source === 'ratio' || source === 'cupRatioFallback') {

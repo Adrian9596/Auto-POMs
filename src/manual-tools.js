@@ -50,7 +50,7 @@
     let toolText = '';
     if (state.tool === 'select') {
       if (selectedAnnotation) {
-        toolText = 'Select – Drag line, endpoints, curve shape handle, or label. Use wheel to zoom, or hold <span class="kbd">Space</span> to pan.';
+        toolText = 'Select – Drag line, endpoints, curve shape handle, or label. <span class="kbd">Tab</span> picks a point, arrow keys nudge it (<span class="kbd">⇧</span> = 10 px).';
       } else if (selectedImage) {
         toolText = 'Select – Drag the image to move it, drag a corner handle to resize, use wheel to zoom, or hold <span class="kbd">Space</span> to pan.';
       } else {
@@ -132,7 +132,12 @@
     el.toggleLabelsBtn.disabled = isStitchMode();
 
     updateAutoModeUI();
+    updateBoardToolbarUI();
     renderSpecPanel();
+    // US-038: keep the floating anchor panel in sync (fresh detect, mode
+    // switch, canvas pin selection). renderAnchorManagerPanel auto-closes it
+    // when we leave Auto Mode or lose anchors.
+    if (isAnchorManagerOpen()) renderAnchorManagerPanel();
   }
 
   // U4: friendly copy for the raw auto.status machine states shown in the
@@ -178,7 +183,11 @@
     el.toolCurved.disabled = isAuto;
     if (isAuto) {
       el.toolEraser.disabled = true;
-      el.deleteBtn.disabled = true;
+      // US-052: Delete in Auto Mode removes a selected PHOTO only (annotations/
+      // drafts use Discard Drafts / Review-Only). Enable it when a non-locked
+      // image is selected so an added photo can be removed without Reset Board.
+      const selImg = getSelectedImage();
+      el.deleteBtn.disabled = !(selImg && !selImg.locked);
       el.clearBtn.disabled = true;
     }
 
@@ -247,7 +256,7 @@
 
     el.autoGenerateBtn.disabled = busy || !hasAnchors;
     el.autoGenerateBtn.title = hasAnchors
-      ? 'Generate 16 POM drafts from the current anchor positions'
+      ? 'Generate 18 POM drafts from the current anchor positions'
       : 'Detect Sketch + place anchors first';
 
     const selectedDraft = getSelectedDraft();
@@ -327,28 +336,57 @@
     for (const ann of state.annotations) max = Math.max(max, Number(ann.id) || 0);
     for (const image of state.images) max = Math.max(max, Number(image.id) || 0);
     for (const draft of state.autoMode.draftAnnotations) max = Math.max(max, Number(draft.id) || 0);
+    // BOM rows/callouts/groupIds draw from the same counter (and since
+    // US-074 every project has seeded rows) — skipping them here would let a
+    // project file with a missing idCounter re-issue their ids to new
+    // rows/images and corrupt id-keyed lookups like bmRowById.
+    if (state.bom) {
+      for (const row of state.bom.rows || []) {
+        max = Math.max(max, Number(row.id) || 0, Number(row.groupId) || 0);
+      }
+      for (const c of state.bom.callouts || []) max = Math.max(max, Number(c.id) || 0);
+      const bomImages = state.bom.images || {};
+      for (const image of [...(bomImages.solid || []), ...(bomImages.lace || [])]) {
+        max = Math.max(max, Number(image.id) || 0);
+      }
+    }
     return max + 1;
   }
 
 
   async function onPasteEvent(e) {
+    // Text fields keep native text paste. BOM photo popovers handle their own
+    // image paste and stop propagation before this document-level router.
+    const target = e.target;
+    const inField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+    if (inField) return;
     const items = Array.from(e.clipboardData?.items || []);
     const imageItems = items.filter(item => item.type && item.type.startsWith('image/'));
-    if (!imageItems.length) return;
+    if (imageItems.length) {
+      e.preventDefault();
+      const dataURLs = [];
+      for (const imageItem of imageItems) {
+        const blob = imageItem.getAsFile();
+        if (!blob) continue;
+        dataURLs.push(await blobToDataURL(blob));
+      }
+      if (dataURLs.length && state.activePage === 'bom' && typeof bmAddImagesFromDataURLs === 'function') {
+        await bmAddImagesFromDataURLs(dataURLs, bmVariant);
+      } else if (dataURLs.length) {
+        await addImagesFromDataURLs(dataURLs);
+      }
+      return;
+    }
+    // No image on the OS clipboard — fall back to the internal line
+    // clipboard. copySelectedAnnotation claims the OS clipboard with a text
+    // marker, so whichever was copied LAST wins here, like a real clipboard.
+    // Never hijack a paste aimed at a text field.
+    if (inField || state.appMode === 'auto' || !hasLineClipboard()) return;
     e.preventDefault();
-    const dataURLs = [];
-    for (const imageItem of imageItems) {
-      const blob = imageItem.getAsFile();
-      if (!blob) continue;
-      dataURLs.push(await blobToDataURL(blob));
-    }
-    if (dataURLs.length) {
-      await addImagesFromDataURLs(dataURLs);
-    }
+    pasteLineFromClipboard();
   }
 
   async function addImagesFromDataURLs(dataURLs) {
-    const hadImages = state.images.length > 0;
     const baseCount = state.images.length;
     let added = 0;
 
@@ -357,7 +395,13 @@
       const img = await loadImageFromDataURL(dataURL);
       const imageRecord = createImageRecord(img, dataURL, baseCount + batchIndex);
       state.images.push(imageRecord);
+      // Select the new photo as the sole selection. This assigns directly
+      // (rather than setSelection, which would updateUI/render every loop
+      // iteration), so it must also reset the multi-selection set — otherwise a
+      // previously-clicked photo lingers in selectedImageIds and a later plain
+      // drag of the new photo moves both together.
       state.selection = { kind: 'image', id: imageRecord.id };
+      state.selectedImageIds = [imageRecord.id];
       recordAutoTelemetryEvent('image_loaded', {
         sourceImageId: imageRecord.id,
         sketch_id: imageRecord.id,
@@ -375,7 +419,10 @@
     // 'detected', so 'ready' is never shown on the normal path.
     ensureAutoModeStatus();
 
-    if (!hadImages && state.images.length > 0) {
+    // Re-fit the board to frame ALL images after any add (not just the first),
+    // so a newly added second/third sketch is guaranteed visible beside the
+    // others rather than sitting off-screen or under the existing view.
+    if (added > 0 && state.images.length > 0) {
       fitImagesToBoard();
     } else {
       updateUI();
@@ -503,16 +550,23 @@
     const text = String(labelText == null ? '' : labelText).trim();
     if (!text) return { desc: '', refL: null, zh: '' };
     const nums = text.split(/[,\s]+/).filter(Boolean);
+    // Custom POMs (17+, US-011) resolve from the project registry with the
+    // same shape as template entries; refL stays null (no standard value).
+    const infoFor = (n) => {
+      if (POM_TEMPLATE[n]) return POM_TEMPLATE[n];
+      const custom = customPomEntry(n);
+      return custom ? { desc: custom.en || '', zh: custom.zh || '', refL: null } : null;
+    };
     const descs = [];
     const zhs = [];
     for (const n of nums) {
-      const info = POM_TEMPLATE[n];
+      const info = infoFor(n);
       if (info) {
         descs.push(info.desc);
         if (info.zh) zhs.push(info.zh);
       }
     }
-    const single = nums.length === 1 && POM_TEMPLATE[nums[0]] ? POM_TEMPLATE[nums[0]] : null;
+    const single = nums.length === 1 ? infoFor(nums[0]) : null;
     return {
       desc: descs.join('; '),
       refL: single ? single.refL : null,

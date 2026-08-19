@@ -25,21 +25,6 @@
     return [{ p0: ann.start, p1: ann.control1, p2: ann.control2, p3: ann.end }];
   }
 
-  // Split a single cubic (start,c1,c2,end) at t=0.5 via De Casteljau. The two
-  // resulting segments trace the IDENTICAL curve, but now there is a real
-  // middle anchor with its own in/out handles. Used to seed new curves and to
-  // migrate old ones without changing how they look.
-  function deriveMidAnchor(start, c1, c2, end) {
-    const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-    const p01 = mid(start, c1);
-    const p12 = mid(c1, c2);
-    const p23 = mid(c2, end);
-    const p012 = mid(p01, p12);
-    const p123 = mid(p12, p23);
-    const p0123 = mid(p012, p123);
-    return { control1: p01, midHandleIn: p012, midPoint: p0123, midHandleOut: p123, control2: p23 };
-  }
-
   // Build a smooth two-segment curve that PASSES THROUGH start, mid, end (the
   // three clicked points). Catmull-Rom with reflected endpoints: the tangent at
   // the middle is parallel to the start→end chord, so the joint stays smooth.
@@ -77,26 +62,19 @@
 
   function createCurvedAnnotation(start, end, style, color = 'red', arrowType = 'double', lineWidth = DEFAULT_LINE_WIDTH, mid = null) {
     const id = state.idCounter++;
-    // With an explicit middle point (3-click draw) build a smooth curve through
-    // all three points; otherwise seed a default bow and split it at the middle
-    // so the line still ships with a real center anchor + its two handles.
-    let m;
-    if (mid) {
-      m = curveControlsThroughThreePoints(start, mid, end);
-    } else {
-      const midRaw = defaultCurveMidPoint(start, end);
-      const single = controlsFromMidPoint(start, end, midRaw);
-      m = deriveMidAnchor(start, single.control1, single.control2, end);
-    }
+    // A curve is ONE cubic Bézier: two endpoints + two control handles
+    // (control1 off start, control2 off end) — TD 2026-07-18, edited like a
+    // standard pen tool. No middle anchor. A 3-click draw fits the single cubic
+    // so it passes through the middle click at t=0.5; otherwise seed a default
+    // bow. `midPoint`/`midHandleIn`/`midHandleOut` stay null.
+    const midRaw = mid || defaultCurveMidPoint(start, end);
+    const c = controlsFromMidPoint(start, end, midRaw);
     const label = computeDefaultLabelPosition({
       type: 'curved',
       start,
       end,
-      control1: m.control1,
-      control2: m.control2,
-      midPoint: m.midPoint,
-      midHandleIn: m.midHandleIn,
-      midHandleOut: m.midHandleOut,
+      control1: c.control1,
+      control2: c.control2,
     });
     return {
       id,
@@ -108,11 +86,11 @@
       lineWidth: normalizeLineWidth(lineWidth),
       start: clonePoint(start),
       end: clonePoint(end),
-      midPoint: m.midPoint,
-      midHandleIn: m.midHandleIn,
-      midHandleOut: m.midHandleOut,
-      control1: m.control1,
-      control2: m.control2,
+      midPoint: null,
+      midHandleIn: null,
+      midHandleOut: null,
+      control1: c.control1,
+      control2: c.control2,
       label,
       labelManual: false,
       text: null,
@@ -156,26 +134,32 @@
     };
   }
 
-  // Back-compat + upgrade: ensure every curved line has the two-segment anchor
-  // set (midPoint + midHandleIn/Out). Older saves and auto-draft rows store
-  // only control1/control2 (a single cubic); split that at t=0.5 so the middle
-  // handle UI has something to grab, without changing the curve's shape.
-  function ensureCurveMidPoint(ann) {
+  // Normalize a curved line to the SINGLE-CUBIC model (two endpoints + two
+  // control handles) — TD 2026-07-18. New curves are born single-cubic; this
+  // also collapses any legacy two-segment curve (midPoint + mid handles) from
+  // older saves back to one cubic. The collapse is EXACT for curves that were
+  // split by deriveMidAnchor (all auto POM curves): that split set
+  // control1 = mid(start, origC1), so origC1 = 2·control1 − start (and
+  // symmetrically for control2), which this inverts. Then it drops the middle
+  // anchor + its handles.
+  function ensureCurveControls(ann) {
     if (!ann || ann.type !== 'curved' || !ann.start || !ann.end) return;
-    const ready = ann.midPoint && ann.midHandleIn && ann.midHandleOut &&
-      [ann.midPoint, ann.midHandleIn, ann.midHandleOut].every(
-        (p) => p && Number.isFinite(p.x) && Number.isFinite(p.y));
-    if (ready) return;
-    let c1 = ann.control1, c2 = ann.control2;
-    if (!c1 || !c2) {
+    if (ann.midPoint) {
+      if (ann.control1) {
+        ann.control1 = { x: 2 * ann.control1.x - ann.start.x, y: 2 * ann.control1.y - ann.start.y };
+      }
+      if (ann.control2) {
+        ann.control2 = { x: 2 * ann.control2.x - ann.end.x, y: 2 * ann.control2.y - ann.end.y };
+      }
+      ann.midPoint = null;
+      ann.midHandleIn = null;
+      ann.midHandleOut = null;
+    }
+    if (!ann.control1 || !ann.control2 ||
+        !Number.isFinite(ann.control1.x) || !Number.isFinite(ann.control2.x)) {
       const m0 = defaultCurveMidPoint(ann.start, ann.end);
       const c = controlsFromMidPoint(ann.start, ann.end, m0);
-      c1 = c.control1; c2 = c.control2;
+      ann.control1 = c.control1;
+      ann.control2 = c.control2;
     }
-    const m = deriveMidAnchor(ann.start, c1, c2, ann.end);
-    ann.control1 = m.control1;
-    ann.control2 = m.control2;
-    ann.midPoint = m.midPoint;
-    ann.midHandleIn = m.midHandleIn;
-    ann.midHandleOut = m.midHandleOut;
   }

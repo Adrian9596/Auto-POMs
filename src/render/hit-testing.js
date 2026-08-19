@@ -12,9 +12,8 @@
     if (distance(world, ann.start) <= endpointRadius) return { part: 'start' };
     if (distance(world, ann.end) <= endpointRadius) return { part: 'end' };
     if (ann.type === 'curved') {
-      if (ann.midPoint && distance(world, ann.midPoint) <= controlRadius) return { part: 'midPoint' };
-      if (ann.midHandleIn && distance(world, ann.midHandleIn) <= controlRadius) return { part: 'midHandleIn' };
-      if (ann.midHandleOut && distance(world, ann.midHandleOut) <= controlRadius) return { part: 'midHandleOut' };
+      // Single cubic: the two control handles are always grabbable (pen-tool
+      // model). Endpoints are checked first (above) so they win a shared spot.
       if (ann.control1 && distance(world, ann.control1) <= controlRadius) return { part: 'control1' };
       if (ann.control2 && distance(world, ann.control2) <= controlRadius) return { part: 'control2' };
     }
@@ -71,6 +70,25 @@
       { name: 'sw', x: image.x, y: image.y + image.height },
       { name: 'se', x: image.x + image.width, y: image.y + image.height },
     ];
+  }
+
+  // Bounding box of a multi-image selection, shaped like an image so the existing
+  // corner helpers (getImageCorners / hitTestSelectedImageHandles /
+  // getOppositeImageCorner) work on the GROUP without duplicating their geometry.
+  function getImagesGroupBox(images) {
+    const list = (images || []).filter(im => im
+      && Number.isFinite(im.x) && Number.isFinite(im.y)
+      && Number.isFinite(im.width) && Number.isFinite(im.height));
+    if (!list.length) return null;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const im of list) {
+      if (im.x < minX) minX = im.x;
+      if (im.y < minY) minY = im.y;
+      if (im.x + im.width > maxX) maxX = im.x + im.width;
+      if (im.y + im.height > maxY) maxY = im.y + im.height;
+    }
+    if (!(maxX > minX && maxY > minY)) return null;
+    return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
   }
 
   function getOppositeImageCorner(image, corner) {

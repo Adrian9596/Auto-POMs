@@ -7,7 +7,7 @@
 // draws the per-anchor pins; anchorLabelOffsetX/Y bias the pin label so
 // labels don't pile on top of the anchor or sketch features.
 
-  function drawAutoDraftAnnotation(ann) {
+  function drawAutoDraftAnnotation(ann, withLabel = true) {
     if (isReviewOnlyDraft(ann)) return;
     if (!ann.start || !ann.end) return;
     ctx.save();
@@ -28,10 +28,18 @@
 
     drawLineCore(ann, ann.tdApproved ? 0.95 : 0.7);
 
-    if (labelsVisible() && ann.label) {
-      drawLabel(ann.label, getLabelText(ann), isSelected, 1, getAnnotationColor(ann));
-    }
+    if (withLabel) drawAutoDraftLabel(ann);
     ctx.restore();
+  }
+
+  // Draft POM number, drawn in the label pass (after all lines + anchors) so it
+  // is never covered by a later draft line or an anchor — see render().
+  function drawAutoDraftLabel(ann) {
+    if (isReviewOnlyDraft(ann)) return;
+    if (!ann.start || !ann.end) return;
+    if (!labelsVisible() || !ann.label) return;
+    const isSelected = state.selection.kind === 'draft' && state.selection.id === ann.id;
+    drawLabel(ann.label, getLabelText(ann), isSelected, 1, getAnnotationColor(ann));
   }
 
   function hitTestAutoDraftAnnotations(world) {
@@ -69,47 +77,67 @@
 
     ctx.save();
 
-    // View boxes — shown when the detector found separated sketch views in
-    // one source image. Each view is labeled FRONT / BACK / view N based on
-    // the front/back classifier so the TD can see what the detector decided.
+    // View boxes — labeled FRONT / BACK / FRONT INNER by role so the TD can see
+    // what the detector decided. Two sources feed this: the detector's
+    // per-view split of the ONE source image (viewBoxes), and any AUXILIARY
+    // views recognized on EXTRA board photos (auxViews, US-039). Aux views are
+    // recognition-only — no POM is placed on them (ADR 0011) — and render
+    // against their OWN image. All coordinates are normalized [0,1] to their
+    // image, so boxes survive pans, zooms, and image resizes.
+    const VIEW_STYLE = {
+      front_outer: { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
+      front_inner: { stroke: 'rgba(22, 163, 74, 0.85)', fill: 'rgba(22, 163, 74, 0.95)', dash: [], lineW: 1.4 },
+      front:       { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
+      back:        { stroke: 'rgba(168, 85, 247, 0.85)', fill: 'rgba(168, 85, 247, 0.95)', dash: [], lineW: 1.4 },
+      unknown:     { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
+      none:        { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
+    };
+    const paintViewBox = (img, view, role, labelFallback) => {
+      const vx = img.x + view.x * img.width;
+      const vy = img.y + view.y * img.height;
+      const vw = view.width * img.width;
+      const vh = view.height * img.height;
+      const style = VIEW_STYLE[role] || VIEW_STYLE.none;
+      const label = role && role !== 'unknown'
+        ? role.replace('_', ' ').toUpperCase()
+        : labelFallback;
+      ctx.strokeStyle = style.stroke;
+      ctx.lineWidth = style.lineW * px;
+      ctx.setLineDash(style.dash.map((v) => v * px));
+      ctx.strokeRect(vx, vy, vw, vh);
+      ctx.setLineDash([]);
+      ctx.font = '700 ' + (11 * px).toFixed(1) + 'px system-ui, sans-serif';
+      ctx.textBaseline = 'top';
+      // Background chip behind the label so it's readable on any sketch.
+      const padX = 5 * px, padY = 3 * px;
+      const textW = ctx.measureText(label).width;
+      const chipH = 13 * px;
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.fillRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
+      ctx.strokeStyle = style.stroke;
+      ctx.lineWidth = 0.8 * px;
+      ctx.strokeRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
+      ctx.fillStyle = style.fill;
+      ctx.fillText(label, vx + 2 * px + padX, vy + 2 * px + padY);
+    };
+
+    // Per-view split of the source image (only when >1 view was found).
     if (Array.isArray(detection.viewBoxes) && detection.viewBoxes.length > 1) {
-      const VIEW_STYLE = {
-        front_outer: { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
-        front_inner: { stroke: 'rgba(22, 163, 74, 0.85)', fill: 'rgba(22, 163, 74, 0.95)', dash: [], lineW: 1.4 },
-        front:       { stroke: 'rgba(14, 165, 233, 0.85)', fill: 'rgba(14, 165, 233, 0.95)', dash: [], lineW: 1.4 },
-        back:        { stroke: 'rgba(168, 85, 247, 0.85)', fill: 'rgba(168, 85, 247, 0.95)', dash: [], lineW: 1.4 },
-        unknown:     { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
-        none:        { stroke: 'rgba(100, 116, 139, 0.45)', fill: 'rgba(100, 116, 139, 0.85)', dash: [3, 3], lineW: 0.9 },
-      };
       detection.viewBoxes.forEach((view, index) => {
         if (!view) return;
-        const vx = image.x + view.x * image.width;
-        const vy = image.y + view.y * image.height;
-        const vw = view.width * image.width;
-        const vh = view.height * image.height;
         const role = view.viewRole || view.role || (index === (detection.primaryViewIndex || 0) ? 'front_outer' : 'unknown');
-        const style = VIEW_STYLE[role] || VIEW_STYLE.none;
-        const label = role && role !== 'unknown'
-          ? role.replace('_', ' ').toUpperCase()
-          : ('view ' + (index + 1));
-        ctx.strokeStyle = style.stroke;
-        ctx.lineWidth = style.lineW * px;
-        ctx.setLineDash(style.dash.map((v) => v * px));
-        ctx.strokeRect(vx, vy, vw, vh);
-        ctx.setLineDash([]);
-        ctx.font = '700 ' + (11 * px).toFixed(1) + 'px system-ui, sans-serif';
-        ctx.textBaseline = 'top';
-        // Background chip behind the label so it's readable on any sketch.
-        const padX = 5 * px, padY = 3 * px;
-        const textW = ctx.measureText(label).width;
-        const chipH = 13 * px;
-        ctx.fillStyle = 'rgba(255,255,255,0.85)';
-        ctx.fillRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
-        ctx.strokeStyle = style.stroke;
-        ctx.lineWidth = 0.8 * px;
-        ctx.strokeRect(vx + 2 * px, vy + 2 * px, textW + padX * 2, chipH + padY * 2);
-        ctx.fillStyle = style.fill;
-        ctx.fillText(label, vx + 2 * px + padX, vy + 2 * px + padY);
+        paintViewBox(image, view, role, 'view ' + (index + 1));
+      });
+    }
+
+    // Auxiliary views recognized on extra board photos (e.g. a front-inner
+    // cutaway added as its own image). Drawn against their own image.
+    if (Array.isArray(detection.auxViews)) {
+      detection.auxViews.forEach((view) => {
+        if (!view) return;
+        const auxImg = getImageById(view.sourceImageId);
+        if (!auxImg || !auxImg.img) return;
+        paintViewBox(auxImg, view, view.viewRole || 'unknown', 'view ?');
       });
     }
 
@@ -381,6 +409,7 @@
     ctx.lineJoin = 'round';
 
     for (const anchor of anchors) {
+      if (isAnchorHidden(anchor.kind)) continue; // US-038: per-anchor hide
       const pos = anchorWorldPos(anchor);
       if (!pos) continue;
       const selected = state.autoMode.anchorSelectedId === anchor.id;

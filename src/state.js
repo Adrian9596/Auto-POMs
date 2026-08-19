@@ -77,6 +77,7 @@
     setScaleBtn: document.getElementById('setScaleBtn'),
     clearScaleBtn: document.getElementById('clearScaleBtn'),
     sizeRunBtn: document.getElementById('sizeRunBtn'),
+    gradingBtn: document.getElementById('gradingBtn'),
     exportPdfBtn: document.getElementById('exportPdfBtn'),
     exportExcelBtn: document.getElementById('exportExcelBtn'),
     copyImageBtn: document.getElementById('copyImageBtn'),
@@ -99,6 +100,13 @@
     autoModeBar: document.getElementById('autoModeBar'),
     autoDetectBtn: document.getElementById('autoDetectBtn'),
     autoResetAnchorsBtn: document.getElementById('autoResetAnchorsBtn'),
+    autoManageAnchorsBtn: document.getElementById('autoManageAnchorsBtn'),
+    anchorManagerPanel: document.getElementById('anchorManagerPanel'),
+    anchorManagerBody: document.getElementById('anchorManagerBody'),
+    anchorManagerCount: document.getElementById('anchorManagerCount'),
+    anchorManagerCloseBtn: document.getElementById('anchorManagerCloseBtn'),
+    anchorManagerHideAllBtn: document.getElementById('anchorManagerHideAllBtn'),
+    anchorManagerShowAllBtn: document.getElementById('anchorManagerShowAllBtn'),
     autoGenerateBtn: document.getElementById('autoGenerateBtn'),
     autoApproveBtn: document.getElementById('autoApproveBtn'),
     autoReviewOnlyBtn: document.getElementById('autoReviewOnlyBtn'),
@@ -115,19 +123,11 @@
     resetResidualsItem: document.getElementById('resetResidualsItem'),
     resetMeaningsCurrentItem: document.getElementById('resetMeaningsCurrentItem'),
     resetMeaningsAllItem: document.getElementById('resetMeaningsAllItem'),
-    manageMeaningsItem: document.getElementById('manageMeaningsItem'),
     learningToolbarBtn: document.getElementById('learningToolbarBtn'),
     learningToolbarChip: document.getElementById('learningToolbarChip'),
     autoStatusChip: document.getElementById('autoStatusChip'),
     autoStepIndicator: document.getElementById('autoStepIndicator'),
     visionEngineChip: document.getElementById('visionEngineChip'),
-    pomMeaningPopover: document.getElementById('pomMeaningPopover'),
-    pmpPomLabel: document.getElementById('pmpPomLabel'),
-    pmpSuggestions: document.getElementById('pmpSuggestions'),
-    pmpOtherBtn: document.getElementById('pmpOtherBtn'),
-    pmpSkipBtn: document.getElementById('pmpSkipBtn'),
-    annContextMenu: document.getElementById('annContextMenu'),
-    annCtxReconfirm: document.getElementById('annCtxReconfirm'),
     styleIdInput: document.getElementById('styleIdInput'),
   };
 
@@ -183,6 +183,31 @@
     return out;
   }
 
+  // Custom POM registry lookup (US-011 S4). Custom POMs (17+) live in
+  // state.customPoms — never in the 18-POM rule JSON (ADR 0018).
+  function customPomEntry(pomKey) {
+    const key = String(pomKey == null ? '' : pomKey).trim();
+    if (!key) return null;
+    return (state.customPoms || []).find(p => String(p.pom) === key) || null;
+  }
+
+  // Next free custom POM number: one past the highest of 16 and any
+  // existing custom or annotation label number.
+  function nextCustomPomNumber() {
+    // Core template now reserves 1..18 (US-037: neckline 17, armhole 18);
+    // custom POMs start at 19. See ADR 0032.
+    let max = 18;
+    for (const p of state.customPoms || []) {
+      const n = Number(p.pom);
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+    for (const ann of state.annotations || []) {
+      const n = Number(ann.text != null ? ann.text : NaN);
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+    return max + 1;
+  }
+
   const state = {
     tool: 'select',
     drawStyle: 'solid',
@@ -191,12 +216,26 @@
     lineWidth: DEFAULT_LINE_WIDTH,
     annotations: [],
     deletedAutoAnnotations: [],
+    // US-047: POM labels whose drawn line the TD deleted. Excluded from the
+    // exported spec exactly like a hidden line (TD: "delete = hide"), until a
+    // line with that label is redrawn. Persisted with the project + history.
+    deletedPomKeys: [],
     images: [],
     eraseStrokes: [],
     brushSize: 24,
     showLabels: true,
     nextSequence: 1,
     selection: { kind: null, id: null },
+    // Cmd/Ctrl+click multi-selection of images. Always includes the primary
+    // `selection` when that is an image; empty otherwise. The primary stays the
+    // resize/spec anchor — this set only widens what a group drag / delete acts
+    // on. Session-only (not part of the project snapshot).
+    selectedImageIds: [],
+    // Shift+click / marquee-drag multi-selection of POM lines (annotations).
+    // Same derive-through-primary contract as selectedImageIds — always
+    // includes the primary `selection` when it is an annotation. Widens what
+    // group copy / reflect / delete / drag act on. Session-only.
+    selectedAnnotationIds: [],
 
     zoom: 1,
     panX: 0,
@@ -253,7 +292,7 @@
 
     // TD-defined POMs beyond the standard 16 (US-011, ADR 0018). Array of
     // { pom: '17', en, zh, tol }. Numbering continues from 17 per project.
-    // Lives in project state — the 16-POM rule JSON is never touched.
+    // Lives in project state — the 18-POM rule JSON is never touched.
     // Persisted with the project and captured in history.
     customPoms: [],
 
@@ -262,6 +301,44 @@
     // Persisted with the project (not in history — an export preference,
     // not board content).
     sizeSelection: null,
+
+    // US-068 / ADR 0037: tech pack MAIN PAGE sheet — style metadata (13
+    // fields), off-list values the TD typed (fieldExtra), colorways, and the
+    // Color Master List copy this project was saved against. Style metadata
+    // only: no anchor, no POM, no view, so detection never reads it. Seeded
+    // lazily by ensureMainPage() in src/ui/main-page.js, which owns the field
+    // roster and the colour data — null here so state.js does not carry 47
+    // colour rows. Persisted with the project and captured in history so
+    // undo/redo covers MAIN PAGE edits.
+    mainPage: null,
+
+    // US-078 / ADR 0045: two Construction sheets (Solid/Lace), each with
+    // independently-owned Outer/Inner working-view images, editable operation
+    // rows, and row-owned multi-leader callouts. Image bytes live outside
+    // history and are injected only for project save/autosave. No anchor or
+    // POM consumes this metadata, so detection remains isolated.
+    construction: null,
+
+    // US-072 / ADR 0041: BOM page — editable material table rows
+    // { id, section:'FABRIC'|'TRIM', scope:'BOTH'|'SOLID'|'LACE', cells:{...},
+    // cwOverride:{} }, variant-owned Material Key image metadata under
+    // images.solid/images.lace, plus callouts { id, rowId, imageId, variant,
+    // targets:[{nx,ny},...], textPos:{nx,ny} }. BOM image bytes live outside
+    // history state and are materialized only for project save/autosave.
+    // mod-bom module on this tool's own primitives; no anchor, no POM, so
+    // detection never reads it. Seeded lazily by ensureBom() in
+    // src/ui/bom.js — a first-time BOM materializes as the reference
+    // sheet's exact 12-row BOM (BM_SEED_ROWS, US-074), guarded by
+    // bom.seedId so an emptied table stays empty. Null here so state.js
+    // does not carry row/callout data by default. Persisted with the
+    // project and captured in history so undo/redo covers BOM edits.
+    bom: null,
+
+    // src/ui/preview-page.js — Preview & Export page-inclusion checkboxes
+    // ({ enabledPages: { <sheetKey>: boolean } }, US-079/ADR 0046). Null here;
+    // initPreviewPage materializes the all-enabled default before seedHistory.
+    // Persisted with the project and captured in history.
+    preview: null,
 
     // Review-time per-POM visibility toggles. When an annotation / draft id
     // is in these lists it is skipped by the canvas renderer and hit-test
@@ -303,6 +380,11 @@
       // After a successful apply the anchor pins are hidden so the applied
       // POM lines stay readable. Detect / Reset Anchors show them again.
       anchorsHidden: false,
+      // US-038: per-anchor visibility (session-only view state, not
+      // persisted, not in history). An anchor is visible iff
+      // !anchorsHidden && !hiddenAnchorKinds.includes(kind). Reset on
+      // re-seed. Managed from the Anchors section of the Measurements panel.
+      hiddenAnchorKinds: [],
       // CV debug capture. When enabled (via window.__braAutoModeDebug.cv
       // .setEnabled(true) or ?cvDebug=1), runOfflineDetection asks the pure
       // pipeline to attach an intermediate-state object to the returned
@@ -322,6 +404,11 @@
     // and the readiness chip never stalls silently on the first Detect.
     warmupVisionEngine();
     bindUI();
+    initMainPage();
+    initConstruction();
+    initBom();
+    initPreviewPage();
+    initPageNav();
     // Auto-only build: boot straight into Auto Mode (sets body class,
     // status chip, and locks manual editing paths).
     setAppMode('auto');

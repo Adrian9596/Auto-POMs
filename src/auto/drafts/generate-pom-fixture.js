@@ -37,7 +37,13 @@
       if (!window.confirm(msg)) return;
     }
 
-    const fixture = buildPOMFixtureFromAnchors(state.autoMode.anchors);
+    // US-049: the front-outer pass measures against the ONE detection source
+    // image. Anchors relocated to the front-inner view (POM 9/10/17/18) carry
+    // that photo's id, so exclude them here — those POMs are (re)generated in
+    // the inner pass below. With no inner view every anchor is on the source
+    // image, so this filter is a no-op and behaviour is unchanged.
+    const frontAnchors = state.autoMode.anchors.filter(an => an.sourceImageId === sourceImage.id);
+    const fixture = buildPOMFixtureFromAnchors(frontAnchors);
     const runId = makeRunId();
     const validation = validateAutoFixture(fixture);
     if (validation.status === 'fail') {
@@ -62,9 +68,43 @@
     if (typeof applyStyleConfirmedEvidenceToDrafts === 'function') {
       applyStyleConfirmedEvidenceToDrafts(drafts, sourceImage);
     }
-    nudgeAutoLabelsToAvoidCollisions(drafts);
 
-    state.autoMode.draftAnnotations = drafts;
+    // US-049: second pass — measure POM 9/10/17/18 on the front-inner view when
+    // one is present. The inner photo carries its OWN detection + anchor set
+    // (seeded in buildAuxViews); build a fixture against it — temporarily
+    // swapping the active detection so cupModel/landmark reads come from the
+    // inner photo — and REPLACE the front-outer placeholders for those POMs
+    // (which came out REVIEW_ONLY once their anchors moved off the source
+    // image). POM 8 and every other POM keep their front-outer geometry.
+    let finalDrafts = drafts;
+    const innerView = (state.autoMode.detection && Array.isArray(state.autoMode.detection.auxViews))
+      ? state.autoMode.detection.auxViews.find(v => v && v.viewRole === 'front_inner' && v.detection && Array.isArray(v.anchors) && v.anchors.length)
+      : null;
+    if (innerView) {
+      const innerImage = getImageById(innerView.sourceImageId);
+      if (innerImage && innerImage.width) {
+        const MOVED_POMS = ['9', '10', '17', '18'];
+        const savedDet = state.autoMode.detection;
+        let innerFixture = null;
+        try {
+          state.autoMode.detection = innerView.detection;
+          innerFixture = buildPOMFixtureFromAnchors(innerView.anchors);
+        } finally {
+          state.autoMode.detection = savedDet;
+        }
+        const innerValidation = innerFixture ? validateAutoFixture(innerFixture) : { status: 'fail' };
+        if (innerFixture && innerValidation.status !== 'fail') {
+          const innerDrafts = innerFixture.annotations
+            .filter(row => MOVED_POMS.indexOf(String(row.pom)) >= 0)
+            .map(row => buildDraftAnnotation(row, innerImage, innerFixture, runId));
+          finalDrafts = drafts.filter(d => MOVED_POMS.indexOf(String(d.seq)) < 0).concat(innerDrafts);
+        }
+      }
+    }
+
+    nudgeAutoLabelsToAvoidCollisions(finalDrafts);
+
+    state.autoMode.draftAnnotations = finalDrafts;
     state.autoMode.validation = validation;
     state.autoMode.runId = runId;
     state.autoMode.status = 'reviewing';
@@ -73,7 +113,7 @@
     recordAutoTelemetryEvent('drafts_generated', {
       sourceImageId: sourceImage.id,
       run_id: runId,
-      draft_count: drafts.length,
+      draft_count: finalDrafts.length,
     });
 
     pushHistoryIfChanged();
@@ -150,6 +190,129 @@
     const sideBot    = at('side-bottom');
     const apexL      = at('apex-left');
     const apexR      = at('apex-right');
+    // US-037: neckline (171 center-front → 172 right strap) + armhole endpoints.
+    const necklineCenter = at('171');
+    const necklineStrap  = at('172');
+    // Armhole endpoints. TD 2026-07-18: 181 = underarm (bottom of the arm
+    // opening), 182 = strap junction (top). The curve connects them either
+    // way; start on 181 to match the CLA contract test.
+    const armholeBot = at('181'); // underarm (bottom)
+    const armholeTop = at('182'); // strap junction (top)
+    // matchContourForCurve fits controls that PASS THROUGH the arc's 1/3 and
+    // 2/3 samples. For a long, strongly-curved arc (e.g. the armhole wrapping
+    // strap→underarm) that solve can throw a control far outside [0,1]; when we
+    // then clamp it the curve distorts into a wiggle. Only accept traced
+    // controls that land in a sane band around the view; otherwise fall back to
+    // a clean geometric bow (below).
+    const traceControlSane = (p) => p
+      && p.x >= -0.1 && p.x <= 1.1 && p.y >= -0.1 && p.y <= 1.1;
+    const traceIsUsable = (t) => t && t.score >= 0.55
+      && traceControlSane(t.c1) && traceControlSane(t.c2);
+    // Reject a traced curve whose belly DIPS past the lower endpoint into the
+    // body (larger y). For the neckline/armhole EDGE the curve must stay on the
+    // opening side (above/outward); a downward dip means the fit locked onto an
+    // inner cup / cradle / princess seam instead of the edge (TD 2026-07-18,
+    // demo5: 172/182 at the join → the arc between them found a dipping seam and
+    // POM 17/18 drew a V into the cup). Sample the (clamped) cubic in y.
+    const traceShapeOk = (t, A, B, tolFloor, spanFactor) => {
+      if (!t) return false;
+      const c1y = clamp01(t.c1.y), c2y = clamp01(t.c2.y);
+      const lowerY = Math.max(A.y, B.y);
+      // Tolerance is SPAN-RELATIVE (with a floor): a fixed absolute tolerance
+      // reads as tight on short arcs and loose on long ones, so a long armhole
+      // could dip a visible fraction of its own span yet still pass (demo1).
+      // Defaults (armhole) allow the belly at most 7% of the span below the
+      // lower endpoint. Callers pass a GENEROUS override for the neckline
+      // (POM 17): on a deep/plunging V the edge legitimately continues well
+      // below the CF anchor (171 sits partway up the edge, not at the V-bottom),
+      // so a good edge-following trace dips ~10% — see US-051.
+      const tol = Math.max(tolFloor != null ? tolFloor : 0.015, Math.abs(A.y - B.y) * (spanFactor != null ? spanFactor : 0.07));
+      let maxY = -Infinity;
+      for (let u = 0.15; u <= 0.86; u += 0.1) {
+        const m = 1 - u;
+        const y = m * m * m * A.y + 3 * m * m * u * c1y + 3 * m * u * u * c2y + u * u * u * B.y;
+        if (y > maxY) maxY = y;
+      }
+      return maxY <= lowerY + tol;
+    };
+    // POM 17 "Neckline length" curve. TD 2026-07-18: it must run ALONG the
+    // actual neckline edge — and neckline shapes differ (V / scoop / plunge),
+    // so a fixed geometric bow can't match them. Primary path: TRACE the
+    // detected neckline contour between 171 and 172 (matchContourForCurve fits
+    // a cubic through the real edge arc, endpoints staying on the anchors).
+    //
+    // The endpoints are the measurement points and stay EXACTLY on 171/172 —
+    // no parallel offset. An earlier build shifted the whole curve "up into
+    // the opening" to avoid covering the seam, but the neckline sits at the
+    // TOP of the front_outer view crop, so shifting up pushed the curve past
+    // the crop's top edge (it read as a bulge shooting up to the strap). A
+    // curve that traces the edge already reads as measuring the edge.
+    const neck17start = { x: clamp01(necklineCenter.x), y: clamp01(necklineCenter.y) };
+    const neck17end = { x: clamp01(necklineStrap.x), y: clamp01(necklineStrap.y) };
+    const neck17c1 = lerp(necklineCenter, necklineStrap, 0.35);
+    const neck17c2 = lerp(necklineCenter, necklineStrap, 0.65);
+    {
+      const detN = state.autoMode && state.autoMode.detection;
+      const paths = detN && detN.contours && detN.contours.paths;
+      const traced = (typeof matchContourForCurve === 'function' && paths && paths.length)
+        ? matchContourForCurve(paths, neck17start, neck17end, { preferThin: true })
+        : null;
+      // POM 17 keeps the plain range behaviour (short neckline arc, tame
+      // controls, TD-confirmed) but gains the SHAPE guard: reject a trace that
+      // dips into the cup (demo5) so it doesn't draw a V. Clean monotonic
+      // necklines (demo8) still trace.
+      // US-051: accept the neckline trace when it matches a contour well AND its
+      // controls are sane. The shape guard uses a GENEROUS neckline tolerance
+      // (floor 0.13, 60% of span) because a deep/plunging V legitimately dips
+      // ~10% below the CF anchor — the old tight guard rejected the real edge
+      // and fell back to a chord that visibly cut across the neckline.
+      if (traced && traced.score >= 0.55
+          && traceControlSane(traced.c1) && traceControlSane(traced.c2)
+          && traceShapeOk(traced, neck17start, neck17end, 0.13, 0.6)) {
+        // Controls may fall slightly outside [0,1]; clamp defensively. The
+        // neckline is interior so this rarely bites.
+        neck17c1.x = clamp01(traced.c1.x); neck17c1.y = clamp01(traced.c1.y);
+        neck17c2.x = clamp01(traced.c2.x); neck17c2.y = clamp01(traced.c2.y);
+      } else {
+        // Fallback (no clean contour): a GENTLE bow toward the neckline
+        // opening (upward perpendicular). Necklines run center-front → strap
+        // roughly along a near-straight arm, so the bow stays small; the real
+        // shape comes from the trace above when it is available.
+        const ndx = neck17end.x - neck17start.x;
+        const ndy = neck17end.y - neck17start.y;
+        const nlen = Math.max(0.0001, Math.hypot(ndx, ndy));
+        let px = -ndy / nlen, py = ndx / nlen;
+        if (py > 0) { px = -px; py = -py; } // upward → into the neckline opening
+        const neckBow = 0.02;
+        neck17c1.x = clamp01(neck17c1.x + px * neckBow); neck17c1.y = clamp01(neck17c1.y + py * neckBow);
+        neck17c2.x = clamp01(neck17c2.x + px * neckBow); neck17c2.y = clamp01(neck17c2.y + py * neckBow);
+      }
+    }
+    // POM 18 "Armhole curve length": like POM 17, TRACE the real arm-opening
+    // edge between 181 (underarm) and 182 (strap junction) when a clean contour
+    // exists; otherwise bow the curve OUTWARD toward the arm edge (+x on the
+    // right side). Endpoints stay on the anchors; lineLength reports the
+    // sampled arc length.
+    const arm18start = { x: clamp01(armholeBot.x), y: clamp01(armholeBot.y) }; // 181 underarm
+    const arm18end   = { x: clamp01(armholeTop.x), y: clamp01(armholeTop.y) }; // 182 strap
+    const arm18c1 = lerp(arm18start, arm18end, 0.35);
+    const arm18c2 = lerp(arm18start, arm18end, 0.65);
+    {
+      const detA = state.autoMode && state.autoMode.detection;
+      const pathsA = detA && detA.contours && detA.contours.paths;
+      const tracedA = (typeof matchContourForCurve === 'function' && pathsA && pathsA.length)
+        ? matchContourForCurve(pathsA, arm18start, arm18end, { preferThin: true })
+        : null;
+      if (traceIsUsable(tracedA) && traceShapeOk(tracedA, arm18start, arm18end)) {
+        arm18c1.x = clamp01(tracedA.c1.x); arm18c1.y = clamp01(tracedA.c1.y);
+        arm18c2.x = clamp01(tracedA.c2.x); arm18c2.y = clamp01(tracedA.c2.y);
+      } else {
+        // Fallback: bow OUTWARD toward the arm edge (+x on the right side).
+        const armholeBow = 0.055;
+        arm18c1.x = clamp01(arm18c1.x + armholeBow);
+        arm18c2.x = clamp01(arm18c2.x + armholeBow);
+      }
+    }
     const strapTop   = at('strap-top');
     const strapBot   = at('strap-bottom');
     const backTop    = at('back-top');
@@ -296,6 +459,55 @@
         drawability: 'REVIEW_ONLY', confidence: 'low',
         uncertainty: 'Back strap distance requires a side / back view, which offline detection cannot localise.',
         reason: 'Back strap distance — review only until a side view is available.' };
+
+    // POM 16 — front apex distance (US-083).
+    //
+    // Unlike the band/chest pairs, apex-left and apex-right are NOT two ends of
+    // one detected row: each is found independently on its own side, and the TD
+    // ground truth legitimately places them at slightly different heights
+    // (measured slants of 0.0135 / 0.0418 / 0.0548 in scripts/groundtruth).
+    // So the anchors are left exactly where detection put them — flattening
+    // them onto a shared row would move them AWAY from TD truth.
+    //
+    // What is fixed is the LINE. It used to be forced level at apex-LEFT's y,
+    // which put it 0 from the left pin and the full gap from the right one. It
+    // now draws level at the MIDPOINT, so a legitimate small height difference
+    // costs each pin half the gap instead of loading it all onto one.
+    //
+    // Beyond a point the gap stops being a real height difference and becomes
+    // one side mis-detected: on demo7 apex-left is exactly right while
+    // apex-right is off by 0.134, and averaging that would drag the CORRECT
+    // anchor off truth. The credibility test is the line's SLANT (dy/dx), not
+    // an absolute distance — scale-free, so the same garment feature scores the
+    // same on a 3-view board as on a lone sketch (the POM 7 arc-tier rule,
+    // ADR 0022). Every TD-labelled apex pair slants at most 0.0548; every
+    // detected slant that ground truth proves wrong is at least 0.0767. The
+    // threshold sits in that gap. Over it, POM 16 demotes to REVIEW_ONLY rather
+    // than draw a confident-looking wrong line.
+    const APEX_MAX_SLANT = 0.06;
+    const apexSpanX = Math.abs(apexR.x - apexL.x);
+    const apexDy = Math.abs(apexR.y - apexL.y);
+    const apexSlant = apexSpanX > 0 ? apexDy / apexSpanX : Infinity;
+    const apexMidY = (apexL.y + apexR.y) / 2;
+    const pom16Row = apexSlant <= APEX_MAX_SLANT
+      ? { fixtureId: 'gen-16', pom: '16', type: 'straight', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('16'),
+        // Apex distance is a horizontal span — level, at the midpoint of the
+        // two apex heights so neither pin is favoured.
+        start: { x: apexL.x, y: apexMidY }, end: { x: apexR.x, y: apexMidY },
+        drawability: 'DRAWABLE', confidence: 'medium',
+        proposedStartLandmark: 'apex-left', proposedEndLandmark: 'apex-right',
+        reason: 'Front apex-to-apex distance.' }
+      : { fixtureId: 'gen-16', pom: '16', type: 'straight', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('16'),
+        drawability: 'REVIEW_ONLY', confidence: 'low',
+        proposedStartLandmark: 'apex-left', proposedEndLandmark: 'apex-right',
+        uncertainty: 'The two apex joins were detected ' + apexDy.toFixed(3)
+          + ' apart vertically over a ' + apexSpanX.toFixed(3) + ' span (slant '
+          + apexSlant.toFixed(3) + ', limit ' + APEX_MAX_SLANT
+          + ') — too steep for an apex-to-apex measurement, so one side is very'
+          + ' likely mis-detected. Place the apex anchors and re-generate.',
+        reason: 'Front apex-to-apex distance — review only: the two apex anchors disagree on height.' };
 
     const rows = [
       // POM 1 — bottom band (relax)
@@ -537,13 +749,28 @@
       pom15Row,
 
       // POM 16 — front apex distance
-      { fixtureId: 'gen-16', pom: '16', type: 'straight', style: 'solid', arrowType: 'double',
-        viewRole: effectivePomViewRole('16'),
-        // Apex distance is a horizontal span — force end.y to start.y.
-        start: apexL, end: { x: apexR.x, y: apexL.y },
+      pom16Row,
+
+      // POM 17 — neckline length: curve tracing the neckline edge from the
+      // center front (171) up to the right strap junction (172).
+      { fixtureId: 'gen-17', pom: '17', type: 'curved', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('17'),
+        start: neck17start, end: neck17end, control1: neck17c1, control2: neck17c2,
         drawability: 'DRAWABLE', confidence: 'medium',
-        proposedStartLandmark: 'apex-left', proposedEndLandmark: 'apex-right',
-        reason: 'Front apex-to-apex distance.' },
+        proposedStartLandmark: '171', proposedEndLandmark: '172',
+        reason: 'Neckline length from center front to the strap (drawn just inside the neckline).' },
+
+      // POM 18 — armhole curve length: traced arc from the strap junction to
+      // the underarm, bowed outward toward the arm edge. Curve, not straight;
+      // lineLength samples the bezier for the true arc length. Bowed guess
+      // (no direct edge trace yet) → APPROXIMATE + low confidence, always
+      // reviewRequired via the 'low' anchor tiers.
+      { fixtureId: 'gen-18', pom: '18', type: 'curved', style: 'solid', arrowType: 'double',
+        viewRole: effectivePomViewRole('18'),
+        start: arm18start, end: arm18end, control1: arm18c1, control2: arm18c2,
+        drawability: 'APPROXIMATE', confidence: 'low',
+        proposedStartLandmark: '181', proposedEndLandmark: '182',
+        reason: 'Armhole curve length from the underarm to the strap junction.' },
     ];
 
     // Review-note plumbing (Engineering Workflow Phase 7, item 4). When a POM
@@ -601,8 +828,8 @@
 
     // P5: a straight row whose endpoints coincide (zero measurable length)
     // can't satisfy its forced horizontal/vertical shape check and would make
-    // validateAutoFixture return 'fail', aborting ALL 16 POMs and discarding
-    // the 15 good ones. Demote just that degenerate row to REVIEW_ONLY so the
+    // validateAutoFixture return 'fail', aborting ALL 18 POMs and discarding
+    // the 17 good ones. Demote just that degenerate row to REVIEW_ONLY so the
     // rest still ship; the null-geometry pass below then clears its coords.
     for (const row of rows) {
       if (row.drawability === 'REVIEW_ONLY' || row.type === 'curved') continue;
@@ -688,12 +915,17 @@
     };
   }
 
-  // Keep Auto Mode POM 1/2/3/4 drafts geometrically tied to the band/chest
-  // anchors while the TD is dragging. POM 1 follows band-{left,right}; POM 3
-  // follows chest-{left,right}; POMs 2 and 4 are dashed extensions that
-  // always read as 1/5 the length of their parent. Called from the
-  // drag-anchor mouse-move loop; runs only if drafts exist for the
-  // affected POMs.
+  // Keep Auto Mode POM 1/2/3/4/16 drafts geometrically tied to their anchors
+  // while the TD is dragging. POM 1 follows band-{left,right}; POM 3 follows
+  // chest-{left,right}; POMs 2 and 4 are dashed extensions that always read
+  // as 1/5 the length of their parent; POM 16 follows apex-{left,right}
+  // (US-085 — without this, correcting a mis-detected apex anchor by hand
+  // left POM 16's line drawn at the old, pre-drag position, the same
+  // "anchors right, line wrong" symptom ADR 0049 fixed for band/chest, but
+  // for a manual correction instead of a seeding fallback). Called from the
+  // drag-anchor mouse-move loop; runs only if drafts exist for the affected
+  // POMs. Other POMs' drafts still don't live-sync — a TD must re-generate
+  // after moving those anchors.
   function syncBandChestDraftsFromAnchors(movedAnchorKind) {
     if (state.appMode !== 'auto') return;
     const drafts = state.autoMode && state.autoMode.draftAnnotations;
@@ -701,7 +933,9 @@
     const relevant = movedAnchorKind === 'band-left'
       || movedAnchorKind === 'band-right'
       || movedAnchorKind === 'chest-left'
-      || movedAnchorKind === 'chest-right';
+      || movedAnchorKind === 'chest-right'
+      || movedAnchorKind === 'apex-left'
+      || movedAnchorKind === 'apex-right';
     if (!relevant) return;
 
     const anchors = state.autoMode.anchors || [];
@@ -711,6 +945,8 @@
     const bandR = byKind['band-right'];
     const chestL = byKind['chest-left'];
     const chestR = byKind['chest-right'];
+    const apexL = byKind['apex-left'];
+    const apexR = byKind['apex-right'];
 
     const det = state.autoMode && state.autoMode.detection;
     const sourceImage = det
@@ -740,6 +976,51 @@
       const pom3Length = chestR.x - chestL.x;
       const ext4End = { x: clamp01(chestR.x + pom3Length / 5), y: chestR.y };
       updateLine(findDraft('4'), chestR, ext4End);
+    }
+    if (apexL && apexR) {
+      const draft16 = findDraft('16');
+      // POM 16 doesn't use the plain updateLine helper above: unlike
+      // band/chest it is NOT forced level onto one anchor (ADR 0049 /
+      // US-084 — the apex pair is legitimately allowed to sit at different
+      // heights), so the line's own credibility can change as the TD drags
+      // an anchor, and drawability must flip between DRAWABLE and
+      // REVIEW_ONLY live rather than staying frozen. updateLine's "never
+      // touch a REVIEW_ONLY draft" rule would defeat exactly the case this
+      // exists for: un-REVIEW-ONLY-ing POM 16 IS the point of the TD's fix.
+      if (draft16) {
+        // Keep this in lockstep with APEX_MAX_SLANT in
+        // buildPOMFixtureFromAnchors (this file) and APEX_SLANT_LIMIT in
+        // src/auto-detection.js — contract E4 guards all three from
+        // drifting apart.
+        const APEX_MAX_SLANT = 0.06;
+        const apexSpanX = Math.abs(apexR.x - apexL.x);
+        const apexDy = Math.abs(apexR.y - apexL.y);
+        const apexSlant = apexSpanX > 0 ? apexDy / apexSpanX : Infinity;
+        if (apexSlant <= APEX_MAX_SLANT) {
+          const apexMidY = (apexL.y + apexR.y) / 2;
+          const newStart = toWorld({ x: apexL.x, y: apexMidY });
+          const newEnd = toWorld({ x: apexR.x, y: apexMidY });
+          if (newStart) draft16.start = newStart;
+          if (newEnd) draft16.end = newEnd;
+          draft16.drawability = 'DRAWABLE';
+          draft16.confidence = 'medium';
+          draft16.uncertainty = null;
+        } else {
+          // validate-fixture.js requires REVIEW_ONLY rows to carry null
+          // geometry ("must have null geometry") — leaving the pre-drag
+          // start/end in place would both violate that and silently draw a
+          // stale line under a "review only" label instead of no line.
+          draft16.start = null;
+          draft16.end = null;
+          draft16.drawability = 'REVIEW_ONLY';
+          draft16.confidence = 'low';
+          draft16.uncertainty = 'The two apex joins were detected ' + apexDy.toFixed(3)
+            + ' apart vertically over a ' + apexSpanX.toFixed(3) + ' span (slant '
+            + apexSlant.toFixed(3) + ', limit ' + APEX_MAX_SLANT
+            + ') — too steep for an apex-to-apex measurement, so one side is very'
+            + ' likely mis-detected. Place the apex anchors and re-generate.';
+        }
+      }
     }
   }
 
