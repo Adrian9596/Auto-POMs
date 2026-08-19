@@ -142,9 +142,6 @@
       ANCHOR_SCHEMA: anchors.map(anchor => Object.assign({}, anchor)),
       AUTO_TEMPLATE_VERSION: version.template_version || 'unknown-template',
       AUTO_RULE_VERSION: version.rule_version || 'unknown-rules',
-      AUTO_ANCHOR_VERSION: version.anchor_version || 'unknown-anchors',
-      AUTO_SUGGESTIONS_VERSION: (sizeLSuggestions && sizeLSuggestions.suggestions_version)
-        || version.suggestions_version || 'none',
     });
   }
 
@@ -3545,15 +3542,6 @@
       hold: override.hold != null ? !!override.hold : !!house.hold,
       overridden: true,
     };
-  }
-
-  function setGradeRule(pomKey, patch) {
-    const key = String(pomKey);
-    if (!state.gradeRules || state.gradeRules.version !== 2) {
-      state.gradeRules = migrateGradeRulesV2(state.gradeRules, null);
-    }
-    state.gradeRules.steps[key] = Object.assign({}, state.gradeRules.steps[key] || {}, patch);
-    pushHistoryIfChanged();
   }
 
   // Base value for a POM: explicit Size L wins; else the calibrated measured
@@ -11779,7 +11767,9 @@ const BOM_MATERIAL_LIBRARY = [
 //
 // Dropped by ADR 0041: AI translation, bilingual cells, per-row reference
 // photo + asset-management catalog matching, auto-draft-from-Construction,
-// split-row (size-run pairing), floating per-cell SuggMenu popover.
+// floating per-cell SuggMenu popover. Split-row (size-run pairing) was
+// dropped here too but reintroduced by the US-072 follow-up — see
+// bmSplitRow below.
 
   const BM_SCHEMA_VERSION = 2;
   const BM_SECTIONS = ['FABRIC', 'TRIM'];
@@ -25939,8 +25929,8 @@ function getAnnotationsOnImage(image) {
     // POM 6 rescue: when the direct CF-seam detector missed (no cradleCfTop)
     // but the bottom-cup cradle seam WAS found (cradleCupTop — the POM 7 top),
     // extend that detected seam horizontally to the CF axis as an APPROXIMATE
-    // POM 6 top. It seeds low-confidence + reviewRequired (see confByKind /
-    // sourceByKind below) so the TD still verifies; this only replaces a hard
+    // POM 6 top. It seeds low-confidence + reviewRequired (the landmark QA
+    // layer downstream tags it accordingly) so the TD still verifies; this only replaces a hard
     // REVIEW_ONLY demotion with a reviewable starting line, and degrades
     // gracefully — POM 6 stays REVIEW_ONLY when cradleCupTop is also missing.
     // No rule-JSON change: cf-bottom still derives onto the band line via the
