@@ -1,0 +1,1447 @@
+{
+  "report_version": "td-review.v1",
+  "candidate_id": "intake-sha256-363358a282e712a5e53ae4e26e6009a1c16a67cebcda398f911bfaa93df1e8e0",
+  "summary": {
+    "pending_observations": 2950,
+    "unresolved_observations": 61,
+    "excluded_out_of_scope_observations": 248,
+    "grouped_terms": 45,
+    "conflicts": 0
+  },
+  "conflicts": [],
+  "unresolved": [
+    {
+      "normalized_term": "sling height at cf",
+      "variants": [
+        "Sling height at CF"
+      ],
+      "occurrence_count": 3,
+      "style_count": 3,
+      "source_count": 3,
+      "raw_pom_numbers": [
+        "9"
+      ],
+      "example_styles": [
+        "trulysofty__va10",
+        "trulysofty__va20",
+        "trulysofty__va30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.575
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.457
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.421
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "strap width elastic",
+      "variants": [
+        "Strap width - elastic"
+      ],
+      "occurrence_count": 3,
+      "style_count": 3,
+      "source_count": 3,
+      "raw_pom_numbers": [
+        "11"
+      ],
+      "example_styles": [
+        "deliabra__va10",
+        "deliabra__va20",
+        "deliabra__vb10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.267
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "strap width on folded",
+      "variants": [
+        "Strap width- on folded"
+      ],
+      "occurrence_count": 3,
+      "style_count": 3,
+      "source_count": 3,
+      "raw_pom_numbers": [
+        "10"
+      ],
+      "example_styles": [
+        "celyngrace__va10",
+        "celyngrace__va30",
+        "curvyflex__va11"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.387
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "center back length at top",
+      "variants": [
+        "Center back length - at top",
+        "Center back length at top"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "12",
+        "14"
+      ],
+      "example_styles": [
+        "auraform__va20",
+        "serashape__va20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.977
+        },
+        {
+          "concept_id": "side_seam_length",
+          "pom_number": 11,
+          "label": "Side seam length",
+          "score": 0.303
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "center front height at middle",
+      "variants": [
+        "Center Front Height- at middle"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "myraform__vb10",
+        "myraform__vb20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.876
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.8
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.792
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cradle height at center front on inner layer",
+      "variants": [
+        "Cradle Height at Center Front on inner layer"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "shapernova__vb10",
+        "shapernova__vb11"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.8
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.632
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.603
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cradle height at center front on outter layer",
+      "variants": [
+        "Cradle Height at Center Front on outter layer"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "shapernova__vb10",
+        "shapernova__vb11"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.787
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.741
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.566
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height at outter",
+      "variants": [
+        "Cup height- at outter"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "3"
+      ],
+      "example_styles": [
+        "honeylift__vb10",
+        "honeylift__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.897
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.649
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.579
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup width at outter",
+      "variants": [
+        "Cup width -at outter"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "4"
+      ],
+      "example_styles": [
+        "honeylift__vb10",
+        "honeylift__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 0.815
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.276
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup width inner",
+      "variants": [
+        "Cup width inner"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "12"
+      ],
+      "example_styles": [
+        "trulysofty__vb20",
+        "trulysofty__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 1
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.428
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "inner cup height at cf",
+      "variants": [
+        "Inner cup height at CF"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "5"
+      ],
+      "example_styles": [
+        "amylift__vc20",
+        "amylift__vc30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.867
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.632
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.462
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "strap width at shoulder",
+      "variants": [
+        "Strap width at Shoulder",
+        "Strap width at shoulder"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "10",
+        "15"
+      ],
+      "example_styles": [
+        "annabrace__vb30",
+        "lifttiva__va10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.364
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "strap width at shoulder elastic width",
+      "variants": [
+        "Strap width at shoulder ( elastic width )"
+      ],
+      "occurrence_count": 2,
+      "style_count": 2,
+      "source_count": 2,
+      "raw_pom_numbers": [
+        "13"
+      ],
+      "example_styles": [
+        "softyvera__va10",
+        "softyvera__vb20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.267
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "back panel height outer bra",
+      "variants": [
+        "Back panel height - outer bra"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "18"
+      ],
+      "example_styles": [
+        "trulysofty__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_panel_height",
+          "pom_number": 13,
+          "label": "Back panel height",
+          "score": 0.778
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.558
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "back strap width",
+      "variants": [
+        "Back strap width"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "16"
+      ],
+      "example_styles": [
+        "liftglowbra__va10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.296
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "bottom panel height at center front",
+      "variants": [
+        "Bottom panel height at Center Front"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "6"
+      ],
+      "example_styles": [
+        "sofylift__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.799
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.72
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.667
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "center back length at bottom",
+      "variants": [
+        "Center back length at bottom"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "15"
+      ],
+      "example_styles": [
+        "auraform__vb20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.789
+        },
+        {
+          "concept_id": "side_seam_length",
+          "pom_number": 11,
+          "label": "Side seam length",
+          "score": 0.278
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "center back length at h e",
+      "variants": [
+        "Center back length - at H&E"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "15"
+      ],
+      "example_styles": [
+        "auraform__va20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.882
+        },
+        {
+          "concept_id": "side_seam_length",
+          "pom_number": 11,
+          "label": "Side seam length",
+          "score": 0.313
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "center front height at velcro",
+      "variants": [
+        "Center Front Height- at velcro"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "deliabra__vb10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.876
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.8
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.75
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cf cup height at sling",
+      "variants": [
+        "CF cup height at sling"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "celinebloom__va10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.64
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.582
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.526
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "clasp height at center front",
+      "variants": [
+        "Clasp height at center front"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "amoreease__va10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.864
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.769
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.766
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cradle height at center front top mesh",
+      "variants": [
+        "Cradle Height at Center Front top mesh"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "juliabra__va20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.873
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.692
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.686
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height at bottom",
+      "variants": [
+        "Cup height at bottom"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "celinebloom__va10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.8
+        },
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.667
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.661
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height at center",
+      "variants": [
+        "Cup height at Center"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "5"
+      ],
+      "example_styles": [
+        "glacyhug__vb20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.865
+        },
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.69
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.5
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height at center front mesh",
+      "variants": [
+        "Cup Height at Center Front mesh"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "6"
+      ],
+      "example_styles": [
+        "juliabra__va30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.913
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.855
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.732
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height at center inner bra",
+      "variants": [
+        "Cup height at center  - Inner bra"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "6"
+      ],
+      "example_styles": [
+        "trulysofty__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.711
+        },
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.649
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.435
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height at outer",
+      "variants": [
+        "Cup height at outer"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "9"
+      ],
+      "example_styles": [
+        "selinabra__vb10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 1
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.667
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.541
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height inner bra",
+      "variants": [
+        "Cup height  - Inner bra"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "9"
+      ],
+      "example_styles": [
+        "trulysofty__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 1
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.486
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.421
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup height mesh at center front",
+      "variants": [
+        "Cup Height mesh at Center front"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "lifttiva__vd30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.87
+        },
+        {
+          "concept_id": "center_front_height",
+          "pom_number": 5,
+          "label": "Center front height",
+          "score": 0.732
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.694
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup heigth at outer",
+      "variants": [
+        "Cup heigth at outer"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "12"
+      ],
+      "example_styles": [
+        "amorafit__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.786
+        },
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 0.519
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.5
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup width at bottom",
+      "variants": [
+        "Cup width at bottom"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "9"
+      ],
+      "example_styles": [
+        "cleobra__va30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 0.636
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.276
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "cup width inner bra",
+      "variants": [
+        "Cup width  - Inner bra"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "10"
+      ],
+      "example_styles": [
+        "trulysofty__vb30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 0.935
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.276
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "inner cup vertical height",
+      "variants": [
+        "Inner Cup vertical height"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "15"
+      ],
+      "example_styles": [
+        "lacygrace__va30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.75
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.381
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.326
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "inner cup width center to side 1 2",
+      "variants": [
+        "Inner Cup width (center to Side 1/2)"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "3"
+      ],
+      "example_styles": [
+        "amylift__vc20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 0.632
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.25
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "inner cup width center to side seam",
+      "variants": [
+        "Inner Cup width (Center to Side seam)"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "3"
+      ],
+      "example_styles": [
+        "glacyhug__va10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_width",
+          "pom_number": 10,
+          "label": "Cup width",
+          "score": 0.6
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "inner front cradle height at cf",
+      "variants": [
+        "Inner front cradle height at CF"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "aeriefit__vb10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.816
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.673
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.609
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "mesh height at back",
+      "variants": [
+        "Mesh height at back"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "13"
+      ],
+      "example_styles": [
+        "lifttiva__vc20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_panel_height",
+          "pom_number": 13,
+          "label": "Back panel height",
+          "score": 0.672
+        },
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.444
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "mesh height at top cup",
+      "variants": [
+        "Mesh Height at top cup"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "juliabra__va30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.594
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.564
+        },
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.56
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "mesh height below armhole",
+      "variants": [
+        "Mesh height below armhole"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "10"
+      ],
+      "example_styles": [
+        "liftglowbra__vb30"
+      ],
+      "candidates": [],
+      "warnings": []
+    },
+    {
+      "normalized_term": "mesh panel height",
+      "variants": [
+        "Mesh Panel height"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "elleshaping__vb30"
+      ],
+      "candidates": [],
+      "warnings": []
+    },
+    {
+      "normalized_term": "outer cup height at cf",
+      "variants": [
+        "Outer cup height at CF"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "7"
+      ],
+      "example_styles": [
+        "gladyform__va20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.867
+        },
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.684
+        },
+        {
+          "concept_id": "cradle_height_bottom_cup",
+          "pom_number": 7,
+          "label": "Cradle height at bottom cup",
+          "score": 0.582
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "sling height at cf solid version",
+      "variants": [
+        "Sling height at CF ( solid version)"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "8"
+      ],
+      "example_styles": [
+        "fitclara__vb20"
+      ],
+      "candidates": [
+        {
+          "concept_id": "cup_height_center_front",
+          "pom_number": 8,
+          "label": "Cup height at center front",
+          "score": 0.546
+        },
+        {
+          "concept_id": "cradle_height_center_front",
+          "pom_number": 6,
+          "label": "Cradle height at center front",
+          "score": 0.4
+        },
+        {
+          "concept_id": "cup_height",
+          "pom_number": 9,
+          "label": "Cup height",
+          "score": 0.359
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "strap width at joint seam",
+      "variants": [
+        "Strap Width at Joint Seam"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "10"
+      ],
+      "example_styles": [
+        "lacygrace__va30"
+      ],
+      "candidates": [],
+      "warnings": []
+    },
+    {
+      "normalized_term": "strap width at shoulder seam",
+      "variants": [
+        "Strap Width at Shoulder seam"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "11"
+      ],
+      "example_styles": [
+        "lacygrace__va30"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.324
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "normalized_term": "upper center back length",
+      "variants": [
+        "Upper Center back length"
+      ],
+      "occurrence_count": 1,
+      "style_count": 1,
+      "source_count": 1,
+      "raw_pom_numbers": [
+        "9"
+      ],
+      "example_styles": [
+        "laralift__vb10"
+      ],
+      "candidates": [
+        {
+          "concept_id": "back_center_length",
+          "pom_number": 12,
+          "label": "Back center length",
+          "score": 0.857
+        },
+        {
+          "concept_id": "side_seam_length",
+          "pom_number": 11,
+          "label": "Side seam length",
+          "score": 0.303
+        }
+      ],
+      "warnings": []
+    }
+  ]
+}

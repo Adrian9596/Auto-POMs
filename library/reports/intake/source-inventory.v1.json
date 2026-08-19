@@ -1,0 +1,849 @@
+{
+  "inventory_version": "measurement-source-inventory.v1",
+  "roots": [
+    {
+      "root_id": "htm-tool",
+      "path": "/Users/crossian/Library/CloudStorage/GoogleDrive-tuyen.vanbui@crossian.com/My Drive/3. Bra Tool Project/htm tool"
+    },
+    {
+      "root_id": "measurements-2",
+      "path": "/Users/crossian/Library/CloudStorage/GoogleDrive-tuyen.vanbui@crossian.com/My Drive/3. Bra Tool Project/Measurements 2"
+    },
+    {
+      "root_id": "bra-bom",
+      "path": "/Users/crossian/Library/CloudStorage/GoogleDrive-tuyen.vanbui@crossian.com/My Drive/3. Bra Tool Project/Bra BOM"
+    }
+  ],
+  "files": [
+    {
+      "source_id": "sha256:1a578d54fd08b7da2cc9384cfa4d410a93344fa4f6520297d2aa640ac54079d9",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/airnix_new_style_demo_round_2/Airnix_BOM_Round_2.xlsx",
+      "size_bytes": 502968,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:d420a05c9278e60fee314f75e812f6bc448df41605a8bc4ba7ca4a49caa2e407",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/airnix_new_style_demo/Airnix_BOM.xlsx",
+      "size_bytes": 11922,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:2444f53ae31bcecc8da978e3cf49ddb1291a4cd5d094d585f05d4c12b40cb1e3",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/softysophie_new_style_demo/SoftySophie_BOM.xlsx",
+      "size_bytes": 362903,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:b23a77ba00366bdf3fbac0e5f64040e105d8449850be3d168f23dc97c278a959",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/tech_pack_pdf_random_demo_round_2/LacyFeel_VB10/LacyFeel_VB10_BOM.xlsx",
+      "size_bytes": 230471,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:34d90711cd32813857ae30867be33e131d2f90f1aa37e3336d9ce2dbdfaf3cda",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/tech_pack_pdf_random_demo_round_2/LaraLift_VB30/LaraLift_VB30_BOM.xlsx",
+      "size_bytes": 402193,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:729e41c8cff8af44c4cf53549c3eb759c90c75619013341c3af8d0d5492662c7",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/tech_pack_pdf_random_demo/LacyFeel_VB10/LacyFeel_VB10_BOM.xlsx",
+      "size_bytes": 11639,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:2167baecfae1fb3a9c3c93576e76c8ad29c376fc1e1d48864e992d7b35669e7f",
+      "root_id": "bra-bom",
+      "relative_path": "_archive/old_demo_outputs/demo_outputs/tech_pack_pdf_random_demo/LaraLift_VB30/LaraLift_VB30_BOM.xlsx",
+      "size_bytes": 11984,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:443374ad773b21cc149562bb2bffaf364993bd81416ae5ed2a198ef1aabc2a70",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3380_FormaLift_VA_10_2552026.xlsx",
+      "size_bytes": 14390083,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:ee96f4af02268068baf1059552d4d61300ce13cd730dfed004450597965d5649",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3675_RemiCurve_10BaoyouleFinal_TP_6Apr2026.xlsx",
+      "size_bytes": 60776484,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:0bbfd95f666580664230f6925faea0ea268d8c68e364c464461cacece0bc2576",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3708_RevenaShape_30_Initially_FeliciaBravB30TechPack12052026.xlsx",
+      "size_bytes": 32068248,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:4db4fc4a425cf2dbd661e6f9035e2f916b5b9013909e79ac9badb36f15b36bb1",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3749_AnnaBrace_VB_10Wanting25May2026.xlsx",
+      "size_bytes": 32119062,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:3682edf7366f6af004532bb6e16d3819c935797975e1d8b28bc821f7f85b3611",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3777_EmmieLiftWanting.xlsx",
+      "size_bytes": 6870419,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:6a2fa3a8df9337eaa36fa0a28ed24a401d1b3c059d9c0f8fbe1bd999a8e7dceb",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3799_Lilyform_vA_20_482026.xlsx",
+      "size_bytes": 27665564,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:65800df61d668c257bd188cd988277f855b58a45a7c01c3baba9ace745ff8361",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3848_LARALIFT_VB_10_16042026.xlsx",
+      "size_bytes": 51042825,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:34b506f4f37c81635b6a6f95184a5f863184156a607412e99f05096fee9f737c",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/3941_CassieLift_vA_20_19052026_TP.xlsx",
+      "size_bytes": 20797525,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:b747de7a236df8c0931485e7217dc17841a2cddb7d3c61c197b09a2788819de0",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/BloomyHug10_Sep1925.xlsx",
+      "size_bytes": 6636762,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:e2817d3312ca795d580d1935fab2368a17b7ca4ed45d094b38b2b50774d325cb",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/CassieLift_vB_30_2052026.xlsx",
+      "size_bytes": 21642913,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:d34ef64c0f4e15c665e7d257cf1a633ba3d5bba0113db0c89f7e5e9aada99277",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/Copy_of_3796_TrulySoftyvB10080426.xlsx",
+      "size_bytes": 19560197,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:7cd38991a12812a1b6e54968295e0e3ef92d5f3442f2f4c3c9eb5d87e4893324",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/CurvyFlex_11122025_Wanting.xlsx",
+      "size_bytes": 40141385,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:44d73e51005cda91856df29c3456df47f485d70f7d546ca293c631de0c2820cc",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/FionaBra_vA_10_Lace_10042025.xlsx",
+      "size_bytes": 22705888,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:52f64b27bc5173216e0622bd842421339f6e2ea7d8b4e48b01ca7df8e4e1e62c",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/HazelLift_VB_10.xlsx",
+      "size_bytes": 1751878,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:f57cae0beaa8c07cda6473f5daa5400075d09b7e3c5d9b69a2fd7c806d9826e7",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/HoneyLift_vA_30_09092025.xlsx",
+      "size_bytes": 22230479,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:3d86e19085cb45e9d1979cb1ce0ba171f6f8cc4908cfbccbe859a6879081bd3f",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/KiraFormvB20Techpack.xlsx",
+      "size_bytes": 45895088,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:5488f918cdd671de9a93e12cfabc5b61053cc9c2e3c554c02cf267768a95961b",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/LacyFrorm_vB_10_TP.xlsx",
+      "size_bytes": 13850419,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:c288920967dd928def4c7acc538598774ed08958db8e6cebc7da632b36fb3a4b",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/LauraLiftvB20140126.xlsx",
+      "size_bytes": 31570178,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:c5e6c63ea944503f1d372577a60929f38f4490de5be58ad94a347b33748f6850",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/MilaEase_vA_30_27052026.xlsx",
+      "size_bytes": 32766285,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:69fb3b86c6f7f549e2997a43707350ae2ca95624bb3107546309ed108d9ee8c7",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/POSYFIT_VA_10_26022026.xlsx",
+      "size_bytes": 38702037,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:fcbfcb90235e9985f1548c799ed19096034d5c19c0b1b442f98034c795e8d0ba",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/VelinaEase_VB_30.xlsx",
+      "size_bytes": 31015969,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:c7df3d8d69cd403edde2b9107e13742a41193c5d946ba453b0df4b10181c8b35",
+      "root_id": "bra-bom",
+      "relative_path": "BOM Excel/VelviComfyTechPackVA1020260523.xlsx",
+      "size_bytes": 86084,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:d2b67d3e8a2d134a1263bc4c729e787b487cfaa35acb0a39b29ab0e3d8787008",
+      "root_id": "bra-bom",
+      "relative_path": "BOM front end example.xlsx",
+      "size_bytes": 10511842,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:424aaa34bee411133ae8e6a51a1fe2734acdef369c09bafb487137c38808577a",
+      "root_id": "bra-bom",
+      "relative_path": "demo_materials/CassieLift For demo checking.xlsx",
+      "size_bytes": 13024403,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:26e515f4f9b898528f651666e9738bc2eaa5a0ba02bf7497a82120527de93ae7",
+      "root_id": "bra-bom",
+      "relative_path": "demo_materials/sample_techpacks/HoneyLift vA 3.0 - 09.09.2025.xlsx",
+      "size_bytes": 15399365,
+      "classification": "legacy_measurement_candidate",
+      "underlying_classification": "legacy_measurement_candidate",
+      "reason_codes": [
+        "sheet_name_not_exact"
+      ],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "MAIN- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "CONSTRUCTION- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "MAIN- CONTRAST",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "CONSTRUCTION- CONTRAST",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM- CONTRAST",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "MEASUREMENT SPEC ",
+          "headers_row_3": [
+            "",
+            "Description",
+            "Tolerance",
+            "XS",
+            "S",
+            "M",
+            "L",
+            "XL",
+            "2XL",
+            "3XL",
+            "3XL-UP",
+            "4XL",
+            "5XL",
+            "",
+            "1"
+          ]
+        },
+        {
+          "name_observed": "Ist PROTO COMMENTS",
+          "headers_row_3": [
+            "",
+            "",
+            "97"
+          ]
+        },
+        {
+          "name_observed": "1st proto directio",
+          "headers_row_3": [
+            "",
+            "",
+            "98"
+          ]
+        },
+        {
+          "name_observed": "PP NOTE",
+          "headers_row_3": [
+            "",
+            "",
+            "135"
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:fdb2b4cac4e77cb77b8787e369aa57ba742f6dee6ea73086b9c8e5f4b1f134d8",
+      "root_id": "bra-bom",
+      "relative_path": "demo_materials/sample_techpacks/MilaEase v.A 3.0 - 27.05.2026.xlsx",
+      "size_bytes": 22620969,
+      "classification": "legacy_measurement_candidate",
+      "underlying_classification": "legacy_measurement_candidate",
+      "reason_codes": [
+        "sheet_name_not_exact"
+      ],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "MAIN PAGE",
+          "headers_row_3": [
+            "",
+            "",
+            "Nga Hang Thi Hoang",
+            "9"
+          ]
+        },
+        {
+          "name_observed": "CONSTRUCTION DETAIL",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-LACE",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM-SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "MEASUREMENT SPEC ",
+          "headers_row_3": [
+            "",
+            "130"
+          ]
+        },
+        {
+          "name_observed": "Ist PROTO Direction",
+          "headers_row_3": [
+            "",
+            "",
+            "MilaEasevA-1.0",
+            "169"
+          ]
+        },
+        {
+          "name_observed": "1st PROTO Comments",
+          "headers_row_3": [
+            "",
+            "",
+            "MilaEasevA-1.0",
+            "169"
+          ]
+        },
+        {
+          "name_observed": "PP NOTE",
+          "headers_row_3": [
+            "",
+            "",
+            "23",
+            "",
+            "",
+            "",
+            "203"
+          ]
+        },
+        {
+          "name_observed": "Bulk inspection-1st batch",
+          "headers_row_3": [
+            "",
+            "",
+            "23",
+            "",
+            "",
+            "",
+            "203"
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:5742a379026033a51a8ab90cd2a4c5c0790ca922e6cf8538b57c829716e3ec84",
+      "root_id": "bra-bom",
+      "relative_path": "demo_materials/sample_techpacks/VelinaEase VB 3.0.xlsx",
+      "size_bytes": 17893625,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "MAIN- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "CONSTRUCTION- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "MAIN- LACE",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "CONSTRUCTION- LACE",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM- LACE",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "Ist PROTO COMMENTS",
+          "headers_row_3": [
+            "",
+            "",
+            "127"
+          ]
+        },
+        {
+          "name_observed": "1st proto directio",
+          "headers_row_3": [
+            "",
+            "",
+            "128"
+          ]
+        },
+        {
+          "name_observed": "PP NOTE",
+          "headers_row_3": [
+            "",
+            "",
+            "175"
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:ade497a26382ba3b550215059ea82f9cc424f7468ee75e1e4b72afd02426a31b",
+      "root_id": "bra-bom",
+      "relative_path": "demo_materials/VelviComfy v.B 2.0.xlsx",
+      "size_bytes": 9343082,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM- LACE",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM- SOLID",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:6106a1c2b9c44c2f3ddd064e9b59e875c03791a9cf088b3ff9f6fab9e7cd4fa3",
+      "root_id": "bra-bom",
+      "relative_path": "outputs/CassieLift_3941_vA2_0_BOM.xlsx",
+      "size_bytes": 1023918,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "BOM- SOLID",
+          "headers_row_3": []
+        },
+        {
+          "name_observed": "BOM- LACE",
+          "headers_row_3": []
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:098ee257e23741bfc08da6b10ca26209bf2bb0f49eaf6c71743a42d53e6b8c50",
+      "root_id": "bra-bom",
+      "relative_path": "outputs/Photo_Based_Snap_Bralette_Draft/Photo_Based_Snap_Bralette_Draft_BOM.xlsx",
+      "size_bytes": 12310,
+      "classification": "duplicate",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": "bra-bom:Photo_Based_Snap_Bralette_Draft_BOM.xlsx",
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:098ee257e23741bfc08da6b10ca26209bf2bb0f49eaf6c71743a42d53e6b8c50",
+      "root_id": "bra-bom",
+      "relative_path": "Photo_Based_Snap_Bralette_Draft_BOM.xlsx",
+      "size_bytes": 12310,
+      "classification": "unrelated_bom",
+      "underlying_classification": "unrelated_bom",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": []
+    },
+    {
+      "source_id": "sha256:14e28b76932226ff8460b3b79156ea65c8f583abcf36b73df1fa571535675977",
+      "root_id": "htm-tool",
+      "relative_path": "SC.xlsx",
+      "size_bytes": 191579,
+      "classification": "reference_only",
+      "underlying_classification": "reference_only",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "Size Chart & Grading Rule-2026",
+          "headers_row_3": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "30.0",
+            "32.0",
+            "34.0",
+            "36.0",
+            "38.0",
+            "40.0",
+            "42.0",
+            "44.0",
+            "46.0",
+            "48.0",
+            "50.0",
+            "52.0",
+            "54.0",
+            "56.0",
+            "58.0",
+            "12",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "30.0",
+            "32.0",
+            "34.0",
+            "36.0",
+            "38.0",
+            "40.0",
+            "42.0",
+            "44.0",
+            "46.0",
+            "48.0",
+            "50.0",
+            "52.0",
+            "54.0",
+            "56.0",
+            "58.0",
+            "13",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "8.0",
+            "10.0",
+            "12.0",
+            "14.0",
+            "16.0",
+            "18.0",
+            "20.0",
+            "22.0",
+            "14"
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "sha256:0f9b5ac87d4f4ee1488e961a6dc510e8a50b71ff55f6edadfb8eb86a68847a79",
+      "root_id": "measurements-2",
+      "relative_path": "archive/INTIMATES - TRIM STANDARDIZATION .xlsx",
+      "size_bytes": 99152375,
+      "classification": "reference_only",
+      "underlying_classification": "reference_only",
+      "reason_codes": [],
+      "parse_eligible": false,
+      "duplicate_of": null,
+      "sheets": [
+        {
+          "name_observed": "Sheet1",
+          "headers_row_3": [
+            "",
+            "Material / Trim Name",
+            "Code",
+            "Description",
+            "Actual Image",
+            "Position",
+            "Pros / Cons",
+            "Final alignment ",
+            "Reference style",
+            "PM need to souce for unavailable item",
+            "Remarks",
+            "1.0"
+          ]
+        }
+      ]
+    }
+  ]
+}

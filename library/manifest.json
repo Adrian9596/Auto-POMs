@@ -3,27 +3,49 @@
   "snapshot_version": "not-generated",
   "contracts": {
     "pom": {
-      "version": "fixed16-2026-07-10",
+      "version": "core18-2026-07-18b",
       "file": "auto_mode_rules/pom-template.json",
-      "fingerprint": "sha256:4ed9b16d3c85f0781b9e3724b9b3211574b2733536d7cef9b684358c4ead6899"
+      "fingerprint": "sha256:c2e59a557885a7e3614074505a272af491b35f6ad3b18cf021a32362f1396483"
     },
     "anchor": {
-      "version": "anchors-2026-07-10d",
+      "version": "anchors-2026-07-26-cup-width-own-height",
       "file": "auto_mode_rules/anchor-schema.json",
-      "fingerprint": "sha256:6d21b298a2aa324da7afcbb9627ed7adcc3773bdee7549ba078be7e0a2554e5d"
+      "fingerprint": "sha256:39bb59d252d39791c1c1c326366279370d8b534d1e1ada5ce75a1660df314096"
     }
   },
   "size_system_version": "crossian-alpha-depth-v1",
   "feature_vocabulary_version": "not-defined",
   "similarity_config_version": "similarity-config-v0",
   "counts": {
-    "styles": { "pending": 0, "approved": 0 },
-    "features": { "pending": 0, "approved": 0 },
-    "landmarks": { "pending": 0, "approved": 0 },
-    "pom_definitions": { "active_contract": 16, "reserved_pending_definition": 1 },
-    "pom_values": { "pending": 0, "approved": 0 },
-    "qa_cases": { "draft": 0, "approved": 0, "held_out": 0 },
-    "corrections": { "pending": 0, "reviewed": 0 }
+    "styles": {
+      "pending": 0,
+      "approved": 0
+    },
+    "features": {
+      "pending": 0,
+      "approved": 0
+    },
+    "landmarks": {
+      "pending": 0,
+      "approved": 0
+    },
+    "pom_definitions": {
+      "active_contract": 18,
+      "reserved_pending_definition": 0
+    },
+    "pom_values": {
+      "pending": 0,
+      "approved": 0
+    },
+    "qa_cases": {
+      "draft": 0,
+      "approved": 0,
+      "held_out": 0
+    },
+    "corrections": {
+      "pending": 0,
+      "reviewed": 0
+    }
   },
   "generated_at": "2026-07-10T00:00:00Z",
   "source_fingerprints": [

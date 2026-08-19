@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/project-intake.schema.json",
+  "title": "Saved-project pending intake evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "status", "source", "identity", "contract_versions", "image_artifacts", "pom_values", "geometry", "raw_snapshot", "issues"],
+  "properties": {
+    "schema_version": {"const": "project-intake.v1"},
+    "candidate_id": {"type": "string", "pattern": "^project-sha256-[0-9a-f]{64}$"},
+    "status": {"const": "pending"},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["type", "file_name", "fingerprint", "format", "version", "saved_at"],
+      "properties": {
+        "type": {"const": "saved-project-json"},
+        "file_name": {"type": "string", "minLength": 1},
+        "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "format": {"const": "bra-sketch-project"},
+        "version": {"const": 1},
+        "saved_at": {"type": ["string", "null"]}
+      }
+    },
+    "identity": {"$ref": "#/$defs/identity"},
+    "contract_versions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["project", "template", "rule", "anchor", "detector"],
+      "properties": {
+        "project": {"const": 1},
+        "template": {"type": ["string", "null"]},
+        "rule": {"type": ["string", "null"]},
+        "anchor": {"type": ["string", "null"]},
+        "detector": {"type": ["string", "null"]}
+      }
+    },
+    "image_artifacts": {"type": "array", "items": {"$ref": "#/$defs/image"}},
+    "pom_values": {"type": "array", "items": {"$ref": "#/$defs/pomValue"}},
+    "geometry": {"type": "array", "items": {"$ref": "#/$defs/geometry"}},
+    "raw_snapshot": {"type": "object"},
+    "issues": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  },
+  "$defs": {
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["raw_style_id", "raw_style_version", "style_id", "style_version", "resolution", "decision_id"],
+      "properties": {
+        "raw_style_id": {"type": ["string", "null"]},
+        "raw_style_version": {"type": ["string", "null"]},
+        "style_id": {"type": ["string", "null"]},
+        "style_version": {"type": ["string", "null"]},
+        "resolution": {"enum": ["explicit_source", "fingerprint_td_confirmation", "pending_td_confirmation"]},
+        "decision_id": {"type": ["string", "null"]}
+      }
+    },
+    "image": {
+      "type": "object", "additionalProperties": false,
+      "required": ["image_id", "role", "fingerprint", "media_type", "source_image_id"],
+      "properties": {
+        "image_id": {"type": "string", "minLength": 1},
+        "role": {"const": "source_sketch"},
+        "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "media_type": {"type": "string", "minLength": 1},
+        "source_image_id": {"type": ["string", "number", "null"]}
+      }
+    },
+    "pomValue": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pom_key", "concept_id", "pom_number", "size_code", "value_in", "source_text", "tolerance_text", "tolerance_value_in", "description_en", "description_zh", "grade_rules"],
+      "properties": {
+        "pom_key": {"type": "string", "minLength": 1},
+        "concept_id": {"type": ["string", "null"]},
+        "pom_number": {"type": ["integer", "null"]},
+        "size_code": {"enum": ["L", "L2", null]},
+        "value_in": {"type": ["number", "null"]},
+        "source_text": {"type": ["string", "null"]},
+        "tolerance_text": {"type": ["string", "null"]},
+        "tolerance_value_in": {"type": ["number", "null"], "minimum": 0},
+        "description_en": {"type": ["string", "null"]},
+        "description_zh": {"type": ["string", "null"]},
+        "grade_rules": {"type": ["object", "null"]}
+      }
+    },
+    "geometry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["annotation_id", "pom_number", "type", "view", "source_image_id", "start", "end", "control1", "control2", "proposed_start_landmark", "proposed_end_landmark", "template_version", "rule_version", "td_edited", "td_approved", "raw_annotation"],
+      "properties": {
+        "annotation_id": {"type": ["string", "number", "null"]},
+        "pom_number": {"type": ["string", "null"]},
+        "type": {"type": ["string", "null"]},
+        "view": {"type": ["string", "null"]},
+        "source_image_id": {"type": ["string", "number", "null"]},
+        "start": {"type": ["object", "null"]},
+        "end": {"type": ["object", "null"]},
+        "control1": {"type": ["object", "null"]},
+        "control2": {"type": ["object", "null"]},
+        "proposed_start_landmark": {"type": ["string", "null"]},
+        "proposed_end_landmark": {"type": ["string", "null"]},
+        "template_version": {"type": ["string", "null"]},
+        "rule_version": {"type": ["string", "null"]},
+        "td_edited": {"type": "boolean"},
+        "td_approved": {"type": "boolean"},
+        "raw_annotation": {"type": "object"}
+      }
+    }
+  }
+}

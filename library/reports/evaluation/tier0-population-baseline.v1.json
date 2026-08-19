@@ -1,7 +1,18 @@
 {
+  "report_version": "tier0-population-baseline.v1",
+  "baseline_kind": "population_statistics_not_accuracy_ground_truth",
+  "generator": "scripts/measurement-preparation-report.mjs",
+  "source_fingerprints": {
+    "auto_mode_rules/sizeL-suggestions.json": "sha256:29470c4ad209f84aebb7b3fb4727cbc89a187b26f0008484db06363340d2e52b",
+    "auto_mode_rules/pom-template.json": "sha256:c2e59a557885a7e3614074505a272af491b35f6ad3b18cf021a32362f1396483",
+    "library/manifest.json": "sha256:bd00e3bb8ca7e297f2c9fd66d44de09e0df9988cdef6d0a3762ede2f177ffa6c",
+    "library/intake/exports/measurements-size-l.pending.json": "sha256:afbd91aee27f9007f846a2ec21fb62eb59dfd84d03b4b6de7d1f7c45fadecba7",
+    "library/reports/conflicts/measurements-size-l.conflicts.json": "sha256:2000c3191470c0349b87d4272a321f39640417428f5eb8a2f813e145bddef5ed",
+    "library/reports/intake/source-inventory.v1.json": "sha256:90669ff7d60e4d7932b902512ec53fa37bb58732af952715af9a44d20fbf9de9"
+  },
   "suggestions_version": "sizeL-suggestions-v1",
   "unit": "in",
-  "provenance": {
+  "corpus": {
     "corpus": "Measurements 2/library/_raw_intake/measurements_size_l.csv",
     "conceptMap": "Measurements 2/library/pom_concepts.csv",
     "tolDefaults": "Measurements 2/library/pom_tol_defaults.csv",
@@ -12,222 +23,251 @@
     "droppedRows": 26,
     "note": "Derived from the approved Size-L corpus. Regenerate with the generator; never hand-edit. droppedRows = corpus rows whose concept is not yet canonicalized (raw_* intake phrases)."
   },
-  "poms": {
-    "1": {
+  "scope": {
+    "phase_1_numeric_poms": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "out_of_scope_no_data_poms": [
+      15,
+      16,
+      17,
+      18
+    ]
+  },
+  "limitations": [
+    "This report snapshots population priors; it does not claim per-POM accuracy.",
+    "Within-TOL and catastrophic-error metrics require TD-approved measurement ground truth.",
+    "Runtime Tier-0 provenance is separate from the governed library manifest approval counts."
+  ],
+  "poms": [
+    {
+      "pom": 1,
       "concept": "band_relax",
       "median": 14,
       "min": 12.74,
       "max": 14.38,
       "tol": "3/8",
-      "tolType": "symmetric",
-      "sketchReliable": false,
-      "n": 225,
+      "tol_type": "symmetric",
+      "sample_count": 225,
       "confidence": "medium",
       "source": "library"
     },
-    "2": {
+    {
+      "pom": 2,
       "concept": "band_extended",
       "median": 19,
       "min": 18,
       "max": 19.25,
       "tol": "1/2",
-      "tolType": "min",
-      "sketchReliable": false,
-      "n": 225,
+      "tol_type": "min",
+      "sample_count": 225,
       "confidence": "medium",
       "source": "library"
     },
-    "3": {
+    {
+      "pom": 3,
       "concept": "chest_relax",
       "median": 17,
       "min": 15.5,
       "max": 17.5,
       "tol": "3/8",
-      "tolType": "symmetric",
-      "sketchReliable": false,
-      "n": 198,
+      "tol_type": "symmetric",
+      "sample_count": 198,
       "confidence": "medium",
       "source": "library"
     },
-    "4": {
+    {
+      "pom": 4,
       "concept": "chest_extended",
       "median": 22,
       "min": 20,
       "max": 22.77,
       "tol": "1/2",
-      "tolType": "min",
-      "sketchReliable": false,
-      "n": 197,
+      "tol_type": "min",
+      "sample_count": 197,
       "confidence": "medium",
       "source": "library"
     },
-    "5": {
+    {
+      "pom": 5,
       "concept": "cf_height",
       "median": 5.5,
       "min": 1.32,
       "max": 6.5,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 217,
+      "tol_type": "symmetric",
+      "sample_count": 217,
       "confidence": "medium",
       "source": "library"
     },
-    "6": {
+    {
+      "pom": 6,
       "concept": "cradle_cf",
       "median": 2.25,
       "min": 1.31,
       "max": 3,
       "tol": "1/8",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 163,
+      "tol_type": "symmetric",
+      "sample_count": 163,
       "confidence": "medium",
       "source": "library"
     },
-    "7": {
+    {
+      "pom": 7,
       "concept": "cradle_under_cup",
       "median": 1.75,
       "min": 1.11,
       "max": 2.64,
       "tol": "1/8",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 173,
+      "tol_type": "symmetric",
+      "sample_count": 173,
       "confidence": "medium",
       "source": "library"
     },
-    "8": {
+    {
+      "pom": 8,
       "concept": "cup_height_cf",
       "median": 3,
       "min": 1.75,
       "max": 4,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 113,
+      "tol_type": "symmetric",
+      "sample_count": 113,
       "confidence": "low",
       "source": "library"
     },
-    "9": {
+    {
+      "pom": 9,
       "concept": "cup_height",
       "median": 8,
       "min": 5.805,
       "max": 9.5,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 237,
+      "tol_type": "symmetric",
+      "sample_count": 237,
       "confidence": "medium",
       "source": "library"
     },
-    "10": {
+    {
+      "pom": 10,
       "concept": "cup_width",
       "median": 8,
       "min": 6.6,
       "max": 9,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 221,
+      "tol_type": "symmetric",
+      "sample_count": 221,
       "confidence": "medium",
       "source": "library"
     },
-    "11": {
+    {
+      "pom": 11,
       "concept": "sideseam_length",
       "median": 5.5,
       "min": 4.5,
       "max": 6,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 211,
+      "tol_type": "symmetric",
+      "sample_count": 211,
       "confidence": "medium",
       "source": "library"
     },
-    "12": {
+    {
+      "pom": 12,
       "concept": "cb_height",
       "median": 3.75,
       "min": 2,
       "max": 7.24,
       "tol": "1/8",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 239,
+      "tol_type": "symmetric",
+      "sample_count": 239,
       "confidence": "medium",
       "source": "library"
     },
-    "13": {
+    {
+      "pom": 13,
       "concept": "back_panel_height",
       "median": 7.25,
       "min": 3,
       "max": 12,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 181,
+      "tol_type": "symmetric",
+      "sample_count": 181,
       "confidence": "medium",
       "source": "library"
     },
-    "14": {
+    {
+      "pom": 14,
       "concept": "strap_length",
       "median": 8,
       "min": 4,
       "max": 12,
       "tol": "1/4",
-      "tolType": "symmetric",
-      "sketchReliable": true,
-      "n": 155,
+      "tol_type": "symmetric",
+      "sample_count": 155,
       "confidence": "low",
       "source": "library"
     },
-    "15": {
+    {
+      "pom": 15,
       "concept": "back_straps_distance",
       "median": null,
       "min": null,
       "max": null,
       "tol": null,
-      "tolType": null,
-      "sketchReliable": null,
-      "n": 0,
+      "tol_type": null,
+      "sample_count": 0,
       "confidence": "very_low",
       "source": "none"
     },
-    "16": {
+    {
+      "pom": 16,
       "concept": null,
       "median": null,
       "min": null,
       "max": null,
       "tol": null,
-      "tolType": null,
-      "sketchReliable": null,
-      "n": 0,
+      "tol_type": null,
+      "sample_count": 0,
       "confidence": "very_low",
       "source": "none"
     },
-    "17": {
+    {
+      "pom": 17,
       "concept": null,
       "median": null,
       "min": null,
       "max": null,
       "tol": null,
-      "tolType": null,
-      "sketchReliable": null,
-      "n": 0,
+      "tol_type": null,
+      "sample_count": 0,
       "confidence": "very_low",
       "source": "none"
     },
-    "18": {
+    {
+      "pom": 18,
       "concept": null,
       "median": null,
       "min": null,
       "max": null,
       "tol": null,
-      "tolType": null,
-      "sketchReliable": null,
-      "n": 0,
+      "tol_type": null,
+      "sample_count": 0,
       "confidence": "very_low",
       "source": "none"
     }
-  }
+  ]
 }

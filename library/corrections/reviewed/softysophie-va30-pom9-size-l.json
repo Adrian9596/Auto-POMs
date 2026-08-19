@@ -1,0 +1,27 @@
+{
+  "correction_id": "measurement-conflict-softysophie-va30-pom9-l-v1",
+  "record_version": 1,
+  "category": "measurement",
+  "style_id": "softysophie__va30",
+  "style_version": "vA 3.0",
+  "concept_id": "cup_height",
+  "pom_number": 9,
+  "before": {
+    "size_code": "L",
+    "unit": "in",
+    "observations": [
+      {"value_in": 8, "source_row": 2350, "raw_term": "Cup height on foam"},
+      {"value_in": 8.75, "source_row": 2352, "raw_term": "Cup height outer"}
+    ]
+  },
+  "after": {"size_code": "L", "value_in": 8.75, "unit": "in", "selected_source_row": 2352},
+  "reason": "TD confirmed the 8.75 inch Cup height outer observation as the correct Size-L POM 9 value; preserve 8 inch Cup height on foam for audit.",
+  "source_versions": {"candidate_schema": "pending-intake-candidate.v1", "correction_schema": "1.0.0"},
+  "source_fingerprints": ["sha256:363358a282e712a5e53ae4e26e6009a1c16a67cebcda398f911bfaa93df1e8e0"],
+  "td_status": "accepted",
+  "status": "reviewed",
+  "created_at": "2026-07-12T00:00:00+07:00",
+  "reviewed_at": "2026-07-12T00:00:00+07:00",
+  "reviewed_by": "TD",
+  "promoted_record_id": null
+}

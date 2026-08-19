@@ -1,0 +1,27 @@
+{
+  "correction_id": "measurement-conflict-sonabra-vd10-pom12-l-v1",
+  "record_version": 1,
+  "category": "measurement",
+  "style_id": "sonabra__vd10",
+  "style_version": "vD 1.0",
+  "concept_id": "back_center_length",
+  "pom_number": 12,
+  "before": {
+    "size_code": "L",
+    "unit": "in",
+    "observations": [
+      {"value_in": 3.5, "source_row": 2456, "raw_term": "Center back height (fabric)"},
+      {"value_in": 3, "source_row": 2457, "raw_term": "Hook and eye width"}
+    ]
+  },
+  "after": {"size_code": "L", "value_in": 3, "unit": "in", "selected_source_row": 2457},
+  "reason": "TD confirmed the 3 inch Hook and eye width observation as the correct Size-L POM 12 value; preserve 3.5 inch for audit.",
+  "source_versions": {"candidate_schema": "pending-intake-candidate.v1", "correction_schema": "1.0.0"},
+  "source_fingerprints": ["sha256:363358a282e712a5e53ae4e26e6009a1c16a67cebcda398f911bfaa93df1e8e0"],
+  "td_status": "accepted",
+  "status": "reviewed",
+  "created_at": "2026-07-12T00:00:00+07:00",
+  "reviewed_at": "2026-07-12T00:00:00+07:00",
+  "reviewed_by": "TD",
+  "promoted_record_id": null
+}

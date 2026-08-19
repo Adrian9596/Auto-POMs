@@ -6,7 +6,10 @@
       "zh": "下围半宽（放松量）",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["band-left", "band-right"],
+      "requiredAnchors": [
+        "band-left",
+        "band-right"
+      ],
       "derivation": null,
       "pairing": {
         "role": "primary",
@@ -23,9 +26,15 @@
       "zh": "下围半宽（延伸量）",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["band-left", "band-right"],
+      "requiredAnchors": [
+        "band-left",
+        "band-right"
+      ],
       "derivation": null,
-      "pairing": { "role": "secondary", "primary": "1" },
+      "pairing": {
+        "role": "secondary",
+        "primary": "1"
+      },
       "expected_confidence_tier": "high"
     },
     {
@@ -34,7 +43,10 @@
       "zh": "胸围半宽（放松量）",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["chest-left", "chest-right"],
+      "requiredAnchors": [
+        "chest-left",
+        "chest-right"
+      ],
       "derivation": null,
       "pairing": {
         "role": "primary",
@@ -51,9 +63,15 @@
       "zh": "胸围半宽（延伸量）",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["chest-left", "chest-right"],
+      "requiredAnchors": [
+        "chest-left",
+        "chest-right"
+      ],
       "derivation": null,
-      "pairing": { "role": "secondary", "primary": "3" },
+      "pairing": {
+        "role": "secondary",
+        "primary": "3"
+      },
       "expected_confidence_tier": "high"
     },
     {
@@ -62,7 +80,10 @@
       "zh": "前中高度",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["cf-top", "cf-bottom"],
+      "requiredAnchors": [
+        "cf-top",
+        "cf-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -73,7 +94,10 @@
       "zh": "托架前中高度",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["cradle-cf-top", "cf-bottom"],
+      "requiredAnchors": [
+        "cradle-cf-top",
+        "cf-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -84,7 +108,10 @@
       "zh": "托架底杯高度",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["cradle-cup-top", "cradle-cup-bottom"],
+      "requiredAnchors": [
+        "cradle-cup-top",
+        "cradle-cup-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -95,7 +122,10 @@
       "zh": "前中杯高",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["cf-top", "cradle-cf-top"],
+      "requiredAnchors": [
+        "cf-top",
+        "cradle-cf-top"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -106,7 +136,10 @@
       "zh": "杯高",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["inner-cup-top", "inner-cup-bottom"],
+      "requiredAnchors": [
+        "inner-cup-top",
+        "inner-cup-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -117,7 +150,10 @@
       "zh": "杯宽",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["inner-cup-left", "inner-cup-right"],
+      "requiredAnchors": [
+        "inner-cup-left",
+        "inner-cup-right"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -128,7 +164,10 @@
       "zh": "侧缝长度",
       "view": "back",
       "refL": null,
-      "requiredAnchors": ["side-top", "side-bottom"],
+      "requiredAnchors": [
+        "side-top",
+        "side-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -139,7 +178,10 @@
       "zh": "后中高度",
       "view": "back",
       "refL": null,
-      "requiredAnchors": ["back-top", "back-bottom"],
+      "requiredAnchors": [
+        "back-top",
+        "back-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -150,8 +192,14 @@
       "zh": "后背片高度",
       "view": "back",
       "refL": null,
-      "requiredAnchors": ["back-top", "back-bottom"],
-      "optionalAnchors": ["back-panel-top", "back-panel-bottom"],
+      "requiredAnchors": [
+        "back-top",
+        "back-bottom"
+      ],
+      "optionalAnchors": [
+        "back-panel-top",
+        "back-panel-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -163,7 +211,10 @@
       "view": "front_to_back",
       "placementViewRole": "back",
       "refL": null,
-      "requiredAnchors": ["strap-top", "strap-bottom"],
+      "requiredAnchors": [
+        "strap-top",
+        "strap-bottom"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "low"
@@ -174,7 +225,10 @@
       "zh": "后肩带间距",
       "view": "back",
       "refL": null,
-      "requiredAnchors": ["back-strap-left", "back-strap-right"],
+      "requiredAnchors": [
+        "back-strap-left",
+        "back-strap-right"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
@@ -185,10 +239,41 @@
       "zh": "乳点间距",
       "view": "front_outer",
       "refL": null,
-      "requiredAnchors": ["apex-left", "apex-right"],
+      "requiredAnchors": [
+        "apex-left",
+        "apex-right"
+      ],
       "derivation": null,
       "pairing": null,
       "expected_confidence_tier": "medium"
+    },
+    {
+      "id": "17",
+      "name": "Neckline length",
+      "zh": "领口长",
+      "view": "front_outer",
+      "refL": null,
+      "requiredAnchors": [
+        "171",
+        "172"
+      ],
+      "derivation": null,
+      "pairing": null,
+      "expected_confidence_tier": "medium"
+    },
+    {
+      "id": "18",
+      "name": "Armhole curve length",
+      "zh": "袖窿弧长",
+      "view": "front_outer",
+      "refL": null,
+      "requiredAnchors": [
+        "181",
+        "182"
+      ],
+      "derivation": null,
+      "pairing": null,
+      "expected_confidence_tier": "low"
     }
   ]
 }

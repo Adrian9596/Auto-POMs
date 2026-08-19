@@ -23,7 +23,7 @@
       "required": ["immutable", "core_range", "next_assignable_number", "never_reuse_retired_numbers", "joins_use"],
       "properties": {
         "immutable": {"const": true},
-        "core_range": {"type": "object", "additionalProperties": false, "required": ["first", "last"], "properties": {"first": {"const": 1}, "last": {"const": 16}}},
+        "core_range": {"type": "object", "additionalProperties": false, "required": ["first", "last"], "properties": {"first": {"const": 1}, "last": {"const": 18}}},
         "next_assignable_number": {"type": "integer", "minimum": 18},
         "never_reuse_retired_numbers": {"const": true},
         "joins_use": {"const": "concept_id"}

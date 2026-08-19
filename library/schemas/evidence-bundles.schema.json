@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/evidence-bundles.schema.json",
+  "title": "Pending evidence bundle link report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "bundles", "unresolved_sources", "summary"],
+  "properties": {
+    "schema_version": {"const": "evidence-bundles.v1"},
+    "status": {"const": "pending"},
+    "bundles": {"type": "array", "items": {"$ref": "#/$defs/bundle"}},
+    "unresolved_sources": {"type": "array", "items": {"$ref": "#/$defs/source"}},
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_count", "bundle_count", "unresolved_source_count", "blocking_conflict_count", "approval_ready_count"],
+      "properties": {
+        "source_count": {"type": "integer", "minimum": 0},
+        "bundle_count": {"type": "integer", "minimum": 0},
+        "unresolved_source_count": {"type": "integer", "minimum": 0},
+        "blocking_conflict_count": {"type": "integer", "minimum": 0},
+        "approval_ready_count": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_id", "type", "fingerprint", "file_name", "reason"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1},
+        "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "file_name": {"type": "string", "minLength": 1},
+        "reason": {"type": ["string", "null"]}
+      }
+    },
+    "bundle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bundle_id", "style_id", "style_version", "status", "approval_blocked", "source_fingerprints", "sources", "image_artifacts", "conflicts"],
+      "properties": {
+        "bundle_id": {"type": "string", "pattern": "^bundle-sha256-[0-9a-f]{64}$"},
+        "style_id": {"type": "string", "minLength": 1},
+        "style_version": {"type": "string", "minLength": 1},
+        "status": {"const": "pending"},
+        "approval_blocked": {"const": true},
+        "source_fingerprints": {"type": "array", "items": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "uniqueItems": true},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}},
+        "image_artifacts": {"type": "array", "items": {"type": "object"}},
+        "conflicts": {"type": "array", "items": {"type": "object"}}
+      }
+    }
+  }
+}

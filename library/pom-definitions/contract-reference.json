@@ -4,19 +4,22 @@
   "contracts": {
     "pom": {
       "path": "auto_mode_rules/pom-template.json",
-      "version": "fixed16-2026-07-10",
-      "fingerprint": "sha256:4ed9b16d3c85f0781b9e3724b9b3211574b2733536d7cef9b684358c4ead6899"
+      "version": "core18-2026-07-18b",
+      "fingerprint": "sha256:c2e59a557885a7e3614074505a272af491b35f6ad3b18cf021a32362f1396483"
     },
     "anchor": {
       "path": "auto_mode_rules/anchor-schema.json",
-      "version": "anchors-2026-07-10d",
-      "fingerprint": "sha256:6d21b298a2aa324da7afcbb9627ed7adcc3773bdee7549ba078be7e0a2554e5d"
+      "version": "anchors-2026-07-26-cup-width-own-height",
+      "fingerprint": "sha256:39bb59d252d39791c1c1c326366279370d8b534d1e1ada5ce75a1660df314096"
     }
   },
   "numbering_policy": {
     "immutable": true,
-    "core_range": { "first": 1, "last": 16 },
-    "next_assignable_number": 18,
+    "core_range": {
+      "first": 1,
+      "last": 18
+    },
+    "next_assignable_number": 19,
     "never_reuse_retired_numbers": true,
     "joins_use": "concept_id"
   },
@@ -27,13 +30,21 @@
       "canonical_name_en": "1/2 Bottom band - Relax",
       "canonical_name_zh": "下围半宽（放松量）",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Bottom band Width 1/2 - Relax - closet hook"
+      ],
       "measurement_method": "Half-perimeter of the bottom band measured at rest.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["band-left", "band-right"],
+      "required_anchors": [
+        "band-left",
+        "band-right"
+      ],
       "optional_anchors": [],
-      "pairing": { "role": "primary", "partner_concept_id": "half_bottom_band_extend" },
+      "pairing": {
+        "role": "primary",
+        "partner_concept_id": "half_bottom_band_extend"
+      },
       "unit": "in",
       "grade_rule_family": "crossian-house-v1",
       "held": false,
@@ -48,13 +59,21 @@
       "canonical_name_en": "1/2 Bottom band - Extend",
       "canonical_name_zh": "下围半宽（延伸量）",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Bottom band Width 1/2 - Extended - closet hook"
+      ],
       "measurement_method": "Half-perimeter of the bottom band measured in its extended state.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["band-left", "band-right"],
+      "required_anchors": [
+        "band-left",
+        "band-right"
+      ],
       "optional_anchors": [],
-      "pairing": { "role": "secondary", "partner_concept_id": "half_bottom_band_relax" },
+      "pairing": {
+        "role": "secondary",
+        "partner_concept_id": "half_bottom_band_relax"
+      },
       "unit": "in",
       "grade_rule_family": "crossian-house-v1",
       "held": false,
@@ -69,13 +88,21 @@
       "canonical_name_en": "1/2 chest - Measure straight",
       "canonical_name_zh": "胸围半宽（放松量）",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Chest Width 1/2 - Relax - closet hook"
+      ],
       "measurement_method": "Half-perimeter of the chest line measured straight across.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["chest-left", "chest-right"],
+      "required_anchors": [
+        "chest-left",
+        "chest-right"
+      ],
       "optional_anchors": [],
-      "pairing": { "role": "primary", "partner_concept_id": "half_chest_extend" },
+      "pairing": {
+        "role": "primary",
+        "partner_concept_id": "half_chest_extend"
+      },
       "unit": "in",
       "grade_rule_family": "crossian-house-v1",
       "held": false,
@@ -90,13 +117,21 @@
       "canonical_name_en": "1/2 chest - Extend",
       "canonical_name_zh": "胸围半宽（延伸量）",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Chest Width 1/2 - Extended - closet hook"
+      ],
       "measurement_method": "Half-perimeter of the chest line measured in its extended state.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["chest-left", "chest-right"],
+      "required_anchors": [
+        "chest-left",
+        "chest-right"
+      ],
       "optional_anchors": [],
-      "pairing": { "role": "secondary", "partner_concept_id": "half_chest_measure_straight" },
+      "pairing": {
+        "role": "secondary",
+        "partner_concept_id": "half_chest_measure_straight"
+      },
       "unit": "in",
       "grade_rule_family": "crossian-house-v1",
       "held": false,
@@ -115,7 +150,10 @@
       "measurement_method": "Vertical distance from the top to the bottom of the center-front seam.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["cf-top", "cf-bottom"],
+      "required_anchors": [
+        "cf-top",
+        "cf-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -136,7 +174,10 @@
       "measurement_method": "Vertical cradle distance at center front, from cradle top to band bottom.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["cradle-cf-top", "cf-bottom"],
+      "required_anchors": [
+        "cradle-cf-top",
+        "cf-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -157,7 +198,10 @@
       "measurement_method": "Vertical cradle height at the base of the cup.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["cradle-cup-top", "cradle-cup-bottom"],
+      "required_anchors": [
+        "cradle-cup-top",
+        "cradle-cup-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -178,7 +222,10 @@
       "measurement_method": "Vertical cup-only distance at center front, from cup top to cradle top.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["cf-top", "cradle-cf-top"],
+      "required_anchors": [
+        "cf-top",
+        "cradle-cf-top"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -195,11 +242,21 @@
       "canonical_name_en": "Cup height",
       "canonical_name_zh": "杯高",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Cup height on foam",
+        "Cup height outer",
+        "Outer Cup height",
+        "Foam Cup height",
+        "Inner Cup Height",
+        "Cup height inner"
+      ],
       "measurement_method": "Vertical cup height from the cup apex to the cup-bottom seam.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["inner-cup-top", "inner-cup-bottom"],
+      "required_anchors": [
+        "inner-cup-top",
+        "inner-cup-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -216,11 +273,20 @@
       "canonical_name_en": "Cup width",
       "canonical_name_zh": "杯宽",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Cup width on foam",
+        "Foam Cup Width",
+        "Outer Cup width",
+        "Inner Cup Width",
+        "Cup width outer"
+      ],
       "measurement_method": "Horizontal cup width at mid-height.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["inner-cup-left", "inner-cup-right"],
+      "required_anchors": [
+        "inner-cup-left",
+        "inner-cup-right"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -237,11 +303,16 @@
       "canonical_name_en": "Side seam length",
       "canonical_name_zh": "侧缝长度",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Sideseam length"
+      ],
       "measurement_method": "Length of the side seam from underarm to band.",
       "view": "back",
       "placement_view_role": "back",
-      "required_anchors": ["side-top", "side-bottom"],
+      "required_anchors": [
+        "side-top",
+        "side-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -258,11 +329,18 @@
       "canonical_name_en": "Back center length",
       "canonical_name_zh": "后中高度",
       "status": "active_contract",
-      "aliases_approved": [],
+      "aliases_approved": [
+        "Center back length",
+        "Center back height (fabric)",
+        "Hook and eye width"
+      ],
       "measurement_method": "Vertical height at the center-back line.",
       "view": "back",
       "placement_view_role": "back",
-      "required_anchors": ["back-top", "back-bottom"],
+      "required_anchors": [
+        "back-top",
+        "back-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -283,8 +361,14 @@
       "measurement_method": "Vertical height of the back panel.",
       "view": "back",
       "placement_view_role": "back",
-      "required_anchors": ["back-top", "back-bottom"],
-      "optional_anchors": ["back-panel-top", "back-panel-bottom"],
+      "required_anchors": [
+        "back-top",
+        "back-bottom"
+      ],
+      "optional_anchors": [
+        "back-panel-top",
+        "back-panel-bottom"
+      ],
       "pairing": null,
       "unit": "in",
       "grade_rule_family": "crossian-house-v1",
@@ -304,7 +388,10 @@
       "measurement_method": "Curved strap path from the front strap upper joining seam to the back strap/panel join.",
       "view": "front_to_back",
       "placement_view_role": "back",
-      "required_anchors": ["strap-top", "strap-bottom"],
+      "required_anchors": [
+        "strap-top",
+        "strap-bottom"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -325,7 +412,10 @@
       "measurement_method": "Horizontal distance between the two back strap attachment points.",
       "view": "back",
       "placement_view_role": "back",
-      "required_anchors": ["back-strap-left", "back-strap-right"],
+      "required_anchors": [
+        "back-strap-left",
+        "back-strap-right"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -346,7 +436,10 @@
       "measurement_method": "Horizontal distance between the two front cup apexes.",
       "view": "front_outer",
       "placement_view_role": "front_outer",
-      "required_anchors": ["apex-left", "apex-right"],
+      "required_anchors": [
+        "apex-left",
+        "apex-right"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
@@ -361,19 +454,46 @@
       "concept_id": "neckline_length",
       "pom_number": 17,
       "canonical_name_en": "Neckline length",
-      "canonical_name_zh": null,
-      "status": "reserved_pending_definition",
+      "canonical_name_zh": "领口长",
+      "status": "active_contract",
       "aliases_approved": [],
-      "measurement_method": null,
-      "view": null,
-      "placement_view_role": null,
-      "required_anchors": [],
+      "measurement_method": "Length of the neckline edge from center front to the strap junction on one side.",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "171",
+        "172"
+      ],
       "optional_anchors": [],
       "pairing": null,
       "unit": "in",
-      "grade_rule_family": null,
-      "held": null,
-      "expected_confidence_tier": null,
+      "grade_rule_family": "crossian-house-v1",
+      "held": false,
+      "expected_confidence_tier": "medium",
+      "applicability_policy": null,
+      "number_assigned_at": "2026-07-10T00:00:00Z",
+      "retired_at": null
+    },
+    {
+      "concept_id": "armhole_curve_length",
+      "pom_number": 18,
+      "canonical_name_en": "Armhole curve length",
+      "canonical_name_zh": "袖窿弧长",
+      "status": "active_contract",
+      "aliases_approved": [],
+      "measurement_method": "Arc length of the armhole opening, from the strap junction to the underarm, traced along the arm edge.",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "181",
+        "182"
+      ],
+      "optional_anchors": [],
+      "pairing": null,
+      "unit": "in",
+      "grade_rule_family": "crossian-house-v1",
+      "held": false,
+      "expected_confidence_tier": "low",
       "applicability_policy": null,
       "number_assigned_at": "2026-07-10T00:00:00Z",
       "retired_at": null

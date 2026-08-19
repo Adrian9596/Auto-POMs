@@ -1,0 +1,418 @@
+{
+  "report_version": "measurement-evidence-matrix.v1",
+  "generator": "scripts/measurement-preparation-report.mjs",
+  "source_fingerprints": {
+    "auto_mode_rules/sizeL-suggestions.json": "sha256:29470c4ad209f84aebb7b3fb4727cbc89a187b26f0008484db06363340d2e52b",
+    "auto_mode_rules/pom-template.json": "sha256:c2e59a557885a7e3614074505a272af491b35f6ad3b18cf021a32362f1396483",
+    "library/manifest.json": "sha256:bd00e3bb8ca7e297f2c9fd66d44de09e0df9988cdef6d0a3762ede2f177ffa6c",
+    "library/intake/exports/measurements-size-l.pending.json": "sha256:afbd91aee27f9007f846a2ec21fb62eb59dfd84d03b4b6de7d1f7c45fadecba7",
+    "library/reports/conflicts/measurements-size-l.conflicts.json": "sha256:2000c3191470c0349b87d4272a321f39640417428f5eb8a2f813e145bddef5ed",
+    "library/reports/intake/source-inventory.v1.json": "sha256:90669ff7d60e4d7932b902512ec53fa37bb58732af952715af9a44d20fbf9de9"
+  },
+  "agreed_rules": [
+    "Phase 1 numeric scope is POM 1-14; POM 15-18 are no_data, not not_applicable.",
+    "POM 1-4 use a Library Prior with confidence capped at medium.",
+    "POM 14 placement evidence is separate from numeric value evidence; numeric value uses library or TD confirmation."
+  ],
+  "unresolved_td_decisions": [
+    "Whether front and back require separate calibration contracts.",
+    "Which POMs may calibrate which target POMs.",
+    "Minimum independent peer and family counts.",
+    "Per-POM pixel/library agreement thresholds.",
+    "POM 14 Library Prior confidence cap.",
+    "Construction applicability and release thresholds."
+  ],
+  "poms": [
+    {
+      "pom": 1,
+      "concept": "band_relax",
+      "name": "1/2 Bottom band - Relax",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "band-left",
+        "band-right"
+      ],
+      "placement_confidence_contract": "high",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "library_prior",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": "medium",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 2,
+      "concept": "band_extended",
+      "name": "1/2 Bottom band - Extend",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "band-left",
+        "band-right"
+      ],
+      "placement_confidence_contract": "high",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "library_prior",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": "medium",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 3,
+      "concept": "chest_relax",
+      "name": "1/2 chest - Measure straight",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "chest-left",
+        "chest-right"
+      ],
+      "placement_confidence_contract": "high",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "library_prior",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": "medium",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 4,
+      "concept": "chest_extended",
+      "name": "1/2 chest - Extend",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "chest-left",
+        "chest-right"
+      ],
+      "placement_confidence_contract": "high",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "library_prior",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": "medium",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 5,
+      "concept": "cf_height",
+      "name": "Center front height",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "cf-top",
+        "cf-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_front",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "front_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 6,
+      "concept": "cradle_cf",
+      "name": "Cradle height at center front",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "cradle-cf-top",
+        "cf-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_front",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "front_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 7,
+      "concept": "cradle_under_cup",
+      "name": "Cradle height at bottom cup",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "cradle-cup-top",
+        "cradle-cup-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_front",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "front_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 8,
+      "concept": "cup_height_cf",
+      "name": "Cup height at center front",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "cf-top",
+        "cradle-cf-top"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_front",
+      "library_prior_available": true,
+      "library_prior_confidence": "low",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "front_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 9,
+      "concept": "cup_height",
+      "name": "Cup height",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "inner-cup-top",
+        "inner-cup-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_front",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "front_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 10,
+      "concept": "cup_width",
+      "name": "Cup width",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "inner-cup-left",
+        "inner-cup-right"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_front",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "front_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 11,
+      "concept": "sideseam_length",
+      "name": "Side seam length",
+      "view": "back",
+      "placement_view_role": "back",
+      "required_anchors": [
+        "side-top",
+        "side-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_back",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "back_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 12,
+      "concept": "cb_height",
+      "name": "Back center length",
+      "view": "back",
+      "placement_view_role": "back",
+      "required_anchors": [
+        "back-top",
+        "back-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_back",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "back_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 13,
+      "concept": "back_panel_height",
+      "name": "Back panel height",
+      "view": "back",
+      "placement_view_role": "back",
+      "required_anchors": [
+        "back-top",
+        "back-bottom"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "hybrid_candidate_back",
+      "library_prior_available": true,
+      "library_prior_confidence": "medium",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "back_calibration_compatibility",
+        "per_pom_agreement_threshold"
+      ],
+      "notes": []
+    },
+    {
+      "pom": 14,
+      "concept": "strap_length",
+      "name": "Shoulder strap length",
+      "view": "front_to_back",
+      "placement_view_role": "back",
+      "required_anchors": [
+        "strap-top",
+        "strap-bottom"
+      ],
+      "placement_confidence_contract": "low",
+      "phase_1_scope": "in_scope",
+      "placement_evidence": "detected_endpoints_with_constructed_bezier_review_line",
+      "numeric_strategy": "library_prior",
+      "library_prior_available": true,
+      "library_prior_confidence": "low",
+      "confidence_cap": null,
+      "td_decision_required": [
+        "library_prior_confidence_cap"
+      ],
+      "notes": [
+        "Placement evidence is useful; the constructed front-to-back Bezier length is not numeric measurement evidence."
+      ]
+    },
+    {
+      "pom": 15,
+      "concept": "back_straps_distance",
+      "name": "Back strap distances",
+      "view": "back",
+      "placement_view_role": "back",
+      "required_anchors": [
+        "back-strap-left",
+        "back-strap-right"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "out_of_scope_no_data",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "no_data",
+      "library_prior_available": false,
+      "library_prior_confidence": "very_low",
+      "confidence_cap": "none",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 16,
+      "concept": null,
+      "name": "Front apex distance",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "apex-left",
+        "apex-right"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "out_of_scope_no_data",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "no_data",
+      "library_prior_available": false,
+      "library_prior_confidence": "very_low",
+      "confidence_cap": "none",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 17,
+      "concept": null,
+      "name": "Neckline length",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "171",
+        "172"
+      ],
+      "placement_confidence_contract": "medium",
+      "phase_1_scope": "out_of_scope_no_data",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "no_data",
+      "library_prior_available": false,
+      "library_prior_confidence": "very_low",
+      "confidence_cap": "none",
+      "td_decision_required": [],
+      "notes": []
+    },
+    {
+      "pom": 18,
+      "concept": null,
+      "name": "Armhole curve length",
+      "view": "front_outer",
+      "placement_view_role": "front_outer",
+      "required_anchors": [
+        "181",
+        "182"
+      ],
+      "placement_confidence_contract": "low",
+      "phase_1_scope": "out_of_scope_no_data",
+      "placement_evidence": "detected_anchor_geometry",
+      "numeric_strategy": "no_data",
+      "library_prior_available": false,
+      "library_prior_confidence": "very_low",
+      "confidence_cap": "none",
+      "td_decision_required": [],
+      "notes": []
+    }
+  ]
+}

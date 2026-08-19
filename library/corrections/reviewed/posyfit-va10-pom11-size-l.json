@@ -1,0 +1,45 @@
+{
+  "correction_id": "measurement-conflict-posyfit-va10-pom11-l-v1",
+  "record_version": 1,
+  "category": "measurement",
+  "style_id": "posyfit__va10",
+  "style_version": "vA 1.0",
+  "concept_id": "side_seam_length",
+  "pom_number": 11,
+  "before": {
+    "size_code": "L",
+    "unit": "in",
+    "observations": [
+      {
+        "value_in": 5.25,
+        "source_row": 1942,
+        "raw_term": "Sideseam length"
+      },
+      {
+        "value_in": 4,
+        "source_row": 1943,
+        "raw_term": "Sideseam length"
+      }
+    ]
+  },
+  "after": {
+    "size_code": "L",
+    "value_in": 5.25,
+    "unit": "in",
+    "selected_source_row": 1942
+  },
+  "reason": "TD confirmed 5.25 inch as the correct Size-L POM 11 value; preserve the conflicting 4 inch observation for audit.",
+  "source_versions": {
+    "candidate_schema": "pending-intake-candidate.v1",
+    "correction_schema": "1.0.0"
+  },
+  "source_fingerprints": [
+    "sha256:363358a282e712a5e53ae4e26e6009a1c16a67cebcda398f911bfaa93df1e8e0"
+  ],
+  "td_status": "accepted",
+  "status": "reviewed",
+  "created_at": "2026-07-12T00:00:00+07:00",
+  "reviewed_at": "2026-07-12T00:00:00+07:00",
+  "reviewed_by": "TD",
+  "promoted_record_id": null
+}

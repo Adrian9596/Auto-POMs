@@ -1,6 +1,260 @@
 {
   "schema_version": "1.0.0",
   "registry_version": "pom-concepts-v1",
-  "aliases": [],
-  "never_merge": []
+  "aliases": [
+    {
+      "raw_term": "Bottom band Width 1/2 - Relax - closet hook",
+      "normalized_term": "bottom band width 1 2 relax closet hook",
+      "concept_id": "half_bottom_band_relax",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD confirmation questions 1-6"
+    },
+    {
+      "raw_term": "Bottom band Width 1/2 - Extended - closet hook",
+      "normalized_term": "bottom band width 1 2 extended closet hook",
+      "concept_id": "half_bottom_band_extend",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD confirmation questions 1-6"
+    },
+    {
+      "raw_term": "Chest Width 1/2 - Relax - closet hook",
+      "normalized_term": "chest width 1 2 relax closet hook",
+      "concept_id": "half_chest_measure_straight",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD confirmation questions 1-6"
+    },
+    {
+      "raw_term": "Chest Width 1/2 - Extended - closet hook",
+      "normalized_term": "chest width 1 2 extended closet hook",
+      "concept_id": "half_chest_extend",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD confirmation questions 1-6"
+    },
+    {
+      "raw_term": "Sideseam length",
+      "normalized_term": "sideseam length",
+      "concept_id": "side_seam_length",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD confirmation questions 1-6"
+    },
+    {
+      "raw_term": "Center back length",
+      "normalized_term": "center back length",
+      "concept_id": "back_center_length",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD confirmation questions 1-6"
+    },
+    {
+      "raw_term": "Center back height (fabric)",
+      "normalized_term": "center back height fabric",
+      "concept_id": "back_center_length",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 10"
+    },
+    {
+      "raw_term": "Hook and eye width",
+      "normalized_term": "hook and eye width",
+      "concept_id": "back_center_length",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 11"
+    },
+    {
+      "raw_term": "Cup height on foam",
+      "normalized_term": "cup height on foam",
+      "concept_id": "cup_height",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 17"
+    },
+    {
+      "raw_term": "Cup width on foam",
+      "normalized_term": "cup width on foam",
+      "concept_id": "cup_width",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 18"
+    },
+    {
+      "raw_term": "Cup height outer",
+      "normalized_term": "cup height outer",
+      "concept_id": "cup_height",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 19"
+    },
+    {
+      "raw_term": "Outer Cup height",
+      "normalized_term": "outer cup height",
+      "concept_id": "cup_height",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 22"
+    },
+    {
+      "raw_term": "Foam Cup height",
+      "normalized_term": "foam cup height",
+      "concept_id": "cup_height",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 23"
+    },
+    {
+      "raw_term": "Foam Cup Width",
+      "normalized_term": "foam cup width",
+      "concept_id": "cup_width",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 33"
+    },
+    {
+      "raw_term": "Outer Cup width",
+      "normalized_term": "outer cup width",
+      "concept_id": "cup_width",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 35"
+    },
+    {
+      "raw_term": "Inner Cup Height",
+      "normalized_term": "inner cup height",
+      "concept_id": "cup_height",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 36"
+    },
+    {
+      "raw_term": "Inner Cup Width",
+      "normalized_term": "inner cup width",
+      "concept_id": "cup_width",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 37"
+    },
+    {
+      "raw_term": "Cup height inner",
+      "normalized_term": "cup height inner",
+      "concept_id": "cup_height",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 50"
+    },
+    {
+      "raw_term": "Cup width outer",
+      "normalized_term": "cup width outer",
+      "concept_id": "cup_width",
+      "status": "approved",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 51"
+    }
+  ],
+  "never_merge": [
+    {
+      "raw_term": "Strap width",
+      "normalized_term": "strap width",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 9"
+    },
+    {
+      "raw_term": "Back shoulder strap length",
+      "normalized_term": "back shoulder strap length",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 12"
+    },
+    {
+      "raw_term": "Total body length",
+      "normalized_term": "total body length",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 13"
+    },
+    {
+      "raw_term": "Front strap length",
+      "normalized_term": "front strap length",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 20"
+    },
+    {
+      "raw_term": "Center back height at top",
+      "normalized_term": "center back height at top",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 21"
+    },
+    {
+      "raw_term": "Center back height at bottom",
+      "normalized_term": "center back height at bottom",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 34: separate or custom POM"
+    },
+    {
+      "raw_term": "Back lace height",
+      "normalized_term": "back lace height",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 49"
+    },
+    {
+      "raw_term": "Mesh height at center back",
+      "normalized_term": "mesh height at center back",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 52"
+    },
+    {
+      "raw_term": "Shell heigth at center back",
+      "normalized_term": "shell heigth at center back",
+      "status": "approved_out_of_scope",
+      "scope": "pom_1_14",
+      "approved_by": "TD",
+      "approved_at": "2026-07-12",
+      "evidence": "Interactive TD review batch decision 53"
+    }
+  ]
 }

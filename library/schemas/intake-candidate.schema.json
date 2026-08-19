@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/schemas/intake-candidate.schema.json",
+  "title": "Source-scoped pending intake candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "candidate_id", "status", "source", "identity", "records", "issues"],
+  "properties": {
+    "schema_version": {"const": "pending-intake-candidate.v1"},
+    "candidate_id": {"type": "string", "pattern": "^intake-sha256-[0-9a-f]{64}$"},
+    "status": {"const": "pending"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "file_name", "fingerprint", "sheet"],
+      "properties": {
+        "type": {"enum": ["measurement-spec-xlsx", "legacy-size-l-csv"]},
+        "file_name": {"type": "string", "minLength": 1},
+        "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "sheet": {"type": ["string", "null"]}
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_style_id", "raw_style_version", "resolution"],
+      "properties": {
+        "raw_style_id": {"type": ["string", "null"]},
+        "raw_style_version": {"type": ["string", "null"]},
+        "resolution": {"const": "pending_td_confirmation"}
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_row", "raw_style_id", "raw_style_version", "raw_source_file", "raw_pom_number", "raw_term", "concept_id", "pom_number", "mapping_status", "size_code", "value_in", "source_text", "source_unit", "tolerance_text", "tolerance_value_in", "source_cell", "source_formula"],
+        "properties": {
+          "source_row": {"type": "integer", "minimum": 1},
+          "raw_style_id": {"type": ["string", "null"]},
+          "raw_style_version": {"type": ["string", "null"]},
+          "raw_source_file": {"type": ["string", "null"]},
+          "raw_pom_number": {"type": ["string", "null"]},
+          "raw_term": {"type": ["string", "null"]},
+          "concept_id": {"type": ["string", "null"]},
+          "pom_number": {"type": ["integer", "null"], "minimum": 1},
+          "mapping_status": {"enum": ["mapped_contract", "mapped_approved_alias", "pending_term_mapping", "excluded_out_of_scope"]},
+          "size_code": {"type": ["string", "null"]},
+          "value_in": {"type": ["number", "null"]},
+          "source_text": {"type": ["string", "null"]},
+          "source_unit": {"enum": ["in", "cm", "mm", null]},
+          "tolerance_text": {"type": ["string", "null"]},
+          "tolerance_value_in": {"type": ["number", "null"], "minimum": 0},
+          "source_cell": {"type": ["string", "null"]},
+          "source_formula": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "image_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["image_id", "role", "fingerprint", "media_type", "source_entry"],
+        "properties": {
+          "image_id": {"type": "string", "minLength": 1},
+          "role": {"const": "annotated_export"},
+          "fingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "media_type": {"type": "string", "minLength": 1},
+          "source_entry": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "issues": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  }
+}

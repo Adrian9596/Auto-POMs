@@ -1,0 +1,107 @@
+{
+  "report_version": "construction-library-viability.v1",
+  "generator": "scripts/measurement-preparation-report.mjs",
+  "source_fingerprints": {
+    "auto_mode_rules/sizeL-suggestions.json": "sha256:29470c4ad209f84aebb7b3fb4727cbc89a187b26f0008484db06363340d2e52b",
+    "auto_mode_rules/pom-template.json": "sha256:c2e59a557885a7e3614074505a272af491b35f6ad3b18cf021a32362f1396483",
+    "library/manifest.json": "sha256:bd00e3bb8ca7e297f2c9fd66d44de09e0df9988cdef6d0a3762ede2f177ffa6c",
+    "library/intake/exports/measurements-size-l.pending.json": "sha256:afbd91aee27f9007f846a2ec21fb62eb59dfd84d03b4b6de7d1f7c45fadecba7",
+    "library/reports/conflicts/measurements-size-l.conflicts.json": "sha256:2000c3191470c0349b87d4272a321f39640417428f5eb8a2f813e145bddef5ed",
+    "library/reports/intake/source-inventory.v1.json": "sha256:90669ff7d60e4d7932b902512ec53fa37bb58732af952715af9a44d20fbf9de9"
+  },
+  "governed_manifest_counts": {
+    "styles": {
+      "pending": 0,
+      "approved": 0
+    },
+    "features": {
+      "pending": 0,
+      "approved": 0
+    },
+    "landmarks": {
+      "pending": 0,
+      "approved": 0
+    },
+    "pom_definitions": {
+      "active_contract": 18,
+      "reserved_pending_definition": 0
+    },
+    "pom_values": {
+      "pending": 0,
+      "approved": 0
+    },
+    "qa_cases": {
+      "draft": 0,
+      "approved": 0,
+      "held_out": 0
+    },
+    "corrections": {
+      "pending": 0,
+      "reviewed": 0
+    }
+  },
+  "runtime_tier0_legacy_corpus": {
+    "corpus_rows": 2950,
+    "style_versions": 225,
+    "dropped_rows": 26,
+    "status": "runtime_population_prior_not_governed_construction_peer_set"
+  },
+  "pending_intake": {
+    "status": "pending",
+    "records": 2950,
+    "raw_style_versions": 225,
+    "mapped_contract_records": 2641,
+    "unresolved_term_records": 61,
+    "excluded_out_of_scope_records": 248,
+    "mapped_canonical_poms": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "canonical_pom_coverage_distribution": {
+      "5": 1,
+      "7": 3,
+      "8": 8,
+      "9": 15,
+      "10": 26,
+      "11": 45,
+      "12": 50,
+      "13": 48,
+      "14": 29
+    },
+    "style_versions_meeting_minimum_10_poms": 198,
+    "unresolved_duplicate_conflicts": 0,
+    "construction_metadata_records": 0,
+    "closure_metadata_records": 0,
+    "independent_family_identity_records": 0
+  },
+  "source_inventory": {
+    "files": 40,
+    "classifications": {
+      "duplicate": 1,
+      "legacy_measurement_candidate": 2,
+      "reference_only": 2,
+      "unrelated_bom": 35
+    },
+    "parse_eligible": 0,
+    "duplicates": 1
+  },
+  "gate": {
+    "construction_filtered_peer_estimator_ready": false,
+    "blocking_reasons": [
+      "No governed approved styles or POM value sets are registered in the library manifest.",
+      "Construction, closure, and independent-family metadata are absent from the pending intake contract."
+    ]
+  }
+}
