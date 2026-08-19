@@ -63,10 +63,12 @@ suggestions with `npm run generate-suggestions` (reads `../Measurements 2`).
   the 18-POM auto pipeline is unchanged; after "Apply Lines" the app switches
   to Manual Mode for TD correction, a visible Manual/Auto toggle allows
   returning, and saved projects with applied lines reopen in Manual. Localized
-  to `src/auto/mode.js`, `src/state.js`, `src/project/project-io.js`,
+  to `src/auto/mode.js`, `src/bootstrap.js`, `src/project/project-load.js`,
   `src/auto/drafts/draft-actions.js`, the `manual-only` CSS in `index.html`,
   and `src/render/copy-image.js` (Copy Image: whole board → PNG to clipboard,
-  offline).
+  offline). Note the audit found `state.appMode` branches outside this list
+  too (e.g. `src/manual/pointer-events.js`, `keyboard-shortcuts.js`,
+  `ui-status.js`) — grep it fresh rather than trusting the list as exhaustive.
 - **Learning never mutates rule JSON.** It only biases anchor seeds, and must
   stay optional, measurable, and resettable.
 
