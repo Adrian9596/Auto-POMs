@@ -28,7 +28,9 @@ the detector was stamping (axis, cradleRow) — visibly below the junction
   y=0.733 (was 0.781, flat cradle row). ✓
 - "need TD correction.png" (TD-annotated: arrows pin POM 6 start at the gore
   bottom): UNCHANGED at 0.6097. ✓ (thin CF seam line ≠ placket — width guard)
-- Classic gore bras (demo2/3/7, correct output 1/2/3, 1.jpg, …): unchanged. ✓
+- Classic gore bras (demo2/3/7, correct output 1/2/3, …): unchanged. ✓
+  `1.jpg` was subsequently TD-corrected in US-012: its raised cradle crest must
+  win over the lower horizontal lace row.
 - demo1 (hook-front): junction snap 0.786→0.720, visually at the seam↔placket
   junction. demo 8 (CF panel + lace tapes): 0.797→0.709, lands at the
   lace-tape↔panel junction; the underwire junction (~0.754) sits between old

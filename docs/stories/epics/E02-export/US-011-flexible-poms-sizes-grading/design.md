@@ -274,6 +274,24 @@ field list; missing one silently drops data on save, load, or undo):
    deeper into state — confirm with the TD that 6XL columns are never
    needed before shipping (flag at S2 review, not a blocker).
 
+## Review resolutions (2026-07-10, post-implementation)
+
+- **M1 (two grade-editing surfaces)** — resolved by making the Size Run
+  dialog a read-only PREVIEW (step/hold shown, not editable; reset removed).
+  The Grading dialog is the single editing surface; legacy step overrides
+  remain honored (precedence: per-size → step → built-in) and its row Reset
+  clears them.
+- **M2 (silent fraction misparse)** — `gradeDeltaToNumber` now accepts ONLY
+  decimal / `a/b` / `w a/b` shapes; anything else (e.g. `"3 /4"`, `"1/0"`)
+  toasts and reverts instead of storing a wrong delta.
+- **m2** — clearing a grading cell now deletes the override (back to
+  standard); pinning a size flat requires an explicit `0`.
+- **m1** — the panel's mid-edit rebuild guard also covers the Add-POM row.
+- **m3 (mixed units in one container: alpha/depth in inches, steps/offsets
+  in project unit)** — ACCEPTED risk, documented in the container comment
+  (state.js); pre-existing v1 convention, unit switches mid-project are not
+  a supported workflow. Follow-up if cm projects become common.
+
 ## ADR
 
 0018 — custom POMs extend, never mutate, the 16-POM contract.

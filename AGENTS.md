@@ -3,12 +3,12 @@
 ## Project: Bra Auto Measure
 
 A fully offline, single-page browser tool that detects a bra technical sketch
-and auto-generates 16 point-of-measure (POM) lines for a technical designer
+and auto-generates 18 point-of-measure (POM) lines for a technical designer
 (TD) to verify. Auto-Mode only. No cloud, no API at runtime.
 
 Read `CLAUDE.md` first — it is the short working context. Deeper detail:
 `PROJECT_CHARTER.md` (why), `ARCHITECTURE.md` (project map), `POMS_CONTRACT.md`
-(the 16 POMs), `TESTING.md` (suites).
+(the 18 POMs), `TESTING.md` (suites).
 
 Non-negotiables for any code change:
 
@@ -16,7 +16,7 @@ Non-negotiables for any code change:
   `src/*` (order in `scripts/source-parts.mjs`). Edit `src/*`, then rebuild.
 - After a `src/` edit: `npm run build` → `npm run check` → the suite that
   covers what you touched.
-- The 16 POMs (`auto_mode_rules/pom-template.json`) and anchor schema are a
+- The 18 POMs (`auto_mode_rules/pom-template.json`) and anchor schema are a
   versioned contract — change deliberately. Learning never mutates rule JSON.
 - Invariants: anchors normalized `[0,1]`; each POM on exactly one view; no
   network call carries sketch/measurement data; determinism (`npm run golden`).

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bra-auto-measure.local/drafts/measurement-suggestion.schema.json",
+  "title": "Draft measurement suggestion result",
+  "$comment": "Preparation draft only. Not a registered runtime or governed-library contract until remaining TD decisions are resolved.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_status",
+    "pom_number",
+    "style_id",
+    "style_version",
+    "target_size",
+    "status",
+    "confidence",
+    "value",
+    "unit",
+    "reason_codes",
+    "placement_evidence",
+    "measurement_value_evidence",
+    "dependency_fingerprints",
+    "stale"
+  ],
+  "properties": {
+    "schema_version": {"const": "measurement-suggestion.draft.v1"},
+    "contract_status": {"const": "draft_pending_td_decisions"},
+    "pom_number": {"type": "integer", "minimum": 1, "maximum": 14},
+    "style_id": {"type": "string", "minLength": 1},
+    "style_version": {"type": "string", "minLength": 1},
+    "target_size": {"const": "L"},
+    "status": {
+      "enum": [
+        "td_confirmed",
+        "suggested",
+        "library_prior",
+        "review_required",
+        "no_data",
+        "not_applicable",
+        "blocked"
+      ]
+    },
+    "confidence": {"enum": ["high", "medium", "low", "none"]},
+    "value": {"type": ["number", "null"], "exclusiveMinimum": 0},
+    "unit": {"enum": ["in", "cm"]},
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "td_confirmed_value",
+          "library_population_prior",
+          "missing_calibration",
+          "incompatible_calibration_view",
+          "unreliable_geometry",
+          "insufficient_peers",
+          "insufficient_independent_families",
+          "peer_spread_too_wide",
+          "geometry_library_conflict",
+          "construction_unknown",
+          "construction_conflicting",
+          "missing_view",
+          "missing_library_data",
+          "unresolved_duplicate",
+          "stale_dependency",
+          "outside_phase_1_scope"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "placement_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "confidence", "view", "path_type", "source", "review_required"],
+      "properties": {
+        "status": {"enum": ["available", "approximate", "review_only", "missing"]},
+        "confidence": {"enum": ["high", "medium", "low", "none"]},
+        "view": {"enum": ["front_outer", "front_inner", "back", "front_to_back"]},
+        "path_type": {"enum": ["straight", "polyline", "bezier", "none"]},
+        "source": {"enum": ["detected_anchors", "constructed_review_curve", "td_edited", "none"]},
+        "review_required": {"type": "boolean"}
+      }
+    },
+    "measurement_value_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "td_measurement", "pixel_geometry", "library_prior"],
+      "properties": {
+        "source_kind": {"enum": ["td_confirmed", "hybrid", "library_prior", "none"]},
+        "td_measurement": {"type": ["object", "null"]},
+        "pixel_geometry": {"type": ["object", "null"]},
+        "library_prior": {"type": ["object", "null"]}
+      }
+    },
+    "dependency_fingerprints": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+      "uniqueItems": true
+    },
+    "stale": {"type": "boolean"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "library_prior"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "confidence": {"enum": ["medium", "low"]},
+          "measurement_value_evidence": {
+            "properties": {"source_kind": {"const": "library_prior"}}
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["no_data", "review_required", "not_applicable", "blocked"]}}, "required": ["status"]},
+      "then": {"properties": {"value": {"type": "null"}}}
+    }
+  ]
+}
+

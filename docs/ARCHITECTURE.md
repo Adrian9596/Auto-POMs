@@ -20,7 +20,7 @@ phases, module table, data-flow diagram, build model) lives in the repo-root
   view classification (`front_outer` / `front_inner` / `back`).
 - **Anchors** — schema-driven landmarks in normalized `[0,1]` image space; some
   are derived (e.g. `drop_to_line`). The TD drags to correct.
-- **POMs** — the fixed 16 points of measure generated from anchor pairs.
+- **POMs** — the fixed 18 points of measure generated from anchor pairs.
 - **Learning** — optional, local, resettable calibration that biases anchor
   seeds from TD corrections. Never mutates rule JSON.
 - **Project** — save/open JSON, autosave, history.
@@ -58,7 +58,7 @@ after anything it references.
 
 - **`app.js` is generated output, not source.** Edit `src/*`, then `npm run
   build`. Never edit `app.js` directly.
-- The **16 POMs** (`auto_mode_rules/pom-template.json`) and **anchor schema**
+- The **18 POMs** (`auto_mode_rules/pom-template.json`) and **anchor schema**
   (`anchor-schema.json`) are a versioned contract (`version.json`). Changing
   them is a decision — record it under `docs/decisions/`.
 - **Mode behaviour is Auto-first with a Manual handoff** (decision 0008),

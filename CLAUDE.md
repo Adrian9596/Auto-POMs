@@ -6,14 +6,14 @@ below.
 ## What this is
 
 **Bra Auto Measure** — a fully offline, single-page browser tool that detects a
-bra technical sketch and auto-generates 16 point-of-measure (POM) lines for a
+bra technical sketch and auto-generates 18 point-of-measure (POM) lines for a
 technical designer (TD) to verify. Auto-first (a fork of the "How to measure1"
 assistant); after "Apply Lines" it hands off to Manual Mode for TD correction.
 No cloud, no API at runtime.
 
 - **Why / goals:** [`PROJECT_CHARTER.md`](PROJECT_CHARTER.md)
 - **Architecture / project map:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- **What the 16 POMs are:** [`POMS_CONTRACT.md`](POMS_CONTRACT.md)
+- **What the 18 POMs are:** [`POMS_CONTRACT.md`](POMS_CONTRACT.md)
 - **Tests:** [`TESTING.md`](TESTING.md)
 - **How to run:** [`README.md`](README.md)
 
@@ -44,19 +44,23 @@ npm run smoke    # headless end-to-end Auto Mode run on demo/demo1.jpg
 
 Other suites: `golden` (stability), `accuracy` (correctness vs TD ground
 truth), `invariants`, `contract`, `pipeline-tests`, `junction-tests`,
-`learning-tests`, `meaning-tests`, `evidence-tests`, `autosave-check`,
+`learning-tests`, `evidence-tests`, `autosave-check`,
+`mainpage-check` (MAIN PAGE sheet), `construction-check` (Construction annotation page),
+`bom-check` (BOM page), `preview-check` (Preview & Export tab + tech-pack workbook),
 `export-xlsx`, `export-hidden`, `suggestions-tests` (Tier-0 library-value layer),
 `pom7-limitations`. Details in `TESTING.md`. Regenerate the library-value
 suggestions with `npm run generate-suggestions` (reads `../Measurements 2`).
 
 ## Fixed contracts — change deliberately, not casually
 
-- **The 16 POMs** (`auto_mode_rules/pom-template.json`) and **anchor schema**
-  (`auto_mode_rules/anchor-schema.json`) are the versioned source of truth
-  (`version.json`). The JSON wins over prose docs if they disagree.
+- **The 18 POMs** (`auto_mode_rules/pom-template.json`, POMs 1–18 with 17 =
+  Neckline length and 18 = Armhole curve length as core active rows — ADR 0032)
+  and **anchor schema** (`auto_mode_rules/anchor-schema.json`) are the versioned
+  source of truth (`version.json`). The JSON wins over prose docs if they
+  disagree.
 - **Mode behaviour is Auto-first with a Manual handoff**
   (`docs/decisions/0008-reenable-manual-mode.md`): fresh load boots Auto and
-  the 16-POM auto pipeline is unchanged; after "Apply Lines" the app switches
+  the 18-POM auto pipeline is unchanged; after "Apply Lines" the app switches
   to Manual Mode for TD correction, a visible Manual/Auto toggle allows
   returning, and saved projects with applied lines reopen in Manual. Localized
   to `src/auto/mode.js`, `src/state.js`, `src/project/project-io.js`,
@@ -97,9 +101,7 @@ context-load time. Never wrap them in backticks; that disables the import.
 
 @docs/FEATURE_INTAKE.md
 
-Also run `scripts/bin/harness-cli query matrix` before starting work. If the
-binary is absent, say so, use `docs/TEST_MATRIX.md` as the fallback matrix, and
-record the missing CLI as harness friction rather than blocking the task.
+Also run `scripts/bin/harness-cli query matrix` before starting work.
 
 Lane-dependent context (`README.md`, `docs/HARNESS.md`, `docs/ARCHITECTURE.md`,
 `docs/CONTEXT_RULES.md`, product docs, stories, decisions) is intentionally not

@@ -169,3 +169,331 @@ Concept.
 The relationship between one style version and one Canonical POM Concept,
 including whether the measurement is present, missing, not applicable,
 unresolved, or excluded from a particular export.
+
+## Candidate Measurement Source
+
+A file discovered during inventory that may contain measurement evidence. It
+does not become an importable source merely because it is an Excel workbook or
+appears inside a tech-pack folder.
+
+## Pending Intake Record
+
+A deterministic, source-fingerprinted representation of evidence parsed from a
+supported source but not yet approved for production suggestions or retrieval.
+
+## Style Version Identity
+
+The canonical pair of an explicit `style_id` and explicit `style_version` that
+identifies one candidate style version. A source missing either field remains
+unresolved and cannot be linked automatically.
+_Avoid_: filename identity, folder identity
+
+## Pending Evidence Bundle
+
+The source-preserving collection of project, workbook, and image evidence
+linked to one Style Version Identity. Conflicting observations remain together
+but block approval until TD resolution.
+_Avoid_: merged record, latest record
+
+## Identity Decision
+
+A TD-authored confirmation that assigns a Style Version Identity to one exact
+source fingerprint. It resolves source identity only and does not approve the
+source's measurement or geometry evidence.
+_Avoid_: filename mapping, inferred identity
+
+## Project Intake Evidence
+
+The pending, source-preserving evidence extracted from a complete saved project
+snapshot. It includes measurement, geometry, image, and contract-version
+provenance but is not approved landmark or learning evidence.
+_Avoid_: approved project, learned geometry
+
+## Duplicate Style Measurement
+
+Two or more source rows in one Style Version Identity that resolve to the same
+Canonical POM Concept. A duplicate is conflicting pending evidence: the system
+must not choose, average, merge, or count it automatically. A TD must resolve
+which row is valid before that POM or style version can contribute to library
+suggestions.
+_Avoid_: duplicate value, automatic deduplication
+
+## Calibration Measurement
+
+A measurement value explicitly entered or confirmed by the TD for one detected
+POM on one sketch view. It gives that view an absolute scale so other POM pixel
+lengths can be converted into inches or centimetres. It is evidence supplied by
+the TD, not a library suggestion.
+_Avoid_: assumed scale, global median scale
+
+## Hybrid Evidence Suggestion
+
+A non-final measurement proposal derived from calibrated sketch pixel geometry
+and corroborating measurements from multiple eligible approved library styles.
+Pixel calculation and library corroboration form one combined evidence source,
+not two independently sufficient sources. It must expose the calibration,
+pixel ratio, peer values, disagreement, provenance, and QA reason used to
+produce it. It can be high confidence only when valid pixel geometry is
+corroborated by eligible library evidence. The TD remains the owner of the
+final value.
+_Avoid_: detected measurement, assigned measurement
+
+## Library Prior
+
+A non-final measurement proposal derived only from eligible approved library
+values, without calibrated pixel geometry for the current sketch. It is weaker
+evidence than a Hybrid Evidence Suggestion and remains subject to TD review.
+_Avoid_: detected measurement, hybrid suggestion
+
+## POM Placement Evidence
+
+Evidence that supports where a POM line and its endpoints belong on the
+technical sketch. It does not by itself establish the POM's numeric value.
+_Avoid_: measurement value evidence
+
+## Measurement Value Evidence
+
+Evidence that supports a POM's numeric value, such as a TD-confirmed
+measurement, an eligible Library Prior, or governed calibrated pixel geometry.
+_Avoid_: line placement, detected line
+
+## No Data
+
+A POM outcome meaning the measurement is within the product contract but the
+available evidence cannot produce a value. It must not be interpreted as the
+POM being irrelevant to the style.
+_Avoid_: not applicable, omitted
+
+## Not Applicable
+
+A POM outcome meaning TD-confirmed or sufficiently governed construction
+evidence establishes that the measurement does not apply to the style.
+_Avoid_: no data, missing measurement
+
+## Construction Feature
+
+A structural property of a style, such as a back hook-and-eye closure, front
+zipper, underwire, or wireless construction. It determines applicable rules
+and eligible comparison cohorts but does not by itself establish a POM value,
+physical scale, or measurement confidence.
+_Avoid_: measurement evidence, scale evidence, measurement layer
+
+## Construction Observation
+
+A visual fact that may support classification of a Construction Feature, such
+as a center-back placket or repeated hook components. It supports construction
+classification only; it becomes Measurement Value Evidence only when a
+separate governed measurement relationship is established.
+_Avoid_: measurement value, construction label
+
+## Construction Cohort
+
+A set of style versions that share TD-confirmed or governed construction features required by a measurement query. Mandatory construction features filter eligibility before geometry similarity or measurement aggregation is considered.
+_Avoid_: visually similar styles, global population
+
+## Synthetic Construction Cohort Fixture
+
+Test-only records that join evidence-grounded construction labels to explicitly synthetic measurements so construction filtering and evidence-fusion behavior can be verified before governed joined peers exist. These records never count as approved production evidence.
+_Avoid_: approved peers, governed library values
+
+## View-Local Scale
+
+An absolute conversion ratio between sketch pixels and physical units that is
+valid for exactly one detected sketch view. A scale from a front view does not
+apply to a back or inner view unless independent evidence establishes that the
+views share the same drawing scale.
+_Avoid_: page scale, shared sketch scale
+
+## Measurement Evidence Trace
+
+The inspectable chain connecting one POM outcome to its detected view, anchor
+pair, pixel length, scale source, physical-unit calculation, library
+corroboration, confidence, and review decision. A result without this chain is
+not an auditable measurement suggestion.
+_Avoid_: result row, confidence badge
+
+## Estimated Suggestion
+
+A non-final numeric proposal produced without a TD-confirmed calibration for
+the relevant view. It must remain visibly distinct from a calibrated Sketch
+Measurement and requires TD review.
+_Avoid_: detected measurement, confirmed measurement
+
+## Sketch Measurement
+
+A numeric proposal calculated from a usable anchor path and a TD-confirmed
+View-Local Scale for the same sketch view. It remains a proposal until the TD
+accepts it.
+_Avoid_: library prior, estimated suggestion
+
+## Final Size L Decision
+
+The TD-owned resolution of one POM for Size L. It is one of accepting the
+current suggestion, supplying an override value, confirming No Data, or
+confirming Not Applicable. Rejecting a suggestion without another resolution
+does not produce a Final Size L Decision.
+_Avoid_: suggestion, generated value
+
+## Final Size L Set
+
+The locked collection of Final Size L Decisions for every POM in the active
+contract, together with the evidence version each decision reviewed. A set is
+not final while any POM is unresolved or any decision refers to stale evidence.
+_Avoid_: suggestion table, partial approval
+
+## Evidence Health
+
+A current-analysis summary of how strongly the available view, construction,
+anchor, scale, and compatible-library evidence support measurement decisions.
+It describes the evidence available for the active sketch and must not be
+interpreted as measurement accuracy by itself.
+_Avoid_: accuracy score, fixed demo score
+
+## Scale Hypothesis
+
+A proposed View-Local Scale inferred from library fit or other indirect
+evidence. It can support a reviewable estimate but remains distinct from a
+scale established by a TD-confirmed Calibration Measurement.
+_Avoid_: calibrated scale, known scale
+
+## Evidence-Gated Auto Acceptance
+
+A provisional measurement decision created when a numeric proposal passes all
+mandatory evidence gates and the accepted confidence threshold. The TD may
+edit it, and the TD remains the owner of the locked Final Size L Set.
+_Avoid_: final measurement, unreviewable automation
+
+## TD Confirmed
+
+A measurement decision in which the TD directly supplies or changes the
+numeric value. The preceding suggestion and its evidence remain part of the
+decision history.
+_Avoid_: automatic value, overwritten suggestion
+
+## Measurement Layer Proof
+
+The evidence status produced by one independent measurement reasoning layer.
+It is Pass, Weak, Missing, or Not Applicable and includes the observation that
+justifies that status. It is not a measurement-confidence percentage.
+_Avoid_: aggregate confidence, decorative progress
+
+## Five-Layer Proof Receipt
+
+The compact collection of Measurement Layer Proof for Visual Understanding,
+Landmark Geometry, Physical Scale, Library Corroboration, and Trust Decision
+for one POM. It explains why a proposal is Auto, Review, or Insufficient.
+_Avoid_: confidence badge, evidence health score
+
+## Measurement Fast Lane
+
+The TD workflow in which all evidence layers run automatically and the TD is
+asked only for missing high-leverage confirmation or exception decisions. It
+does not bypass mandatory evidence gates.
+_Avoid_: automatic finalization, five-step wizard
+
+## Evidence Coverage Score
+
+An audit score describing how much upstream view, landmark, scale,
+construction, and library evidence is present for a POM. It may exist when no
+numeric measurement exists and therefore must not be displayed as Measurement
+Confidence.
+_Avoid_: accuracy, measurement confidence
+
+## Measurement Confidence
+
+The bounded confidence attached to an available numeric measurement proposal.
+It is blank when the proposal has no numeric value and is capped when an
+essential proof layer remains Weak, including inferred scale, candidate-only
+landmarks, or synthetic-only peers.
+_Avoid_: evidence coverage, confidence without a value
+
+## Back Hook-and-Eye Row Count
+
+The discrete number of regularly spaced fastening rows observed on the back
+closure. It is construction evidence, distinct from a generic repeat score or
+the physical height of the closure.
+_Avoid_: repeat confidence, hook count, closure height
+
+## Construction Reference Measurement
+
+A numeric POM proposal produced by an accepted mapping from a discrete
+construction observation. It remains subject to TD review and is distinct from
+both a pixel-scaled Sketch Measurement and a cohort median.
+_Avoid_: automatic final value, library prior, pixel measurement
+
+## General Library Baseline
+
+A low-confidence, non-final POM proposal from the unfiltered library population
+while construction-specific evidence is unavailable. It prevents an empty
+review surface but does not select a construction cohort and is replaced when
+more specific evidence becomes available.
+_Avoid_: construction-compatible Library Prior, final value, detected measurement
+
+## Construction Support Score
+
+A diagnostic value produced by one visual heuristic. It helps explain why a
+construction rule did or did not fire, but it is neither Measurement
+Confidence nor proof that the construction exists. The main workbench exposes
+the resulting state and percentage while explicitly labelling the percentage
+as detector support rather than accuracy.
+_Avoid_: construction confidence, measurement confidence, detected feature
+
+## Anchor Hypothesis
+
+A proposed endpoint location seeded from view-local ratios when no OpenCV or TD
+landmark confirmation exists. Two hypotheses may define a reviewable pixel
+distance, but they do not prove the garment follows the connecting path and
+must not be rendered as a detected measurement line.
+_Avoid_: detected anchor, measurement line, confirmed geometry
+
+## Back Closure Panel Evidence
+
+A paired vertical rail structure at center back that is visually compatible
+with a closure panel even when individual fastening rows are hidden. It can
+support a Back Hook-and-Eye candidate for TD confirmation, but cannot by itself
+select the construction or trigger a row-count measurement rule.
+_Avoid_: confirmed hook-and-eye, fastening row count, center seam
+## Material Key Image
+
+An image owned by one BOM variant and used only to show where BOM materials
+apply. It is independent from a measurement Board image and from the material
+thumbnail stored on an individual BOM row.
+
+## Material Callout
+
+A numbered visual link from a BOM row to one or more points on one Material
+Key Image. Its number and material description are always derived from that
+BOM row; only its label and leader-target positions are edited independently.
+
+## Construction Sheet
+
+One Lace or Solid construction authoring unit. Each Construction Sheet contains
+separate Outer and Inner working views plus one shared Construction Table.
+
+## Construction Operation Row
+
+One editable construction item scoped to a Construction Sheet and an Outer or
+Inner view. Its Area may be selected from the garment-area taxonomy, while its
+Construction Detail remains blank until a TD enters or deliberately chooses it.
+_Avoid_: note row, draft note
+
+## Construction Callout
+
+A numbered visual link from one Construction Operation Row to one or more
+points on that row's Outer or Inner working-view image. Its number, Area, and
+Construction Detail are derived from the row; only label and leader-target
+positions are edited independently.
+
+## Contextual Board Toolbar
+
+The Board control surface that reveals actions according to the current app
+mode, workflow stage, and selection. Core work remains directly available;
+secondary actions are grouped without removing their keyboard access.
+_Avoid_: hidden functionality, permanently disabled control wall
+
+## Primary Board Action
+
+The single action presented as the next expected step in the current Board
+state. In Auto Mode it advances the detection workflow; in Manual Mode it is
+the active authoring action rather than a destructive or export command.
+_Avoid_: multiple competing primary buttons, permanent red button

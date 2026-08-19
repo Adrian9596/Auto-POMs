@@ -13,6 +13,8 @@ future agents should inherit.
   `scripts/bin/harness-cli query matrix`.
 - `HARNESS_BACKLOG.md`: legacy improvement list; current improvement records
   are stored with `scripts/bin/harness-cli backlog`.
+- `FRONTEND.md`: front-end background, fixed UI contracts, and the known
+  UX-gap backlog.
 - `GLOSSARY.md`: shared terms.
 - `SYMPHONY_QUICKSTART.md`: beginner-facing instructions for running Harness
   stories through Symphony.

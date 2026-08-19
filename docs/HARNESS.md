@@ -400,7 +400,6 @@ focused subsystem proof
   npm run pipeline-tests
   npm run junction-tests
   npm run learning-tests
-  npm run meaning-tests
   npm run evidence-tests
   npm run autosave-check
   npm run export-xlsx

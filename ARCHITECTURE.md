@@ -64,7 +64,7 @@ flowchart TD
     subgraph P3[Phase 3 · Generate POMs]
         GEN[generatePOMDraftsFromAnchors\nsrc/auto/drafts/generate-pom-fixture.js] --> VAL[validateAutoFixture\nvalidate-fixture.js]
         VAL --> BUILD[buildDraftAnnotation\nbuild-draft-annotation.js]
-        BUILD --> APPLY[draft-actions.js\nauto-apply 16 POM lines]
+        BUILD --> APPLY[draft-actions.js\nauto-apply 18 POM lines]
     end
 
     APPLY --> RENDER[Render\nsrc/render/render-loop.js\n+ render-auto-overlay.js]
@@ -82,7 +82,7 @@ The three phases correspond directly to the schema and rules: detection
 produces a bbox and a **view classification** (`front_outer` / `front_inner` /
 `back`); seeding walks `anchor-schema.json` to place each anchor (some are
 _derived_, e.g. `drop_to_line` projects a point vertically onto the band line);
-generation reads anchor positions and emits the 16 POM rows defined in
+generation reads anchor positions and emits the 18 POM rows defined in
 `pom-template.json`. Anchors are stored in **normalized `[0,1]` image space**
 so they survive pan, zoom, resize, and save.
 
@@ -98,14 +98,14 @@ scope, so a part must appear after anything it references.
 | **Geometry** | `curves.js`, `geometry/math.js` | Curve and vector math shared across phases. |
 | **Detection** | `auto-detection.js`, `auto/detect/junctions.js` | Offline image analysis; view classification; junction/endpoint/corner detection. |
 | **Anchors** | `auto/anchors/seed-anchors.js`, `derive-anchors.js`, `anchor-interaction.js` | Seed anchors from detection; derive dependent anchors; drag/reset interaction. |
-| **Drafts (POM gen)** | `auto/drafts/generate-pom-fixture.js`, `build-draft-annotation.js`, `validate-fixture.js`, `draft-actions.js` | Anchors → 16-row fixture → validated → draft annotations → applied. |
+| **Drafts (POM gen)** | `auto/drafts/generate-pom-fixture.js`, `build-draft-annotation.js`, `validate-fixture.js`, `draft-actions.js` | Anchors → 18-row fixture → validated → draft annotations → applied. |
 | **Learning** | `auto/learning/calibration-store.js`, `acceptance-stats.js`, `meaning-store.js`, `style-evidence-store.js` | Residual calibration (median bias), accept/edit stats, (style,POM) meanings, TD-edit evidence. All local. |
 | **Telemetry** | `auto/telemetry/session-stats.js`, `session-timer.js` | Detect-to-POM timing/session summaries. |
 | **Auto mode** | `auto/mode.js`, `auto/debug-api.js` | Mode switching (Auto ↔ Manual); expose `window.__braAutoModeDebug` test hooks. |
 | **Project** | `project/project-io.js`, `history.js`, `autosave.js`, `project-library.js` | Save/open JSON (projects with applied lines reopen in Manual Mode); undo history; debounced autosave; library. |
 | **Render** | `render/render-loop.js`, `render-auto-overlay.js`, `render-annotations.js`, `render-images.js`, `render-stitches.js`, `render/copy-image.js`, `hit-testing.js` | Canvas draw loop, auto overlay, annotations, hit-testing. `copy-image.js`: Copy Image — renders the whole board (sketch + lines/labels, content bounds) to an offscreen canvas and puts a PNG on the clipboard, offline. |
-| **UI** | `ui/bindings.js`, `spec-panel.js`, `toast.js`, `meaning-popover.js`, `ui/dialogs/*` | DOM wiring, measurements panel, toasts, dialogs. |
-| **Manual** | `manual/*`, `manual-tools.js`, `import/pptx.js`, `render/export-pdf.js`, `render/export-xlsx.js` | Manual editing toolset (drag/reshape, shortcuts, copy/paste, reflect, styles, export); hidden in Auto, active after the post-Apply handoff or via the mode toggle. `export-xlsx.js`: Export Excel — writes the Measurement Spec `.xlsx` (16 POM rows, 14-column graded size run per `Grading rules.md`, board PNG embedded) with a hand-rolled STORE-method ZIP writer, fully offline. |
+| **UI** | `ui/bindings.js`, `spec-panel.js`, `main-page.js`, `ui/construction-phrase-data.js`, `ui/construction.js`, `ui/bom-material-data.js`, `ui/bom.js`, `ui/page-nav.js`, `toast.js`, `meaning-popover.js`, `ui/dialogs/*` | DOM wiring, measurements panel, toasts, dialogs. `main-page.js`: the tech pack MAIN PAGE sheet — style metadata, suggestion pickers, colorways, printable page. Style metadata only: no anchor, no POM, so detection never reads it ([ADR 0037](docs/decisions/0037-main-page-sheet-port.md)). `construction.js` (+ `construction-phrase-data.js`'s ported phrase/term library): the Construction annotation page — numbered callout notes with leader lines dropped onto the board's own sketch images, plus a quick-search phrase panel; a note's `targets`/`textPos` are normalized to its *owning image's own rect*, a different convention from the anchor `[0,1]`-of-whole-image one. Metadata only: no anchor, no POM, so detection never reads it ([ADR 0039](docs/decisions/0039-construction-annotation-page.md)). Notes also carry a `variant` (`'solid'`/`'lace'`, toolbar-tab-scoped rendering + independent per-variant `seq` numbering), a `zone` (the 7-value `CC_ZONES` garment taxonomy, keyword-defaulted, purely descriptive — nothing downstream reads it), and `targets` (1+ anchors per note; leader lines are drawn from the label box's own edge to each anchor with an arrowhead, and a double-click on one anchor removes just that leader line) ([ADR 0040](docs/decisions/0040-construction-lace-solid-leader-lines.md)). `bom.js` (+ `bom-material-data.js`'s ported 27-material suggestion library): the BOM page — a shared FABRIC/TRIM row list (`scope`: `BOTH`/`SOLID`/`LACE`, same toolbar-tab convention as Construction's variants) rendered as an editable table with one column per `state.mainPage.colorways` entry (finally consuming what ADR 0037 called "knowingly inert"), plus a "material key" canvas annotation that forks Construction's exact multi-anchor/edge-leader-line/arrowhead/double-click-delete engine under a `bm*` prefix to place numbered callouts, linked to table rows, on the board's own sketch images. A project's *first-ever* BOM materializes as the reference factory sheet's exact 12-row BOM (`BM_SEED_ROWS`, verbatim from `Tech pack Output/TechPack output.html`'s `#pack-data` `bom.rows`; one-shot, guarded by `bom.seedId` so a TD-emptied table stays empty — US-074). Metadata only: no anchor, no POM, so detection never reads it ([ADR 0041](docs/decisions/0041-bom-annotation-and-table.md)). `page-nav.js`: the tab bar that switches between tech-pack pages (Board, MAIN PAGE, Construction, BOM) — owns the one `TECH_PACK_PAGES` registry and `state.activePage` (session-only, like `state.selectedImageIds`) ([ADR 0038](docs/decisions/0038-page-navigation-model.md)). |
+| **Manual** | `manual/*`, `manual-tools.js`, `import/pptx.js`, `render/export-pdf.js`, `render/export-xlsx.js` | Manual editing toolset (drag/reshape, shortcuts, copy/paste, reflect, styles, export); hidden in Auto, active after the post-Apply handoff or via the mode toggle. `export-xlsx.js`: Export Excel — writes the Measurement Spec `.xlsx` (18 POM rows, 14-column graded size run per `Grading rules.md`, board PNG embedded) with a hand-rolled STORE-method ZIP writer, fully offline. |
 
 ## 5. The mode contract (Auto-first, Manual handoff)
 
@@ -143,6 +143,9 @@ src/*.js  (order: scripts/source-parts.mjs)
                     │    parse-validates with `new Function`, appends init())
                     ▼
                  app.js  ──loaded by──▶  index.html
+                    │                        ▲
+                    └── content hash ────────┘
+                        (app.js?v=<hash> cache-buster, kept in sync)
 ```
 
 **Never edit `app.js` directly** — it is regenerated and your change would be
@@ -150,9 +153,17 @@ lost. Edit the relevant `src/*` part, then `npm run build`. `npm run check`
 rebuilds and parse-validates every part in isolation plus the standalone
 `opencv_*` / `potrace` files.
 
+The build also rewrites the `<script src="app.js?v=…">` cache-buster in
+`index.html` to a **content hash of the bundle**. This is what makes a shipped
+fix actually reach browsers: a static `?v=` served every rebuild's fresh
+`app.js` under the same URL, so browsers and the GitHub Pages CDN kept serving
+the stale cached copy. The hash changes only when `app.js` changes, and
+`npm run check` fails if `index.html`'s buster is out of sync — so `index.html`
+is a build output too, not hand-edited for the version string.
+
 ## 7. Data & persistence
 
-- **Rule data** (`auto_mode_rules/`): `pom-template.json` (the 16 POMs, EN + ZH
+- **Rule data** (`auto_mode_rules/`): `pom-template.json` (the 18 POMs, EN + ZH
   labels, anchor pairs, pairing, confidence tiers), `anchor-schema.json` (anchor
   kinds, groups, hints, derivations), `version.json` (template/rule/anchor
   versions). These are the versioned contract; the learning loop never edits them.
@@ -167,7 +178,8 @@ rebuilds and parse-validates every part in isolation plus the standalone
 - Every POM belongs to exactly one review/apply placement view (`front_outer` /
   `front_inner` / `back`). POM 14 is the measurement-path exception:
   `view: front_to_back`, placed for review as `placementViewRole: back`.
-- The 16-POM set is fixed and versioned; changing it is a contract change.
+- The 18-POM set is fixed and versioned (extended 16 → 18 by ADR 0032);
+  changing it is a contract change.
 - Learning is **optional, measurable, resettable**, and never mutates rule JSON.
 - No network call carries sketch or measurement data (offline by design).
 - `app.js` is generated output, not source.
