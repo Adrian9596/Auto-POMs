@@ -67,13 +67,13 @@ flowchart TD
         BUILD --> APPLY[draft-actions.js\nauto-apply 18 POM lines]
     end
 
-    APPLY --> RENDER[Render\nsrc/render/render-loop.js\n+ render-auto-overlay.js]
-    APPLY --> SAVE[(Project JSON\nsrc/project/project-io.js)]
+    APPLY --> RENDER[Render\nsrc/render/render-loop.js\n+ detection-overlay.js + anchor-pins.js]
+    APPLY --> SAVE[(Project JSON\nsrc/project/project-save.js + project-load.js)]
 
     DRAG -. residuals .-> LEARN
     APPLY -. accepted/edited .-> LEARN
     subgraph L[Learning · optional · localStorage]
-        LEARN[calibration-store · acceptance-stats\nmeaning-store · style-evidence-store]
+        LEARN[calibration-store · acceptance-stats\nmeaning-store · style-evidence-record]
     end
     LEARN -. median bias on next seed .-> SEED
 ```
@@ -99,13 +99,13 @@ scope, so a part must appear after anything it references.
 | **Detection** | `auto-detection.js`, `auto/detect/junctions.js` | Offline image analysis; view classification; junction/endpoint/corner detection. |
 | **Anchors** | `auto/anchors/seed-anchors.js`, `derive-anchors.js`, `anchor-interaction.js` | Seed anchors from detection; derive dependent anchors; drag/reset interaction. |
 | **Drafts (POM gen)** | `auto/drafts/generate-pom-fixture.js`, `build-draft-annotation.js`, `validate-fixture.js`, `draft-actions.js` | Anchors → 18-row fixture → validated → draft annotations → applied. |
-| **Learning** | `auto/learning/calibration-store.js`, `acceptance-stats.js`, `meaning-store.js`, `style-evidence-store.js` | Residual calibration (median bias), accept/edit stats, (style,POM) meanings, TD-edit evidence. All local. |
+| **Learning** | `auto/learning/calibration-store.js`, `shadow-detection.js`, `acceptance-stats.js`, `meaning-store.js`, `meaning-commit.js`, `style-evidence-record.js`, `style-evidence-capture.js`, `style-evidence-reuse.js` | Residual calibration (median bias, `calibration-store.js`) + shared shadow-redetect utilities (`shadow-detection.js`); accept/edit stats; (style,POM) meaning catalog (`meaning-store.js`) + the manual-line-to-meaning workflow spanning all three stores (`meaning-commit.js`); TD-edit style evidence — durable store (`style-evidence-record.js`), save-time capture (`style-evidence-capture.js`), generate-time reuse/bias (`style-evidence-reuse.js`). All local. |
 | **Telemetry** | `auto/telemetry/session-stats.js`, `session-timer.js` | Detect-to-POM timing/session summaries. |
-| **Auto mode** | `auto/mode.js`, `auto/debug-api.js` | Mode switching (Auto ↔ Manual); expose `window.__braAutoModeDebug` test hooks. |
+| **Auto mode** | `auto/mode.js`, `auto/debug-api.js`, `auto/debug-export.js` | Mode switching (Auto ↔ Manual); `debug-api.js` is just the `window.__braAutoModeDebug` object literal — the export/summary builders it calls (ground truth, CV debug, stage summary) live in `debug-export.js`. |
 | **Project** | `project/history.js`, `project-save.js`, `project-load.js`, `autosave.js`, `project-library.js`, `ui/dialogs/autosave-restore-banner.js` | Undo history; save/open JSON (`project-save.js`/`project-load.js` — projects with applied lines reopen in Manual Mode); debounced autosave engine (`autosave.js`) + its restore-banner UI (`ui/dialogs/autosave-restore-banner.js`); library. |
-| **Render** | `render/render-loop.js`, `render-auto-overlay.js`, `render-annotations.js`, `render-images.js`, `render-stitches.js`, `render/copy-image.js`, `hit-testing.js` | Canvas draw loop, auto overlay, annotations, hit-testing. `copy-image.js`: Copy Image — renders the whole board (sketch + lines/labels, content bounds) to an offscreen canvas and puts a PNG on the clipboard, offline. |
+| **Render** | `render/viewport.js`, `render/render-loop.js`, `render/detection-overlay.js`, `render/anchor-pins.js`, `render-annotations.js`, `render-images.js`, `render-stitches.js`, `render/copy-image.js`, `hit-testing.js` | Pointer/viewport math (`viewport.js`); canvas draw loop (`render-loop.js`); read-only detection diagnostic overlay (`detection-overlay.js`); draft lines + draggable anchor pins (`anchor-pins.js`); annotations, hit-testing. `copy-image.js`: Copy Image — renders the whole board (sketch + lines/labels, content bounds) to an offscreen canvas and puts a PNG on the clipboard, offline. |
 | **UI** | `ui/bindings.js`, `spec-panel.js`, `main-page.js`, `ui/construction-phrase-data.js`, `ui/construction.js`, `ui/bom-material-data.js`, `ui/bom.js`, `ui/page-nav.js`, `toast.js`, `ui/dialogs/*` | DOM wiring, measurements panel, toasts, dialogs. `main-page.js`: the tech pack MAIN PAGE sheet — style metadata, suggestion pickers, colorways, printable page. Style metadata only: no anchor, no POM, so detection never reads it ([ADR 0037](docs/decisions/0037-main-page-sheet-port.md)). `construction.js` (+ `construction-phrase-data.js`'s ported phrase/term library): the Construction annotation page — numbered callout notes with leader lines dropped onto the board's own sketch images, plus a quick-search phrase panel; a note's `targets`/`textPos` are normalized to its *owning image's own rect*, a different convention from the anchor `[0,1]`-of-whole-image one. Metadata only: no anchor, no POM, so detection never reads it ([ADR 0039](docs/decisions/0039-construction-annotation-page.md)). Notes also carry a `variant` (`'solid'`/`'lace'`, toolbar-tab-scoped rendering + independent per-variant `seq` numbering), a `zone` (the 7-value `CC_ZONES` garment taxonomy, keyword-defaulted, purely descriptive — nothing downstream reads it), and `targets` (1+ anchors per note; leader lines are drawn from the label box's own edge to each anchor with an arrowhead, and a double-click on one anchor removes just that leader line) ([ADR 0040](docs/decisions/0040-construction-lace-solid-leader-lines.md)). `bom.js` (+ `bom-material-data.js`'s ported 27-material suggestion library): the BOM page — a shared FABRIC/TRIM row list (`scope`: `BOTH`/`SOLID`/`LACE`, same toolbar-tab convention as Construction's variants) rendered as an editable table with one column per `state.mainPage.colorways` entry (finally consuming what ADR 0037 called "knowingly inert"), plus a "material key" canvas annotation that forks Construction's exact multi-anchor/edge-leader-line/arrowhead/double-click-delete engine under a `bm*` prefix to place numbered callouts, linked to table rows, on the board's own sketch images. A project's *first-ever* BOM materializes as the reference factory sheet's exact 12-row BOM (`BM_SEED_ROWS`, verbatim from `Tech pack Output/TechPack output.html`'s `#pack-data` `bom.rows`; one-shot, guarded by `bom.seedId` so a TD-emptied table stays empty — US-074). Metadata only: no anchor, no POM, so detection never reads it ([ADR 0041](docs/decisions/0041-bom-annotation-and-table.md)). `page-nav.js`: the tab bar that switches between tech-pack pages (Board, MAIN PAGE, Construction, BOM) — owns the one `TECH_PACK_PAGES` registry and `state.activePage` (session-only, like `state.selectedImageIds`) ([ADR 0038](docs/decisions/0038-page-navigation-model.md)). |
-| **Manual** | `manual/*`, `manual-tools.js`, `import/*`, `ui/dialogs/pptx-picker-dialog.js`, `render/export-pdf.js`, `render/export-xlsx.js` | Manual editing toolset (drag/reshape, shortcuts, copy/paste, reflect, styles, export); hidden in Auto, active after the post-Apply handoff or via the mode toggle. `export-xlsx.js`: Export Excel — writes the Measurement Spec `.xlsx` (18 POM rows, 14-column graded size run per `Grading rules.md`, board PNG embedded) with a hand-rolled STORE-method ZIP writer, fully offline. |
+| **Manual** | `manual/*`, `import/*`, `ui/dialogs/pptx-picker-dialog.js`, `render/export-pdf.js`, `render/export-xlsx-grading.js`, `render/xlsx-writer.js`, `render/export-spec-xlsx.js`, `render/export-techpack-xlsx.js` | Manual editing toolset (drag/reshape, shortcuts, copy/paste, reflect, styles, export); hidden in Auto, active after the post-Apply handoff or via the mode toggle. Export Excel — writes the Measurement Spec `.xlsx` (18 POM rows, 14-column graded size run per `Grading rules.md`, board PNG embedded) with a hand-rolled STORE-method ZIP writer, fully offline: grading math (`export-xlsx-grading.js`), the generic OOXML+ZIP toolkit (`xlsx-writer.js`), the single-sheet export incl. `buildSpecSheetRows` — the one shared builder the tech-pack workbook also calls (`export-spec-xlsx.js`), and the 6-sheet tech-pack workbook (`export-techpack-xlsx.js`). |
 
 ## 5. The mode contract (Auto-first, Manual handoff)
 
@@ -116,10 +116,10 @@ behaviour is deliberately localized:
 
 - `auto/mode.js` — `setAppMode()` / `requestAppModeChange()` switch between
   `'auto'` and `'manual'`.
-- `state.js` — boots via `setAppMode('auto')`; initial state is auto.
+- `bootstrap.js` — `init()` boots via `setAppMode('auto')`; initial state is auto.
 - `auto/drafts/draft-actions.js` — after the atomic commit in
   `applyApprovedDraftsAtomically`, switches to Manual Mode.
-- `project/project-io.js` — reopened projects that contain applied lines open
+- `project/project-load.js` — reopened projects that contain applied lines open
   in Manual Mode.
 - `auto/drafts/generate-pom-fixture.js` — Generate auto-applies (no per-row
   approval on a clean apply); tests keep the review path via the
@@ -167,7 +167,7 @@ is a build output too, not hand-edited for the version string.
   labels, anchor pairs, pairing, confidence tiers), `anchor-schema.json` (anchor
   kinds, groups, hints, derivations), `version.json` (template/rule/anchor
   versions). These are the versioned contract; the learning loop never edits them.
-- **Project files**: JSON via `project-io.js` — the durable artifact a user saves.
+- **Project files**: JSON via `project-save.js`/`project-load.js` — the durable artifact a user saves.
 - **Local browser storage** (`localStorage`): learning buckets
   (`bra.learning.v1`), acceptance stats (`bra.autoAcceptance.v1`), meanings,
   style evidence, and autosave. All device-local; clearing it resets learning.
