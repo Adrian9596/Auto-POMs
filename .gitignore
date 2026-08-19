@@ -23,6 +23,7 @@ scripts/bin/harness-cli.exe
 # ---- Proprietary IP — keep local (risk control) ----
 SC.xlsx
 Grading rules.md
+*KiraForm*.xlsx
 
 # ---- PII — never commit ----
 AI_Ideas_Registry.xlsx
@@ -30,6 +31,9 @@ AI_Ideas_Registry.xlsx
 # ---- Real / brand sketches + screenshots ----
 demo/
 scripts/golden/
+# bra-auto-measure skill output: board PNGs, spec workbooks, project files —
+# all carry brand artwork.
+measure-out/
 
 # ---- Internal pitch & planning docs ----
 pitch/
@@ -44,3 +48,8 @@ measurement workflow and implement plan.md
 manual mode plan.md
 limitation.md
 commit plan.md
+# same category, now filed under docs/notes/ as scratch working notes
+docs/notes/
+
+# ---- Scratch scripts (throwaway repros, not part of the test suite) ----
+scripts/tmp-*.mjs
