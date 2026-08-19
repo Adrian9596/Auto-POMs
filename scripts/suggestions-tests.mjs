@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Verifies the Tier-0 library-value suggestion layer end to end:
-//   A. auto_mode_rules/sizeL-suggestions.json has the expected shape (16 POMs;
-//      1..14 carry a corpus median, 15/16 are "no data").
+//   A. auto_mode_rules/sizeL-suggestions.json has the expected shape (18 POMs;
+//      1..14 carry a corpus median, 15-18 are "no data").
 //   B. the committed JSON is up to date with the corpus generator — but only
 //      when the sibling "Measurements 2" corpus is present (skips cleanly
 //      otherwise, mirroring how accuracy-tests skips with no ground truth).
@@ -29,6 +29,21 @@ const REQUIRED_FIELDS = ['concept', 'median', 'min', 'max', 'tol', 'tolType', 's
 const CONF_SET = new Set(['very_low', 'low', 'medium', 'high']);
 // Mirror of formatSuggestion() in src/ui/spec-panel.js (inches, up to 3 dp).
 const fmt = (inchValue) => (inchValue == null ? '' : String(Math.round(inchValue * 1000) / 1000));
+// US-048: mirror the app's inch-mode fraction display (1/16 grid, else decimal)
+// so the panel-input assertions expect what the TD now sees.
+const fracFmt = (inchValue) => {
+  const n = Number(inchValue);
+  const scaled = n * 16;
+  if (!Number.isFinite(n) || n < 0 || Math.abs(scaled - Math.round(scaled)) > 1e-6) return fmt(inchValue);
+  const DEN = 16;
+  const whole = Math.floor(n + 1e-9);
+  const num = Math.round((n - whole) * DEN);
+  if (num === 0) return String(whole);
+  const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { const t = b; b = a % b; a = t; } return a || 1; };
+  const g = gcd(num, DEN);
+  const frac = (num / g) + '/' + (DEN / g);
+  return whole > 0 ? (whole + ' ' + frac) : frac;
+};
 const fracToNum = (raw) => {
   if (raw == null) return null;
   const s = String(raw).trim();
@@ -46,7 +61,7 @@ async function main() {
   check(!!data.poms && typeof data.poms === 'object', 'A: has poms map');
   check(data.unit === 'in', 'A: unit is inches');
 
-  for (let id = 1; id <= 16; id += 1) {
+  for (let id = 1; id <= 18; id += 1) {
     const p = data.poms[String(id)];
     check(!!p, `A: POM ${id} present`);
     if (!p) continue;
@@ -132,7 +147,7 @@ async function runBrowserChecks(data) {
   const expectTol5 = fmt(fracToNum(data.poms['5'].tol));
   check(out.spec5.sizeL === expect5, `C: POM 5 pre-fills library median (${expect5})`, 'got: ' + out.spec5.sizeL);
   check(out.spec5.tol === expectTol5, `C: POM 5 pre-fills default TOL (${expectTol5})`, 'got: ' + out.spec5.tol);
-  check(out.row5val === expect5, 'C: POM 5 Size L input shows the suggestion', 'got: ' + out.row5val);
+  check(out.row5val === fracFmt(data.poms['5'].median), 'C: POM 5 Size L input shows the suggestion as a fraction', 'got: ' + out.row5val);
   check(out.row5lib, 'C: POM 5 shows a "library" badge');
   check(out.spec16.sizeL === '', 'C: POM 16 (no data) has an empty Size L', 'got: ' + out.spec16.sizeL);
   check(out.row16val === '', 'C: POM 16 Size L input is blank');

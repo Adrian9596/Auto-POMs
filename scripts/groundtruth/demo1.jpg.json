@@ -1,0 +1,138 @@
+{
+ "image": "demo1.jpg",
+ "labeledAt": "2026-07-11T00:00:00.000Z",
+ "labeledBy": "claude-fable-5 visual draft (zoomed sketch audit) \u2014 pending TD review",
+ "ruleVersion": null,
+ "anchorCount": 23,
+ "viewCount": 2,
+ "notes": {
+  "corrected": [
+   "apex-left",
+   "apex-right",
+   "back-strap-left",
+   "back-strap-right",
+   "inner-cup-top",
+   "strap-bottom",
+   "strap-top"
+  ],
+  "added": [],
+  "omitted": []
+ },
+ "anchors": {
+  "apex-left": {
+   "x": 0.1494,
+   "y": 0.208,
+   "viewRole": "front_outer"
+  },
+  "apex-right": {
+   "x": 0.3643,
+   "y": 0.208,
+   "viewRole": "front_outer"
+  },
+  "back-bottom": {
+   "x": 0.760742,
+   "y": 0.872941,
+   "viewRole": "back"
+  },
+  "back-panel-bottom": {
+   "x": 0.69179,
+   "y": 0.872941,
+   "viewRole": "back"
+  },
+  "back-panel-top": {
+   "x": 0.69179,
+   "y": 0.454118,
+   "viewRole": "back"
+  },
+  "back-strap-left": {
+   "x": 0.695,
+   "y": 0.395,
+   "viewRole": "back"
+  },
+  "back-strap-right": {
+   "x": 0.807,
+   "y": 0.392,
+   "viewRole": "back"
+  },
+  "back-top": {
+   "x": 0.760742,
+   "y": 0.4,
+   "viewRole": "back"
+  },
+  "band-left": {
+   "x": 0.081055,
+   "y": 0.870588,
+   "viewRole": "front_outer"
+  },
+  "band-right": {
+   "x": 0.429688,
+   "y": 0.870588,
+   "viewRole": "front_outer"
+  },
+  "cf-bottom": {
+   "x": 0.254883,
+   "y": 0.870588,
+   "viewRole": "front_outer"
+  },
+  "cf-top": {
+   "x": 0.254883,
+   "y": 0.484706,
+   "viewRole": "front_outer"
+  },
+  "chest-left": {
+   "x": 0.055664,
+   "y": 0.574118,
+   "viewRole": "front_outer"
+  },
+  "chest-right": {
+   "x": 0.455078,
+   "y": 0.574118,
+   "viewRole": "front_outer"
+  },
+  "cradle-cf-top": {
+   "x": 0.254883,
+   "y": 0.72,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-bottom": {
+   "x": 0.163818,
+   "y": 0.778824,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-left": {
+   "x": 0.092773,
+   "y": 0.484706,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-right": {
+   "x": 0.246094,
+   "y": 0.484706,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-top": {
+   "x": 0.1372,
+   "y": 0.208,
+   "viewRole": "front_outer"
+  },
+  "side-bottom": {
+   "x": 0.581438,
+   "y": 0.872941,
+   "viewRole": "back"
+  },
+  "side-top": {
+   "x": 0.557617,
+   "y": 0.548235,
+   "viewRole": "back"
+  },
+  "strap-bottom": {
+   "x": 0.688,
+   "y": 0.398,
+   "viewRole": "back"
+  },
+  "strap-top": {
+   "x": 0.362,
+   "y": 0.208,
+   "viewRole": "front_outer"
+  }
+ }
+}

@@ -1,0 +1,168 @@
+{
+ "image": "EvelynBliss vA 2.0.jpg",
+ "labeledAt": "2026-07-22T00:00:00.000Z",
+ "labeledBy": "claude-opus-4-8 draft from TD reference sheet — 3-view roles confirmed (L=front_outer, M=back, R=front_inner). Front + back anchors are ink-derived on the real image; inner neckline/armhole (171/172/181/182) are visual estimates on the inner LEFT cup per the reference — pending TD pixel review.",
+ "ruleVersion": null,
+ "anchorCount": 29,
+ "viewCount": 3,
+ "notes": {
+  "corrected": [
+   "view roles: middle panel = back, right panel = front_inner (auto-classifier had these swapped)"
+  ],
+  "added": [],
+  "omitted": [],
+  "pendingRefinement": [
+   "171",
+   "172",
+   "181",
+   "182"
+  ]
+ },
+ "anchors": {
+  "171": {
+   "x": 0.76,
+   "y": 0.32,
+   "viewRole": "front_inner"
+  },
+  "172": {
+   "x": 0.775,
+   "y": 0.22,
+   "viewRole": "front_inner"
+  },
+  "181": {
+   "x": 0.7,
+   "y": 0.42,
+   "viewRole": "front_inner"
+  },
+  "182": {
+   "x": 0.725,
+   "y": 0.22,
+   "viewRole": "front_inner"
+  },
+  "apex-left": {
+   "x": 0.101563,
+   "y": 0.273556,
+   "viewRole": "front_outer"
+  },
+  "apex-right": {
+   "x": 0.24707,
+   "y": 0.267477,
+   "viewRole": "front_outer"
+  },
+  "back-bottom": {
+   "x": 0.503906,
+   "y": 0.823708,
+   "viewRole": "back"
+  },
+  "back-panel-bottom": {
+   "x": 0.428464,
+   "y": 0.823708,
+   "viewRole": "back"
+  },
+  "back-panel-top": {
+   "x": 0.428464,
+   "y": 0.513678,
+   "viewRole": "back"
+  },
+  "back-strap-left": {
+   "x": 0.410156,
+   "y": 0.513678,
+   "viewRole": "back"
+  },
+  "back-strap-right": {
+   "x": 0.592773,
+   "y": 0.513678,
+   "viewRole": "back"
+  },
+  "back-top": {
+   "x": 0.503906,
+   "y": 0.507599,
+   "viewRole": "back"
+  },
+  "band-left": {
+   "x": 0.066406,
+   "y": 0.817629,
+   "viewRole": "front_outer"
+  },
+  "band-right": {
+   "x": 0.28125,
+   "y": 0.817629,
+   "viewRole": "front_outer"
+  },
+  "cf-bottom": {
+   "x": 0.173828,
+   "y": 0.817629,
+   "viewRole": "front_outer"
+  },
+  "cf-top": {
+   "x": 0.173828,
+   "y": 0.510638,
+   "viewRole": "front_outer"
+  },
+  "chest-left": {
+   "x": 0.051758,
+   "y": 0.589666,
+   "viewRole": "front_outer"
+  },
+  "chest-right": {
+   "x": 0.295898,
+   "y": 0.589666,
+   "viewRole": "front_outer"
+  },
+  "cradle-cf-top": {
+   "x": 0.173828,
+   "y": 0.729483,
+   "viewRole": "front_outer"
+  },
+  "cradle-cup-bottom": {
+   "x": 0.114258,
+   "y": 0.772036,
+   "viewRole": "front_outer"
+  },
+  "cradle-cup-top": {
+   "x": 0.113482,
+   "y": 0.731717,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-bottom": {
+   "x": 0.75209,
+   "y": 0.724623,
+   "viewRole": "front_inner"
+  },
+  "inner-cup-left": {
+   "x": 0.708438,
+   "y": 0.501549,
+   "viewRole": "front_inner"
+  },
+  "inner-cup-right": {
+   "x": 0.770289,
+   "y": 0.501549,
+   "viewRole": "front_inner"
+  },
+  "inner-cup-top": {
+   "x": 0.734529,
+   "y": 0.259886,
+   "viewRole": "front_inner"
+  },
+  "side-bottom": {
+   "x": 0.396513,
+   "y": 0.823708,
+   "viewRole": "back"
+  },
+  "side-top": {
+   "x": 0.381836,
+   "y": 0.568389,
+   "viewRole": "back"
+  },
+  "strap-bottom": {
+   "x": 0.428464,
+   "y": 0.513678,
+   "viewRole": "back"
+  },
+  "strap-top": {
+   "x": 0.252441,
+   "y": 0.240122,
+   "viewRole": "front_outer"
+  }
+ }
+}

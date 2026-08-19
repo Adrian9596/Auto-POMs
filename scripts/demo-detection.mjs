@@ -34,7 +34,7 @@
 // verbatim from scripts/pom-contract-tests.mjs — those helpers are not exported.
 
 import { spawn } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -120,6 +120,28 @@ try {
     }
   }
   await cdp.close();
+
+  // --dump-anchors=<dir>: write each image's detected anchors (normalized x/y +
+  // viewRole + confidence + reviewRequired) as a fixture the offline lab bridge
+  // consumes (US-039 Stage 1). Read-only w.r.t. detection; just persists output.
+  if (args.dumpAnchors) {
+    const outDir = path.isAbsolute(args.dumpAnchors) ? args.dumpAnchors : path.join(appDir, args.dumpAnchors);
+    mkdirSync(outDir, { recursive: true });
+    let written = 0;
+    for (const [image, cap] of Object.entries(captures)) {
+      if (!cap || !cap.anchors) continue;
+      const base = path.basename(image);
+      writeFileSync(path.join(outDir, base + '.json'), JSON.stringify({
+        image: base,
+        source: 'production_detected',
+        ruleNote: 'Real anchors from the production detector (npm run demo -- --dump-anchors). Normalized [0,1] in source-image pixel space.',
+        cupModel: cap.cupModel || null,
+        anchors: cap.anchors,
+      }, null, 2) + '\n');
+      written += 1;
+    }
+    process.stderr.write(`\nDumped ${written} anchor fixture(s) to ${path.relative(appDir, outDir)}/\n`);
+  }
 } catch (error) {
   console.error(error && error.stack ? error.stack : String(error));
   process.exitCode = 1;
@@ -197,7 +219,7 @@ function printReport() {
       const flag = (conf === 'low' || draw === 'REVIEW_ONLY') ? '  <-- weak' : '';
       console.log(`  ${pad(String(p), 5)}${pad(nm, 30)}${pad(conf, 12)}${pad(draw, 14)}${flag}`);
     }
-    console.log(`  (${draftedCount}/16 POMs drafted)`);
+    console.log(`  (${draftedCount}/18 POMs drafted)`);
 
     // --- Review-flagged anchors ---
     const flagged = Object.entries(c.anchors)
@@ -321,6 +343,9 @@ function captureExpr(imagePath) {
       const anchors = {};
       for (const an of (result.anchors || [])) {
         anchors[an.kind] = {
+          x: typeof an.x === 'number' ? Math.round(an.x * 1e6) / 1e6 : null,
+          y: typeof an.y === 'number' ? Math.round(an.y * 1e6) / 1e6 : null,
+          viewRole: an.viewRole || null,
           confidence: an.confidence || null,
           source: an.source || null,
           reviewRequired: !!an.reviewRequired,
@@ -349,6 +374,7 @@ function parseArgs(argv) {
   for (const a of argv) {
     if (a.startsWith('--chrome=')) p.chrome = a.slice(9);
     else if (a.startsWith('--only=')) p.only = a.slice(7);
+    else if (a.startsWith('--dump-anchors=')) p.dumpAnchors = a.slice(15);
     else fail(`Unknown argument: ${a}`);
   }
   return p;

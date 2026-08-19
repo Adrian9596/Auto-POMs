@@ -1,0 +1,121 @@
+{
+ "image": "demo4.jpg",
+ "labeledAt": "2026-07-11T00:00:00.000Z",
+ "labeledBy": "claude-fable-5 visual draft (zoomed sketch audit) \u2014 pending TD review",
+ "ruleVersion": null,
+ "anchorCount": 20,
+ "viewCount": 2,
+ "notes": {
+  "corrected": [],
+  "added": [
+   "cradle-cf-top"
+  ],
+  "omitted": [
+   "apex-left",
+   "apex-right",
+   "inner-cup-top"
+  ]
+ },
+ "anchors": {
+  "back-bottom": {
+   "x": 0.818359,
+   "y": 0.925287,
+   "viewRole": "back"
+  },
+  "back-panel-bottom": {
+   "x": 0.705742,
+   "y": 0.925287,
+   "viewRole": "back"
+  },
+  "back-panel-top": {
+   "x": 0.705742,
+   "y": 0.318966,
+   "viewRole": "back"
+  },
+  "back-strap-left": {
+   "x": 0.722656,
+   "y": 0.318966,
+   "viewRole": "back"
+  },
+  "back-strap-right": {
+   "x": 0.912109,
+   "y": 0.318966,
+   "viewRole": "back"
+  },
+  "back-top": {
+   "x": 0.818359,
+   "y": 0.571839,
+   "viewRole": "back"
+  },
+  "band-left": {
+   "x": 0.048828,
+   "y": 0.925287,
+   "viewRole": "front_outer"
+  },
+  "band-right": {
+   "x": 0.329102,
+   "y": 0.925287,
+   "viewRole": "front_outer"
+  },
+  "cf-bottom": {
+   "x": 0.188477,
+   "y": 0.925287,
+   "viewRole": "front_outer"
+  },
+  "cf-top": {
+   "x": 0.188477,
+   "y": 0.566092,
+   "viewRole": "front_outer"
+  },
+  "chest-left": {
+   "x": 0.026367,
+   "y": 0.568966,
+   "viewRole": "front_outer"
+  },
+  "chest-right": {
+   "x": 0.351563,
+   "y": 0.568966,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-bottom": {
+   "x": 0.102051,
+   "y": 0.58908,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-left": {
+   "x": 0.051758,
+   "y": 0.485632,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-right": {
+   "x": 0.142377,
+   "y": 0.485632,
+   "viewRole": "front_outer"
+  },
+  "side-bottom": {
+   "x": 0.678116,
+   "y": 0.925287,
+   "viewRole": "back"
+  },
+  "side-top": {
+   "x": 0.651367,
+   "y": 0.548851,
+   "viewRole": "back"
+  },
+  "strap-bottom": {
+   "x": 0.705742,
+   "y": 0.318966,
+   "viewRole": "back"
+  },
+  "strap-top": {
+   "x": 0.303223,
+   "y": 0.206897,
+   "viewRole": "front_outer"
+  },
+  "cradle-cf-top": {
+   "x": 0.1885,
+   "y": 0.834,
+   "viewRole": "front_outer"
+  }
+ }
+}

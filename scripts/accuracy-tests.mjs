@@ -14,14 +14,27 @@
 //   node scripts/accuracy-tests.mjs              # score every labeled demo image
 //   node scripts/accuracy-tests.mjs --only=demo1 # one image
 //   node scripts/accuracy-tests.mjs --verbose    # also dump detected anchors
+//   node scripts/accuracy-tests.mjs --update     # re-seed the regression baseline
 //   ACCURACY_TOL=0.03 node scripts/accuracy-tests.mjs
+//
+// REGRESSION GATE: scores are additionally compared against the committed
+// baseline in scripts/groundtruth/accuracy-baseline.json. A run whose
+// per-image mean/max, per-kind mean, missing-anchor count, or overall mean is
+// WORSE than baseline (beyond a small epsilon) exits non-zero — so a detection
+// change that hurts correctness fails loudly instead of only printing numbers.
+// Improvements never fail; lock them in with --update so the baseline ratchets
+// toward zero. Gate epsilons: ACCURACY_GATE_MEAN_EPS (default 0.001),
+// ACCURACY_GATE_MAX_EPS (0.005), ACCURACY_GATE_KIND_EPS (0.005).
+// The gate only runs on a full run (no --only) so partial runs can't reseed
+// or misjudge whole-corpus numbers.
 //
 // Reuses the dependency-free Chrome + raw-CDP plumbing from golden-tests.mjs,
 // and pins detection to the deterministic OFFLINE ink-mask path (same as
 // golden) so numbers are reproducible. NOTE: the shipped app prefers the real
 // opencv.js WASM backend; this harness measures the offline detector.
 import { spawn } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -40,16 +53,70 @@ const DEFAULT_CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Ch
 const TOL_TIGHT = Number(process.env.ACCURACY_TOL || 0.02);
 const TOL_LOOSE = Number(process.env.ACCURACY_TOL_LOOSE || 0.04);
 
+// Regression-gate slack, in the same normalized units. The detector is
+// deterministic on the pinned offline path, so these only need to absorb
+// float noise plus genuinely negligible drift — anything larger is a real
+// correctness regression and should fail.
+const BASELINE_PATH = path.join(gtDir, 'accuracy-baseline.json');
+const GATE_MEAN_EPS = Number(process.env.ACCURACY_GATE_MEAN_EPS || 0.001);
+const GATE_MAX_EPS = Number(process.env.ACCURACY_GATE_MAX_EPS || 0.005);
+const GATE_KIND_EPS = Number(process.env.ACCURACY_GATE_KIND_EPS || 0.005);
+
+// Hash of the app.js this run is supposed to measure. captureOnce() verifies
+// the served copy against this before every detection (stale-Drive-read guard).
+const APP_JS_SHA256 = createHash('sha256').update(readFileSync(path.join(appDir, 'app.js'))).digest('hex');
+const SERVED_APP_HASH_EXPR = `
+  (async () => {
+    const res = await fetch('app.js', { cache: 'no-store' });
+    if (!res.ok) throw new Error('fetch app.js ' + res.status);
+    const buf = await res.arrayBuffer();
+    const digest = await crypto.subtle.digest('SHA-256', buf);
+    return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+  })()
+`;
+
 const args = parseArgs(process.argv.slice(2));
 const chromePath = args.chrome || process.env.CHROME_PATH || DEFAULT_CHROME;
 if (!existsSync(chromePath)) fail(`Chrome not found at ${chromePath}. Pass --chrome=/path or set CHROME_PATH.`);
 
-const images = readdirSync(path.join(appDir, 'demo'))
+// Images to score: every top-level demo fixture, PLUS any image a ground-truth
+// file points at through `imagePath`. The directory scan is deliberately not
+// recursive, so boards that live in a subfolder (e.g. "demo/2 photo case/")
+// were previously invisible to this suite no matter how well they were
+// labelled — the ground truth simply never ran. Letting a GT file name its own
+// image is what makes those boards scorable (backlog #11).
+const demoImages = readdirSync(path.join(appDir, 'demo'))
   .filter(f => /\.(jpe?g|png|webp)$/i.test(f))
-  .filter(f => !args.only || f.includes(args.only))
-  .sort()
   .map(f => `demo/${f}`);
+const gtDeclaredImages = readdirSync(gtDir)
+  .filter(f => f.endsWith('.json'))
+  .map(f => {
+    try { return JSON.parse(readFileSync(path.join(gtDir, f), 'utf8')).imagePath; }
+    catch (_) { return null; }
+  })
+  .filter(p => typeof p === 'string' && p);
+const images = [...new Set([...demoImages, ...gtDeclaredImages])]
+  .filter(f => existsSync(path.join(appDir, f)))
+  .filter(f => !args.only || f.includes(args.only))
+  .sort();
 if (!images.length) fail('No demo/*.jpg fixtures found.');
+
+// A ground-truth file may declare a MULTI-PHOTO board. The board a TD actually
+// assembles is often two photos — the primary carrying front-outer + back, an
+// aux carrying the front-inner cutaway — and detection only reproduces it when
+// both are loaded. Scoring the primary alone measured a board the TD never has,
+// and let the aux-view path regress with every suite green; that blind spot is
+// exactly why debug-api's runAutoOnDataUrl grew an auxDataURLs option. Returns
+// [] for the ordinary single-image fixture, so those are unchanged.
+function boardAuxFor(image) {
+  const gtFile = gtPathFor(image);
+  if (!existsSync(gtFile)) return [];
+  try {
+    const board = JSON.parse(readFileSync(gtFile, 'utf8')).board;
+    const aux = board && board.aux;
+    return Array.isArray(aux) ? aux.filter(p => typeof p === 'string' && existsSync(path.join(appDir, p))) : [];
+  } catch (_) { return []; }
+}
 
 let server, chrome, userDataDir;
 const captures = {};
@@ -78,12 +145,32 @@ try {
   const cdp = await connectCdp(target.webSocketDebuggerUrl);
   await cdp.send('Runtime.enable');
   await cdp.send('Page.enable');
+  // Disable Chrome's cache entirely: on this Google Drive checkout the FIRST
+  // read of app.js after file churn can be served stale, and a cached stale
+  // app.js would then poison every navigation in this process (observed as
+  // the fragile cradle anchors silently missing on demo4/5/7). With the cache
+  // off, each captureOnce() re-navigation re-fetches app.js, and the served
+  // hash is verified against disk before detection runs.
+  await cdp.send('Network.enable');
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
 
   for (const image of images) {
     try {
-      await cdp.send('Page.navigate', { url: targetUrl });
-      await waitForDebugApi(cdp);
-      captures[image] = await withTimeout(evaluate(cdp, captureExpr(image)), 30000, image);
+      captures[image] = await captureOnce(cdp, targetUrl, image);
+      // Retry once when a ground-truth anchor kind went unseeded. On this
+      // Google Drive checkout the FIRST detection after file churn can see
+      // inconsistent reads and silently drop the most fragile anchors
+      // (cradle junction/crest tiers); a real regression is deterministic
+      // and fails both passes, so the retry can't mask one.
+      const gtFile = gtPathFor(image);
+      if (existsSync(gtFile)) {
+        const gtKinds = Object.keys(JSON.parse(readFileSync(gtFile, 'utf8')).anchors || {});
+        const unseeded = gtKinds.filter(k => !captures[image].anchors[k]);
+        if (unseeded.length) {
+          console.error(`  (retrying ${image}: ${unseeded.length} ground-truth anchor(s) unseeded on first pass — cold-read flake check)`);
+          captures[image] = await captureOnce(cdp, targetUrl, image);
+        }
+      }
     } catch (err) {
       errors[image] = err && err.message ? err.message : String(err);
     }
@@ -101,6 +188,22 @@ try {
 
 // ---- scoring --------------------------------------------------------------
 function gtPathFor(image) { return path.join(gtDir, path.basename(image) + '.json'); }
+
+async function captureOnce(cdp, targetUrl, image) {
+  // Navigate until the page is running the app.js that is actually on disk.
+  // A mismatch means the static server got a stale Drive read — settle and
+  // re-navigate rather than scoring a detector from another era.
+  for (let attempt = 1; ; attempt += 1) {
+    await cdp.send('Page.navigate', { url: targetUrl });
+    await waitForDebugApi(cdp);
+    const served = await withTimeout(evaluate(cdp, SERVED_APP_HASH_EXPR), 15000, `${image} app.js hash`);
+    if (served === APP_JS_SHA256) break;
+    if (attempt >= 5) throw new Error(`served app.js hash ${String(served).slice(0, 12)}… still != disk ${APP_JS_SHA256.slice(0, 12)}… after ${attempt} attempts (stale Drive reads?)`);
+    console.error(`  (re-navigating for ${image}: served app.js is stale — attempt ${attempt})`);
+    await sleep(400 * attempt);
+  }
+  return withTimeout(evaluate(cdp, captureExpr(image, boardAuxFor(image))), 30000, image);
+}
 
 const perImage = [];
 const perKind = new Map();   // kind -> [errors]
@@ -140,6 +243,111 @@ for (const image of images) {
 }
 
 printReport();
+runBaselineGate();
+
+// ---- regression gate --------------------------------------------------------
+// Compares this run against scripts/groundtruth/accuracy-baseline.json and
+// fails the process when correctness got WORSE. Improvements pass (with a hint
+// to ratchet the baseline via --update).
+function summarizeRun() {
+  const perImageSummary = {};
+  const allErrs = [];
+  for (const r of perImage) {
+    const errVals = r.errs.map(e => e.err);
+    allErrs.push(...errVals);
+    perImageSummary[r.image] = {
+      mean: round6(mean(errVals)),
+      p90: round6(p90(errVals)),
+      max: round6(r.maxErr),
+      scored: errVals.length,
+      missing: r.missing.length,
+    };
+  }
+  const perKindSummary = {};
+  for (const [kind, errs] of [...perKind.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    perKindSummary[kind] = { mean: round6(mean(errs)), n: errs.length };
+  }
+  return {
+    tolTight: TOL_TIGHT,
+    tolLoose: TOL_LOOSE,
+    overall: {
+      mean: round6(mean(allErrs)),
+      p90: round6(p90(allErrs)),
+      scored: allErrs.length,
+      images: perImage.length,
+    },
+    perImage: perImageSummary,
+    perKind: perKindSummary,
+  };
+}
+
+function runBaselineGate() {
+  if (process.exitCode) return;                 // detection already failed
+  if (!perImage.length) return;                 // nothing labeled — report-only
+  if (args.only) {
+    console.log('\n(baseline gate skipped: --only runs a partial corpus)');
+    return;
+  }
+
+  const current = summarizeRun();
+
+  if (args.update) {
+    writeFileSync(BASELINE_PATH, JSON.stringify({
+      _README: 'Accuracy regression baseline — seeded by `node scripts/accuracy-tests.mjs --update`. Commit it. Lower is better; the suite fails when a run is worse than these numbers beyond the gate epsilons.',
+      updatedAt: new Date().toISOString(),
+      ...current,
+    }, null, 2) + '\n');
+    console.log(`\nBaseline updated: ${path.relative(appDir, BASELINE_PATH)} (${current.overall.images} images, ${current.overall.scored} anchors, overall mean ${current.overall.mean})`);
+    return;
+  }
+
+  if (!existsSync(BASELINE_PATH)) {
+    console.log('\nNo accuracy baseline yet — regression gate inactive.');
+    console.log('Seed it with: node scripts/accuracy-tests.mjs --update  (then commit the file)');
+    return;
+  }
+
+  const base = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  const failures = [];
+  const improvements = [];
+
+  for (const [image, b] of Object.entries(base.perImage || {})) {
+    const c = current.perImage[image];
+    if (!c) { failures.push(`${image}: in baseline but not scored this run (demo image or ground truth removed?) — re-seed with --update if intentional`); continue; }
+    if (c.mean > b.mean + GATE_MEAN_EPS) failures.push(`${image}: mean error ${c.mean} regressed past baseline ${b.mean} (+${GATE_MEAN_EPS} allowed)`);
+    if (c.max > b.max + GATE_MAX_EPS) failures.push(`${image}: max error ${c.max} regressed past baseline ${b.max} (+${GATE_MAX_EPS} allowed)`);
+    if (c.missing > b.missing) failures.push(`${image}: ${c.missing} ground-truth anchor(s) not seeded (baseline ${b.missing})`);
+    if (c.mean < b.mean - GATE_MEAN_EPS) improvements.push(`${image}: mean ${b.mean} -> ${c.mean}`);
+  }
+  for (const image of Object.keys(current.perImage)) {
+    if (!(base.perImage || {})[image]) failures.push(`${image}: labeled but missing from baseline — lock it in with --update`);
+  }
+  for (const [kind, b] of Object.entries(base.perKind || {})) {
+    const c = current.perKind[kind];
+    if (!c) continue; // kind disappearing shows up as per-image missing/scored drift
+    if (c.mean > b.mean + GATE_KIND_EPS) failures.push(`anchor kind ${kind}: mean error ${c.mean} regressed past baseline ${b.mean} (+${GATE_KIND_EPS} allowed)`);
+  }
+  if (base.overall && current.overall.mean > base.overall.mean + GATE_MEAN_EPS) {
+    failures.push(`overall: mean error ${current.overall.mean} regressed past baseline ${base.overall.mean}`);
+  }
+
+  console.log('\n--- regression gate (vs committed baseline) ---');
+  if (failures.length) {
+    for (const f of failures) console.log(`  GATE FAIL  ${f}`);
+    console.log('\nAccuracy regressed vs scripts/groundtruth/accuracy-baseline.json.');
+    console.log('If this change is intentionally better overall (verify the numbers above),');
+    console.log('re-seed with: node scripts/accuracy-tests.mjs --update');
+    process.exitCode = 1;
+  } else {
+    console.log(`  OK — no image, anchor kind, or overall regression (baseline of ${base.updatedAt || 'unknown date'})`);
+    if (improvements.length) {
+      console.log('  Improvements detected — consider locking them in with --update:');
+      for (const i of improvements) console.log(`    + ${i}`);
+    }
+  }
+}
+
+function round6(x) { return Math.round(x * 1e6) / 1e6; }
 
 function printReport() {
   console.log('\n=== Auto Mode accuracy (detector seed vs. TD ground truth) ===');
@@ -224,15 +432,23 @@ function pctile(a, q) {
 function pct(n, total) { return total ? `${Math.round((100 * n) / total)}%` : 'n/a'; }
 
 // ---- in-page capture ------------------------------------------------------
-function captureExpr(imagePath) {
+function captureExpr(imagePath, auxPaths) {
   return `
     (async () => {
       const debug = window.__braAutoModeDebug;
-      const res = await fetch(${JSON.stringify(imagePath)} + '?accuracy=' + Date.now(), { cache: 'no-store' });
-      if (!res.ok) throw new Error('fetch ' + res.status);
-      const blob = await res.blob();
-      const dataURL = await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result || '')); r.onerror = () => no(new Error('read')); r.readAsDataURL(blob); });
-      const result = await debug.runAutoOnDataUrl(dataURL);
+      const toDataURL = async (p) => {
+        const res = await fetch(p + '?accuracy=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('fetch ' + p + ' ' + res.status);
+        const blob = await res.blob();
+        return await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result || '')); r.onerror = () => no(new Error('read')); r.readAsDataURL(blob); });
+      };
+      const dataURL = await toDataURL(${JSON.stringify(imagePath)});
+      // Extra board photos, when the ground truth declares a multi-photo board.
+      // The primary stays the detection source; each extra becomes an aux view.
+      const auxPaths = ${JSON.stringify(auxPaths || [])};
+      const auxDataURLs = [];
+      for (const p of auxPaths) auxDataURLs.push(await toDataURL(p));
+      const result = await debug.runAutoOnDataUrl(dataURL, auxDataURLs.length ? { auxDataURLs } : undefined);
       const anchors = {};
       for (const a of (result.anchors || [])) {
         anchors[a.kind] = {
@@ -256,6 +472,7 @@ function parseArgs(argv) {
   const p = {};
   for (const a of argv) {
     if (a === '--verbose') p.verbose = true;
+    else if (a === '--update') p.update = true;
     else if (a.startsWith('--chrome=')) p.chrome = a.slice(9);
     else if (a.startsWith('--only=')) p.only = a.slice(7);
     else if (a.startsWith('--tol=')) process.env.ACCURACY_TOL = a.slice(6);

@@ -1,0 +1,15 @@
+{
+  "image": "demo3.jpg",
+  "source": "draft_pending_td",
+  "unit": "in",
+  "labeledBy": "claude_draft",
+  "notes": "DRAFT PLACEHOLDER — not TD ground truth. Values are library-corpus Size-L medians used only to exercise the S0.1 schema and harness; POM 12 = 3.0 reflects the 3-row back H&E construction reference for this style. A TD must measure this specific style and replace these with real values, then set \"source\": \"td_confirmed\" to activate the gate.",
+  "measurements": {
+    "1": { "value_in": 14, "tol_in": 0.375 },
+    "3": { "value_in": 17, "tol_in": 0.375 },
+    "5": { "value_in": 5.5, "tol_in": 0.25 },
+    "9": { "value_in": 8, "tol_in": 0.25 },
+    "10": { "value_in": 8, "tol_in": 0.25 },
+    "12": { "value_in": 3.0, "tol_in": 0.125 }
+  }
+}

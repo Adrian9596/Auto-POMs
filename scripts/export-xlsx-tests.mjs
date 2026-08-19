@@ -218,11 +218,131 @@ async function main() {
   check(cellNumber(sheet, 'G' + r11) != null && cellNumber(sheet, COL_OF['5XL2'] + r11) != null,
     'POM 11 (no TD Size L) grades from its library suggestion');
 
-  // --- 16 POM rows, numbered 1..16 in the POM column ---
-  for (let pom = 1; pom <= 16; pom += 1) {
+  // --- 18 POM rows, numbered 1..18 in the POM column ---
+  for (let pom = 1; pom <= 18; pom += 1) {
     const v = cellNumber(sheet, 'A' + rowOfPom(pom));
     check(v === pom, `POM column row ${rowOfPom(pom)} = ${pom}`, 'got: ' + v);
   }
+
+  // --- US-011: size-selective export (subset column layouts) ---
+  // The hook's options.sizeSelection drives the same path as the picker
+  // dialog. Column letters must re-derive from the SELECTED layout, formulas
+  // must reference the relocated base columns, and a deselected base (L/L2)
+  // must demote its dependents to cached static values (never a formula that
+  // points at a column missing from the sheet).
+  const subsets = await session.eval(`(async () => {
+    const api = window.__braAutoModeDebug;
+    const alpha = ['S','M','L','XL','2XL','3XL','4XL','5XL'];
+    const depth = ['M2','L2','XL2','2XL2','3XL2','4XL2','5XL2'];
+    return {
+      lOnly: await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)}, { image: false, sizeSelection: { alpha: ['L'], depth: [] } }),
+      alphaOnly: await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)}, { image: false, sizeSelection: { alpha, depth: [] } }),
+      depthOnly: await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)}, { image: false, sizeSelection: { alpha: [], depth } }),
+      fullAgain: await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)}, { image: false }),
+    };
+  })()`);
+  const sheetOf = (b64) => unzipStore(Buffer.from(b64, 'base64'))['xl/worksheets/sheet1.xml'].toString('utf-8');
+  const headersOf = (sh) => {
+    const row3 = sh.match(/<row r="3"[^>]*>([\s\S]*?)<\/row>/)?.[1] || '';
+    return [...row3.matchAll(/<t xml:space="preserve">([^<]*)<\/t>/g)].map(m => m[1]).slice(4);
+  };
+
+  // "Size L only": one size column (E), all values static, zero formulas.
+  const shL = sheetOf(subsets.lOnly);
+  check(JSON.stringify(headersOf(shL)) === JSON.stringify(['L']),
+    'L-only export has exactly the L size column', 'got: ' + headersOf(shL).join('|'));
+  check(!shL.includes('<f>'), 'L-only export has no formulas (base is the only size)');
+  check(cellNumber(shL, 'E' + r5) === 7.5, 'L-only: POM 5 L value lands in column E',
+    'got: ' + cellNumber(shL, 'E' + r5));
+  check(shL.includes('<mergeCell ref="A1:E1"/>'), 'L-only: title merge spans A1:E1');
+
+  // "Alpha only": L is the 3rd size column → base column G (same letter as
+  // the full layout by coincidence of position); depth columns are gone.
+  const shA = sheetOf(subsets.alphaOnly);
+  check(headersOf(shA).length === 8 && !headersOf(shA).includes('M2'),
+    'alpha-only export has the 8 alpha columns and no depth columns');
+  check(cellFormula(shA, 'E' + r5) === 'G' + r5 + '-0.5',
+    'alpha-only: POM 5 S formula anchors on the relocated L column (G)',
+    'got: ' + cellFormula(shA, 'E' + r5));
+
+  // "Depth only": L is deselected. L2 (derived from L) demotes to a static
+  // cached value; the other depth cells stay live formulas anchored on the
+  // relocated L2 column (2nd size column → F).
+  const shD = sheetOf(subsets.depthOnly);
+  check(JSON.stringify(headersOf(shD)) === JSON.stringify(['M2', 'L2', 'XL2', '2XL2', '3XL2', '4XL2', '5XL2']),
+    'depth-only export has exactly the 7 depth columns', 'got: ' + headersOf(shD).join('|'));
+  check(!cellXml(shD, 'F' + r5).includes('<f>'),
+    'depth-only: POM 5 L2 (base L deselected) is a static cached value');
+  check(cellNumber(shD, 'F' + r5) === 7.75, 'depth-only: POM 5 L2 cached value survives',
+    'got: ' + cellNumber(shD, 'F' + r5));
+  check(cellFormula(shD, 'G' + r5) === 'F' + r5 + '+0.25',
+    'depth-only: POM 5 XL2 formula anchors on the relocated L2 column (F)',
+    'got: ' + cellFormula(shD, 'G' + r5));
+
+  // --- US-011 S3: per-size grading overrides (Grading dialog, gradeRules v2)
+  // drive the export. An alpha override replaces the built-in delta in the
+  // formula and the cached value; precedence beats the constant-step branch.
+  const graded = await session.eval(`(async () => {
+    const api = window.__braAutoModeDebug;
+    const st = api.exportProject().state;
+    st.gradeRules = { version: 2, steps: {}, depthOffsets: {},
+      alpha: { '5': { 'S': -1.25 } }, depth: { '5': { 'XL2': 1 } } };
+    await api.loadProject({ format: 'bra-sketch-project', version: 1,
+      savedAt: '2026-07-08T00:00:00.000Z', state: st });
+    const b64 = await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)}, { image: false });
+    // restore the un-graded fixture for any later sections
+    st.gradeRules = { version: 2, steps: {}, alpha: {}, depth: {}, depthOffsets: {} };
+    await api.loadProject({ format: 'bra-sketch-project', version: 1,
+      savedAt: '2026-07-08T00:00:00.000Z', state: st });
+    return b64;
+  })()`);
+  const shG = sheetOf(graded);
+  check(cellFormula(shG, 'E' + r5) === 'G' + r5 + '-1.25',
+    'per-size alpha override: POM 5 S formula becomes =G' + r5 + '-1.25',
+    'got: ' + cellFormula(shG, 'E' + r5));
+  check(cellNumber(shG, 'E' + r5) === 6.25,
+    'per-size alpha override: POM 5 S cached value follows (7.5 - 1.25)',
+    'got: ' + cellNumber(shG, 'E' + r5));
+  check(cellFormula(shG, COL_OF.XL2 + r5) === 'N' + r5 + '+1',
+    'per-size depth override: POM 5 XL2 formula becomes =N' + r5 + '+1',
+    'got: ' + cellFormula(shG, COL_OF.XL2 + r5));
+
+  // Restoring the hook's selection leaves the default full export unchanged:
+  // byte-identical to the seeded no-image export path is not comparable here
+  // (image differs), so assert the full 19-column span came back.
+  check(sheetOf(subsets.fullAgain).includes('<mergeCell ref="A1:S1"/>'),
+    'full export after subset exports still spans A1:S1 (selection restored)');
+
+  // --- US-011 S4: custom POMs (19+) export with full parity ---
+  // Core template now reserves 1..18 (US-037: neckline 17, armhole 18); the
+  // first custom POM is 19.
+  const custom = await session.eval(`(async () => {
+    const api = window.__braAutoModeDebug;
+    const st = api.exportProject().state;
+    st.customPoms = [{ pom: '19', en: 'Wing seam length', zh: '侧翼缝长' }];
+    st.pomSpecs = Object.assign({}, st.pomSpecs, { '19': { sizeL: '6', tol: '± 1/4' } });
+    await api.loadProject({ format: 'bra-sketch-project', version: 1,
+      savedAt: '2026-07-08T00:00:00.000Z', state: st });
+    const b64 = await api.exportSpecXlsxBase64(${JSON.stringify(FROZEN_DATE)}, { image: false });
+    const roundTrip = api.exportProject().state.customPoms;
+    return { b64, roundTrip };
+  })()`);
+  check(Array.isArray(custom.roundTrip) && custom.roundTrip.length === 1
+    && custom.roundTrip[0].pom === '19',
+    'customPoms survives the project save/load round-trip');
+  const shC = sheetOf(custom.b64);
+  const r19 = 3 + 19; // row 22, straight after POM 18
+  check(cellNumber(shC, 'A' + r19) === 19, 'custom POM 19 row exports after POM 18',
+    'got: ' + cellNumber(shC, 'A' + r19));
+  check(inlineText(shC, 'B' + r19) === 'Wing seam length',
+    'custom POM 19 English name from the registry', 'got: ' + inlineText(shC, 'B' + r19));
+  check(inlineText(shC, 'C' + r19) === '侧翼缝长',
+    'custom POM 19 中文 name from the registry', 'got: ' + inlineText(shC, 'C' + r19));
+  check(cellNumber(shC, 'G' + r19) === 6, 'custom POM 19 Size L static base',
+    'got: ' + cellNumber(shC, 'G' + r19));
+  check(cellFormula(shC, 'E' + r19) === 'G' + r19,
+    'custom POM 19 ungraded sizes are flat live formulas =G' + r19,
+    'got: ' + cellFormula(shC, 'E' + r19));
 
   await session.close();
   if (failures > 0) {

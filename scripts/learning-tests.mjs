@@ -161,21 +161,17 @@ async function connectCdp(wsUrl) {
 }
 
 async function waitForDebugApi(cdp) {
-  await evaluate(cdp, `
-    new Promise((resolve, reject) => {
-      let checks = 0;
-      const timer = setInterval(() => {
-        checks += 1;
-        if (window.__braAutoModeDebug && window.__braAutoModeDebug.learning) {
-          clearInterval(timer);
-          resolve(true);
-        } else if (checks > 100) {
-          clearInterval(timer);
-          reject(new Error('window.__braAutoModeDebug.learning was not exposed'));
-        }
-      }, 100);
-    })
-  `);
+  // Poll from the node side so it survives the execution-context destruction
+  // that happens during a Page.navigate (an in-page setInterval would die).
+  const deadline = Date.now() + 15000;
+  while (Date.now() < deadline) {
+    try {
+      const ok = await evaluate(cdp, '!!(window.__braAutoModeDebug && window.__braAutoModeDebug.learning)');
+      if (ok) return;
+    } catch (e) { /* context mid-navigation — retry */ }
+    await sleep(150);
+  }
+  throw new Error('window.__braAutoModeDebug.learning was not exposed within 15s');
 }
 
 async function runLearningTests(cdp, imagePath) {

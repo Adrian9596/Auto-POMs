@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Size L Evidence Workbench</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">OFFLINE · CONSTRUCTION-AWARE TEST</p>
+      <h1>Size L Evidence Workbench</h1>
+    </div>
+    <div class="runtime"><span id="runtimeDot" class="dot"></span><span id="runtimeStatus">Loading local OpenCV…</span></div>
+  </header>
+
+  <section class="input-bar" aria-label="Analysis controls">
+    <label>Bundled sketch
+      <select id="demoSelect">
+        <option value="sketches/demo3.jpg">demo3.jpg</option>
+        <option value="sketches/demo1.jpg">demo1.jpg</option>
+        <option value="sketches/demo5.jpg">demo5.jpg</option>
+      </select>
+    </label>
+    <label class="file-control">Local sketch
+      <input id="fileInput" type="file" accept="image/*">
+    </label>
+    <button id="analyzeBtn" type="button">Analyze evidence</button>
+    <p id="analysisStatus" class="status-text" aria-live="polite"></p>
+    <details class="advanced-controls">
+      <summary>Advanced controls</summary>
+      <div class="advanced-controls-body">
+        <label>Construction
+          <select id="constructionOverride">
+            <option value="auto">Use image evidence</option>
+            <option value="back_hook_and_eye">Back hook and eye</option>
+            <option value="front_zipper">Front zipper</option>
+            <option value="front_closure_placket">Front closure placket</option>
+            <option value="front_hook_and_eye">Front hook and eye</option>
+            <option value="none_pull_on">Pull-on / no closure</option>
+            <option value="unknown">Unknown / abstain</option>
+          </select>
+        </label>
+        <label>Scale method
+          <select id="measurementMode">
+            <option value="auto" selected>Auto (evidence-ranked)</option>
+            <option value="inferred">Library-fit hypothesis</option>
+            <option value="explicit">TD calibration</option>
+            <option value="prior">Construction prior only</option>
+          </select>
+        </label>
+        <label>Anchor source
+          <select id="anchorSource">
+            <option value="detected" selected>Detected (production, bridged)</option>
+            <option value="ratio">Ratio hypotheses (lab)</option>
+          </select>
+        </label>
+        <div id="explicitControls" class="calibration-stack">
+          <label>Front calibration
+            <span class="paired-inputs">
+              <select id="frontCalibrationPom"><option value="1">POM 1</option><option value="5">POM 5</option><option value="9">POM 9</option><option value="10">POM 10</option></select>
+              <input id="frontKnownLength" aria-label="Front known length in inches" type="number" min="0.01" step="0.125" value="14">
+            </span>
+          </label>
+          <label>Back calibration
+            <span class="paired-inputs">
+              <select id="backCalibrationPom"><option value="12">POM 12</option><option value="13">POM 13</option></select>
+              <input id="backKnownLength" aria-label="Back known length in inches" type="number" min="0.01" step="0.125" value="3.75">
+            </span>
+          </label>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <div class="test-warning">
+    <strong>Test-only synthetic measurement peers.</strong> Construction can be image-observed; library values are not production-approved evidence.
+  </div>
+
+  <section class="fast-lane" aria-label="TD fast lane confirmations">
+    <div class="fast-lane-title"><p class="eyebrow">MEASUREMENT FAST LANE</p><h2>Confirm only high-leverage evidence</h2></div>
+    <div class="quick-confirm">
+      <span class="quick-step">1</span>
+      <div><small>Views</small><strong id="quickViewValue">Waiting for analysis</strong></div>
+      <button id="confirmViewsBtn" class="secondary" type="button" disabled>Confirm views</button>
+    </div>
+    <div class="quick-confirm">
+      <span class="quick-step">2</span>
+      <div><small>Construction</small><strong id="quickConstructionValue">Waiting for analysis</strong></div>
+      <button id="confirmConstructionBtn" class="secondary" type="button" disabled>Confirm construction</button>
+    </div>
+    <div class="quick-confirm hook-confirm">
+      <span class="quick-step">3</span>
+      <div><small>Back H&amp;E height</small><strong id="quickHookValue">Not confirmed</strong></div>
+      <div id="hookWidthButtons" class="hook-width-buttons">
+        <button type="button" class="secondary" data-hook-width="3">3&quot;</button>
+        <button type="button" class="secondary" data-hook-width="3.75">3.75&quot;</button>
+        <button id="clearHookWidthBtn" type="button" class="text-button">Not sure</button>
+      </div>
+    </div>
+    <p id="quickConfirmationStatus" class="quick-status" aria-live="polite">Confirmations apply only to this sketch.</p>
+  </section>
+
+  <main class="workbench">
+    <aside class="panel construction-panel">
+      <header class="panel-head"><h2>Construction</h2><span>offline</span></header>
+      <div class="panel-body">
+        <section class="panel-section">
+          <h3>Detected views</h3>
+          <div id="detectedViewChips" class="chip-list" aria-live="polite"></div>
+        </section>
+
+        <section class="panel-section">
+          <h3>Construction</h3>
+          <div id="constructionChips" class="chip-list construction-chips" aria-live="polite"></div>
+          <p class="construction-note">Percent = detector support for this sketch, not proven accuracy. Correctness requires TD-labelled comparison.</p>
+        </section>
+
+        <section class="panel-section">
+          <h3>Evidence health</h3>
+          <div id="evidenceHealth" class="health-list">
+            <div class="health-row"><span>View detection</span><strong id="healthView">0%</strong><i><b style="width:0%"></b></i></div>
+            <div class="health-row"><span>Construction</span><strong id="healthConstruction">0%</strong><i><b style="width:0%"></b></i></div>
+            <div class="health-row"><span>Anchors</span><strong id="healthAnchors">0%</strong><i><b style="width:0%"></b></i></div>
+            <div class="health-row"><span>Absolute scale</span><strong id="healthScale">0%</strong><i><b style="width:0%"></b></i></div>
+            <div class="health-row"><span>Library support</span><strong id="healthLibrary">0%</strong><i><b style="width:0%"></b></i></div>
+          </div>
+        </section>
+
+        <section class="panel-section scale-section">
+          <h3>Scale hypothesis</h3>
+          <dl class="scale-grid">
+            <dt>Front</dt><dd id="frontScaleValue">—</dd>
+            <dt>Back</dt><dd id="backScaleValue">—</dd>
+            <dt>Source</dt><dd id="scaleSource">—</dd>
+          </dl>
+          <div id="scaleWarning" class="scale-warning">Scale evidence has not been evaluated.</div>
+        </section>
+
+        <details class="view-review">
+          <summary>Review detected view roles</summary>
+          <div class="decision-row"><strong id="viewResult">—</strong><span id="viewStatus" class="pill">—</span></div>
+          <div id="viewList" class="view-list"></div>
+        </details>
+      </div>
+    </aside>
+
+    <section class="panel sketch-panel">
+      <header class="panel-head">
+        <div><h2>Sketch evidence</h2><span id="imageMeta"></span></div>
+        <span class="canvas-legend"><i></i>Anchor hypotheses · no inferred lines</span>
+      </header>
+      <div class="sketch-stage">
+        <canvas id="sourceCanvas" width="800" height="520"></canvas>
+      </div>
+      <div id="proofSummary" class="proof-summary" aria-live="polite">Run analysis to see how image evidence becomes Size L suggestions.</div>
+      <details class="edge-details">
+        <summary>OpenCV edge evidence · local runtime</summary>
+        <canvas id="edgeCanvas" width="800" height="520"></canvas>
+      </details>
+    </section>
+
+    <section id="finalizationSection" class="panel measurements-panel">
+      <header class="panel-head measurement-head">
+        <h2>Size L measurements</h2>
+        <span id="measurementSummary">0 accepted · 0 review · 16 no evidence</span>
+      </header>
+      <div class="measurement-scroll">
+        <table class="measurement-table">
+          <thead><tr><th>#</th><th>POM</th><th>Value</th><th>Conf.</th><th>Status</th></tr></thead>
+          <tbody id="finalizationBody"></tbody>
+        </table>
+      </div>
+      <div id="finalizationSummary" class="final-summary" aria-live="polite">Run analysis to create the Size L review set.</div>
+      <div class="final-actions">
+        <button id="acceptHighConfidenceBtn" class="secondary" type="button" hidden>Accept high-confidence</button>
+        <button id="markMissingNoDataBtn" class="secondary" type="button">Resolve no evidence</button>
+        <button id="finalizeSizeLBtn" type="button" disabled>Lock final Size L</button>
+        <button id="unlockFinalBtn" class="secondary" type="button" hidden>Unlock</button>
+        <button id="copyFinalBtn" class="secondary" type="button" disabled>Copy final JSON</button>
+      </div>
+      <section class="pilot-metrics" aria-label="Pilot session metrics">
+        <p class="eyebrow">PILOT METRICS</p>
+        <div><span>Analysis</span><strong id="pilotAnalysisMs">—</strong></div>
+        <div><span>TD actions</span><strong id="pilotActions">0</strong></div>
+        <div><span>Overrides</span><strong id="pilotOverrides">0</strong></div>
+        <div><span>Review rows</span><strong id="pilotReviewRows">—</strong></div>
+        <div><span>Time to lock</span><strong id="pilotLockMs">—</strong></div>
+      </section>
+    </section>
+  </main>
+
+  <section class="audit-drawer">
+    <details>
+      <summary>Inspect full evidence and synthetic cohort details</summary>
+      <div class="audit-toolbar"><button id="copyEvidenceBtn" class="secondary" type="button">Copy evidence JSON</button></div>
+      <div class="evidence-layout">
+        <article class="evidence-card"><p class="eyebrow">CONSTRUCTION RESULT</p><div class="decision-row"><strong id="constructionResult">—</strong><span id="constructionConfidence" class="pill">—</span></div><p id="constructionReason" class="muted"></p><dl id="signalList" class="signal-list"></dl></article>
+        <article class="evidence-card"><p class="eyebrow">COHORT GATE</p><div class="decision-row"><strong id="cohortResult">—</strong><span id="cohortStatus" class="pill">—</span></div><dl id="cohortCounts" class="signal-list"></dl></article>
+        <article class="evidence-card"><p class="eyebrow">SCALE EVIDENCE</p><div class="decision-row"><strong id="scaleResult">—</strong><span id="scaleStatus" class="pill">—</span></div><p id="scaleReason" class="muted"></p></article>
+        <article class="evidence-card"><p class="eyebrow">SUGGESTION PROOF</p><div class="decision-row"><strong id="suggestionResult">—</strong><span id="suggestionStatus" class="pill">—</span></div><dl id="suggestionCounts" class="signal-list"></dl></article>
+      </div>
+      <div id="cohortCards" class="cohort-grid"></div>
+      <div class="table-wrap"><table class="evidence-table"><thead><tr><th>POM</th><th>View</th><th>Pixels</th><th>Sketch</th><th>Prior</th><th>Source</th><th>Confidence</th><th>Decision</th><th>Evidence trace</th></tr></thead><tbody id="resultBody"></tbody></table></div>
+      <details><summary>Evidence payload</summary><pre id="evidencePayload">Run analysis to produce evidence.</pre></details>
+      <details><summary>Locked Final Size L payload</summary><pre id="finalPayload">Not locked.</pre></details>
+    </details>
+  </section>
+
+  <script src="library/construction-cohorts.js"></script>
+  <script src="library/measurement-priors.js"></script>
+  <script src="library/production-anchors.js"></script>
+  <script src="engine.js"></script>
+  <script src="topology.js"></script>
+  <script async src="vendor/opencv.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

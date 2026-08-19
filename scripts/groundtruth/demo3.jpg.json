@@ -1,0 +1,140 @@
+{
+ "image": "demo3.jpg",
+ "labeledAt": "2026-07-11T00:00:00.000Z",
+ "labeledBy": "claude-fable-5 visual draft (zoomed sketch audit) \u2014 pending TD review",
+ "ruleVersion": null,
+ "anchorCount": 25,
+ "viewCount": 2,
+ "notes": {
+  "corrected": [],
+  "added": [],
+  "omitted": []
+ },
+ "anchors": {
+  "apex-left": {
+   "x": 0.097656,
+   "y": 0.143678,
+   "viewRole": "front_outer"
+  },
+  "apex-right": {
+   "x": 0.275391,
+   "y": 0.143678,
+   "viewRole": "front_outer"
+  },
+  "back-bottom": {
+   "x": 0.788086,
+   "y": 0.821839,
+   "viewRole": "back"
+  },
+  "back-panel-bottom": {
+   "x": 0.691888,
+   "y": 0.821839,
+   "viewRole": "back"
+  },
+  "back-panel-top": {
+   "x": 0.691888,
+   "y": 0.367816,
+   "viewRole": "back"
+  },
+  "back-strap-left": {
+   "x": 0.700195,
+   "y": 0.367816,
+   "viewRole": "back"
+  },
+  "back-strap-right": {
+   "x": 0.876953,
+   "y": 0.367816,
+   "viewRole": "back"
+  },
+  "back-top": {
+   "x": 0.788086,
+   "y": 0.617816,
+   "viewRole": "back"
+  },
+  "band-left": {
+   "x": 0.046875,
+   "y": 0.821839,
+   "viewRole": "front_outer"
+  },
+  "band-right": {
+   "x": 0.326172,
+   "y": 0.821839,
+   "viewRole": "front_outer"
+  },
+  "cf-bottom": {
+   "x": 0.185547,
+   "y": 0.821839,
+   "viewRole": "front_outer"
+  },
+  "cf-top": {
+   "x": 0.185547,
+   "y": 0.517241,
+   "viewRole": "front_outer"
+  },
+  "chest-left": {
+   "x": 0.030273,
+   "y": 0.543103,
+   "viewRole": "front_outer"
+  },
+  "chest-right": {
+   "x": 0.342773,
+   "y": 0.543103,
+   "viewRole": "front_outer"
+  },
+  "cradle-cf-top": {
+   "x": 0.185547,
+   "y": 0.70977,
+   "viewRole": "front_outer"
+  },
+  "cradle-cup-bottom": {
+   "x": 0.24707,
+   "y": 0.79023,
+   "viewRole": "front_outer"
+  },
+  "cradle-cup-top": {
+   "x": 0.24707,
+   "y": 0.70977,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-bottom": {
+   "x": 0.257813,
+   "y": 0.70977,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-left": {
+   "x": 0.202178,
+   "y": 0.497126,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-right": {
+   "x": 0.339844,
+   "y": 0.497126,
+   "viewRole": "front_outer"
+  },
+  "inner-cup-top": {
+   "x": 0.285156,
+   "y": 0.143678,
+   "viewRole": "front_outer"
+  },
+  "side-bottom": {
+   "x": 0.654008,
+   "y": 0.821839,
+   "viewRole": "back"
+  },
+  "side-top": {
+   "x": 0.633789,
+   "y": 0.482759,
+   "viewRole": "back"
+  },
+  "strap-bottom": {
+   "x": 0.691888,
+   "y": 0.367816,
+   "viewRole": "back"
+  },
+  "strap-top": {
+   "x": 0.294922,
+   "y": 0.143678,
+   "viewRole": "front_outer"
+  }
+ }
+}

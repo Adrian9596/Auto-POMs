@@ -1,0 +1,41 @@
+{
+  "image": "Evelyn vA 3.0 1st photo.jpg",
+  "imagePath": "demo/2 photo case/Evelyn vA 3.0 1st photo.jpg",
+  "board": {
+    "kind": "two-photo",
+    "primary": "demo/2 photo case/Evelyn vA 3.0 1st photo.jpg",
+    "aux": [
+      "demo/2 photo case/Evelyn vA 3.0 2nd photo.jpg"
+    ],
+    "note": "The TD's real board is TWO photos: the primary carries front-outer + back, the aux is recognised as front_inner. Detection MUST be run with both loaded (runAutoOnDataUrl(primary, { auxDataURLs: [aux] })) to reproduce these positions."
+  },
+  "labeledAt": "2026-07-27T00:00:00.000Z",
+  "labeledBy": "TD confirmation in session — visually verified against the rendered board",
+  "source": "td_confirmed_partial",
+  "ruleVersion": "offline-vision-rules-v3",
+  "anchorVersion": "anchors-2026-07-26-cup-width-own-height",
+  "notes": {
+    "scope": "PARTIAL. Only cf-top and cradle-cf-top are TD-confirmed. Every other anchor on this board is unlabelled — do not treat absence as a verdict.",
+    "confirmed": [
+      "cf-top",
+      "cradle-cf-top"
+    ],
+    "whyThisMatters": [
+      "cradle-cf-top seeds at LOW confidence and is review-flagged, yet the TD confirms the placement is correct. That is positive evidence for whichever recovery tier produced it, and the kind of case the corpus is thinnest on.",
+      "Neither anchor was modified by US-060 or US-061 (which moved cf-bottom and cradle-cup-bottom only), so these values also serve as an unchanged-baseline record."
+    ],
+    "notScorableYet": "scripts/accuracy-tests.mjs discovers images from the TOP LEVEL of demo/ only (readdirSync, no recursion) and calls runAutoOnDataUrl with a single image. It can neither find this file nor reproduce the two-photo pairing, so this ground truth is currently inert. See the harness gap noted in US-061 follow-ups."
+  },
+  "anchors": {
+    "cf-top": {
+      "x": 0.230469,
+      "y": 0.592965,
+      "viewRole": "front_outer"
+    },
+    "cradle-cf-top": {
+      "x": 0.230469,
+      "y": 0.726131,
+      "viewRole": "front_outer"
+    }
+  }
+}

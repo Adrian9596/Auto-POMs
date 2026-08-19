@@ -40,12 +40,22 @@
     "hasFrontInnerView": null,
     "expect": null
   },
+  "2. fail example POM 9 and 10.png": {
+    "viewRoles": null,
+    "hasCradleCfSeam": null,
+    "hasCradleCupSeam": null,
+    "hasUpperCupCfSeam": null,
+    "hasFrontInnerView": null,
+    "expect": null,
+    "cradleCfTopYRange": [0.62, 0.66]
+  },
   "1.jpg": {
     "viewRoles": null,
     "hasCradleCfSeam": null,
     "hasCradleCupSeam": null,
     "hasUpperCupCfSeam": null,
     "hasFrontInnerView": null,
-    "expect": null
+    "expect": null,
+    "cradleCfTopYRange": [0.62, 0.66]
   }
 }

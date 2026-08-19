@@ -4,9 +4,10 @@
 //
 // This is the Tier-0 "library value" source for the measurement-suggestion
 // engine (docs/decisions/0009-measurement-suggestion-engine.md). Each of the
-// 16 POMs gets a corpus-derived median (+ range, tolerance, sketch-reliability,
+// 18 POMs gets a corpus-derived median (+ range, tolerance, sketch-reliability,
 // sample count, confidence). POMs with no corpus rows (15 back-straps distance,
-// 16 front apex) are emitted as "no data" so the panel shows a blank cell.
+// 16 front apex, 17 neckline length, 18 armhole curve) are emitted as "no data"
+// so the panel shows a blank cell.
 //
 // PROVENANCE RULE (Measurements 2/KNOWLEDGE_BASE_PLAN.md): these statistics are
 // DERIVED and must be regenerated from the corpus — never hand-edited. The
@@ -60,6 +61,10 @@ const CONCEPT_BY_POM = {
   '14': 'strap_length',
   '15': 'back_straps_distance',
   '16': null,
+  // US-037: neckline (17) and armhole (18) have no Measurements-2 corpus
+  // concept yet — emitted as "no data" until a corpus pass adds them.
+  '17': null,
+  '18': null,
 };
 
 const CORPUS_FILE = 'library/_raw_intake/measurements_size_l.csv';
@@ -281,7 +286,7 @@ function main() {
 
   writeFileSync(outPath, json);
   const filled = Object.values(poms).filter(p => p.n > 0).length;
-  console.log(`Wrote auto_mode_rules/sizeL-suggestions.json — ${filled}/16 POMs from ${corpusRows.length} corpus rows (${styleVersions} style-versions).`);
+  console.log(`Wrote auto_mode_rules/sizeL-suggestions.json — ${filled}/18 POMs from ${corpusRows.length} corpus rows (${styleVersions} style-versions).`);
 }
 
 main();

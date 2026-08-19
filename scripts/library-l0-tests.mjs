@@ -32,10 +32,12 @@ const REQUIRED_SCHEMAS = [
   'landmark-definition.schema.json', 'style-landmark-evidence.schema.json',
   'pom-definition-reference.schema.json', 'pom-value-set.schema.json',
   'qa-case.schema.json', 'correction.schema.json', 'similarity-index.schema.json',
+  'intake-candidate.schema.json', 'identity-decisions.schema.json',
+  'project-intake.schema.json', 'evidence-bundles.schema.json',
 ];
 
 const REQUIRED_JSON = [
-  'manifest.json', 'intake/fingerprints.json',
+  'manifest.json', 'intake/fingerprints.json', 'intake/identity-decisions.json',
   'pom-definitions/contract-reference.json',
   'pom-definitions/aliases-pending.json',
   'pom-definitions/aliases-approved.json',
@@ -86,7 +88,7 @@ function isObject(value) {
 // Small Draft 2020-12 subset sufficient for the checked-in L0 schemas. It
 // supports local refs, composition, conditionals, objects, arrays and scalar
 // constraints used by this project. Unsupported keywords remain annotations.
-function validateSchema(value, schema, root = schema, at = '$') {
+export function validateSchema(value, schema, root = schema, at = '$') {
   const errors = [];
   if (!isObject(schema)) return [`${at}: schema must be an object`];
 
@@ -220,6 +222,20 @@ function main() {
     check(errors.length === 0, 'manifest validates against library-manifest.schema.json', errors.slice(0, 4).join('; '));
   }
 
+  const pendingCandidate = parsed.get('library/intake/exports/measurements-size-l.pending.json');
+  const pendingCandidateSchema = parsed.get('library/schemas/intake-candidate.schema.json');
+  if (pendingCandidate && pendingCandidateSchema) {
+    const errors = validateSchema(pendingCandidate, pendingCandidateSchema);
+    check(errors.length === 0, 'generated pending corpus validates against intake-candidate.schema.json', errors.slice(0, 4).join('; '));
+  }
+
+  const identityDecisions = parsed.get('library/intake/identity-decisions.json');
+  const identityDecisionsSchema = parsed.get('library/schemas/identity-decisions.schema.json');
+  if (identityDecisions && identityDecisionsSchema) {
+    const errors = validateSchema(identityDecisions, identityDecisionsSchema);
+    check(errors.length === 0, 'identity decisions validate against identity-decisions.schema.json', errors.slice(0, 4).join('; '));
+  }
+
   const contract = parsed.get('library/pom-definitions/contract-reference.json');
   const contractSchema = parsed.get('library/schemas/pom-definition-reference.schema.json');
   if (contract && contractSchema) {
@@ -250,14 +266,14 @@ function main() {
 
   const templateRows = readJson('auto_mode_rules/pom-template.json')?.rows || [];
   const concepts = entriesOf(contract, ['concepts', 'registry', 'pom_concepts']);
-  check(concepts.length === 17, 'global registry contains exactly POM concepts 1-17');
+  check(concepts.length === 18, 'global registry contains exactly POM concepts 1-18');
   const numbers = concepts.map((item) => item.pom_number);
   check(new Set(numbers).size === numbers.length, 'global registry has no reused POM number');
-  check(sameJson([...numbers].sort((a, b) => a - b), Array.from({ length: 17 }, (_, index) => index + 1)), 'global registry numbers are immutable 1-17');
+  check(sameJson([...numbers].sort((a, b) => a - b), Array.from({ length: 18 }, (_, index) => index + 1)), 'global registry numbers are immutable 1-18');
   check(new Set(concepts.map((item) => item.concept_id)).size === concepts.length, 'global registry concept ids are unique');
   check(contract?.numbering_policy?.immutable === true, 'global numbering policy is immutable');
-  check(contract?.numbering_policy?.core_range?.first === 1 && contract?.numbering_policy?.core_range?.last === 16, 'global numbering policy reserves core range 1-16');
-  check(contract?.numbering_policy?.next_assignable_number === 18, 'global numbering policy keeps 17 out of the assignable pool');
+  check(contract?.numbering_policy?.core_range?.first === 1 && contract?.numbering_policy?.core_range?.last === 18, 'global numbering policy reserves core range 1-18');
+  check(contract?.numbering_policy?.next_assignable_number === 19, 'global numbering policy keeps 17 and 18 in the core range and assigns 19 next');
   check(contract?.numbering_policy?.never_reuse_retired_numbers === true, 'retired POM numbers cannot be reused');
   check(contract?.numbering_policy?.joins_use === 'concept_id', 'library joins use stable concept_id');
 
@@ -273,14 +289,20 @@ function main() {
     check(concept.status === 'active_contract', `POM ${pom} is active_contract`);
   }
 
+  // US-037 / ADR 0032: POM 17 (neckline) was promoted from
+  // reserved_pending_definition to an active concept, and POM 18 (armhole)
+  // was newly defined. Both now carry full definitions mirrored by the
+  // template-mirror loop above.
   const neckline = concepts.find((item) => item.pom_number === 17);
-  check(neckline?.concept_id === 'neckline_length', 'POM 17 is globally reserved for neckline_length');
+  check(neckline?.concept_id === 'neckline_length', 'POM 17 concept is neckline_length');
   check(neckline?.canonical_name_en === 'Neckline length', 'POM 17 canonical label is Neckline length');
-  check(neckline?.status === 'reserved_pending_definition', 'POM 17 remains reserved_pending_definition');
-  check(neckline?.measurement_method === null, 'POM 17 measurement method is not invented');
-  check(neckline?.view === null, 'POM 17 view is not invented');
-  check(Array.isArray(neckline?.required_anchors) && neckline.required_anchors.length === 0, 'POM 17 landmarks are not invented');
-  check(Array.isArray(neckline?.aliases_approved) && neckline.aliases_approved.length === 0, 'POM 17 has no aliases promoted before definition approval');
+  check(neckline?.status === 'active_contract', 'POM 17 is now an active_contract concept');
+  check(sameJson(neckline?.required_anchors, ['171', '172']), 'POM 17 uses anchors 171/172');
+  const armhole = concepts.find((item) => item.pom_number === 18);
+  check(armhole?.concept_id === 'armhole_curve_length', 'POM 18 concept is armhole_curve_length');
+  check(armhole?.canonical_name_en === 'Armhole curve length', 'POM 18 canonical label is Armhole curve length');
+  check(armhole?.status === 'active_contract', 'POM 18 is now an active_contract concept');
+  check(sameJson(armhole?.required_anchors, ['181', '182']), 'POM 18 uses anchors 181/182');
 
   validateAliases(
     parsed.get('library/pom-definitions/aliases-approved.json'),
@@ -324,4 +346,4 @@ function main() {
   }
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

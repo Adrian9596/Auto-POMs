@@ -43,13 +43,34 @@ if (!images.length) fail('No demo/*.jpg fixtures found.');
 const EPS_SAME_COL = 0.005;
 const EPS_SAME_ROW = 0.005;
 const EPS_CENTER_Y = 0.08;
+// Max allowed height difference between the two POM 10 endpoints (invariant A3).
+// They intentionally sit at their own heights now; this bounds the slant so the
+// width line can never degenerate into a diagonal across the cup.
+const EPS_ROW_SLANT = 0.09;
 const EPS_AXIS_PAD = 0.005;
 const EPS_SIDE_PAD = 0.003;
+// The two ends of one horizontal-span pair (band, chest, back strap) read the
+// SAME row variable in the seeder, so they must be exactly equal — this is a
+// float-noise guard, not a tolerance (see the E-series).
+const EPS_SHARED_ROW = 1e-9;
+// Keep in lockstep with APEX_MAX_SLANT in src/auto/drafts/generate-pom-fixture.js
+// and APEX_SLANT_LIMIT in src/auto-detection.js — E4 is the assertion that
+// catches them drifting apart.
+const APEX_SLANT_LIMIT = 0.06;
 
 const has9 = (c) => c.poms && c.poms['9'] && c.poms['9'].drawability !== 'REVIEW_ONLY'
   && c.anchors['inner-cup-top'] && c.anchors['inner-cup-bottom'];
 const has10 = (c) => c.poms && c.poms['10'] && c.poms['10'].drawability !== 'REVIEW_ONLY'
   && c.anchors['inner-cup-left'] && c.anchors['inner-cup-right'];
+// B1/B2/B3/B4 validate the cup against the FRONT view's axis and cup side. When
+// a front-inner view exists (a 3-view board / inner cutaway), POM 9/10 relocate
+// onto that inner panel (US-049 / ADR-0034) and are no longer positioned by the
+// front axis — so these front-axis checks do not apply. The inner-view shape is
+// still guarded by the view-agnostic A-series (dimensions + endpoint ordering).
+const cupOnInnerView = (c) => {
+  const a = c.anchors['inner-cup-top'] || c.anchors['inner-cup-left'];
+  return !!(a && a.viewRole === 'front_inner');
+};
 
 const ASSERTIONS = [
   // --- A: Geometric invariants ---------------------------------------------
@@ -76,11 +97,17 @@ const ASSERTIONS = [
     },
   },
   {
-    id: 'A3', name: 'POM 10 endpoints share row',
+    // Was "endpoints share row" (|Δy| < 0.005). POM 10 now spans the cup's true
+    // horizontal extremes with EACH ENDPOINT AT ITS OWN HEIGHT — the gore contact
+    // sits lower than the side-seam end, which is how a TD measures cup width — so
+    // a strictly shared row is no longer the contract. What must still hold is that
+    // the two endpoints read as ONE width measurement rather than a diagonal: the
+    // slant stays bounded.
+    id: 'A3', name: 'POM 10 endpoint slant bounded',
     require: has10,
     test: (c) => {
       const dy = Math.abs(c.anchors['inner-cup-left'].y - c.anchors['inner-cup-right'].y);
-      return { ok: dy < EPS_SAME_ROW, msg: `|Δy|=${dy.toFixed(4)} (need < ${EPS_SAME_ROW})` };
+      return { ok: dy < EPS_ROW_SLANT, msg: `|Δy|=${dy.toFixed(4)} (need < ${EPS_ROW_SLANT})` };
     },
   },
   {
@@ -109,10 +136,14 @@ const ASSERTIONS = [
   {
     id: 'A6', name: 'POM 10 row near POM 9 mid-y',
     require: (c) => has9(c) && has10(c),
+    // The endpoints no longer share a row (see A3), so "the row" is their MEAN
+    // height — the level the width measurement represents. Using left.y alone
+    // would arbitrarily judge the measurement by whichever end happens to sit
+    // lower (the gore contact).
     test: (c) => {
       const mid = (c.anchors['inner-cup-top'].y + c.anchors['inner-cup-bottom'].y) / 2;
-      const ly = c.anchors['inner-cup-left'].y;
-      const d = Math.abs(ly - mid);
+      const row = (c.anchors['inner-cup-left'].y + c.anchors['inner-cup-right'].y) / 2;
+      const d = Math.abs(row - mid);
       return { ok: d < EPS_CENTER_Y, msg: `|row − mid|=${d.toFixed(4)} (need < ${EPS_CENTER_Y})` };
     },
   },
@@ -120,7 +151,7 @@ const ASSERTIONS = [
   // --- B: Cup-bounds invariants --------------------------------------------
   {
     id: 'B1', name: 'POM 9 sits on the picked cup side',
-    require: (c) => has9(c) && c.cupModel && c.cupModel.side != null && c.axisX != null,
+    require: (c) => has9(c) && !cupOnInnerView(c) && c.cupModel && c.cupModel.side != null && c.axisX != null,
     test: (c) => {
       const tx = c.anchors['inner-cup-top'].x;
       const side = c.cupModel.side;
@@ -130,7 +161,7 @@ const ASSERTIONS = [
   },
   {
     id: 'B2', name: 'POM 10 stays inside the picked cup half',
-    require: (c) => has10(c) && c.cupModel && c.cupModel.side != null && c.axisX != null,
+    require: (c) => has10(c) && !cupOnInnerView(c) && c.cupModel && c.cupModel.side != null && c.axisX != null,
     test: (c) => {
       const lx = c.anchors['inner-cup-left'].x;
       const rx = c.anchors['inner-cup-right'].x;
@@ -141,7 +172,7 @@ const ASSERTIONS = [
   },
   {
     id: 'B3', name: 'POM 10 endpoints clear of CF axis',
-    require: (c) => has10(c) && c.axisX != null,
+    require: (c) => has10(c) && !cupOnInnerView(c) && c.axisX != null,
     test: (c) => {
       const lx = c.anchors['inner-cup-left'].x;
       const rx = c.anchors['inner-cup-right'].x;
@@ -153,7 +184,7 @@ const ASSERTIONS = [
   },
   {
     id: 'B4', name: 'POM 10 outer endpoint clear of side seam',
-    require: (c) => has10(c) && c.cupModel && c.cupModel.side != null,
+    require: (c) => has10(c) && !cupOnInnerView(c) && c.cupModel && c.cupModel.side != null,
     test: (c) => {
       const side = c.cupModel.side;
       const sideCol = side < 0 ? c.sideLeftX : c.sideRightX;
@@ -199,6 +230,67 @@ const ASSERTIONS = [
       const okOne = (p) => p && p.drawability === 'APPROXIMATE';
       const ok = okOne(p9) && okOne(p10);
       return { ok, msg: `pom9=${p9 ? p9.drawability : '-'} pom10=${p10 ? p10.drawability : '-'}` };
+    },
+  },
+
+  // --- E: shared-row model for the force-levelled horizontal spans ----------
+  //
+  // POM 1 (band), POM 3 (chest) and POM 15 (back strap) are horizontal spans:
+  // the drafter draws them level at the LEFT end's y and discards the right
+  // end's. That is correct TD semantics, but it silently misplaces the line
+  // when the two anchors of the pair are seeded at different heights — the
+  // line then misses the right anchor by exactly that gap while both pins
+  // still render in the right place. These pairs are the two ends of ONE row
+  // by definition, so the seeder must give them ONE y. Exact equality is the
+  // contract (both ends read the same row variable), not an approximation.
+  ...[
+    ['E1', 'band',       '1',  'band-left',       'band-right'],
+    ['E2', 'chest',      '3',  'chest-left',      'chest-right'],
+    ['E3', 'back strap', '15', 'back-strap-left', 'back-strap-right'],
+  ].map(([id, label, pom, leftKind, rightKind]) => ({
+    id,
+    name: `${leftKind} / ${rightKind} share one row (POM ${pom} draws level)`,
+    require: (c) => !!(c.anchors[leftKind] && c.anchors[rightKind]),
+    test: (c) => {
+      const L = c.anchors[leftKind];
+      const R = c.anchors[rightKind];
+      const dy = Math.abs(L.y - R.y);
+      return {
+        ok: dy <= EPS_SHARED_ROW,
+        msg: `${label} row: ${leftKind}.y=${L.y.toFixed(6)} ${rightKind}.y=${R.y.toFixed(6)} dy=${dy.toFixed(6)}`
+          + ` (need <= ${EPS_SHARED_ROW}) — POM ${pom} would miss ${rightKind} by dy`,
+      };
+    },
+  })),
+
+  // --- E4: POM 16's drawability tracks the apex pair's credibility ----------
+  // Two halves have to agree here, and E4 is what keeps them agreeing:
+  //   - the DETECTOR (US-084) repairs a pair that straddles two rows by
+  //     re-searching the outlier side around the trusted side's row, and leaves
+  //     the pair alone when it cannot reconcile it;
+  //   - the DRAFTER (US-083) draws POM 16 level at the pair's midpoint, and
+  //     demotes to REVIEW_ONLY when the pair slants past the same limit.
+  // So a drawn POM 16 implies a reconciled pair and vice versa. If the two
+  // limits ever drift apart, this fails instead of silently drawing a line off
+  // a mis-detected apex (or withholding one from a good pair).
+  {
+    id: 'E4',
+    name: 'POM 16 is drawable exactly when the apex pair slant is within limit',
+    require: (c) => !!(c.anchors['apex-left'] && c.anchors['apex-right']
+      && c.poms && c.poms['16']),
+    test: (c) => {
+      const L = c.anchors['apex-left'];
+      const R = c.anchors['apex-right'];
+      const dx = Math.abs(R.x - L.x);
+      const slant = dx > 0 ? Math.abs(L.y - R.y) / dx : Infinity;
+      const drawable = c.poms['16'].drawability !== 'REVIEW_ONLY';
+      const within = slant <= APEX_SLANT_LIMIT;
+      return {
+        ok: drawable === within,
+        msg: `slant=${Number.isFinite(slant) ? slant.toFixed(4) : 'inf'}`
+          + ` (limit ${APEX_SLANT_LIMIT}) drawability=${c.poms['16'].drawability}`
+          + (drawable === within ? '' : ' — drawability and slant disagree'),
+      };
     },
   },
 ];
@@ -325,7 +417,7 @@ function captureExpr(imagePath) {
       }
       const anchors = {};
       for (const a of (result.anchors || [])) {
-        anchors[a.kind] = { x: a.x, y: a.y };
+        anchors[a.kind] = { x: a.x, y: a.y, viewRole: a.viewRole || null };
       }
       const cupModel = det.cupModel ? {
         side: det.cupModel.side,

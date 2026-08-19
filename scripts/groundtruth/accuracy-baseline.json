@@ -1,0 +1,181 @@
+{
+  "_README": "Accuracy regression baseline — seeded by `node scripts/accuracy-tests.mjs --update`. Commit it. Lower is better; the suite fails when a run is worse than these numbers beyond the gate epsilons.",
+  "updatedAt": "2026-08-18T13:59:53.322Z",
+  "tolTight": 0.02,
+  "tolLoose": 0.04,
+  "overall": {
+    "mean": 0.019027,
+    "p90": 0.042716,
+    "scored": 147,
+    "images": 7
+  },
+  "perImage": {
+    "demo/2 photo case/Evelyn vA 3.0 1st photo.jpg": {
+      "mean": 0,
+      "p90": 0,
+      "max": 0,
+      "scored": 2,
+      "missing": 0
+    },
+    "demo/EvelynBliss vA 2.0.jpg": {
+      "mean": 0.076755,
+      "p90": 0.240276,
+      "max": 0.289148,
+      "scored": 27,
+      "missing": 2
+    },
+    "demo/demo1.jpg": {
+      "mean": 0.015609,
+      "p90": 0.042716,
+      "max": 0.067726,
+      "scored": 23,
+      "missing": 0
+    },
+    "demo/demo3.jpg": {
+      "mean": 0.003479,
+      "p90": 0,
+      "max": 0.031609,
+      "scored": 25,
+      "missing": 0
+    },
+    "demo/demo4.jpg": {
+      "mean": 0.002724,
+      "p90": 0.00354,
+      "max": 0.02653,
+      "scored": 20,
+      "missing": 0
+    },
+    "demo/demo5.jpg": {
+      "mean": 0.004612,
+      "p90": 0.009051,
+      "max": 0.048111,
+      "scored": 25,
+      "missing": 0
+    },
+    "demo/demo7.png": {
+      "mean": 0.004352,
+      "p90": 0.013474,
+      "max": 0.045119,
+      "scored": 25,
+      "missing": 0
+    }
+  },
+  "perKind": {
+    "171": {
+      "mean": 0.195112,
+      "n": 1
+    },
+    "172": {
+      "mean": 0.171515,
+      "n": 1
+    },
+    "181": {
+      "mean": 0.289148,
+      "n": 1
+    },
+    "182": {
+      "mean": 0.214163,
+      "n": 1
+    },
+    "apex-left": {
+      "mean": 0.008345,
+      "n": 5
+    },
+    "apex-right": {
+      "mean": 0.009341,
+      "n": 5
+    },
+    "back-bottom": {
+      "mean": 0.000507,
+      "n": 6
+    },
+    "back-panel-bottom": {
+      "mean": 0.001519,
+      "n": 6
+    },
+    "back-panel-top": {
+      "mean": 0.040046,
+      "n": 6
+    },
+    "back-strap-left": {
+      "mean": 0.050093,
+      "n": 6
+    },
+    "back-strap-right": {
+      "mean": 0.051393,
+      "n": 6
+    },
+    "back-top": {
+      "mean": 0.000507,
+      "n": 6
+    },
+    "band-left": {
+      "mean": 0.000163,
+      "n": 6
+    },
+    "band-right": {
+      "mean": 0.000163,
+      "n": 6
+    },
+    "cf-bottom": {
+      "mean": 0.004792,
+      "n": 6
+    },
+    "cf-top": {
+      "mean": 0.000456,
+      "n": 7
+    },
+    "chest-left": {
+      "mean": 0.00152,
+      "n": 6
+    },
+    "chest-right": {
+      "mean": 0.00152,
+      "n": 6
+    },
+    "cradle-cf-top": {
+      "mean": 0.007082,
+      "n": 7
+    },
+    "cradle-cup-bottom": {
+      "mean": 0.018775,
+      "n": 3
+    },
+    "cradle-cup-top": {
+      "mean": 0.007783,
+      "n": 3
+    },
+    "inner-cup-bottom": {
+      "mean": 0.00771,
+      "n": 6
+    },
+    "inner-cup-left": {
+      "mean": 0.02102,
+      "n": 6
+    },
+    "inner-cup-right": {
+      "mean": 0.024229,
+      "n": 6
+    },
+    "inner-cup-top": {
+      "mean": 0.006974,
+      "n": 5
+    },
+    "side-bottom": {
+      "mean": 0.00055,
+      "n": 6
+    },
+    "side-top": {
+      "mean": 0.000532,
+      "n": 6
+    },
+    "strap-bottom": {
+      "mean": 0.04942,
+      "n": 6
+    },
+    "strap-top": {
+      "mean": 0.022864,
+      "n": 6
+    }
+  }
+}

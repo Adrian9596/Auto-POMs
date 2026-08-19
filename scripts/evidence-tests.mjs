@@ -158,21 +158,17 @@ async function connectCdp(wsUrl) {
 }
 
 async function waitForDebugApi(cdp) {
-  await evaluate(cdp, `
-    new Promise((resolve, reject) => {
-      let checks = 0;
-      const timer = setInterval(() => {
-        checks += 1;
-        if (window.__braAutoModeDebug && window.__braAutoModeDebug.styleEvidence) {
-          clearInterval(timer);
-          resolve(true);
-        } else if (checks > 100) {
-          clearInterval(timer);
-          reject(new Error('window.__braAutoModeDebug.styleEvidence was not exposed'));
-        }
-      }, 100);
-    })
-  `);
+  // Poll from the node side so it survives the execution-context destruction
+  // that happens during a Page.navigate (an in-page setInterval would die).
+  const deadline = Date.now() + 15000;
+  while (Date.now() < deadline) {
+    try {
+      const ok = await evaluate(cdp, '!!(window.__braAutoModeDebug && window.__braAutoModeDebug.styleEvidence)');
+      if (ok) return;
+    } catch (e) { /* context mid-navigation — retry */ }
+    await sleep(150);
+  }
+  throw new Error('window.__braAutoModeDebug.styleEvidence was not exposed within 15s');
 }
 
 async function runEvidenceTests(cdp, imagePath) {
@@ -392,25 +388,35 @@ async function runEvidenceTests(cdp, imagePath) {
         E.clearAll();
         M.setStyleId('ABSENT-POM7-STYLE');
 
-        const ann = {
-          id: 'auto-absent-pom7-test',
-          type: 'line',
-          seq: 7,
-          text: null,
-          auto: true,
-          sourceMode: 'auto-mode',
-          sourceImageId: image.id,
-          viewRole: 'front_outer',
-          drawability: 'DRAWABLE',
-          color: 'red',
-          style: 'solid',
-          width: 2,
-          arrows: 'double',
-          start: { x: image.x + image.width * 0.48, y: image.y + image.height * 0.72 },
-          end:   { x: image.x + image.width * 0.48, y: image.y + image.height * 0.86 },
-          label: { x: image.x + image.width * 0.50, y: image.y + image.height * 0.79 },
-        };
-        E.pushAnnotation(ann);
+        // Delete the REAL applied POM 7 auto line. TEST 3 applied the
+        // drawable drafts, and since the arc tier (US-014 / ADR 0022)
+        // POM 7 drafts DRAWABLE on demo1 — so a POM 7 line is already on
+        // the board, and the absence guard rightly refuses "POM 7 is
+        // absent" while any POM 7 line remains. Deleting the applied line
+        // IS the scenario under test. Fall back to a synthetic POM 7 ann
+        // only when no applied line exists (pre-arc-tier detector).
+        let ann = debug.getAnnotations().find(a => a && a.auto === true && Number(a.seq) === 7);
+        if (!ann) {
+          ann = {
+            id: 'auto-absent-pom7-test',
+            type: 'line',
+            seq: 7,
+            text: null,
+            auto: true,
+            sourceMode: 'auto-mode',
+            sourceImageId: image.id,
+            viewRole: 'front_outer',
+            drawability: 'DRAWABLE',
+            color: 'red',
+            style: 'solid',
+            width: 2,
+            arrows: 'double',
+            start: { x: image.x + image.width * 0.48, y: image.y + image.height * 0.72 },
+            end:   { x: image.x + image.width * 0.48, y: image.y + image.height * 0.86 },
+            label: { x: image.x + image.width * 0.50, y: image.y + image.height * 0.79 },
+          };
+          E.pushAnnotation(ann);
+        }
         const deleted = E.simulateTdDelete(ann.id);
         const candidates = E.collectCandidates('ABSENT-POM7-STYLE');
         const absentCand = candidates.find(c =>

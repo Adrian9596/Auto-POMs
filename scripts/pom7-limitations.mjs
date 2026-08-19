@@ -2,8 +2,16 @@
 // Synthetic diagnostic matrix for POM 7.
 //
 // This is intentionally separate from pipeline-tests:
-// - hard guards fail only for clear regressions, such as drawing POM 7 when
-//   no vertical POM 7 ink exists.
+// - hard guards assert `<drawability>@<tier>` per case. Since ADR 0022 a
+//   structure-only sketch (no drawn POM 7 line) is still DRAWABLE — but ONLY
+//   at the review-grade 'arc' tier. The regression the guards catch is a
+//   PROMOTION: ink accepted at a tier it did not earn. Only 'strong'/'seam'
+//   are trusted tiers — they alone feed the cupModel and the POM 6 CF
+//   projection (the trustedSeamTier allowlist in src/auto-detection.js and
+//   cradleCfFromCupSeam in src/auto/anchors/seed-anchors.js). 'guide'
+//   (ADR 0021) is review-grade like 'arc' and feeds NEITHER — but it asserts
+//   a real drawn (sparse dashed) line, so structure-only or decorative ink
+//   surfacing at 'guide' is still a mis-tier regression.
 // - known weak spots are reported as LIMITATION so they can guide the next
 //   detector improvement without making CI red.
 //
@@ -103,8 +111,15 @@ function classifyPom7(item) {
   const pom7 = pomRow(fixture, 7);
   const hasGeometry = !!(pom7 && pom7.start && pom7.end);
   const reason = detection.cradleCupMissingReason || (pom7 && pom7.uncertainty) || '';
+  // Assert drawability AND acceptance tier together: since ADR 0022 a case
+  // may be DRAWABLE via 'strong' (vertical guide), 'seam' (pattern 3),
+  // 'guide' (sparse dashes, ADR 0021), or 'arc' (traced cup-bottom
+  // structure, ADR 0022). A regression that promotes weak evidence into a
+  // TRUSTED tier (which would feed the cupModel) flips the tier suffix and
+  // fails the hard guard even though drawability looks unchanged.
+  const tier = detection.cradleCupTier || 'none';
   return {
-    actual: pom7 && pom7.drawability,
+    actual: `${pom7 && pom7.drawability}@${tier}`,
     detail: `geometry=${hasGeometry ? 'yes' : 'no'}`,
     reason,
   };
@@ -114,38 +129,48 @@ const cases = [
   {
     id: 'solid-present',
     label: 'solid POM 7 vertical line',
-    hardExpected: 'DRAWABLE',
+    hardExpected: 'DRAWABLE@strong',
     analysis: buildPom7Fixture(640, 480, { vertical: 'solid' }),
   },
   {
+    // Since ADR 0022 a sketch with NO drawn POM 7 line still drafts: the
+    // traced cup-bottom arc commits at tier 'arc' (low-confidence +
+    // reviewRequired, never fed to the cupModel). The hard guard here is the
+    // TIER: if this case ever reports 'seam'/'strong'/'guide', structure ink
+    // is being promoted into a trusted tier — that is the real regression.
     id: 'absent-cup-outline',
-    label: 'cup outline + band, no POM 7 line',
-    hardExpected: 'REVIEW_ONLY',
+    label: 'cup outline + band, no POM 7 line — arc tier draws it for review',
+    hardExpected: 'DRAWABLE@arc',
     analysis: buildPom7Fixture(640, 480, {}),
   },
   {
+    // A short decorative tick must never be accepted as a guide or seam.
+    // With ADR 0022 the case still drafts — but via the cup-bottom arc, with
+    // the tick contributing nothing. Tier 'guide'/'seam' here = regression.
     id: 'decorative-short',
-    label: 'short decorative vertical ink, not connected cradle-to-band',
-    hardExpected: 'REVIEW_ONLY',
+    label: 'short decorative vertical ink — ignored; arc tier draws for review',
+    hardExpected: 'DRAWABLE@arc',
     analysis: buildPom7Fixture(640, 480, { vertical: 'decorative-short' }),
   },
   {
     // Locks in that a MODERATE dashed line (dash gap ~5px, ~40% duty) is
     // detected: its continuous colRatio clears the strong-guide threshold
     // (colMinRatio) so verticalGuideStrong fires. A regression that stopped
-    // detecting moderate dashes would flip this to REVIEW_ONLY.
+    // detecting moderate dashes would flip this to a weaker tier.
     id: 'moderate-dashed-present',
     label: 'moderate dashed POM 7 line (gap 5, clears the strong-guide threshold)',
-    hardExpected: 'DRAWABLE',
+    hardExpected: 'DRAWABLE@strong',
     analysis: buildPom7Fixture(640, 480, { vertical: 'weak-dashed', dashGap: 5 }),
   },
   {
     // Sparse dashes (gap >= ~8px) have a continuous colRatio below the
-    // strong-guide floor, so the detector treats them as a no-guide pattern-3
-    // candidate and rejects them for lacking a horizontal seam run.
+    // strong-guide floor but hit every vertical segment. Since US-013 / ADR
+    // 0021 they commit at tier 'guide' (low-confidence + reviewRequired) and
+    // are NEVER fed to the cupModel — the B3 coupling that forced the
+    // 2026-07-09 revert of the first prototype is structurally closed.
     id: 'sparse-dashed-present',
-    label: 'sparse dashed POM 7 line (gap 8) — currently demotes to REVIEW_ONLY',
-    knownLimitation: 'Sparse dashed guides (colRatio below the strong-guide floor) demote to REVIEW_ONLY. A relaxed "dashed guide" acceptance tier was prototyped and drew them, but on real demos it detected a cradle-cup seam that shifted POM 10 inner-cup geometry and broke invariant B3, so it was reverted pending cupModel-decoupling work (broad-overhaul scope).',
+    label: 'sparse dashed POM 7 line (gap 8) — guide tier draws it for review',
+    hardExpected: 'DRAWABLE@guide',
     analysis: buildPom7Fixture(640, 480, { vertical: 'weak-dashed', dashGap: 8 }),
   },
   {
@@ -153,7 +178,7 @@ const cases = [
     // detected — a present vertical guide exempts it from the near-side reject.
     id: 'near-side-present',
     label: 'real POM 7 line close to side seam',
-    hardExpected: 'DRAWABLE',
+    hardExpected: 'DRAWABLE@strong',
     analysis: buildPom7Fixture(640, 480, { vertical: 'solid', xFactor: 0.86 }),
   },
 ];

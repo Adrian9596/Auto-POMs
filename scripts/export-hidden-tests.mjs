@@ -155,16 +155,16 @@ async function pomRows(hiddenIds) {
 
 async function main() {
   const base = await pomRows([]);
-  arrEq('baseline: all 16 POM rows present', base.map((x) => x.pom), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-  arrEq('baseline: rows contiguous 4..19', base.map((x) => x.r), Array.from({ length: 16 }, (_, i) => 4 + i));
+  arrEq('baseline: all 18 POM rows present', base.map((x) => x.pom), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]);
+  arrEq('baseline: rows contiguous 4..21', base.map((x) => x.r), Array.from({ length: 18 }, (_, i) => 4 + i));
 
   const hide8 = await pomRows([801]);
-  arrEq('hide POM 8: its row is omitted', hide8.map((x) => x.pom), [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16]);
-  arrEq('hide POM 8: remaining rows renumber contiguously 4..18', hide8.map((x) => x.r), Array.from({ length: 15 }, (_, i) => 4 + i));
+  arrEq('hide POM 8: its row is omitted', hide8.map((x) => x.pom), [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]);
+  arrEq('hide POM 8: remaining rows renumber contiguously 4..20', hide8.map((x) => x.r), Array.from({ length: 17 }, (_, i) => 4 + i));
 
   const hide1 = await pomRows([101]);
-  arrEq('hide POM 1 (pair): both POM 1 and POM 2 omitted', hide1.map((x) => x.pom), [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-  arrEq('hide POM 1 (pair): 14 rows contiguous 4..17', hide1.map((x) => x.r), Array.from({ length: 14 }, (_, i) => 4 + i));
+  arrEq('hide POM 1 (pair): both POM 1 and POM 2 omitted', hide1.map((x) => x.pom), [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]);
+  arrEq('hide POM 1 (pair): 16 rows contiguous 4..19', hide1.map((x) => x.r), Array.from({ length: 16 }, (_, i) => 4 + i));
 
   // Image-render side: the exported SKETCH (PDF / Copy Image / Excel embedded
   // PNG) draws and crops from getExportAnnIds(), so a hidden POM's line must be
@@ -180,7 +180,7 @@ async function main() {
 
   // Show-all restores every row (session toggle cleared).
   const restored = await pomRows([]);
-  arrEq('show all: 16 rows restored', restored.map((x) => x.pom), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+  arrEq('show all: 18 rows restored', restored.map((x) => x.pom), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]);
 
   if (failures > 0) {
     console.error(`FAIL  export-hidden-tests: ${failures} assertion(s) failed`);

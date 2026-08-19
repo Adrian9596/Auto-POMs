@@ -1,0 +1,248 @@
+{
+  "image": "demo1.jpg",
+  "source": "production_detected",
+  "ruleNote": "Real anchors from the production detector (npm run demo -- --dump-anchors). Normalized [0,1] in source-image pixel space.",
+  "cupModel": {
+    "side": -1,
+    "viewRole": "front_outer",
+    "visibility": "direct",
+    "topFromApex": true,
+    "bottomFromSeam": false,
+    "contourConfidence": 0.9775368139223561,
+    "seamConfidence": 0.85
+  },
+  "anchors": {
+    "171": {
+      "x": 0.254883,
+      "y": 0.484706,
+      "viewRole": "front_outer",
+      "confidence": "medium",
+      "source": "cfTop",
+      "reviewRequired": true
+    },
+    "172": {
+      "x": 0.364258,
+      "y": 0.167059,
+      "viewRole": "front_outer",
+      "confidence": "medium",
+      "source": "apexJoin",
+      "reviewRequired": true
+    },
+    "181": {
+      "x": 0.455078,
+      "y": 0.574118,
+      "viewRole": "front_outer",
+      "confidence": "low",
+      "source": "silhouette",
+      "reviewRequired": true
+    },
+    "182": {
+      "x": 0.386719,
+      "y": 0.167059,
+      "viewRole": "front_outer",
+      "confidence": "low",
+      "source": "strapJoin",
+      "reviewRequired": true
+    },
+    "cf-top": {
+      "x": 0.254883,
+      "y": 0.484706,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "cf-bottom": {
+      "x": 0.254883,
+      "y": 0.870588,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "silhouette",
+      "reviewRequired": false
+    },
+    "cradle-cf-top": {
+      "x": 0.254883,
+      "y": 0.72,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "seam",
+      "reviewRequired": false
+    },
+    "cradle-cup-top": {
+      "x": 0.347656,
+      "y": 0.778824,
+      "viewRole": "front_outer",
+      "confidence": "low",
+      "source": "seamArc",
+      "reviewRequired": true
+    },
+    "cradle-cup-bottom": {
+      "x": 0.347656,
+      "y": 0.870588,
+      "viewRole": "front_outer",
+      "confidence": "low",
+      "source": "seamArc",
+      "reviewRequired": true
+    },
+    "band-left": {
+      "x": 0.081055,
+      "y": 0.870588,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "band-right": {
+      "x": 0.429688,
+      "y": 0.870588,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "chest-left": {
+      "x": 0.055664,
+      "y": 0.574118,
+      "viewRole": "front_outer",
+      "confidence": "medium",
+      "source": "ink",
+      "reviewRequired": true
+    },
+    "chest-right": {
+      "x": 0.455078,
+      "y": 0.574118,
+      "viewRole": "front_outer",
+      "confidence": "medium",
+      "source": "ink",
+      "reviewRequired": true
+    },
+    "inner-cup-top": {
+      "x": 0.137207,
+      "y": 0.183529,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "cupModel",
+      "reviewRequired": false
+    },
+    "inner-cup-bottom": {
+      "x": 0.163818,
+      "y": 0.778824,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "cupModel",
+      "reviewRequired": false
+    },
+    "inner-cup-left": {
+      "x": 0.092773,
+      "y": 0.484706,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "cupModel",
+      "reviewRequired": false
+    },
+    "inner-cup-right": {
+      "x": 0.246094,
+      "y": 0.484706,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "cupModel",
+      "reviewRequired": false
+    },
+    "side-top": {
+      "x": 0.557617,
+      "y": 0.548235,
+      "viewRole": "back",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "side-bottom": {
+      "x": 0.581438,
+      "y": 0.872941,
+      "viewRole": "back",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "apex-left": {
+      "x": 0.149414,
+      "y": 0.183529,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "apexJoin",
+      "reviewRequired": false
+    },
+    "apex-right": {
+      "x": 0.364258,
+      "y": 0.167059,
+      "viewRole": "front_outer",
+      "confidence": "high",
+      "source": "apexJoin",
+      "reviewRequired": false
+    },
+    "strap-top": {
+      "x": 0.388184,
+      "y": 0.122353,
+      "viewRole": "front_outer",
+      "confidence": "low",
+      "source": "frontStrapSeam",
+      "reviewRequired": true
+    },
+    "strap-bottom": {
+      "x": 0.69179,
+      "y": 0.454118,
+      "viewRole": "back",
+      "confidence": "low",
+      "source": "backPanelJoin",
+      "reviewRequired": true
+    },
+    "back-top": {
+      "x": 0.760742,
+      "y": 0.4,
+      "viewRole": "back",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "back-bottom": {
+      "x": 0.760742,
+      "y": 0.872941,
+      "viewRole": "back",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "back-panel-top": {
+      "x": 0.69179,
+      "y": 0.454118,
+      "viewRole": "back",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "back-panel-bottom": {
+      "x": 0.69179,
+      "y": 0.872941,
+      "viewRole": "back",
+      "confidence": "high",
+      "source": "ink",
+      "reviewRequired": false
+    },
+    "back-strap-left": {
+      "x": 0.686523,
+      "y": 0.454118,
+      "viewRole": "back",
+      "confidence": "medium",
+      "source": "silhouette",
+      "reviewRequired": true
+    },
+    "back-strap-right": {
+      "x": 0.833984,
+      "y": 0.454118,
+      "viewRole": "back",
+      "confidence": "medium",
+      "source": "silhouette",
+      "reviewRequired": true
+    }
+  }
+}

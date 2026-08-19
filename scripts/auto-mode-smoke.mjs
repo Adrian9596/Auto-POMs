@@ -12,7 +12,7 @@ const appDir = path.resolve(scriptDir, '..');
 
 const DEFAULT_CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const DEFAULT_DEMO_IMAGE = 'demo/demo1.jpg';
-const EXPECTED_DRAFT_COUNT = 16;
+const EXPECTED_DRAFT_COUNT = 18;
 const MIN_HIGH_CONFIDENCE = Number(process.env.AUTO_SMOKE_MIN_HIGH_CONFIDENCE || 1);
 const TELEMETRY_BASELINE_PATH = path.join(scriptDir, 'golden', 'telemetry-baseline.json');
 

@@ -1,0 +1,14 @@
+{
+  "image": "demo1.jpg",
+  "source": "draft_pending_td",
+  "unit": "in",
+  "labeledBy": "claude_draft",
+  "notes": "DRAFT PLACEHOLDER — not TD ground truth. Library-corpus Size-L medians only, to exercise the S0.1 schema/harness. demo1 has no detected closure (pull-on / not-detected), so no construction-reference scale is expected on it. A TD must replace these with measured values for this specific style and set \"source\": \"td_confirmed\" before the gate scores it.",
+  "measurements": {
+    "1": { "value_in": 14, "tol_in": 0.375 },
+    "3": { "value_in": 17, "tol_in": 0.375 },
+    "5": { "value_in": 5.5, "tol_in": 0.25 },
+    "9": { "value_in": 8, "tol_in": 0.25 },
+    "10": { "value_in": 8, "tol_in": 0.25 }
+  }
+}
