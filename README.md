@@ -18,6 +18,21 @@ into it on a fresh sketch (see
 - **Tests:** [`TESTING.md`](TESTING.md)
 - **Working context (agents):** [`CLAUDE.md`](CLAUDE.md) · [`AGENTS.md`](AGENTS.md)
 
+## Public mirror
+
+The app is mirrored to a public repo (GitHub Pages:
+[adrian9596.github.io/bra-sketch-annotation-tool](https://adrian9596.github.io/bra-sketch-annotation-tool/)).
+That mirror ships `src/`, `scripts/`, `vendor/`, `auto_mode_rules/`, `app.js`
+and `index.html` — but **not** `demo/`, `scripts/golden/`, `scripts/groundtruth/`,
+`library/`, or any of `docs/` and the internal `.md` files, which carry brand
+artwork, production data, or internal planning.
+
+Because every doc link in *this* README points at a file the mirror excludes,
+the mirror gets its own README: [`README.public.md`](README.public.md) is the
+source, and the sync copies it over as the mirror's `README.md`. Edit
+`README.public.md` — never the mirror's `README.md` in place, it is overwritten.
+Keep it self-contained: it may only reference paths the mirror actually ships.
+
 ## Workflow
 
 1. Add a sketch image (button, paste with Ctrl/Cmd+V, or drag-drop).
