@@ -154,3 +154,20 @@ pinned value there would shift the whole board after a drag. `lastCanvasRect`
 now always takes the live rect, and the pin applies only while a gesture is
 genuinely in flight, which also keeps it clear of the hover work US-087 adds to
 `onMouseMove`.
+
+## Superseded in part by ADR 0051
+
+This decision treated the 35.5px canvas shift as a fact to work around, and the
+gesture pin as the fix for it. The pin was only half a fix. It froze the
+*coordinates* for the duration of a gesture but left the canvas itself alone:
+the backing buffer went on being stretched into a box that had shrunk, so the
+board was painted up to 5.25% short and a POM line sat up to 28px from where the
+pointer code tested for it — for as long as the line stayed selected, not just
+during the gesture. A TD reported exactly that from a test session, and
+[ADR 0051](0051-the-board-holds-still-when-the-chrome-moves.md) fixes the shift
+at its source: a `ResizeObserver` drives `resizeCanvas`, which now preserves the
+board's screen position rather than its world-space centre.
+
+The pin survives, with a narrower job — it guarantees a gesture reads one frame
+even before the observer has run — and `resizeCanvas` re-pins it in lockstep
+with the pan it compensates, so the two can never disagree.

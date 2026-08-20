@@ -149,6 +149,16 @@ mousedown and the first mousemove. With `getMousePos` reading a live rect the
 line lurched ~35px the moment it was grabbed, and no click-vs-drag threshold
 could hold. The rect is now pinned per gesture (`state.gestureCanvasRect`).
 
+> **Correction (US-088).** The pin fixed only half of that shift, and this story
+> wrongly recorded the other half as a fact of life. Freezing the coordinates
+> left the canvas itself alone: its backing buffer went on being stretched into
+> a box that had shrunk, painting the board up to 5.25% short and putting a POM
+> line up to 28px from where the pointer code tested for it — for as long as the
+> line stayed selected, not only during the gesture. A TD hit exactly that on the
+> deployed build. See
+> [US-088](US-088-board-holds-still-on-chrome-reflow.md) and
+> [ADR 0051](../../../decisions/0051-the-board-holds-still-when-the-chrome-moves.md).
+
 Suites, all green on 2026-08-20:
 
 ```sh
