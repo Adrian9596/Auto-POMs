@@ -122,12 +122,22 @@ Same harness, before and after (`demo/demo1.jpg`, 18 applied lines, zoom 2.14):
 
 | Measurement | Before | After |
 | --- | --- | --- |
-| Endpoint grab on an unselected line, exact | 0 / 36 | **32 / 36** (suite run: 30/36) |
+| Endpoint grab on an unselected line, exact | 0 / 36 | **30 / 36** |
 | …of which dragged the whole line instead | 35 | **0** |
 | Press 12px off a line → photo moved | 14 / 18 | **0** |
 | Press 20px off a line → photo moved | not measured | **0 / 18** |
 | Line movement per 1px and 2.24px press | 1px, 2.24px | **0, 0** |
 | Line movement per 4.47 / 8.94 / 13.42px press | — | 1.41 / 4.47 / 10.3 (tracks 1:1 after the 3px arm) |
+
+An intermediate run of this table read 32/36, taken after the endpoint pass but
+**before** the pinned canvas rect. That number was contaminated by the very bug
+it preceded: the 35px mid-gesture jump changed which line ended up moving. 30/36,
+from `board-interaction-check` on the shipped build, is the honest figure — and
+the six are the coincident-endpoint pairs listed below, not a partial fix. Take
+suite output over hand measurement when the two disagree.
+
+The six that still land on a sibling POM: POM1.end, POM3.end, POM4.start,
+POM5.start, POM8.start, POM13.start.
 
 Live single-gesture confirmation on a fresh board with nothing selected: pressing
 POM 2's `end` opened `drag-handle{part:'end'}` immediately, moved that endpoint
@@ -154,6 +164,71 @@ npm run viewrole-limitations && npm run detection-limitations && npm run library
 
 `golden` held with no drift and `accuracy` did not regress, as expected — nothing
 in this story touches detection.
+
+## Review Pass Before US-087
+
+The shipped diff was reviewed adversarially before stage 3 was allowed to build
+on it. Four real defects came out of it and are fixed — details and reasoning in
+ADR 0050's "Follow-Up Landed": the photo fix only covered the *first* mis-aim
+(measured 25.5px on the second), `dragArmed` re-based `prevWorld` and so left
+every drag ~3px behind the cursor while silently reshaping curves, `drag-anchor`
+was the one drag left unarmed, and both image-resize drags mutated geometry
+unarmed. The pinned rect was also leaking into `state.lastCanvasRect`.
+
+The same pass turned on the suite itself and found it wanting in three ways,
+now fixed:
+
+- **It polluted the learning store.** Every gesture it drives is a real TD edit
+  as far as the app is concerned, so ~200 of them fed `evaluateManualPomSample`.
+  It now turns learning off for the run and restores the previous setting.
+- **The endpoint bound was a count.** `epOk >= n - 6` passes just as happily
+  when six *different* grabs break — exactly what a detection change would do.
+  It now asserts the exact set of coincident-endpoint POMs.
+- **"Nothing moved" was ambiguous.** A press that never reached the line looks
+  identical to a threshold working. It now asserts, via `getInteraction()`, that
+  the press opened a line drag and opened it *unarmed*.
+
+It also refuses to run against a bundle that predates US-086, rather than
+reporting the missing behaviour as broken.
+
+## Brief for US-087
+
+Measured on the shipped build, pressing each line's drawn geometry at four
+points (t = 0.25 / 0.45 / 0.55 / 0.75) and recording which gesture opened:
+
+| Line | Own-line presses | What claims the rest |
+| --- | --- | --- |
+| POM 5 | **0 / 4** | POM 8 (×3) and POM 6 — unreachable anywhere on the canvas |
+| POM 9 | 2 / 4 | POM 10's label and body |
+| POM 15 | 2 / 4 | POM 12's endpoints |
+| POM 1 | 3 / 4 | POM 6's body |
+| POM 3 | 3 / 4 | POM 8's label |
+| POM 11, 17 | 3 / 4 | their own label (legitimate) |
+| the other 11 | 4 / 4 | — |
+
+That is a much smaller target than the pre-fix analysis suggested: **only POM 5
+is unreachable now**, not POM 5/6/8, and POM 7 went from "100% of its length
+inside its own label box" to 4/4. Cycling has to solve POM 5, the four partials,
+and the six coincident endpoint grabs the suite pins down.
+
+Two things in this story's code will get in the way and should be dealt with
+first:
+
+- `hitTestAnyEndpoint` returns only the nearest hit and throws the tie set away.
+  Coincident endpoints — POM 1's end *is* POM 2's start — are exactly what
+  cycling must step through, so it needs to return a ranked list.
+- The dispatch order now lives inline in `onMouseDown` behind six independent
+  gates (mode, tool, Shift, Cmd/Ctrl, line-selection size, photo-selection
+  membership). Hover has to answer "what would a press here do?" with the same
+  answer, so extract that predicate before adding cursor feedback rather than
+  reproducing the ladder and letting the two drift.
+
+Two regressions this story knowingly accepts, both worth revisiting in US-087:
+a line drawn shorter than ~30 screen px has its own label box inside the
+endpoint catch radius, so that label can no longer be dragged; and below ~20
+screen px of drawn length the two endpoint discs cover the whole line, so the
+mouse can no longer grab its body to move it whole (Shift+click and the Tab +
+arrow-key path still can).
 
 ## Not Done Here
 

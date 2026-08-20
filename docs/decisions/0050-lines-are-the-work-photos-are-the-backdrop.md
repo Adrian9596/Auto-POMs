@@ -119,5 +119,38 @@ Tradeoffs:
   line is drawn identically to the other 17; and `drawLabelHandle` paints a 95%
   white disc over the POM number, so selecting a line hides the number used to
   identify it.
-- Auto Mode's dispatch keeps the old order and was left unchanged here; decide
-  whether the same first-press rule should apply to draft handles.
+- Auto Mode's dispatch **order** is unchanged, but two behaviours there did
+  change, and an earlier draft of this record wrongly said Auto was untouched:
+  `startHandleDrag` is shared with the Auto branch, so a draft's handle now
+  keeps its grab offset and arms at 3px; and `startAnchorDrag` was armed in the
+  follow-up below. Still open: whether the first-press endpoint rule should
+  apply to draft handles too.
+
+## Follow-Up Landed (same story)
+
+An adversarial review of the shipped diff found four real defects in it, all
+fixed before US-087 was allowed to build on this:
+
+- **The photo fix only covered the first mis-aim.** Requiring the photo to be
+  selected before it drags left it selected, so the very next near-miss slid the
+  sketch again — measured 25.5px. An image drag now also requires the press to
+  be clear of every line by 16px (`isPointNearAnyAnnotation`).
+- **`dragArmed` re-based `prevWorld` at the arming point.** That left every drag
+  permanently ~3px behind the cursor, and on a drag-handle's arming frame it
+  made the frame delta zero — so the endpoint snapped while the curve control
+  handle rigidly coupled to it stayed put, reshaping the curve on every single
+  endpoint edit. Arming no longer re-bases: the first armed frame applies the
+  whole accumulated travel and tracking is 1:1 from there.
+- **`drag-anchor` never got the threshold.** The highest-stakes drag on the
+  board was the one left unarmed: a jitter-click moved an anchor, `mouseup`
+  snapped it to the nearest ink, and `recordAnchorResidual` filed the accident
+  as a TD correction for the learner to train on.
+- **The two image-resize drags mutated geometry unarmed** and set `changed`
+  unconditionally, so a click on a corner handle could resize and push history.
+
+The review also caught that the pinned rect was being written into
+`state.lastCanvasRect`, which `resizeCanvas`, Fit and the render loop read — a
+pinned value there would shift the whole board after a drag. `lastCanvasRect`
+now always takes the live rect, and the pin applies only while a gesture is
+genuinely in flight, which also keeps it clear of the hover work US-087 adds to
+`onMouseMove`.
