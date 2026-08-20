@@ -65,6 +65,8 @@ truth), `invariants`, `contract`, `pipeline-tests`, `junction-tests`,
 `board-interaction-check` (board pointer: selection, endpoint drag, photo drag,
 marquee, and the canvas-geometry invariant — the board must not move or stretch
 when the chrome reflows),
+`notes-check` (Board text notes: render legibly, stay out of the measurement
+set, travel with their photo, and their pointer/editor gesture layer),
 `export-xlsx`, `export-hidden`, `suggestions-tests` (Tier-0 library-value layer),
 `pom7-limitations`. Details in `TESTING.md`. Regenerate the library-value
 suggestions with `npm run generate-suggestions` (reads `../Measurements 2`).

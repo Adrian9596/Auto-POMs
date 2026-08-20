@@ -44,6 +44,7 @@ Do not mark a row `implemented` until its suite has actually been run and passes
 | US-089 | Dragging the sketch in Auto Mode carries its draft POM lines, exactly as it carries applied ones in Manual Mode | no | no | yes | no | implemented | `npm run board-interaction-check` (Auto-Mode draft-carry section), `npm run smoke`, `npm run golden`, `npm run accuracy` |
 | US-090 | Dragging an image on the Construction board or BOM Material Key either moves it visibly or does nothing — never a stored change with no painted change | no | no | yes | no | implemented | `npm run construction-check`, `npm run bom-check`, `npm run preview-check`; see [ADR 0051](decisions/0051-the-board-holds-still-when-the-chrome-moves.md) |
 | US-091 | Resizing a sketch scales the POM lines drawn on it, and every measured value stays exactly what it was | no | no | yes | no | implemented | `npm run board-interaction-check` (section 7b), `npm run smoke`, `npm run golden`, `npm run accuracy` |
+| US-092 | A TD can put free text on the Board — with an optional pointer arrow, never a measurement — that travels with its photo, exports on every board surface, and stays out of the spec panel, `deletedPomKeys`, and the Excel table | no | no | yes | no | implemented | `npm run notes-check` (174 checks), `npm run board-interaction-check` (sections 7c/7e/7e2/9), `npm run autosave-check`, `npm run export-hidden`, `npm run preview-check`, `npm run board-toolbar-check`, `npm run smoke`, `npm run golden`, `npm run accuracy` (last three unchanged — no anchor/POM/detection input added); see [ADR 0052](decisions/0052-notes-are-the-boards-third-object.md) |
 | — | Export Excel writes the measurement spec workbook with deterministic OOXML, graded sizes, held POMs, suggestions/TD values, and embedded PNG | no | no | yes | no | implemented | `npm run export-xlsx` |
 | — | Hidden POMs are excluded from exported workbook rows and shared export image surfaces (PDF / Copy Image / Excel embedded PNG) | yes | no | no | no | implemented | `npm run export-hidden` |
 | — | Tier-0 library-value suggestions load, regenerate, badge, skip no-data POMs, and allow TD override/revert | yes | no | yes | no | implemented | `npm run suggestions-tests` |
@@ -59,7 +60,7 @@ Do not mark a row `implemented` until its suite has actually been run and passes
 - **E2E** proof covers headless-Chrome flows over the real app (`smoke`,
   `golden`, `accuracy`, `invariants`, `contract`, `learning-tests`,
   `evidence-tests`, `autosave-check`, `board-toolbar-check`,
-  `board-interaction-check`, `export-xlsx`,
+  `board-interaction-check`, `notes-check`, `export-xlsx`,
   `suggestions-tests`).
 - **Synthetic** proof covers detector hard cases in Node (`detection-limitations`
   and its component suites).
