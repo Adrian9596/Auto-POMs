@@ -76,7 +76,7 @@ Other suites: `golden`, `accuracy`, `invariants`, `contract`, `pipeline-tests`,
 `junction-tests`, `learning-tests`, `evidence-tests`, `autosave-check`,
 `pom6/7/14-limitations`, `viewrole-limitations`, plus the tech-pack page suites
 `mainpage-check`, `construction-check`, `bom-check`, `preview-check`,
-`board-toolbar-check`. See [`TESTING.md`](TESTING.md).
+`board-toolbar-check`, `board-interaction-check`. See [`TESTING.md`](TESTING.md).
 
 ## Auto vs. Manual Mode
 
