@@ -27,18 +27,33 @@ Workflow for any code change:
 
 1. Edit the relevant `src/*.js` part (find it via the module map in `ARCHITECTURE.md`).
 2. `npm run build` — regenerates `app.js`.
-3. `npm run check` — rebuild + parse/wiring validation.
+3. `npm run check` — freshness + parse/wiring + shared-scope validation.
 4. Run the suite that covers what you touched (see `TESTING.md`).
 
 `src/` parts share one IIFE scope, so a part must appear **after** anything it
 references. If you add a new part, register it in `scripts/source-parts.mjs`.
+
+### Living in one shared scope
+
+Every part lands in the same scope, with no module boundary to catch a mistake.
+Two rules follow. `npm run check` enforces both (see `validateSharedScope` in
+`scripts/check.mjs`), because neither is a syntax error and nothing else notices:
+
+- **One declaration per name, bundle-wide.** Two `function foo(){}` in different
+  parts is legal JS — the later silently replaces the earlier for *every* caller,
+  so editing one copy appears to do nothing.
+- **Anything called across files stays a `function` declaration.** `function`
+  and `var` hoist across the whole bundle, so a part may call something defined
+  further down — that is normal here and heavily relied on. Rewriting one as
+  `const foo = () => {}` does not hoist; if anything reads it at load time it
+  throws a TDZ `ReferenceError`. Keep cross-file symbols as `function`.
 
 ## Commands
 
 ```sh
 npm run serve    # local server, then open the printed URL
 npm run build    # src/* + rule JSON  ->  app.js  (run after every src edit)
-npm run check    # rebuild + syntax/wiring checks
+npm run check    # freshness + syntax/wiring + shared-scope checks
 npm run smoke    # headless end-to-end Auto Mode run on demo/demo1.jpg
 ```
 
