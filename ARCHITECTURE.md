@@ -11,8 +11,8 @@ for **what** it measures see [`POMS_CONTRACT.md`](POMS_CONTRACT.md); for
 
 The app is a single-page, fully offline browser tool. `index.html` holds the
 layout, CSS, and the `<script>` tags; `app.js` holds all logic. `app.js` is
-**generated** — it is the concatenation of ~50 files under `src/` (plus the
-rule JSON, inlined) produced by `npm run build`. At runtime the app takes a
+**generated** — it is the concatenation of ~150 single-concern files under
+`src/` (plus the rule JSON, inlined) produced by `npm run build`. At runtime the app takes a
 bra sketch image and runs it through three offline phases — **detect → seed
 anchors → generate POMs** — wrapped by an optional **learning** layer and a
 **local persistence** layer. Nothing is sent to a server.
@@ -43,7 +43,7 @@ flowchart TD
     IMG[Sketch image added\npaste / drop / button] --> DET
 
     subgraph P1[Phase 1 · Detect · offline]
-        DET[runOfflineDetection\nsrc/auto-detection.js] --> CV{OpenCV WASM ready?}
+        DET[runOfflineDetection\nsrc/auto/mode/offline-detection-run.js] --> CV{OpenCV WASM ready?}
         CV -- yes --> REAL[RealOpenCVAPI\nopencv_real_api.js]
         CV -- no --> FREE[FreeOpenCVAPI\nopencv_free_api.js\ndeterministic ink mask]
         REAL --> JUNC[detectJunctions\nsrc/auto/detect/junctions.js]
@@ -62,7 +62,7 @@ flowchart TD
     DRAG --> GEN
 
     subgraph P3[Phase 3 · Generate POMs]
-        GEN[generatePOMDraftsFromAnchors\nsrc/auto/drafts/generate-pom-fixture.js] --> VAL[validateAutoFixture\nvalidate-fixture.js]
+        GEN[generatePOMDraftsFromAnchors\nsrc/auto/drafts/generate-drafts-action.js] --> VAL[validateAutoFixture\nvalidate-fixture.js]
         VAL --> BUILD[buildDraftAnnotation\nbuild-draft-annotation.js]
         BUILD --> APPLY[draft-actions.js\nauto-apply 18 POM lines]
     end
@@ -96,9 +96,9 @@ scope, so a part must appear after anything it references.
 |---|---|---|
 | **Rules & state** | `auto/rules/load-rules.js`, `state.js`, `dom-refs.js`, `project/grade-rules.js`, `bootstrap.js`, `dev/url-bootstrap.js` | Load rule JSON; hold global app state (`state.js`); DOM element registry (`dom-refs.js`); grade-rules v2 + custom-POM data model (`project/grade-rules.js`); `init()`/vision-engine warm-up (`bootstrap.js`); `?label=`/`?project=`/`?autoDraft=` test-and-demo boot paths (`dev/url-bootstrap.js`). `state.js` must stay positioned right after `load-rules.js` — its top-level `const RULES = loadAutoModeRules();` runs at parse time, not hoisted. |
 | **Geometry** | `curves.js`, `geometry/math.js` | Curve and vector math shared across phases. |
-| **Detection** | `auto-detection.js`, `auto/detect/junctions.js` | Offline image analysis; view classification; junction/endpoint/corner detection. |
-| **Anchors** | `auto/anchors/seed-anchors.js`, `derive-anchors.js`, `anchor-interaction.js` | Seed anchors from detection; derive dependent anchors; drag/reset interaction. |
-| **Drafts (POM gen)** | `auto/drafts/generate-pom-fixture.js`, `build-draft-annotation.js`, `validate-fixture.js`, `draft-actions.js` | Anchors → 18-row fixture → validated → draft annotations → applied. |
+| **Detection** | `auto-detection.js` (the ~180-line stage composer) + `auto/detect/*`: `math-utils.js`, `ink-mask.js`, `view-boxes.js`, `segmentation.js`, `potrace-trace.js`, `geometry-stage.js`, `front-landmarks.js`, `cup-model.js`, `back-landmarks.js`, `pom6-cradle-cf.js`, `pom7-cradle-cup.js`, `cv-debug-payload.js`, `landmark-stage.js`, `junctions.js`, `landmark-qa.js`; edge glue in `auto/mode/offline-detection-run.js` | Offline image analysis, laid out as the pipeline it describes: Stage 2 segmentation → Stage 3 contours/topology → Stage 4 geometry (`geometry-stage.js`) → Stage 5 landmarks (`landmark-stage.js`, one readable sequence of calls into the per-feature finders). The two most heavily tuned seam detectors get their own files — `pom6-cradle-cf.js` (gore-dip + placket-junction tiers) and `pom7-cradle-cup.js` (strong/seam/guide/arc tiers, ADR 0021/0022) — so a tuning pass on one never wades through the other. `offline-detection-run.js` holds everything DOM/state-mutating (toasts, `state.autoMode.*`, the view-role dialog, aux-view recognition), keeping the stage files pure. |
+| **Anchors** | `auto/anchors/seed-view-resolution.js`, `seed-cradle-cf.js`, `seed-cup-width.js`, `seed-front-view.js`, `seed-back-view.js`, `seed-anchors.js` (orchestrator), `derive-anchors.js`, `anchor-visibility.js`, `anchor-interaction.js` | Seed anchors from detection as a composed sequence — resolve views → CF cradle geometry (POM 6/8) → cup geometry (POM 9/10, ADR 0036) → front branch → back branch → QA gate → record assembly + learning bias. Each stage is a pure function over an explicit `seedCtx`. Then derive dependent anchors, and drag/nudge/snap (`anchor-interaction.js`) separately from per-anchor show/hide (`anchor-visibility.js`, US-038). |
+| **Drafts (POM gen)** | `auto/drafts/view-role-helpers.js`, `pom-fixture-builder.js`, `anchor-drag-sync.js`, `generate-drafts-action.js`, `build-draft-annotation.js`, `validate-fixture.js`, `apply-drafts.js`, `draft-actions.js`, `board-reset.js` | Anchors → 18-row fixture → validated → draft annotations → applied. `pom-fixture-builder.js` is the measurement-rules engine (anchors in, rows out); `generate-drafts-action.js` the UI orchestration around it; `apply-drafts.js` the one path that mutates `state.annotations` in Auto Mode; `board-reset.js` the whole-board lifecycle operations. Note the apex-slant limit (0.06) is duplicated by design in `pom-fixture-builder.js`, `anchor-drag-sync.js`, and `detect/front-landmarks.js` — kept in lockstep by hand. |
 | **Learning** | `auto/learning/calibration-store.js`, `shadow-detection.js`, `acceptance-stats.js`, `meaning-store.js`, `meaning-commit.js`, `style-evidence-record.js`, `style-evidence-capture.js`, `style-evidence-reuse.js` | Residual calibration (median bias, `calibration-store.js`) + shared shadow-redetect utilities (`shadow-detection.js`); accept/edit stats; (style,POM) meaning catalog (`meaning-store.js`) + the manual-line-to-meaning workflow spanning all three stores (`meaning-commit.js`); TD-edit style evidence — durable store (`style-evidence-record.js`), save-time capture (`style-evidence-capture.js`), generate-time reuse/bias (`style-evidence-reuse.js`). All local. |
 | **Telemetry** | `auto/telemetry/session-stats.js`, `session-timer.js` | Detect-to-POM timing/session summaries. |
 | **Auto mode** | `auto/mode.js`, `auto/debug-api.js`, `auto/debug-export.js` | Mode switching (Auto ↔ Manual); `debug-api.js` is just the `window.__braAutoModeDebug` object literal — the export/summary builders it calls (ground truth, CV debug, stage summary) live in `debug-export.js`. |
@@ -121,7 +121,7 @@ behaviour is deliberately localized:
   `applyApprovedDraftsAtomically`, switches to Manual Mode.
 - `project/project-load.js` — reopened projects that contain applied lines open
   in Manual Mode.
-- `auto/drafts/generate-pom-fixture.js` — Generate auto-applies (no per-row
+- `auto/drafts/generate-drafts-action.js` — Generate auto-applies (no per-row
   approval on a clean apply); tests keep the review path via the
   `keepDraftsForReview` option.
 - `index.html` — manual controls carry the `manual-only` class, hidden only in
