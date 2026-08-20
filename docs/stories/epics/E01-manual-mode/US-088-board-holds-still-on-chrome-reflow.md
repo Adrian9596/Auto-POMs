@@ -74,6 +74,9 @@ a fact rather than as a bug with a fix.
   identical either side of the reflow.
 - Auto Mode anchor interaction, the Apply Lines handoff, and detection geometry
   are unchanged.
+- A `devicePixelRatio` change with no CSS box change — dragging the window to a
+  display of a different density — re-sizes the buffer too. `render()` must never
+  draw into a buffer that does not match `round(cssBox * devicePixelRatio)`.
 
 ## Design Notes
 
@@ -153,6 +156,48 @@ not a broken compensation: `shift` is read synchronously inside the mousedown
 task, before the `ResizeObserver` has run. Within that task the pinned rect and
 the pan are still each other's match; by the time anything is painted both have
 moved together. The sweep still shows presses tracking the pointer 1:1.
+
+## Follow-Up: The Density Half
+
+Found by probing the first version of this fix instead of reading it, and it was
+a regression this story itself introduced: the new "does this need redoing?"
+early return compared only the CSS box, while the buffer is a function of the box
+**and** `devicePixelRatio`. The code it replaced re-sized unconditionally, so it
+had never been exposed.
+
+Measured with `Emulation.setDeviceMetricsOverride` at 1512×950, dpr 1 → 2: the
+buffer stayed 1016×773 where it needed 2032×1545, and the board rendered at
+**2×**. `render()` reads `devicePixelRatio` fresh each frame for its transform,
+so it starts drawing at the new density the instant it changes.
+
+Three changes, and the third is the one that matters:
+
+1. `state.sizedCanvasDpr` — a density change now counts as a resize.
+2. `watchDevicePixelRatio()` — a re-armed `(resolution: Ndppx)` media query. A
+   `ResizeObserver` is structurally blind here (the box is identical), and
+   `resize` is not dependable: measured, Chrome emitted one on the 1 → 2 step and
+   **none** on 2 → 1.
+3. **`render()` verifies the invariant before drawing** (`syncCanvasBufferBeforeDraw`).
+   With (1) and (2) alone the 2 → 1 step stayed broken, because no event fired at
+   all. An invariant enforced only by event handlers holds exactly as well as the
+   event plumbing does — so it is now enforced where it is consumed.
+
+Self-healing rather than instantaneous, which is the right trade: the pixels
+already on screen were painted at the old density and are displayed at the
+matching scale, so nothing looks wrong until the next draw — and the next draw is
+where the check runs.
+
+`board-interaction-check` section 8 drives dpr 1 → 2 → 1 through CDP and asserts
+`canvas.width/height === round(cssBox * dpr)` at each step, then clears the
+override. It was run against the intermediate build to confirm it actually fails
+there, rather than merely passing on the fixed one:
+
+```text
+FAIL at deviceScaleFactor 2 (dpr 2) the backing buffer is 944x723 but its CSS
+box needs 1888x1445 — the board is painted at 2.00x the correct scale
+```
+
+62 assertions, up from 58.
 
 ## Not Done Here
 

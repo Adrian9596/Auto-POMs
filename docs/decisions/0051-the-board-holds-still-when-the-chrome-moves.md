@@ -124,6 +124,54 @@ future toolbar change stops moving the canvas, the invariant becomes trivially
 true and the test would sit green while measuring nothing; it fails instead and
 says to re-point it.
 
+## Follow-up: density is part of the invariant too
+
+Found by probing the fix rather than reading it, immediately after shipping.
+
+The buffer is a function of the CSS box **and** `devicePixelRatio`, and the first
+version of this decision only put the box in the "does this need redoing?" test:
+
+```js
+const resized = !previousRect
+  || Math.abs(previousRect.width  - rect.width)  > 0.01
+  || Math.abs(previousRect.height - rect.height) > 0.01;
+```
+
+That early return was new in this ADR — the code it replaced re-sized the buffer
+unconditionally — so it introduced a regression in the one case it did not
+consider. Drag the window from a Retina laptop panel to an external 1080p
+monitor and `devicePixelRatio` changes while the CSS box does not.
+`render()` reads `devicePixelRatio` fresh on every frame for its
+`ctx.setTransform`, so it immediately starts drawing at the new density into a
+buffer still sized for the old one. Measured with
+`Emulation.setDeviceMetricsOverride` at 1512×950, dpr 1 → 2: the buffer stayed
+1016×773 where it needed to be 2032×1545, and the whole board rendered at **2×**.
+
+Three things had to change, and the third is the one that matters:
+
+1. `state.sizedCanvasDpr` records the density the buffer was sized for, and a
+   change to it counts as a resize.
+2. `watchDevicePixelRatio()` re-arms a `(resolution: Ndppx)` media query on every
+   change. A `ResizeObserver` is structurally unable to see a density change —
+   the box it observes is identical — and while Chrome happened to emit a
+   `resize` on the 1 → 2 step in testing, it emitted **none** on the 2 → 1 step.
+   Event plumbing is not a guarantee.
+3. **`render()` verifies the invariant before it draws** (`syncCanvasBufferBeforeDraw`).
+   Whatever the events do or fail to do, the buffer cannot be wrong at the moment
+   the board is painted. It reads the cached rect rather than forcing layout, and
+   `resizeCanvas`'s own early return makes the common case a no-op; it cannot
+   loop, because `resizeCanvas` refreshes `state.lastCanvasRect` so the next frame
+   has nothing left to fix.
+
+With (1) and (2) alone the 2 → 1 step stayed broken, because no event fired at
+all. With (3) it self-heals on the first draw after the change — which is also
+the first moment it could have been visible, since the pixels already on screen
+were painted at the old density and displayed at the matching scale.
+
+The general lesson, and the reason this is recorded rather than quietly patched:
+an invariant enforced only by event handlers holds exactly as well as the event
+plumbing does. Enforce it where it is consumed.
+
 ### Not done here
 
 **The toolbar still grows a row when a line is selected.** The board no longer
