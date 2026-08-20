@@ -21,14 +21,14 @@ anchors → generate POMs** — wrapped by an optional **learning** layer and a
 
 Scripts load in this order before the app boots:
 
-1. `opencv_free_api.js` — dependency-free fallback vision API (`FreeOpenCVAPI`).
+1. `vendor/opencv_free_api.js` — dependency-free fallback vision API (`FreeOpenCVAPI`).
 2. `vendor/opencv-4.x-20260603.js` — pinned OpenCV.js WASM (~11 MB, WASM
    embedded), loaded `async` so it never blocks first paint and detection stays
    offline.
-3. `opencv_real_api.js` — wrapper (`RealOpenCVAPI`) over the vendored WASM
+3. `vendor/opencv_real_api.js` — wrapper (`RealOpenCVAPI`) over the vendored WASM
    build; if it is still compiling or unavailable, `getCvApi()` transparently
    falls back to `FreeOpenCVAPI`.
-4. `potrace.js` — raster-to-vector tracing helper.
+4. `vendor/potrace.js` — raster-to-vector tracing helper.
 5. `app.js` — the built bundle; its final line calls `init()`.
 
 Fixed rule data is loaded by `src/auto/rules/load-rules.js` from
@@ -149,9 +149,16 @@ src/*.js  (order: scripts/source-parts.mjs)
 ```
 
 **Never edit `app.js` directly** — it is regenerated and your change would be
-lost. Edit the relevant `src/*` part, then `npm run build`. `npm run check`
-rebuilds and parse-validates every part in isolation plus the standalone
-`opencv_*` / `potrace` files.
+lost. Edit the relevant `src/*` part, then `npm run build`.
+
+`npm run check` is deliberately **read-only** — it never writes `app.js`.
+Rebuilding inside `check` would mask a forgotten `npm run build`, which is the
+exact failure that once shipped a stale bundle. Instead it asserts the committed
+`app.js` still matches what `src/` would produce, parse-validates every part in
+isolation plus the standalone `vendor/opencv_*` / `vendor/potrace` files,
+verifies every `src/**/*.js` is registered in `source-parts.mjs` (an
+unregistered part silently never ships), checks the rule-JSON contract, and runs
+the two shared-scope gates described in §9.
 
 The build also rewrites the `<script src="app.js?v=…">` cache-buster in
 `index.html` to a **content hash of the bundle**. This is what makes a shipped
@@ -183,5 +190,40 @@ is a build output too, not hand-edited for the version string.
 - Learning is **optional, measurable, resettable**, and never mutates rule JSON.
 - No network call carries sketch or measurement data (offline by design).
 - `app.js` is generated output, not source.
+- No name is declared at top level in two parts, and nothing reads a
+  `const`/`let`/`class` from a later part at load time (see §9).
+
+## 9. Living in one shared scope
+
+Every part is concatenated into a single IIFE, so all top-level declarations
+land in **one shared scope** with no module boundary. That is what makes a bare
+`showToast(...)` work from anywhere, and it is also the source of two failure
+modes that produce no syntax error and no stack trace. `npm run check` enforces
+both (`validateSharedScope` in `scripts/check.mjs`):
+
+1. **One declaration per name, bundle-wide.** Two `function foo(){}` in
+   different parts is legal JS — the later silently replaces the earlier for
+   *every* caller, so editing one copy appears to do nothing at all. This
+   really happened: a duplicate `escapeHtml` in `spec-panel.js` shadowed the one
+   in `dialogs/core.js` for the whole bundle.
+2. **Cross-file symbols stay `function` declarations.** `function` and `var`
+   hoist across the entire bundle, so a part may call something defined much
+   further down — the codebase relies on this heavily and it is fine. `const`,
+   `let` and `class` do **not** hoist: reading one before its own part has been
+   evaluated throws a TDZ `ReferenceError`. Only load-time reads (brace depth 0)
+   can hit this; a call inside a function body runs long after every part has
+   been evaluated and is safe.
+
+The practical rule when moving code between parts: keep it a `function`
+declaration, and keep module-scope singletons (caches, timers, session objects)
+in the same file as every function that touches them — two copies of a `let`
+mean two independent singletons racing each other, silently.
+
+A handful of top-level statements genuinely **do** run at load time and are
+therefore order-sensitive: `const RULES = loadAutoModeRules()` in `state.js`
+(hence it sits immediately after `auto/rules/load-rules.js`), the `el` DOM
+registry in `dom-refs.js`, `MP_SHADE_RE`/`MP_FIELD_SPEC` in `main-page-data.js`,
+and the `CONSTRUCTION_PHRASES` merge in `construction-rows.js`. Everything else
+is hoisted and position-independent.
 
 See [`TESTING.md`](TESTING.md) for the suites that guard these.
