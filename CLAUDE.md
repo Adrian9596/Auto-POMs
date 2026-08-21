@@ -63,8 +63,9 @@ truth), `invariants`, `contract`, `pipeline-tests`, `junction-tests`,
 `mainpage-check` (MAIN PAGE sheet), `construction-check` (Construction annotation page),
 `bom-check` (BOM page), `preview-check` (Preview & Export tab + tech-pack workbook),
 `board-interaction-check` (board pointer: selection, endpoint drag, photo drag,
-marquee, and the canvas-geometry invariant — the board must not move or stretch
-when the chrome reflows),
+marquee, curve anchor points (add/mirror/Alt-break/delete), and the
+canvas-geometry invariant — the board must not move or stretch when the
+chrome reflows),
 `notes-check` (Board text notes: render legibly, stay out of the measurement
 set, travel with their photo, and their pointer/editor gesture layer),
 `export-xlsx`, `export-hidden`, `suggestions-tests` (Tier-0 library-value layer),
