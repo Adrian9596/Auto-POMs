@@ -157,6 +157,28 @@ Tradeoffs:
   1440px. See US-093's `overview.md` "Status" section and `TESTING.md` for
   the full account; the underlying board-holds-still invariant is still
   proven by a different, still-real scenario in the same suite.
+- **Measured 2026-08-21, via `/code-review` on this story's own diff — a
+  known consequence, not a defect.** Decision 2 above buys toolbar space by
+  consolidating rather than taking a 6th slot, and the implementation comment
+  in `index.html` went further and claimed that avoided the ADR 0052
+  toolbar-space problem outright. Measured on the real fixture, it only
+  *narrowed* it: the selection-gated "Add point" button is 38px and takes back
+  most of the width the drop-down freed, so the Board toolbar still wraps to a
+  second row once a CURVED line is selected. Toolbar height before -> after
+  selecting, by viewport: 95.5 -> 95.5px at 1440px, 95.5 -> 131.0px at 1366px
+  and 1280px, 95.5 -> 137.3px at 1100px — and 95.5 -> 131.0px even at 1440px
+  in the post-Apply state, where more context actions are visible. This is
+  still strictly better than before the consolidation, when selecting *any*
+  line reflowed at 1440px, and a straight-line selection now fits at 1440px.
+  The wrap that remains is the same 35.5px canvas shift ADR 0051 exists to
+  absorb — the board does hold still and no measured length moves — so it is
+  recorded here as headroom, not breakage: whoever needs Board toolbar width
+  next has less of it than Decision 2 reads as promising.
+  `scripts/board-interaction-check.mjs` section 0 now pins the 1366px case
+  under live proof (it asserts the canvas top/height actually moves, and that
+  the board stays put and 1:1 while it does), so the day this reflow gets
+  worse — or stops happening at all — the suite says so, instead of a comment
+  asserting it from memory.
 - `docs/FEATURE_INTAKE.md` classification was run 2026-08-20: **high-risk**
   (data model + migration hard gate, existing behavior, multi-domain). Story:
   `docs/stories/epics/E01-manual-mode/US-093-curved-lines-grow-anchor-points/`.

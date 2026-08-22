@@ -167,3 +167,44 @@ draft-biasing only ever reads `start`/`end` medians, matching how
 battery re-run green after both fixes: `check`, `board-interaction-check`
 (98/98), `learning-tests`, `evidence-tests`, `golden`, `contract` (883/883),
 `invariants` (187/187), `autosave-check`, `board-toolbar-check` (30/30).
+
+## Multi-segment sampling fix (2026-08-22)
+
+Code review found that `getAnnotationPolyline(ann, samples)` still treated
+`samples` as one fixed budget for the entire curve. Once `points[]` grew the
+chain beyond about 20 segments, the 50-sample measurement path reached its
+two-chord-per-segment floor. A cubic S-bend can cross its midpoint chord, so
+those two samples can alias a long bend into a nearly straight segment. The
+same helper feeds measured length, line hit-testing, marquee selection,
+stitches, and the default half-arc label position.
+
+The zero-anchor and retired legacy-midpoint paths keep the old equal budget
+exactly. Curves carrying `points[]` now use `curveChordSampleCount(seg)` per
+segment (24 minimum, 512 maximum, curvature-driven and zoom-independent),
+never less than the caller's old per-segment budget. The focused
+`curve-polyline-tests` suite loads the production source parts into a Node VM
+and includes the replaced algorithm as a negative control: on its 30-segment
+S-curve the old two-chord sampler must under-count dense arc-length truth by
+more than 75%, while production must stay within 0.1%. It also covers the
+zero-anchor compatibility path, one-to-four-anchor length stability, bulge
+hit-testing, marquee, stitch sampling, half-arc label placement,
+measure-scale, zoom independence, and a bounded 100-segment smoke case.
+
+Final verification after the shared hard cap was added:
+
+```text
+build / check                  PASS
+curve-polyline-tests           PASS (22 checks; 30 segments 3355.41px vs
+                                dense 3356.57px; old sampler 300.00px;
+                                100 segments 0.5ms)
+board-interaction-check        PASS (250 checks)
+board-toolbar-check            PASS (54/54)
+export-xlsx / export-hidden    PASS
+autosave-check                 PASS
+golden                         PASS (13 fixtures, maxDrift 0.0000)
+accuracy                       PASS (regression gate; mean 0.0190, p90 0.0427)
+contract                       PASS (883/883)
+invariants                     PASS (187/187)
+harness story verify           PASS
+git diff --check               PASS
+```

@@ -69,7 +69,8 @@ chrome reflows),
 `notes-check` (Board text notes: render legibly, stay out of the measurement
 set, travel with their photo, and their pointer/editor gesture layer),
 `export-xlsx`, `export-hidden`, `suggestions-tests` (Tier-0 library-value layer),
-`pom7-limitations`. Details in `TESTING.md`. Regenerate the library-value
+`curve-polyline-tests` (multi-anchor sampling accuracy), `pom7-limitations`.
+Details in `TESTING.md`. Regenerate the library-value
 suggestions with `npm run generate-suggestions` (reads `../Measurements 2`).
 
 ## Fixed contracts — change deliberately, not casually
