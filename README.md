@@ -76,7 +76,8 @@ Other suites: `golden`, `accuracy`, `invariants`, `contract`, `pipeline-tests`,
 `junction-tests`, `learning-tests`, `evidence-tests`, `autosave-check`,
 `pom6/7/14-limitations`, `viewrole-limitations`, plus the tech-pack page suites
 `mainpage-check`, `construction-check`, `bom-check`, `preview-check`,
-`board-toolbar-check`, `board-interaction-check`, `curve-polyline-tests`. See
+`board-toolbar-check`, `keyboard-shortcuts-check`, `board-interaction-check`,
+`curve-polyline-tests`. See
 [`TESTING.md`](TESTING.md).
 
 ## Auto vs. Manual Mode
@@ -92,6 +93,11 @@ post-Apply handoff or via the Manual/Auto toggle. Available in Manual: line edit
 (drag/reshape/relabel/delete), undo/redo, copy/paste, reflect, clear, lock,
 styles, Hide Numbers, Export PDF, Copy Image, and Help. The Manual/Auto toggle
 is visible in both modes.
+
+Press **Cmd/Ctrl+K** on any page to search every stable app command. Direct
+Board shortcuts remain available on the Board only; **Cmd/Ctrl+1…5** switches
+Board, Main Page, Construction, BOM, and Preview & Export, and **?** opens the
+generated shortcut reference.
 
 ## Code layout
 

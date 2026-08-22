@@ -66,6 +66,8 @@ truth), `invariants`, `contract`, `pipeline-tests`, `junction-tests`,
 marquee, curve anchor points (add/mirror/Alt-break/delete), and the
 canvas-geometry invariant — the board must not move or stretch when the
 chrome reflows),
+`keyboard-shortcuts-check` (shared command registry, Command Palette, scoped
+shortcuts, five-page navigation, disabled reasons, and keyboard focus),
 `notes-check` (Board text notes: render legibly, stay out of the measurement
 set, travel with their photo, and their pointer/editor gesture layer),
 `export-xlsx`, `export-hidden`, `suggestions-tests` (Tier-0 library-value layer),
