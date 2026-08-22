@@ -77,7 +77,7 @@ Other suites: `golden`, `accuracy`, `invariants`, `contract`, `pipeline-tests`,
 `pom6/7/14-limitations`, `viewrole-limitations`, plus the tech-pack page suites
 `mainpage-check`, `construction-check`, `bom-check`, `preview-check`,
 `board-toolbar-check`, `keyboard-shortcuts-check`, `board-interaction-check`,
-`curve-polyline-tests`. See
+`board-shape-check`, `curve-polyline-tests`. See
 [`TESTING.md`](TESTING.md).
 
 ## Auto vs. Manual Mode

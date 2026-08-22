@@ -497,3 +497,41 @@ The single action presented as the next expected step in the current Board
 state. In Auto Mode it advances the detection workflow; in Manual Mode it is
 the active authoring action rather than a destructive or export command.
 _Avoid_: multiple competing primary buttons, permanent red button
+
+## Board Graphic
+
+Non-measurement vector content placed on the Board to communicate or construct
+a visual shape. A Board Graphic appears in visual exports but never creates a
+POM, measurement value, tolerance result, or Measurement Spec row.
+_Avoid_: annotation, POM line, measured shape
+
+## Live Shape
+
+A Board Graphic whose rectangle, ellipse, or regular-polygon proportions can
+still be adjusted as one shape through its whole-object controls.
+_Avoid_: group of independent lines, custom path
+
+## Shape Path
+
+A Board Graphic edited as connected straight and curved segments. It remains
+one selectable graphic even when it contains more than one open subpath.
+_Avoid_: exploded lines, POM path
+
+## Edit Path
+
+The focused editing state in which the nodes and segments of one Board Graphic
+can be selected and reshaped without separating them into new objects.
+_Avoid_: whole-object resize, Break Apart
+
+## Cut Path
+
+An operation that breaks continuity at a chosen point or segment inside one
+Shape Path while keeping every resulting subpath in the same Board Graphic.
+_Avoid_: crop, erase pixels, Break Apart
+
+## Break Apart
+
+A future operation that would turn the subpaths of one Board Graphic into
+separate Board Graphics. It is distinct from Cut Path and is not part of the
+first shape-editing release.
+_Avoid_: Cut Path, convert to POM
